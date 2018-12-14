@@ -3,6 +3,7 @@ from tkinter.ttk import Progressbar
 import tkinter.ttk as ttk
 import csv
 import time
+from PIL import Image
 
 class Main(Frame):
     def __init__(self, master):
@@ -34,17 +35,17 @@ class Main(Frame):
             self.label.configure(background="#000", foreground="#CFC", font='helvetica 20')
             self.label.place(x=500 - 350 / 2, y=150, width=350)
 
-            self.photo = PhotoImage(file="Hellhounds.png")
-            self.photo = self.photo.subsample(1, 1)
+            self.photo = PhotoImage(file="Adventurer_Bell_Cranel.png")
+            self.photo = self.photo.subsample(5, 5)
             self.label = Label(image=self.photo)
             self.label.image = self.photo  # keep a reference!
-            self.label.place(x=50, y=75, height=self.photo.height(), width=self.photo.width())
+            self.label.place(x=275, y=250, height=self.photo.height(), width=self.photo.width())
 
             self.photo = PhotoImage(file="Battle_Princess_Ais_Wallenstein.png")
             self.photo = self.photo.subsample(4, 4)
             self.label = Label(image=self.photo)
             self.label.image = self.photo  # keep a reference!
-            self.label.place(x=725, y=50, height=self.photo.height(), width=self.photo.width())
+            self.label.place(x=525, y=250, height=self.photo.height(), width=self.photo.width())
 
     def init(self):
         master = self.master
