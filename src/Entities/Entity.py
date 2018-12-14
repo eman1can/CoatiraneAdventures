@@ -15,11 +15,11 @@ class Character(Entity):
         self.image = image
 
     def getcharacter(self):
-        return Entity.GetName() + self.image
+        return Entity.getname(self) + " " + self.image
 
 
 x = Entity("Hell Hound", 40, 20, 20)
 y = Character("Ais Wallenstein", 400, 200, 200, "Bell")
 
-print(x.GetName())
-print(y.GetCharacter())
+print(x.getname())
+print(y.getcharacter())
