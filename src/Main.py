@@ -3,14 +3,15 @@ from tkinter.ttk import Progressbar
 import tkinter.ttk as ttk
 import csv
 import time
-from PIL import Image
+from PIL import Image, ImageTk
 
-class Main(Frame):
-    def __init__(self, master):
-        self.master = master
+class Main():
+    def __init__(self):
+        master = Tk()
         master.title("Coatirane Adventures")
         master.configure(background="#000")
-        master.geometry("1000x500+30+30")
+        master.resizable(False, False)
+        master.geometry("1000x500+250+150")
         master.update()
 
         try:
@@ -27,25 +28,31 @@ class Main(Frame):
                 print(f'Processed {line_count} lines.')
         except FileNotFoundError:
             print("Starting new game!")
-            self.label = Label(master, text="Welcome to Coatirane Adventures!")
-            self.label.configure(background="#000", foreground="#CFC", font='helvetica 20')
-            self.label.place(x=500-425/2, y=100, width=425)
+            #self.label = Label(master, text="Welcome to Coatirane Adventures!")
+            #self.label.configure(background="#000", foreground="#CFC", font='helvetica 20')
+            #self.label.place(x=500-425/2, y=100, width=425)
 
-            self.label = Label(master, text="Select a Character!")
-            self.label.configure(background="#000", foreground="#CFC", font='helvetica 20')
-            self.label.place(x=500 - 350 / 2, y=150, width=350)
+            #self.label = Label(master, text="Select a Character!")
+            #self.label.configure(background="#000", foreground="#CFC", font='helvetica 20')
+            #self.label.place(x=500 - 350 / 2, y=150, width=350)
+            canvas = Canvas(master, width=1000, height=500, highlightthickness=0, bd=0, relief='ridge')
+            canvas.configure(background="#000")
+            canvas.pack(fill=BOTH)
+            self.draw("Adventurer_Bell_Cranel.png", 20, 20, master, canvas)
+            self.draw("Battle_Princess_Ais_WallenStein.png", 100, 150, master, canvas)
+            #img = PhotoImage(file="resized.jpg")
+            #canvas.create_image(20, 20, anchor=NW, image=img)
+            #img = Image.open("Adventurer_Bell_Cranel.png")
+            #new = img.resize((200, 200), Image.ANTIALIAS)
+            #self.label = Label(image=new)
+            #self.label.image = self.new  # keep a reference!
+            #self.label.place(x=275, y=250)
 
-            self.photo = PhotoImage(file="Adventurer_Bell_Cranel.png")
-            self.photo = self.photo.subsample(5, 5)
-            self.label = Label(image=self.photo)
-            self.label.image = self.photo  # keep a reference!
-            self.label.place(x=275, y=250, height=self.photo.height(), width=self.photo.width())
-
-            self.photo = PhotoImage(file="Battle_Princess_Ais_Wallenstein.png")
-            self.photo = self.photo.subsample(4, 4)
-            self.label = Label(image=self.photo)
-            self.label.image = self.photo  # keep a reference!
-            self.label.place(x=525, y=250, height=self.photo.height(), width=self.photo.width())
+            #self.photo = PhotoImage(file="Battle_Princess_Ais_Wallenstein.png")
+            #self.photo = self.photo.subsample(4, 4)
+            #self.label = Label(image=self.photo)
+            #self.label.image = self.photo  # keep a reference!
+            #self.label.place(x=525, y=250, height=self.photo.height(), width=self.photo.width())
 
     def init(self):
         master = self.master
@@ -100,6 +107,11 @@ class Main(Frame):
         else:
             self.Ehealth['value'] -= 10
 
-root = Tk()
-my_gui = Main(root)
-root.mainloop()
+    def draw(self, image, x, y, master, canvas):
+        image1 = Image.open(image)
+        image1 = image1.resize((image1.width // 5, image1.height // 5))
+        gif1 = ImageTk.PhotoImage(image1)
+        master.gif1 = gif1
+        canvas.create_image(x, y, image=gif1, anchor=NW)
+my_gui = Main()
+mainloop()
