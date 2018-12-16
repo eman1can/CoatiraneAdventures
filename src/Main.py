@@ -7,7 +7,10 @@ import Init
 import time
 from PIL import Image, ImageTk
 from pygame import mixer
+import math
+import spritesheets
 
+has_prev_key_release = None
 
 class Main(threading.Thread):
     def __init__(self, tk_root):
@@ -51,13 +54,66 @@ class Main(threading.Thread):
         return False
 
     def town(self, character):
-        print ()
+        print("Starting Game!")
+        print(character.getname())
+        self.canvas.delete("init")
+        #self.canvas.create_image(500, 250, image=self.townImage, tags="background")
+
+        # Walk left 118-126
+        # Walk forwards 132-139
+        # Walk right 152-144
+        # Walk back 104-113
+
+        self.create_sprite("res/Walking_sprites.png", 0, 8, 0, 64, 64, 50, 50)
+        master.bind("<KeyPress>", self.on_key_press_repeat)
+
+        FPS = 8
+        index = 0
+        timeStart = time.time()
+        # while True:
+        #     if (time.time() - timeStart) > (1 / FPS):
+        #         print(index)
+        #         if index > len(self.cells)-1:
+        #             index = 0
+        #         self.draw_sprite(index, self.cells, 250, 250, 64, 64)
+        #         index+=1
+        #         timeStart = time.time()
+
+    def on_key_press_repeat(self, event):
+        global has_prev_key_release
+        if has_prev_key_release:
+            master.after_cancel(has_prev_key_release)
+            has_prev_key_release = None
+            print ("on_key_press_repeat", repr(event.char))
+        else:
+            self.on_key_press(event)
+
+    def on_key_press(self, event):
+        print ("on_key_press", repr(event.char))
+
+    def create_sprite(self, image, row, cols, Sindex, w, h, x, y):
+        self.sheet = Image.open(image)
+        start = self.sheet.crop(((w * math.floor(Sindex % cols)), row * h, (w * math.floor(Sindex % cols)) + w, (row * h) + h))
+        self.cells = []
+        for xI in range(cols):
+            # get x ((math.floor(x % cols) * w)
+            # get y (math.floor(x / cols) * h)
+            self.cells.append(ImageTk.PhotoImage(self.sheet.crop( ( (math.floor(xI % cols) * w), ((w * cols * row) + math.floor(xI / cols) * h), (math.floor(xI % cols) * w) + w, ((w * cols * row) + math.floor(xI / cols) * h) + h ) )))
+        # for xI in range(len(self.cells)):
+        #     self.canvas.create_image(x + (w/2) * xI, y + (h/2), image=self.cells[xI], tags="sprite")
+        #     self.canvas.tag_raise("sprite")
+
+    def draw_sprite(self, index, spritesheet, x, y, w, h):
+        self.canvas.create_image(x + (w / 2), y + (h / 2), image=spritesheet[index], tags="sprite")
+        self.canvas.tag_raise("sprite")
 
     def startGame(self, character):
         print ("Starting Game!")
         print (character.getname())
         self.canvas.delete("init")
         self.canvas.create_image(500, 250, image=self.townImage, tags="background")
+
+
 
         # Hellhound pic
         photo = PhotoImage(file="res/Hellhounds.png")
@@ -116,10 +172,13 @@ class Main(threading.Thread):
             self.Ehealth['value'] -= 10
 
 master = Tk()
+master.protocol("WM_DELETE_WINDOW", master.quit())
 master.title("Coatirane Adventures")
 master.configure(background="#000")
 master.resizable(False, False)
 master.geometry("1000x500+250+150")
 
+
 MAIN = Main(master)
 master.mainloop()
+sys.exit()
