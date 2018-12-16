@@ -22,9 +22,9 @@ class Main(threading.Thread):
         self.canvas.configure(background="#000")
         self.canvas.pack(fill=BOTH, expand=YES)
         try:
-            # mixer.init()
-            # mixer.music.load('background.mp3')
-            # mixer.music.play()
+            mixer.init()
+            mixer.music.load('res/town.mp3')
+            mixer.music.play()
             with open('save_file.txt') as csv_file:
                 csv_reader = csv.reader(csv_file, delimiter=',')
                 line_count = 0
@@ -40,7 +40,7 @@ class Main(threading.Thread):
             start = Init.Init(self.canvas)
             while not start.choosenB:
                 time.sleep(.2)
-            self.startGame(start.getchar())
+            self.town(start.getchar())
             start = "hi!"
 
     def wait_until(somepredicate, timeout, period=1, *args, **kwargs):
@@ -50,9 +50,12 @@ class Main(threading.Thread):
             time.sleep(period)
         return False
 
-    def startGame(self, Character):
+    def town(self, character):
+        print ()
+
+    def startGame(self, character):
         print ("Starting Game!")
-        print (Character.getname())
+        print (character.getname())
         self.canvas.delete("init")
         self.canvas.create_image(500, 250, image=self.townImage, tags="background")
 
@@ -77,7 +80,7 @@ class Main(threading.Thread):
         self.Ehealth['value'] = 100
 
         # Character photo
-        label = Label(image=Character.getimage())
+        label = Label(image=character.getimage())
         label.place(x=725, y=50, height=200, width=200)
 
         # Character attack button
