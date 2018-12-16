@@ -14,10 +14,10 @@ class Init:
         # for x in range(1, 25):
         #     self.canvas.create_line(100*x, 0, 100*x, 500, fill='white')
 
-        image1 = Image.open("Battle_Princess_Ais_WallenStein.png")
-        image2 = Image.open("Adventurer_Bell_Cranel.png")
-        image3 = Image.open("Battle_Princess_Ais_WallenSteinS.png")
-        image4 = Image.open("Adventurer_Bell_CranelS.png")
+        image1 = Image.open("res/Battle_Princess_Ais_WallenStein.png")
+        image2 = Image.open("res/Adventurer_Bell_Cranel.png")
+        image3 = Image.open("res/Battle_Princess_Ais_WallenSteinS.png")
+        image4 = Image.open("res/Adventurer_Bell_CranelS.png")
         self.gif1 = ImageTk.PhotoImage(image1.resize((200, 200)))
         self.gif2 = ImageTk.PhotoImage(image2.resize((200, 200)))
         self.gif3 = ImageTk.PhotoImage(image3.resize((200, 200)))

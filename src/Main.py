@@ -16,7 +16,7 @@ class Main(threading.Thread):
         self.start()
 
     def run(self):
-        townImage = Image.open("town.jpg")
+        townImage = Image.open("res/town.jpg")
         self.townImage = ImageTk.PhotoImage(townImage.resize((1000, 500)))
         self.canvas = Canvas(master, width=1000, height=500, highlightthickness=0, bd=0, relief='ridge')
         self.canvas.configure(background="#000")
@@ -57,7 +57,7 @@ class Main(threading.Thread):
         self.canvas.create_image(500, 250, image=self.townImage, tags="background")
 
         # Hellhound pic
-        photo = PhotoImage(file="Hellhounds.png")
+        photo = PhotoImage(file="res/Hellhounds.png")
         photo = photo.subsample(1, 1)
         label = Label(image=photo)
         label.image = photo  # keep a reference!
