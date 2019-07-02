@@ -1,0 +1,331 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import random random
+#:import Gradient Mainn.Gradient
+#:import customButton Main2.customButton
+<Root>:
+    id: screen_manager
+    transition: FadeTransition(duration=0.075)
+    NewGameScreen:
+        id: new_game
+    SelectScreen
+        id: select_screen
+    TownScreen
+        id: town_screen
+    DungeonMain:
+        id: dungeon_main
+    TavernMain
+        id: tavern_main
+
+<NewGameScreen>:
+    name: 'new_game'
+
+<SelectScreen>:
+    name: 'select_screen'
+    FloatLayout:
+        Image:
+            size_hint: None, None
+            source: 'res/selectTitle.png'
+            keep_ratio: True
+            allow_stretch: True
+            pos: root.title_x, root.top * 4 / 6
+            size: root.width / 2, root.height / 4
+
+        Label:
+            size_hint: None, None
+            text: 'Battle Princess'
+            font_size: root.font_size2
+            color: 0.15,0.45,.75,1
+            pos: root.width/3 - self.texture_size[0]/2, root.top/6.5
+            size: self.texture_size
+        Label:
+            size_hint: None, None
+            text: 'Beast Slayer'
+            font_size: root.font_size2
+            color: 0.75,0,0,1
+            pos: root.width*2/3 - self.texture_size[0]/2, root.top/6.5
+            size: self.texture_size
+
+<TownScreen>
+    name: 'town_screen'
+
+    #Image:
+    #    source: 'res/townClip.jpg'
+    #    allow_stretch: True
+    #    keep_ratio: True
+    #    size: root.width, root.height
+    #    size_hint: None, None
+    #    pos: 0,0
+<TavernMain>
+    name: 'tavern_main'
+    on_enter: root.check_unlock()
+<DungeonMain>
+    name: 'dungeon_main'
+    id: dungeon_main
+    on_pre_enter:
+        self.updateCurrent()
+        self.update_buttons()
+    FloatLayout:
+        id: float
+
+        Label:
+            size: self.texture_size
+            size_hint: None, None
+            text: 'Coatirane Dungeons'
+            color: 0.65, 0.15, 0.25, 1
+            font_size: 150
+            pos: 96*3, root.height - 48 * 5
+        Label:
+            id: score
+            size: self.texture_size
+            size_hint: None, None
+            text: 'Party Score: %d' % root.score
+            color: 0.25, 0.20, 0.65, 1
+            font_size: 100
+            pos: self.parent.width - self.width - 150, self.parent.height - self.height - 250
+        Label:
+            id: level
+            size: self.texture_size
+            size_hint: None, None
+            text: 'Level: %d' % root.level
+            color: 0.65, 0.10, 0.35, 1
+            font_size: 90
+            pos: 96*6, root.height - 48 * 7
+<CharacterPreview>:
+    size_hint: None, None
+    size: 250, 650
+<RecruitPreview>:
+    id: RecruitPreview
+<scrollcharacterpreview>:
+    id: selection
+    size_hint: None, None
+    size: 250, 650
+    ScrollView:
+        id: scrollPane
+        do_scroll_y: False
+        size: self.parent.size
+        size_hint: None, None
+        canvas.before:
+            Color:
+                rgba: 1,1,1,1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        FloatLayout:
+            id: charPane
+            size: self.parent.size
+            size_hint: None, None
+
+<emptycharacterpreview>:
+    size_hint: None, None
+    size: 250, 650
+<filledcharacterpreviewS>:
+    size_hint: None, None
+    size: 250, 650
+<filledcharacterPreview>:
+    id: preview
+    size_hint: None, None
+    background_normal: ''
+    background_down: ''
+    background_color: 0,0,0,0
+    canvas:
+        Color:
+            rgba: (1,1,1,1)
+        Rectangle:
+            size: root.cWidth,root.cHeight
+            pos: root.x,root.y
+    Image:
+        id: image
+        size_hint: None, None
+        allow_stretch: True
+        keep_ratio: True
+        canvas:
+            Color:
+                rgba: (1,1,1,.65)
+            Rectangle:
+                size: root.cWidth, root.cHeight / 4
+                pos: root.xPos, 0
+            Rectangle:
+                size: root.cWidth, root.cHeight / 10
+                pos: root.xPos, root.cHeight - root.cHeight/10
+        Label:
+            id: physicalattack
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + 10, root.yPos + 120
+            color: 0,0,0,1
+        Label:
+            id: magicalattack
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + 10, root.yPos + 90
+            color: 0,0,0,1
+        Label:
+            id: defense
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + 10, root.yPos + 60
+            color: 0,0,0,1
+        Label:
+            id: magicalpoints
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + 10, root.yPos + 30
+            color: 0,0,0,1
+        Label:
+            id: health
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + 10, root.yPos + 0
+            color: 0,0,0,1
+        Label:
+            id: strength
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 120
+            color: 0,0,0,1
+        Label:
+            id: magic
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 90
+            color: 0,0,0,1
+        Label:
+            id: endurance
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 60
+            color: 0,0,0,1
+        Label:
+            id: dexterity
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 30
+            color: 0,0,0,1
+        Label:
+            id: agility
+            font_size: 30
+            size_hint: None, None
+            size: self.texture_size
+            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 0
+            color: 0,0,0,1
+
+<CharacterAttributeScreen>
+<Dungeonbattle>
+    name: 'dungeon_battle'
+    id: dungeonscreen
+    level_label: lvllabel
+    turn_label: turnlabel
+    encounter_label: encounterlabel
+    Label:
+        id: lvllabel
+        font_size: 120
+        color: 1,1,1,1
+        size: self.texture_size
+        pos: .5, .5
+    Label:
+        id: encounterlabel
+        font_size: 120
+        color: 1,1,1,1
+        size: self.texture_size
+        size_hint_y: None
+        pos: .5, 500
+
+    Label:
+        id: turnlabel
+        font_size: 120
+        color: .8,.8,.8,1
+        size: self.texture_size
+        size_hint: None, None
+        pos: 1180, 1240
+<CharPreview>
+
+    moveBar: move_bar
+    moveBox: move_box
+    Button:
+        id: move_box
+        size: 200, 75
+        pos: self.parent.pos[0], self.parent.pos[1] + 200
+        size_hint: None, None
+        text: '%s' % root.move1name
+        font_size: 30
+        color: 0,0,0,1
+        on_release: move_bar.hide_widget()
+        background_color: 1,1,1,0
+        canvas.before:
+            Color:
+                rgba: 1,1,1,1
+            Mesh:
+                mode: 'triangle_fan'
+                vertices: [self.pos[0] + 0, self.pos[1] + 37.25,0,0, self.pos[0] + 25,self.pos[1] + 69.5,0,0, self.pos[0] + 175,self.pos[1] + 69.5, 0, 0, self.pos[0] + 200, self.pos[1] + 37.25,0,0, self.pos[0] + 175, self.pos[1] + 5,0,0, self.pos[0] + 25, self.pos[1] + 5,0,0]
+                indices: [0,1,2,3,4,5]
+        MoveBarObject:
+            id: move_bar
+            pos: 200, self.parent.pos[1] + self.parent.height - 5
+            Button:
+                id: button0
+                pos: 200, self.parent.pos[1]
+                on_release: self.parent.callback(self.text, 0)
+                size: self.parent.size[0] / 5, self.parent.size[1]
+                size_hint: None, None
+                color: 0,0,0,1
+                background_color: 0,0,0,0
+                text: '%s' % root.move1name
+                font_size: 30
+            Button:
+                id: button1
+                pos: 200 + 175, self.parent.pos[1]
+                on_release: self.parent.callback(self.text, 1)
+                size: self.parent.size[0] / 5, self.parent.size[1]
+                size_hint: None, None
+                color: 0,0,0,1
+                background_color: 0,0,0,0
+                text: '%s' % root.move2name
+                font_size: 30
+            Button:
+                id: button2
+                pos: 200 + 175*2, self.parent.pos[1]
+                on_release: self.parent.callback(self.text, 2)
+                size: self.parent.size[0] / 5, self.parent.size[1]
+                size_hint: None, None
+                color: 0,0,0,1
+                background_color: 0,0,0,0
+                text: '%s' % root.move3name
+                font_size: 30
+            Button:
+                id: button3
+                pos: 200 + 175*3, self.parent.pos[1]
+                on_release: self.parent.callback(self.text, 3)
+                size: self.parent.size[0] / 5, self.parent.size[1]
+                size_hint: None, None
+                color: 0,0,0,1
+                background_color: 0,0,0,0
+                text: '%s' % root.move4name
+                font_size: 30
+            Button:
+                id: button4
+                pos: 200 + 175*4, self.parent.pos[1]
+                on_release: self.parent.callback(self.text, 4)
+                size: self.parent.size[0] / 5, self.parent.size[1]
+                size_hint: None, None
+                color: 0,0,0,1
+                background_color: 0,0,0,0
+                text: '%s' % root.specialname
+                font_size: 30
+<statusBoard>
+    canvas:
+        Color:
+            rgba: .3,.3,.3,1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+<StatLabel>:
+    size: self.texture_size

@@ -1,0 +1,15 @@
+spinekivy-0.1.1.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+spinekivy-0.1.1.dist-info/METADATA,sha256=-DBRwId7pXZZM2hQMRhr3VprjF_Bk26WyuGsLkbxQdg,732
+spinekivy-0.1.1.dist-info/RECORD,,
+spinekivy-0.1.1.dist-info/WHEEL,sha256=AoK2eV38QTzwyxwXClqGGrZfhJvKi1Tql6HhNCyc7H4,98
+spinekivy-0.1.1.dist-info/top_level.txt,sha256=njMoZ_Oo3TxYPi_1EsVpKu6_R7ywnHgydlXr-tj_J3U,10
+spinekivy/__init__.py,sha256=zGU39ZwaRkNKxWLnAB7Zte9ZtfyfMEsBJp-bHUfQTyA,23
+spinekivy/__pycache__/__init__.cpython-37.pyc,,
+spinekivy/__pycache__/atlasattachmentloader.cpython-37.pyc,,
+spinekivy/__pycache__/skeletonrenderer.cpython-37.pyc,,
+spinekivy/__pycache__/sprite.cpython-37.pyc,,
+spinekivy/__pycache__/textureloader.cpython-37.pyc,,
+spinekivy/atlasattachmentloader.py,sha256=6NQ18NgHPqpXhdg8iclT3SK8tmInwiKEyyDzlFE_f1g,1103
+spinekivy/skeletonrenderer.py,sha256=oqIqM-6objBLG_BblZfaqzi6slF-jOlSFaKK21dyTUw,3389
+spinekivy/sprite.py,sha256=yB64hl602uWtpYdCSms5gd9DVad6lvDdAMADWxPL9wo,392
+spinekivy/textureloader.py,sha256=LeOcj89KBVvEoE7orbHRH_sn-2QEMkO6rtAWHhyDh5w,1526

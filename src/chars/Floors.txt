@@ -1,0 +1,2 @@
+//FloorNum, MaxEnemies, MinEncounters, MaxEncounters, BossType, ArrayNum, [EnemyName, EnemyProbability]
+1,1,3,5,3,3,Kobold,.51,Goblin,.48,Jack Bird,.1
