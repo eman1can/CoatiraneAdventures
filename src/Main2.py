@@ -2868,6 +2868,7 @@ class GameApp(App):
 
     def build(self):
         App.tavern_unlocked = False
+        # Only works for windows machines!
         # user32 = ctypes.windll.user32
         # width = math.floor(user32.GetSystemMetrics(0) * 2 / 3)
         # height = math.floor(user32.GetSystemMetrics(1) * 2 / 3)
