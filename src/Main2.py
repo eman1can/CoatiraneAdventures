@@ -35,43 +35,38 @@ class Root(ScreenManager):
         App.root = self
 
     def goto_next(self, next_screen):
-        # print(str(App.root.list))
         if isinstance(next_screen, Screen):
-            self.list.append(self.current)
+            old_screen = self.children[0]
+            self.list.append(old_screen)
             self.add_widget(next_screen)
             self.current = next_screen.name
+            self.remove_widget(old_screen)
+            print("Added: " + next_screen.name)
+            print("Saved: " + old_screen.name)
+            print("Removed: " + old_screen.name)
         else:
-            self.list.append(self.current)
-            self.current = next_screen
+            raise Exception("Goto_next only works with Screen Objects!")
 
     def goto_next_no_track(self, next_screen):
-        # print(str(App.root.list))
         if isinstance(next_screen, Screen):
+            old_screen = self.children[0]
             self.add_widget(next_screen)
             self.current = next_screen.name
+            self.remove_widget(old_screen)
+            print("Added: " + next_screen.name)
+            print("Removed: " + old_screen.name)
         else:
-            self.current = next_screen
-
-    def goto_next_and_remove(self, next_screen):
-        if isinstance(next_screen, Screen):
-            self.switch_to(next_screen)
-        else:
-            raise Exception("Goto_next_and_remove only works with Screen Objects!")
+            raise Exception("Goto_next_no_track only works with Screen Objects!")
 
     def goto_back(self):
-        # print(str(App.root.list))
         if self.list:
-            self.current = self.list.pop()
-            return True
-        print("No more screens. Closing App")
-        App.get_running_app().stop()
-        Window.close()
-
-    def goto_back_and_remove(self):
-        if self.list:
-            last = self.current
-            self.remove_widget(self.ids[last])
-            self.current = self.list.pop()
+            old_screen = self.children[0]
+            next_screen = self.list.pop()
+            self.add_widget(next_screen)
+            self.current = next_screen.name
+            self.remove_widget(old_screen)
+            print("Rollback: " + next_screen.name)
+            print("Removed: " + old_screen.name)
             return True
         print("No more screens. Closing App")
         App.get_running_app().stop()
@@ -116,7 +111,7 @@ class NewGameScreen(Screen):
 
     def on_new_game(self, instance, touch):
         if instance.collide_point(*touch.pos):
-            App.root.goto_next('select_screen')
+            App.root.goto_next_no_track(SelectScreen())
 
     def on_load_game(self, *args):
         pass
@@ -226,6 +221,8 @@ class SelectScreen(Screen):
 
     def __init__(self, **kwargs):
         super(SelectScreen, self).__init__(**kwargs)
+        self.id = 'select_screen'
+        self.name = 'select_screen'
         self.newgamebell = CustomHoverableButton(size=(600, 600), pos=(200, 200),
                                                  collide_image='res/buttons/newgame.bell.collide.png',
                                                  background_normal='res/buttons/newgame.bell.normal.png',
@@ -253,7 +250,7 @@ class SelectScreen(Screen):
                 if x.getid() == choice:
                     x.first = True
                     App.obtainedcharsArray.append(x.getindex())
-                    App.root.current = 'town_screen'
+                    App.root.goto_next_no_track(TownScreen())
                     return True
 
     def on_size(self, *args):
@@ -289,6 +286,8 @@ class TownScreen(Screen):
 
     def __init__(self, **kwargs):
         super(TownScreen, self).__init__(**kwargs)
+        self.id = 'town_screen'
+        self.name = 'town_screen'
         self.bgImage = Image(source='res/townClip.jpg', allow_stretch=True, keep_ratio=True,
                              size=(App.width, App.height), size_hint=(None, None), pos=(0, 0))
         # self.tavernButton = customButton(source='res/TavernButton.png', on_touch_down=self.onTavern, size=(300, 250),
@@ -324,7 +323,9 @@ class TownScreen(Screen):
                                                 background_normal='res/buttons/DungeonButton.png',
                                                 background_down='res/buttons/largebutton.down.png',
                                                 background_hover='res/buttons/largebutton.hover.png')
+        self.dungeonButton.bind(on_touch_down=self.onDungeon)
         self.bind(size=self.on_size)
+
         self.add_widget(self.bgImage)
         self.add_widget(self.tavernButton)
         self.add_widget(self.shopButton)
@@ -346,11 +347,11 @@ class TownScreen(Screen):
 
     def onDungeon(self, instance, touch):
         if instance.collide_point(*touch.pos):
-            App.root.goto_next('dungeon_main')
+            App.root.goto_next(DungeonMain())
 
     def onTavern(self, instance, touch):
         if instance.collide_point(*touch.pos):
-            App.root.goto_next('tavern_main')
+            App.root.goto_next(TavernMain())
 
     def on_size(self, *args):
         self.button_width = self.height / 4.6
@@ -383,7 +384,7 @@ class TavernMain(Screen):
         self.title = Label(text="[b]Recruitment[/b]", markup=True, font_size=175, color=(1, 1, 1, 1),
                            pos=(650, App.height - 200), size=(200, 50), size_hint=(None, None))
         self.add_widget(self.title)
-        self.recruitButton = customButton(source='res/recruitButton.png', size=(270, 180),
+        self.recruitButton = customButton(source='res/buttons/recruitButton.png', size=(270, 180),
                                           pos=(App.width / 2 - 270 / 2, 100), on_touch_down=self.onRecruit)
         self.add_widget(self.recruitButton)
         self.lock = Image(size=(App.width, App.height), pos=(0, 0), allow_stretch=True, keep_ratio=True,
@@ -420,7 +421,7 @@ class TavernMain(Screen):
                     print(str(App.characterArray[index].getname()))
                     preview = RecruitPreview(App.characterArray[index])
                     App.root.transition = RiseInTransition(duration=.3)
-                    App.root.goto_next_no_track(preview)
+                    App.root.goto_next(preview)
 
     def check_unlock(self):
         # print(str(App.tavern_unlocked))
@@ -449,11 +450,11 @@ class RecruitPreview(Screen):
         self.title = Label(text="[b]" + char.getname() + "[/b]", markup=True, color=(1, 1, 1, 1), size=(200, 50),
                            font_size=80, pos=((App.width - (App.height * 2 / 3)) / 2, App.height - 100))
         self.add_widget(self.title)
-        self.rollAgainButton = customButton(source='res/RecruitButtonRollAgain.png', size=(270, 180),
+        self.rollAgainButton = customButton(source='res/buttons/RecruitButtonRollAgain.png', size=(270, 180),
                                             pos=(200 - 135, App.height / 2), on_touch_down=self.onRollAgain)
-        self.confirmButton = customButton(source='res/RecruitButtonConfirm.png', size=(270, 180),
+        self.confirmButton = customButton(source='res/buttons/RecruitButtonConfirm.png', size=(270, 180),
                                           pos=(App.width - 200 - 135, App.height / 2), on_touch_down=self.onConfirm)
-        self.cancelButton = customButton(source='res/RecruitButtonCancel.png', size=(270, 180),
+        self.cancelButton = customButton(source='res/buttons/RecruitButtonCancel.png', size=(270, 180),
                                          pos=(App.width - 200 - 135, App.height / 2 - 200), on_touch_down=self.onCancel)
         self.add_widget(self.rollAgainButton)
         self.add_widget(self.confirmButton)
@@ -484,11 +485,11 @@ class RecruitPreview(Screen):
     def onConfirm(self, instance, touch):
         if instance.collide_point(*touch.pos):
             App.obtainedcharsArray.append(self.char.getindex())
-            App.root.goto_next_no_track('tavern_main')
+            App.root.goto_back()
 
     def onCancel(self, instance, touch):
         if instance.collide_point(*touch.pos):
-            App.root.goto_next_no_track('tavern_main')
+            App.root.goto_back('tavern_main')
 
 
 class DungeonMain(Screen):
@@ -1387,16 +1388,16 @@ class CharacterAttributeScreen(Screen):
         self.endexpincreaseButton = Button(text="Increase End Exp", font_size=40, pos=(1200, 550), size=(300, 50),
                                            on_touch_down=self.increaseExpStat, size_hint=(None, None))
 
-        self.add_widget(self.maxStats)
-        self.add_widget(self.rankupButton)
-        self.add_widget(self.rankbreakButton)
-        self.add_widget(self.hpexpincreaseButton)
-        self.add_widget(self.mpexpincreaseButton)
-        self.add_widget(self.defexpincreaseButton)
-        self.add_widget(self.strexpincreaseButton)
-        self.add_widget(self.agiexpincreaseButton)
-        self.add_widget(self.dexexpincreaseButton)
-        self.add_widget(self.endexpincreaseButton)
+        # self.add_widget(self.maxStats)
+        # self.add_widget(self.rankupButton)
+        # self.add_widget(self.rankbreakButton)
+        # self.add_widget(self.hpexpincreaseButton)
+        # self.add_widget(self.mpexpincreaseButton)
+        # self.add_widget(self.defexpincreaseButton)
+        # self.add_widget(self.strexpincreaseButton)
+        # self.add_widget(self.agiexpincreaseButton)
+        # self.add_widget(self.dexexpincreaseButton)
+        # self.add_widget(self.endexpincreaseButton)
 
         ###### DEV BUTTONS END ######
 
@@ -2867,9 +2868,11 @@ class GameApp(App):
 
     def build(self):
         App.tavern_unlocked = False
-        user32 = ctypes.windll.user32
-        width = math.floor(user32.GetSystemMetrics(0) * 2 / 3)
-        height = math.floor(user32.GetSystemMetrics(1) * 2 / 3)
+        # user32 = ctypes.windll.user32
+        # width = math.floor(user32.GetSystemMetrics(0) * 2 / 3)
+        # height = math.floor(user32.GetSystemMetrics(1) * 2 / 3)
+        width = 1920
+        height = 1080
         if width > self.maxWidth:
             width = self.maxWidth
         if height > self.maxHeight:
@@ -2880,8 +2883,10 @@ class GameApp(App):
         Window
         Window.minimum_width = 960
         Window.minimum_height = 540
-        Window.left = math.floor((user32.GetSystemMetrics(0) - width) / 2)
-        Window.top = math.floor((user32.GetSystemMetrics(1) - height) / 2)
+        Window.left = 256
+        Window.top = 256
+        # Window.left = math.floor((user32.GetSystemMetrics(0) - width) / 2)
+        # Window.top = math.floor((user32.GetSystemMetrics(1) - height) / 2)
         Window.borderless = 0
         self.build_moves()
         self.build_enemies()

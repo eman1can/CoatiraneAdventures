@@ -1,7 +1,12 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*__pycache__/
+*../.idea
+*.idea/
+*.DS_Store
 *.py[cod]
-
+*.DS_Store
+*../.DS_Store
 # Distribution / packaging
 .Python
 env/
