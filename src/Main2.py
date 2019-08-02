@@ -169,6 +169,7 @@ class HoverBehavior(object):
 
 
 class CustomHoverableButton(Button, HoverBehavior):
+
     def __init__(self, **kwargs):
         kwargs.setdefault('size', (0, 0))
         kwargs.setdefault('pos', (0, 0))
@@ -196,6 +197,10 @@ class CustomHoverableButton(Button, HoverBehavior):
         self._collide_image = Image(source=self.collide_image, keep_data=True)._coreimage
         self.background_normal_temp = self.background_normal
 
+    # def on_size(self, width, height):
+    #     if (self._collide_image != None):
+    #         if ((width, height) != (0,0)):
+    #             self._collide_image.size = (width, height)
     def collide_point(self, x, y):
         if self.x <= x <= self.right and self.y <= y <= self.top:
             scale = (self._collide_image.width / (self.right - self.x))
@@ -284,6 +289,11 @@ class TownScreen(Screen):
     smallButton_height = NumericProperty(250)
     largeButton_height = NumericProperty(200)
 
+    smallButton_dynamic_width_multiplier = NumericProperty(.05)
+    smallButton_static_ratio_multiplier = NumericProperty(26 / 31)
+    smallButton_bottom_offset_multiplier = NumericProperty(.05)
+    smallButton_left_offset_multiplier = NumericProperty(.05)
+
     def __init__(self, **kwargs):
         super(TownScreen, self).__init__(**kwargs)
         self.id = 'town_screen'
@@ -292,30 +302,34 @@ class TownScreen(Screen):
                              size=(App.width, App.height), size_hint=(None, None), pos=(0, 0))
         # self.tavernButton = customButton(source='res/TavernButton.png', on_touch_down=self.onTavern, size=(300, 250),
         #                                  pos=(100, 100))
-        self.tavernButton = CustomHoverableButton(size=(300, 250), pos=(100, 100),
-                                              collide_image='res/buttons/smallbutton.collision.png',
-                                              background_normal='res/buttons/TavernButton.png',
-                                              background_down='res/buttons/smallbutton.down.png',
-                                              background_hover='res/buttons/smallbutton.hover.png')
+        self.test = Image(size=(self.smallButton_dynamic_width_multiplier * App.width, self.smallButton_dynamic_width_multiplier * App.width * self.smallButton_static_ratio_multiplier),
+                            pos=(App.width * self.smallButton_left_offset_multiplier, App.height * self.smallButton_bottom_offset_multiplier), size_hint=(None,None), source='res/buttons/TavernButton.png')
+        print("(" + str(self.test.width) + ", " + str(self.test.height) + ")")
+        self.add_widget(self.test)
+        self.tavernButton = CustomHoverableButton(size=(App.width  * .1, App.width * .1 * 26 / 31), pos=(App.width * .1, App.height * .2),
+                                                collide_image='res/buttons/smallbutton.collision.png',
+                                                background_normal='res/buttons/TavernButton.png',
+                                                background_down='res/buttons/smallbutton.down.png',
+                                                background_hover='res/buttons/smallbutton.hover.png')
         self.tavernButton.bind(on_touch_down=self.onTavern)
         # self.shopButton = customButton(source='res/ShopButton.png', size=(300, 250), pos=(100, 100))
         self.shopButton = CustomHoverableButton(size=(300, 250), pos=(100, 100),
-                                                  collide_image='res/buttons/smallbutton.collision.png',
-                                                  background_normal='res/buttons/ShopButton.png',
-                                                  background_down='res/buttons/smallbutton.down.png',
-                                                  background_hover='res/buttons/smallbutton.hover.png')
+                                                collide_image='res/buttons/smallbutton.collision.png',
+                                                background_normal='res/buttons/ShopButton.png',
+                                                background_down='res/buttons/smallbutton.down.png',
+                                                background_hover='res/buttons/smallbutton.hover.png')
         # self.craftingButton = customButton(source='res/CraftingButton.png', size=(300, 250), pos=(100, 100))
         self.craftingButton = CustomHoverableButton(size=(300, 250), pos=(100, 100),
-                                                collide_image='res/buttons/smallbutton.collision.png',
-                                                background_normal='res/buttons/CraftingButton.png',
-                                                background_down='res/buttons/smallbutton.down.png',
-                                                background_hover='res/buttons/smallbutton.hover.png')
+                                                    collide_image='res/buttons/smallbutton.collision.png',
+                                                    background_normal='res/buttons/CraftingButton.png',
+                                                    background_down='res/buttons/smallbutton.down.png',
+                                                    background_hover='res/buttons/smallbutton.hover.png')
         # self.questButton = customButton(source='res/QuestButton.png', size=(300, 250), pos=(100, 100))
         self.questButton = CustomHoverableButton(size=(300, 250), pos=(100, 100),
-                                                collide_image='res/buttons/smallbutton.collision.png',
-                                                background_normal='res/buttons/QuestButton.png',
-                                                background_down='res/buttons/smallbutton.down.png',
-                                                background_hover='res/buttons/smallbutton.hover.png')
+                                                    collide_image='res/buttons/smallbutton.collision.png',
+                                                    background_normal='res/buttons/QuestButton.png',
+                                                    background_down='res/buttons/smallbutton.down.png',
+                                                    background_hover='res/buttons/smallbutton.hover.png')
         # self.dungeonButton = customButton(source='res/DungeonButton.png', on_touch_down=self.onDungeon, size=(300, 200),
         #                                   pos=(1400, 100))
         self.dungeonButton = CustomHoverableButton(size=(300, 250), pos=(100, 100),
@@ -326,14 +340,31 @@ class TownScreen(Screen):
         self.dungeonButton.bind(on_touch_down=self.onDungeon)
         self.bind(size=self.on_size)
 
-        self.add_widget(self.bgImage)
-        self.add_widget(self.tavernButton)
+        # self.add_widget(self.bgImage)
+        # self.add_widget(self.tavernButton)
         self.add_widget(self.shopButton)
         self.add_widget(self.craftingButton)
         self.add_widget(self.questButton)
         self.add_widget(self.dungeonButton)
         # self.sound = SoundLoader.load('res/town.mp3')
         # self.sound.loop = True
+
+    def on_smallButton_dynamic_width_multiplier(self, *args):
+        self.update_button_offsets()
+
+    def on_smallButton_static_ratio_multiplier(self, *args):
+        self.update_button_offsets()
+
+    def on_smallButton_bottom_offset_multiplier(self, *args):
+        self.update_button_offsets()
+
+    def on_smallButton_left_offset_multiplier(self, *args):
+        self.update_button_offsets()
+
+    def update_button_offsets(self, *args):
+        print("update button offsets!")
+        self.test.size = (App.width * self.smallButton_dynamic_width_multiplier, App.width * self.smallButton_dynamic_width_multiplier * self.smallButton_static_ratio_multiplier)
+        self.test.pos = (App.width * self.smallButton_left_offset_multiplier, App.height * self.smallButton_bottom_offset_multiplier)
 
     def on_enter(self):
         pass
@@ -354,6 +385,7 @@ class TownScreen(Screen):
             App.root.goto_next(TavernMain())
 
     def on_size(self, *args):
+        self.update_button_offsets()
         self.button_width = self.height / 4.6
         self.button_interval = self.width / 25.6
         self.button_height = self.height / 14.1
@@ -376,6 +408,7 @@ class TownScreen(Screen):
 
 
 class TavernMain(Screen):
+
     def __init__(self, **kwargs):
         super(TavernMain, self).__init__(**kwargs)
         self.bg = Image(size=(App.width, App.height), pos=(0, 0), allow_stretch=True, keep_ratio=True,
@@ -437,6 +470,7 @@ class TavernMain(Screen):
 
 
 class RecruitPreview(Screen):
+
     def __init__(self, char, **kwargs):
         super(RecruitPreview, self).__init__(**kwargs, name='RecruitPreview_%s' % char.getid(), id='RecruitPreview')
         # self.size = (2560*4/5, 1440*2/3)
@@ -701,6 +735,7 @@ class DungeonMain(Screen):
 
 
 class DungeonFloor:
+
     def __init__(self, screenManager, floorNum, direction, dungeonScreen):
         self.floor = App.floors[floorNum - 1]
         self.dungeonScreen = dungeonScreen
@@ -1342,6 +1377,7 @@ class CharacterAttributeScreen(Screen):
     # chardisplayname = StringProperty('')
     # charid = StringProperty('')
     # charfullimage = StringProperty('')
+
     def __init__(self, char, preview, **kwargs):
         super(CharacterAttributeScreen, self).__init__(**kwargs)
         self.charname = char.getname()
@@ -1824,6 +1860,7 @@ class CharacterAttributeScreen(Screen):
 
 
 class StatusBoardManager(ScreenManager):
+
     def __init__(self, char, **kwargs):
         super(StatusBoardManager, self).__init__(**kwargs)
         self.screens = []
@@ -1852,6 +1889,7 @@ class StatusBoardManager(ScreenManager):
 
 
 class statusBoard(Screen):
+
     def __init__(self, number, managerPass, rank, char, grid, **kwargs):
         super(statusBoard, self).__init__(**kwargs)
         self.managerObject = managerPass
@@ -2677,6 +2715,7 @@ class CharPreview(Image):
 
 
 class EnemyType:
+
     def __init__(self, name, attackType, healthMin, healthMax, strMin, strMax, magMin, magMax, agiMin, agiMax, dexMin,
                  dexMax, endMin, endMax, moves, movesPropabilities):
         self.name = name
@@ -2709,6 +2748,7 @@ class EnemyType:
 
 
 class Enemy:
+
     def __init__(self, name, attackType, health, str, mag, agi, dex, end, moves, movePropabilities):
         self.name, self.attackType, self.health, self.str, self.mag, self.agi, self.dex, self.end = name, attackType, health, str, mag, agi, dex, end
         self.moves = moves
@@ -2858,6 +2898,33 @@ class Floor:
         return enemies
 
 
+class Gradient(object):
+
+    @staticmethod
+    def horizontal(*args):
+        texture = Texture.create(size=(len(args), 1), colorfmt='rgba')
+        buf = bytes([ int(v * 255)  for v in chain(*args) ])  # flattens
+
+        texture.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
+        return texture
+
+    @staticmethod
+    def vertical(*args):
+        texture = Texture.create(size=(1, len(args)), colorfmt='rgba')
+        buf = bytes([ int(v * 255)  for v in chain(*args) ])  # flattens
+
+        texture.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
+        return texture
+
+    @staticmethod
+    def diagonal(*args):
+        texture = Texture.create(size=(1, len(args)), colorfmt='rgba')
+        buf = bytes([int(v * 255) for v in chain(*args)])  # flattens
+
+        texture.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
+        return texture
+
+
 class GameApp(App):
     title = 'Coatirane Adventures'
 
@@ -2881,7 +2948,8 @@ class GameApp(App):
         App.width = width
         App.height = height
         Window.size = (width, height)
-        Window
+
+        Window.bind(on_resize=self.on_resize)
         Window.minimum_width = 960
         Window.minimum_height = 540
         Window.left = 256
@@ -2894,6 +2962,12 @@ class GameApp(App):
         self.build_floors()
         self.build_chars()
         return Root()
+
+    def on_resize(self, *args):
+        # print("Window Resized")
+        width = Window.width
+        height = width / 16 * 9
+        Window.size = (width, height)
 
     def build_moves(self):
         print("Loading Moves")
