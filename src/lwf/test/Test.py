@@ -1,10 +1,9 @@
 from kivy.app import App
-from kivy.clock import Clock
 from kivy.uix.widget import Widget
-from src.lwf.LWF import LWF
+from src.lwf.src.LWF import LWF
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
-import time
+
 
 class WindowObject(Widget):
     def __init__(self):
