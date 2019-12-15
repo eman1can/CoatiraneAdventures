@@ -12,7 +12,8 @@ from kivy.uix.widget import Widget
 from kivy.uix.slider import Slider
 from kivy.uix.boxlayout import BoxLayout
 from kivy.app import App
-from kivy.graphics import Mesh
+from kivy.graphics import Mesh, Color, Rectangle
+from kivy.core.image import Image
 from functools import partial
 from math import cos, sin, pi
 
@@ -71,12 +72,18 @@ class MeshTestApp(App):
             y = self.y + sin(istep * i) * self.height
             vertices.extend([x, y, 0, 0])
             indices.append(i)
+        print("Mesh(vertices=", vertices, ", indices=", indices, ")")
         self.mesh.vertices = vertices
         self.mesh.indices = indices
+
+
     def build(self):
         wid = Widget()
-        with wid.canvas:
-            self.mesh = self.build_mesh()
+        texture = Image('data/1041042001.png').texture
+        texture.flip_vertical()
+        # with wid.canvas:
+
+            # self.mesh = self.build_mesh()
 
         layout = BoxLayout(size_hint=(1, None), height=50)
         for mode in ('points', 'line_strip', 'line_loop', 'lines',

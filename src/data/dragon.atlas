@@ -1,5 +1,5 @@
 
-data/dragon.png
+dragon.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -151,7 +151,7 @@ front_toeB
   offset: 0, 0
   index: -1
 
-data/dragon2.png
+dragon2.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none

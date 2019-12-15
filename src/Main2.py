@@ -8,7 +8,7 @@ from kivy.clock import Clock
 import ctypes
 import math
 from kivy.core.window import Window
-from Entities.Character import Character, Attack, Scale, Move
+from src.Entities.Character import Character, Attack, Scale, Move
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.lang import Builder
