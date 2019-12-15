@@ -4937,7 +4937,7 @@ class LWF:
     tweenEventId = None
 
     def __init__(self, lwfData, r):
-        print("Create a LWF!")
+        print("Create a lwf!")
         self.m_data = lwfData
         self.interactive = len(self.m_data.buttonConditions) > 0
         self.m_frameRate = self.m_data.header.frameRate
@@ -5360,7 +5360,7 @@ class LWF:
                 self.m_focus = None
 
     def ExecInternal(self, tick):
-        print("Exec Internal LWF")
+        print("Exec Internal lwf")
         if self.m_rootMovie is None:
             return 0
         execed = False
@@ -5427,7 +5427,7 @@ class LWF:
         return self.m_renderingCount
 
     def Exec(self, tick=0, matrix=None, colorTransform=None):
-        print("Exec LWF")
+        print("Exec lwf")
         needsToUpdate = False
         if matrix is not None:
             needsToUpdate |= self.m_execMatrix.SetWithComparing(matrix)
@@ -6542,7 +6542,7 @@ class LWF:
     # class ResourceCache:
     #     @staticmethod
     #     def get():
-    #         return LWF.ResourceCache()
+    #         return lwf.ResourceCache()
     #
     #     def __init__(self):
     #         self.cache = {}
@@ -6553,7 +6553,7 @@ class LWF:
     #         return "Canvas"
     #
     #     def newFactory(self, settings, cache, data):
-    #         return LWF.RendererFactory(data, self, cache, settings['stage'],
+    #         return lwf.RendererFactory(data, self, cache, settings['stage'],
     #                                settings['textInSubpixel'] if 'textInSubpixel'in settings else False,
     #                                settings['needsClear'] if 'needsClear'in settings else True,
     #                                settings['quirkyClearRect'] if 'quirkyClearRect' in settings else False)
@@ -7554,7 +7554,7 @@ class LWF:
             self.checkTextures(settings, data)
 
             # Assume we have no scripts
-            needsToLoadScript = data.useScript #and !global['LWF]?['Script']?[data.name()]?
+            needsToLoadScript = data.useScript #and !global['lwf]?['Script']?[data.name()]?
 
             self.cache[settings['lwfUrl']]['data'] = data
             settings['total'] = len(settings['_textures']) + 1
@@ -7752,7 +7752,7 @@ class LWF:
             cache = self.cache[lwfUrl]
             factory = self.newFactory(settings, imageCache, data)
             # ignoring scripts
-            # embeddedScript = global["LWF"]?["Script"]?[data.name()] if data.useScript
+            # embeddedScript = global["lwf"]?["Script"]?[data.name()] if data.useScript
             lwf = LWF(data, factory)
             if 'active' in settings:
                 lwf.active = settings['active']

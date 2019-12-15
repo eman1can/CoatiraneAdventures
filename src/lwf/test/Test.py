@@ -1,7 +1,7 @@
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.uix.widget import Widget
-from src.LWF.lwf import LWF
+from src.lwf.LWF import LWF
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 import time
@@ -22,14 +22,14 @@ class WindowObject(Widget):
         stage.height = 0
         self.add_widget(stage)
 
-        # LWF.useCanvasRenderer()
+        # lwf.useCanvasRenderer()
 
         cache = LWF.ResourceCache.get()
 
         win = self
         def load(settings, lwf):
             # lwf.rendererFactory = cache.newFactory(settings, cache, lwf.data)
-            # lwf = LWF(lwf.data, cache.newFactory(settings, cache, lwf.data))
+            # lwf = lwf(lwf.data, cache.newFactory(settings, cache, lwf.data))
             win.lwf = lwf
             win.lwf.SetFrameRate(60)
         settings = {}
@@ -50,7 +50,7 @@ class WindowObject(Widget):
             self.lwf.Render()
         else:
             pass
-            # print("The LWF is none!")
+            # print("The lwf is none!")
     #
     # def calc_tick(self):
     #     self.current_time = time.time()

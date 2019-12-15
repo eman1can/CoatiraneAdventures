@@ -1,4 +1,4 @@
-from src.LWF.lwf import Data, LWF, IRendererFactory,Format, Color, Utility, Matrix
+from src.lwf.LWF import Data, LWF, IRendererFactory,Format, Color, Utility, Matrix
 
 from kivy.graphics.instructions import Canvas
 
@@ -970,7 +970,7 @@ class BaseResourceCache:
         self.checkTextures(settings, data)
 
         #Assume we have no scripts
-        needsToLoadScript = data.useScript #and !global['LWF]?['Script']?[data.name()]?
+        needsToLoadScript = data.useScript #and !global['lwf]?['Script']?[data.name()]?
 
         self.cache[settings['lwfUrl']].data = data
         settings.total = len(settings._textures) + 1
@@ -1193,7 +1193,7 @@ class BaseResourceCache:
         cache = self.cache['lwfUrl']
         factory = self.newFactory(settings, imageCache, data)
         #ignoring scripts
-        #embeddedScript = global["LWF"]?["Script"]?[data.name()] if data.useScript
+        #embeddedScript = global["lwf"]?["Script"]?[data.name()] if data.useScript
         lwf = LWF(data, factory)
         if 'active' in settings:
             lwf.active = settings['active']
