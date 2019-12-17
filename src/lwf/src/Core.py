@@ -1,3 +1,9 @@
+# Internal Imports
+from .utils.Type import Action, Dictionary
+
+# External Imports
+from typing import List
+
 
 class DetachHandler(Action):
     pass
@@ -23,17 +29,9 @@ class ExecHandlerList(List):
     pass
 
 
-class TextDictionary(Dictionary):
-    pass
-
-
 class BlendModes(List):
     pass
 
 
 class MaskModes(List):
-    pass
-
-
-class ProgramObjectConstructor(Action):
     pass

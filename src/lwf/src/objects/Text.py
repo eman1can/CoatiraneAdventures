@@ -1,5 +1,14 @@
+# Internal Imports
+from ..utils.Type import Dictionary
+
+from ..objects.Object import Object
+
+from ..Format import Format
+
+
 class Texts(Dictionary):
     pass
+
 
 class TextDictionaryItem:
     text = None
@@ -8,6 +17,11 @@ class TextDictionaryItem:
     def __init__(self, *args):
         self.text = args[0]
         self.renderer = args[1] if len(args) is 2 else None
+
+
+class TextDictionary(Dictionary):
+    pass
+
 
 class Text(Object):
     m_name = None

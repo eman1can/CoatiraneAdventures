@@ -1,3 +1,10 @@
+# Internal Imports
+from ..utils.Type import Matrix, Translate, Color, ColorTransform, AlphaTransform, Dict
+from ..utils.BinaryFile import BinaryReader
+from ..utils.Animation import *
+from ..Format import Format
+
+
 class Data:
     header = None
     translates = None
@@ -47,7 +54,7 @@ class Data:
 
     def __init__(self, byteArray):
         # bytes is a "bytes array"
-        if len(byteArray) < int(Format.Constant.HEADER_SIZE_COMPAT0.value):
+        if len(byteArray) < int(Format.Constant.HEADER_SIZE_COMPAT0):
             return
         br = BinaryReader(byteArray)
 
@@ -211,19 +218,19 @@ class Data:
             code = br.ReadByte()
             array.append(int(code))
 
-            if code is Animation.PLAY.value or code is Animation.STOP.value or code is Animation.NEXTFRAME.value \
-                    or code is Animation.PREVFRAME.value:
+            if code == PLAY or code == STOP or code == NEXTFRAME \
+                    or code == PREVFRAME:
                 pass
-            elif code is Animation.GOTOFRAME.value or code is Animation.GOTOLABEL.value or code is Animation.EVENT.value \
-                    or code is Animation.CALL.value:
+            elif code == GOTOFRAME or code == GOTOLABEL or code == EVENT \
+                    or code == CALL:
                 array.append(br.ReadInt32())
-            elif code is Animation.SETTARGET.value:
+            elif code == SETTARGET:
                 count = br.ReadInt32()
                 array.append(count)
                 for i in range(0, int(count)):
                     target = br.ReadInt32()
                     array.append(target)
-            elif code is Animation.END.value:
+            elif code == END:
                 for i in range(0, len(array)):
                     array[i] = int(array[i])
                 return array

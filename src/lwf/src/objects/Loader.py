@@ -1,4 +1,10 @@
-from src.lwf.src.LWF import Format
+# Internal Imports
+from ..Format import Format
+from ..objects.Data import Data
+
+# External Imports
+from lzma import LZMADecompressor
+
 
 class Loader:
     @staticmethod
@@ -13,12 +19,13 @@ class Loader:
     def loadArray(d):
         Loader.load(d)
 
+
 class CanvasLoader:
     @staticmethod
     def load(d):
         if not d or not isinstance(d, str):
             return None
-        option = d[Format.Constant.OPTION_OFFSET.value] & 0xff
+        option = d[Format.Constant.OPTION_OFFSET] & 0xff
         if option & Format.Constant.OPTION_COMPRESSED == 0:
             return Loader.load(d)
         #if compressed
@@ -30,8 +37,8 @@ class CanvasLoader:
     def loadArray(self, d):
         if not d:
             return None
-        option = d[Format.Constant.OPTION_OFFSET.value]
-        if (option & Format.Constant.OPTION_COMPRESSED.value) == 0:
+        option = d[Format.Constant.OPTION_OFFSET]
+        if (option & Format.Constant.OPTION_COMPRESSED) == 0:
             return Loader.loadArray(d)
 
         header = d[0:Format.Constant.HEADER_SIZE]

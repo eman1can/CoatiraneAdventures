@@ -1,3 +1,15 @@
+# Internal Imports
+from ..utils.Type import Action
+
+from ..objects.Object import Object
+
+from ..Format import Format
+
+
+class ProgramObjectConstructor(Action):
+    pass
+
+
 class ProgramObject(Object):
     def __init__(self, lwf, parent, objId):
         super().__init__(lwf, parent, Format.Object.Type.PROGRAMOBJECT, objId)

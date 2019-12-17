@@ -1,3 +1,6 @@
+# Internal Imports
+from .objects.Button import Button
+
 
 class LWFContainer(Button):
     m_child = None

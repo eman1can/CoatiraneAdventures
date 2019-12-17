@@ -1,14 +1,27 @@
-from src.lwf.src.LWF import LWF, Format
+# Internal Imports
+from .utils.CustomImage import CustomImage
+from .utils.CustomCanvas import CustomCanvas
+from .utils.Utility import Utility
+from .utils.Type import Matrix
+
+from .objects.Loader import CanvasLoader
+
+from .RenderFactory import BaseRendererFactory
+from .Format import Format
+from .LWF import LWF
+
+# External Imports
 import re
+
 
 class BaseResourceCache:
     _instance = None
 
     @staticmethod
     def get():
-        if LWF.BaseResourceCache._instance is None:
-            LWF.BaseResourceCache._instance = LWF.BaseResourceCache()
-        return LWF.BaseResourceCache._instance
+        if BaseResourceCache._instance is None:
+            BaseResourceCache._instance = BaseResourceCache()
+        return BaseResourceCache._instance
 
     def __init__(self):
         self.cache = {}
@@ -28,7 +41,7 @@ class BaseResourceCache:
         if 'imagePrefix' in settings:
             prefix = settings['imagePrefix']
         elif 'prefix' in settings:
-            prefix = settings['prefix'];
+            prefix = settings['prefix']
         else:
             prefix = ""
 
@@ -337,44 +350,14 @@ class BaseResourceCache:
 
         for texture in settings._textures:
             url = self.getTextureURL(settings, data, texture)
-            def do(texture, url):
-                image = CustomImage()
-                def onabort():
-                    settings.error.append({'url':url, 'reason':"abort"})
-                    image = image.onload = image.onabort = image.onerror = None
-                    self.loadImagesCallback(settings, imageCache, data)
-                image.onabort = onabort
-                def onerror():
-                    settings.error.append({'url': url, 'reason': "error"})
-                    image = image.onload = image.onabort = image.onerror = None
-                    self.loadImagesCallback(settings, imageCache, data)
-                image.onerror = onerror
-                def onload():
-                    imageCache[texture.filename] = image.data
-                    d = settings._alphaMap[texture.filename]
-                    if d:
-                        jpg = d[0]
-                        alpha = d[1]
-                        jpgImg = imageCache[jpg.filename]
-                        alphaImg = imageCache[alpha.filename]
-                        if jpgImg and alphaImg:
-                            (canvas, ctx) = self.createCanvas(jpgImg.width, jpgImg.height)
-                            ctx.drawImage(jpgImg, 0, 0, jpgImg.width, jpgImg.height, 0, 0, jpgImg.width, jpgImg.height)
-                            ctx.globalCompositeOperation = "destination-in"
-                            ctx.drawImage(alphaImg, 0, 0, alphaImg.width, alphaImg.height, 0, 0, jpgImg.width, jpgImg.height)
-                            ctx.globalCompositeOperation = "source-over"
-                            del imageCache[jpg.filename]
-                            del imageCache[alpha.filename]
-                            imageCache[jpg.filename] = canvas
-                            self.generateImages(settings, imageCache, jpg, canvas)
-                        else:
-                            self.generateImages(settings, imageCache, texture, image.data)
 
-                        image = image.onload = image.onabort = image.onerror = None
-                        self.loadImagesCallback(settings, imageCache, data)
-                image.onload = onload
-                image.src = url
-            do(texture, url)
+            image = CustomImage()
+            try:
+                image.load_image(imageCache, self, settings, texture, image, url, data)
+            except Exception:
+                print("Error loading images")
+                settings['error'].append({'url': url, 'reason': "error"})
+                self.loadImagesCallback(settings, imageCache, data)
         return
 
     def newFactory(self, settings, cache, data):
@@ -444,26 +427,26 @@ class BaseResourceCache:
                     del self.cache[lwf.url]
         return
 
-    def loadLWFs(self, settingsArray, onloadall):
-        loadTotal = len(settingsArray)
-        loadedCount = 0
-        errors = None
-        for settings in settingsArray:
-            onload = settings['onload']
-            def do(onload):
-                def on_load(lwf):
-                    if onload:
-                        onload(lwf)
-                    if len(settings.error) > 0:
-                        if errors is not None:
-                            errors = []
-                        errors = errors.append(settings.error)
-                    loadedCount += 1
-                    if loadTotal == loadedCount:
-                        onloadall(errors)
-                settings['onload'] = on_load
-            do(onload)
-            self.LoadLWF(settings)
+    # def loadLWFs(self, settingsArray, onloadall):
+    #     loadTotal = len(settingsArray)
+    #     loadedCount = 0
+    #     errors = None
+    #     for settings in settingsArray:
+    #         onload = settings['onload']
+    #         def do(onload):
+    #             def on_load(lwf):
+    #                 if onload:
+    #                     onload(lwf)
+    #                 if len(settings.error) > 0:
+    #                     if errors is not None:
+    #                         errors = []
+    #                     errors = errors.append(settings.error)
+    #                 loadedCount += 1
+    #                 if loadTotal == loadedCount:
+    #                     onloadall(errors)
+    #             settings['onload'] = on_load
+    #         do(onload)
+    #         self.LoadLWF(settings)
 
     def getCache(self):
         return self.cache

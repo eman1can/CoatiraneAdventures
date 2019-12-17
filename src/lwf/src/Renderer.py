@@ -1,6 +1,15 @@
+# Internal Imports
+from .utils.Type import Matrix
+from .utils.Utility import Utility
+
+from .ResourceCache import BaseResourceCache
+from .Format import Format
+
+# External Imports
 import re
 
-from src.lwf.src.ResourceCache import BaseResourceCache
+# Lots of code below is still experimental and may/will need to be changed
+# Most code below is a direct port and doesn't port the logic, meaning it will break immediately
 
 
 class RenderCommand:
@@ -44,15 +53,15 @@ class BitmapContext:
         self.scale = 1 / (texture.scale * imageScale)
 
         repeat = None
-        if (bitmapEx.attribute & Format.BitmapEx.Attribute.REPEAT_S.value) != 0:
+        if (bitmapEx.attribute & Format.BitmapEx.Attribute.REPEAT_S) != 0:
             repeat = 'repeat-x'
-        if (bitmapEx.attribute & Format.BitmapEx.Attribute.REPEAT_T.value) != 0:
-            if repeat != None:
+        if (bitmapEx.attribute & Format.BitmapEx.Attribute.REPEAT_T) != 0:
+            if repeat is not None:
                 repeat = "repeat"
             else:
                 repeat = "repeat-y"
         if repeat is not None:
-            #look up this function and what it does in javascript make a port
+            # look up this function and what it does in javascript make a port
             self.pattern = self.factory.stageContext.createPattern(self.image, repeat)
         else:
             self.pattern = None

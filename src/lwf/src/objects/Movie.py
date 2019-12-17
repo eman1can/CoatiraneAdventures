@@ -1,9 +1,37 @@
+# Internal Imports
+from ..utils.Type import Action, Dictionary, SortedDictionary, Matrix, Point, DetachDict, Bounds, ColorTransform
+from ..utils.Constants import INT32_MINVALUE, FLOAT_MINVALUE, FLOAT_MAXVALUE
+from ..utils.Utility import Utility
+
+from ..objects.Event import EventHandlerDictionary, EventHandlers, CalculateBoundsCallbacks
+from ..objects.Label import LabelData, CurrentLabels, CurrentLabelCache
+from ..objects.BitmapClip import BitmapClip, BitmapClips
+from ..objects.ProgramObject import ProgramObject
+from ..objects.Object import Object, IObject
+from ..objects.Particle import Particle
+from ..objects.Property import Property
+from ..objects.BitmapEx import BitmapEx
+from ..objects.Graphic import Graphic
+from ..objects.Bitmap import Bitmap
+from ..objects.Button import Button
+from ..objects.Text import Text, Texts
+
+from ..LWFContainer import LWFContainer
+from ..Format import Format
+from ..LWF import LWF
+
+# External Imports
+from typing import List
+import math
+
+
 class MovieCommand(Action):
     pass
 
 
 class MovieCommands(Dictionary):
     pass
+
 
 class MovieEventHandler(Action):
     pass
@@ -18,7 +46,7 @@ class MovieEventHandlers:
     render = None
     empty = False
 
-    class Type(Enum):
+    class Type:
         LOAD = 0
         POSTLOAD = 1
         UNLOAD = 2
@@ -36,7 +64,7 @@ class MovieEventHandlers:
         self.empty = True
 
     def Clear(self, *args):
-        if len(args) is 0:
+        if len(args) == 0:
             self.load.clear()
             self.postLoad.clear()
             self.unload.clear()
@@ -45,17 +73,17 @@ class MovieEventHandlers:
             self.render.clear()
             self.empty = True
         else:
-            if args[0] == self.Type.LOAD.value:
+            if args[0] == self.Type.LOAD:
                 self.load.clear()
-            elif args[0] == self.Type.POSTLOAD.value:
+            elif args[0] == self.Type.POSTLOAD:
                 self.postLoad.clear()
-            elif args[0] == self.Type.UNLOAD.value:
+            elif args[0] == self.Type.UNLOAD:
                 self.unload.clear()
-            elif args[0] == self.Type.ENTERFRAME.value:
+            elif args[0] == self.Type.ENTERFRAME:
                 self.enterFrame.clear()
-            elif args[0] == self.Type.UPDATE.value:
+            elif args[0] == self.Type.UPDATE:
                 self.update.clear()
-            elif args[0] == self.Type.RENDER.value:
+            elif args[0] == self.Type.RENDER:
                 self.render.clear()
             self.UpdateEmpty()
 
@@ -106,17 +134,17 @@ class MovieEventHandlers:
 
     def Call(self, htype, target):
         dictionary = None
-        if htype == self.Type.LOAD.value:
+        if htype == self.Type.LOAD:
             dictionary = self.load
-        elif htype == self.Type.POSTLOAD.value:
+        elif htype == self.Type.POSTLOAD:
             dictionary = self.postLoad
-        elif htype == self.Type.UNLOAD.value:
+        elif htype == self.Type.UNLOAD:
             dictionary = self.unload
-        elif htype == self.Type.ENTERFRAME.value:
+        elif htype == self.Type.ENTERFRAME:
             dictionary = self.enterFrame
-        elif htype == self.Type.UPDATE.value:
+        elif htype == self.Type.UPDATE:
             dictionary = self.update
-        elif htype == self.Type.RENDER.value:
+        elif htype == self.Type.RENDER:
             dictionary = self.render
         if dictionary is not None:
             dictionary = MovieEventHandlerDictionary(dictionary)
@@ -198,9 +226,6 @@ class AttachedLWFDescendingList(SortedDictionary):
         return self.keys()[self.position]
 
 
-
-
-
 class Movie(IObject):
     m_data = 0
     m_instanceHead = None
@@ -259,12 +284,13 @@ class Movie(IObject):
 
     def __init__(self, lwf, parent, objId, instId, matrixId=0, colorTransformId=0, attached=False, handler=None,
                  n=None):
-        super().__init__(lwf, parent, Format.Object.Type.ATTACHEDMOVIE if attached else Format.Object.Type.MOVIE, objId, instId)
+        super().__init__(lwf, parent, Format.Object.Type.ATTACHEDMOVIE if attached else Format.Object.Type.MOVIE, objId,
+                         instId)
         self.m_data = lwf.data.movies[objId]
         self.m_matrixId = matrixId
         self.m_colorTransformId = colorTransformId
         self.m_totalFrames = self.m_data.frames
-        if not (n is None or n is ""):
+        if not (n is None or n == ""):
             self.m_name = n
         self.m_currentFrameInternal = -1
         self.m_execedFrame = -1
@@ -284,7 +310,7 @@ class Movie(IObject):
         self.m_attachMoviePostExeced = False
         self.m_movieExecCount = -1
         self.m_postExecCount = -1
-        self.m_blendMode = int(Format.Constant.BLEND_MODE_NORMAL.value)
+        self.m_blendMode = int(Format.Constant.BLEND_MODE_NORMAL)
         self.m_requestedCalculateBounds = False
         self.m_calculateBoundsCallbacks = CalculateBoundsCallbacks()
 
@@ -384,7 +410,7 @@ class Movie(IObject):
 
     def ExecObject(self, dlDepth, objId, matrixId, colorTransformId, instId, dlBlendMode, updateBlendMode=False):
         print("Update Movie Object")
-        if objId is -1:
+        if objId == -1:
             return
         data = self.m_lwf.data
         dataObject = data.objects[objId]
@@ -397,22 +423,22 @@ class Movie(IObject):
             obj.Destroy()
             obj = None
         if obj is None:
-            if dataObject.objectType == Format.Object.Type.BUTTON.value:
+            if dataObject.objectType == Format.Object.Type.BUTTON:
                 obj = Button(self.m_lwf, self, dataObjectId, instId, matrixId, colorTransformId)
-            elif dataObject.objectType == Format.Object.Type.GRAPHIC.value:
+            elif dataObject.objectType == Format.Object.Type.GRAPHIC:
                 obj = Graphic(self.m_lwf, self, dataObjectId)
-            elif dataObject.objectType == Format.Object.Type.MOVIE.value:
+            elif dataObject.objectType == Format.Object.Type.MOVIE:
                 obj = Movie(self.m_lwf, self, dataObjectId, instId, matrixId, colorTransformId)
                 obj.blendMode = dlBlendMode
-            elif dataObject.objectType == Format.Object.Type.BITMAP.value:
+            elif dataObject.objectType == Format.Object.Type.BITMAP:
                 obj = Bitmap(self.m_lwf, self, dataObjectId)
-            elif dataObject.objectType == Format.Object.Type.BITMAPEX.value:
+            elif dataObject.objectType == Format.Object.Type.BITMAPEX:
                 obj = BitmapEx(self.m_lwf, self, dataObjectId)
-            elif dataObject.objectType == Format.Object.Type.TEXT.value:
+            elif dataObject.objectType == Format.Object.Type.TEXT:
                 obj = Text(self.m_lwf, self, dataObjectId, instId)
-            elif dataObject.objectType == Format.Object.Type.PARTICLE.value:
+            elif dataObject.objectType == Format.Object.Type.PARTICLE:
                 obj = Particle(self.m_lwf, self, dataObjectId)
-            elif dataObject.objectType == Format.Object.Type.PROGRAMOBJECT.value:
+            elif dataObject.objectType == Format.Object.Type.PROGRAMOBJECT:
                 obj = ProgramObject(self.m_lwf, self, dataObjectId)
         if obj.IsMovie() and updateBlendMode:
             obj.blendMode = dlBlendMode
@@ -500,29 +526,29 @@ class Movie(IObject):
                 controlAnimationOffset = -1
                 for i in range(0, frame.controls):
                     control = data.controls[frame.controlOffset + i]
-                    if control.controlType == Format.Control.Type.MOVE.value:
+                    if control.controlType == Format.Control.Type.MOVE:
                         p = data.places[control.controlId]
                         self.ExecObject(p.depth, p.objectId, p.matrixId, 0, p.instanceId, p.blendMode)
-                    elif control.controlType == Format.Control.Type.MOVEM.value:
+                    elif control.controlType == Format.Control.Type.MOVEM:
                         ctrl = data.controlMoveMs[control.controlId]
                         p = data.places[ctrl.placeId]
                         self.ExecObject(p.depth, p.objectId, ctrl.matrixId, 0, p.instanceId, p.blendMode)
-                    elif control.controlType == Format.Control.Type.MOVEC.value:
+                    elif control.controlType == Format.Control.Type.MOVEC:
                         ctrl = data.controlMoveCs[control.controlId]
                         p = data.places[ctrl.placeId]
                         self.ExecObject(p.depth, p.objectId, ctrl.matrixId, ctrl.colorTransformId, p.instanceId,
                                         p.blendMode)
-                    elif control.controlType == Format.Control.Type.MOVEMC.value:
+                    elif control.controlType == Format.Control.Type.MOVEMC:
                         ctrl = data.controlMoveMCs[control.controlId]
                         p = data.places[ctrl.placeId]
                         self.ExecObject(p.depth, p.objectId, ctrl.matrixId, ctrl.colorTransformId, p.instanceId,
                                         p.blendMode)
-                    elif control.controlType == Format.Control.Type.MOVEMCB.value:
+                    elif control.controlType == Format.Control.Type.MOVEMCB:
                         ctrl = data.controlMoveMCBs[control.controlId]
                         p = data.places[ctrl.placeId]
                         self.ExecObject(p.depth, p.objectId, ctrl.matrixId, ctrl.colorTransformId, p.instanceId,
                                         ctrl.blendMode, True)
-                    elif control.controlType == Format.Control.Type.ANIMATION.value:
+                    elif control.controlType == Format.Control.Type.ANIMATION:
                         if controlAnimationOffset == -1:
                             controlAnimationOffset = i
                 self.m_lastControlAnimationOffset = controlAnimationOffset
@@ -530,7 +556,7 @@ class Movie(IObject):
 
                 for dlDepth in range(0, self.m_data.depths):
                     obj = self.m_displayList[dlDepth]
-                    if obj is not None and obj.execCount is not self.m_movieExecCount:
+                    if obj is not None and obj.execCount != self.m_movieExecCount:
                         if self.m_texts is not None and obj.IsText():
                             self.EraseText(obj.objectId)
                         obj.Destroy()
@@ -568,7 +594,7 @@ class Movie(IObject):
                 self.m_postLoaded = True
                 if not self.m_handler.Empty():
                     self.m_handler.Call(MovieEventHandlers.Type.POSTLOAD, self)
-            if controlAnimationOffset is not -1 and self.m_execedFrame == self.m_currentFrameInternal:
+            if controlAnimationOffset != -1 and self.m_execedFrame == self.m_currentFrameInternal:
                 animationPlayed = self.m_animationPlayedFrame == self.m_currentFrameCurrent and not self.m_jumped
                 if not animationPlayed:
                     for i in range(controlAnimationOffset, frame.controls):
@@ -728,12 +754,12 @@ class Movie(IObject):
                     child.rootMovie.PostUpdate()
 
     def CalculateBounds(self, o):
-        if o.type == Format.Object.Type.GRAPHIC.value:
+        if o.type == Format.Object.Type.GRAPHIC:
             for obj in o.displayList:
                 self.CalculateBounds(obj)
-        elif o.type == Format.Object.Type.BITMAP.value or o.type == Format.Object.Type.BITMAPEX.value:
+        elif o.type == Format.Object.Type.BITMAP or o.type == Format.Object.Type.BITMAPEX:
             tfId = -1
-            if o.type == Format.Object.Type.BITMAP.value:
+            if o.type == Format.Object.Type.BITMAP:
                 if o.objectId < len(o.lwf.data.bitmaps):
                     tfId = o.lwf.data.bitmaps[o.objectId].textureFragmentId
             else:
@@ -742,12 +768,12 @@ class Movie(IObject):
             if tfId >= 0:
                 tf = o.lwf.data.textureFragments[tfId]
                 self.UpdateBounds(o.matrix, tf.x, tf.x + tf.w, tf.y, tf.y + tf.h)
-        elif o.type == Format.Object.Type.BUTTON.value:
+        elif o.type == Format.Object.Type.BUTTON:
             self.UpdateBounds(o.matrix, 0, o.width, 0, o.height)
-        elif o.type == Format.Object.Type.TEXT.value:
+        elif o.type == Format.Object.Type.TEXT:
             text = o.lwf.data.texts[o.objectId]
             self.UpdateBounds(o.matrix, 0, text.width, 0, text.height)
-        elif o.type == Format.Object.Type.PROGRAMOBJECT.value:
+        elif o.type == Format.Object.Type.PROGRAMOBJECT:
             pobj = o.lwf.data.programObjects[o.objectId]
             self.UpdateBounds(o.matrix, 0, pobj.width, 0, pobj.height)
 
@@ -796,16 +822,16 @@ class Movie(IObject):
 
         useBlendMode = False
         useMaskMode = False
-        if self.m_blendMode is not int(Format.Constant.BLEND_MODE_NORMAL.value):
-            if self.m_blendMode is int(Format.Constant.BLEND_MODE_ADD.value) \
-                    or self.m_blendMode is int(Format.Constant.BLEND_MODE_MULTIPLY.value) \
-                    or self.m_blendMode is int(Format.Constant.BLEND_MODE_SCREEN.value) \
-                    or self.m_blendMode is int(Format.Constant.BLEND_MODE_SUBTRACT.value):
+        if self.m_blendMode != int(Format.Constant.BLEND_MODE_NORMAL):
+            if self.m_blendMode == int(Format.Constant.BLEND_MODE_ADD) \
+                    or self.m_blendMode == int(Format.Constant.BLEND_MODE_MULTIPLY) \
+                    or self.m_blendMode == int(Format.Constant.BLEND_MODE_SCREEN) \
+                    or self.m_blendMode == int(Format.Constant.BLEND_MODE_SUBTRACT):
                 self.m_lwf.BeginBlendMode(self.m_blendMode)
                 useBlendMode = True
-            elif self.m_blendMode is int(Format.Constant.BLEND_MODE_ERASE.value) \
-                    or self.m_blendMode is int(Format.Constant.BLEND_MODE_LAYER.value) \
-                    or self.m_blendMode is int(Format.Constant.BLEND_MODE_MASK.value):
+            elif self.m_blendMode == int(Format.Constant.BLEND_MODE_ERASE) \
+                    or self.m_blendMode == int(Format.Constant.BLEND_MODE_LAYER) \
+                    or self.m_blendMode == int(Format.Constant.BLEND_MODE_MASK):
                 self.m_lwf.BeginMaskMode(self.m_blendMode)
                 useMaskMode = True
 
@@ -816,7 +842,7 @@ class Movie(IObject):
             self.m_lwf.RenderOffset()
             rOffset = self.m_property.renderingOffset
 
-        if rOffset is INT32_MINVALUE:
+        if rOffset == INT32_MINVALUE:
             self.m_lwf.ClearRenderOffset()
 
         for dlDepth in range(0, self.m_data.depths):
@@ -851,7 +877,7 @@ class Movie(IObject):
         if self.m_property.hasRenderingOffset:
             self.m_lwf.RenderOffset()
             rOffset = self.m_property.renderingOffset
-        if rOffset is INT32_MINVALUE:
+        if rOffset == INT32_MINVALUE:
             self.m_lwf.ClearRenderOffset()
 
         inspector(self, hierarchy, inspectDepth, rOffset)
@@ -929,7 +955,7 @@ class Movie(IObject):
     def SearchMovieInstance(self, arg, recursive=True):
         if isinstance(arg, int):
             stringId = arg
-            if stringId is -1:
+            if stringId == -1:
                 return None
             instance = self.m_instanceHead
             while instance is not None:
@@ -943,13 +969,13 @@ class Movie(IObject):
         else:
             instanceName = arg
             stringId = self.m_lwf.GetStringId(instanceName)
-            if stringId is not -1:
+            if stringId != -1:
                 return self.SearchMovieInstance(stringId, recursive)
 
             if self.m_attachedMovies is not None:
                 for movie in self.m_attachedMovieList.values():
                     if movie is not None:
-                        if movie.attachName is instanceName:
+                        if movie.attachName == instanceName:
                             return movie
                         elif recursive:
                             descendant = movie.SearchMovieInstance(instanceName, recursive)
@@ -985,7 +1011,7 @@ class Movie(IObject):
     def SearchButtonInstance(self, arg, recursive=True):
         if isinstance(arg, int):
             stringId = arg
-            if stringId is -1:
+            if stringId == -1:
                 return None
             instance = self.m_instanceHead
             while instance is not None:
@@ -999,7 +1025,7 @@ class Movie(IObject):
         else:
             instanceName = arg
             stringId = self.m_lwf.GetStringId(instanceName)
-            if stringId is not -1:
+            if stringId != -1:
                 return self.SearchButtonInstance(stringId, recursive)
 
             if self.m_attachedMovies is not None and recursive:
@@ -1031,12 +1057,12 @@ class Movie(IObject):
 
     def InsertText(self, objId):
         text = self.lwf.data.texts[objId]
-        if text.nameStringId is not -1:
+        if text.nameStringId != -1:
             self.m_texts[self.lwf.data.srings[text.nameStringId]] = True
 
     def EraseText(self, objId):
         text = self.lwf.data.texts[objId]
-        if text.nameStringId is not -1:
+        if text.nameStringId != -1:
             self.m_texts.remove(self.lwf.data.strings[text.nameStringId])
 
     def SearchText(self, textName):
@@ -1055,22 +1081,22 @@ class Movie(IObject):
     def AddEventHandler(self, eventName, handler):
         if isinstance(handler, MovieEventHandler):
             eventId = self.m_lwf.GetEventOffset()
-            if eventName is "load":
+            if eventName == "load":
                 self.m_handler.Add(eventId, load=handler)
                 return eventId
-            elif eventName is "postLoad":
+            elif eventName == "postLoad":
                 self.m_handler.Add(eventId, p=handler)
                 return eventId
-            elif eventName is "unload":
+            elif eventName == "unload":
                 self.m_handler.Add(eventId, u=handler)
                 return eventId
-            elif eventName is "enterFrame":
+            elif eventName == "enterFrame":
                 self.m_handler.Add(eventId, e=handler)
                 return eventId
-            elif eventName is "update":
+            elif eventName == "update":
                 self.m_handler.Add(eventId, up=handler)
                 return eventId
-            elif eventName is "render":
+            elif eventName == "render":
                 self.m_handler.Add(eventId, r=handler)
                 return eventId
             else:
@@ -1085,12 +1111,12 @@ class Movie(IObject):
             return eventId
 
     def RemoveEventHandler(self, eventName, buttonId):
-        if eventName is "load" or \
-                eventName is "postLoad" or \
-                eventName is "unload" or \
-                eventName is "enterFrame" or \
-                eventName is "update" or \
-                eventName is "render":
+        if eventName == "load" or \
+                eventName == "postLoad" or \
+                eventName == "unload" or \
+                eventName == "enterFrame" or \
+                eventName == "update" or \
+                eventName == "render":
             self.m_handler.Remove(buttonId)
         else:
             boolean, dictionary = self.m_eventHandlers.TryGetValue(eventName)
@@ -1098,17 +1124,17 @@ class Movie(IObject):
                 dictionary.Remove(buttonId)
 
     def ClearEventHandler(self, eventName):
-        if eventName is "load":
+        if eventName == "load":
             self.m_handler.Clear(MovieEventHandlers.Type.LOAD)
-        elif eventName is "postLoad":
+        elif eventName == "postLoad":
             self.m_handler.Clear(MovieEventHandlers.Type.POSTLOAD)
-        elif eventName is "unload":
+        elif eventName == "unload":
             self.m_handler.Clear(MovieEventHandlers.Type.UNLOAD)
-        elif eventName is "enterframe":
+        elif eventName == "enterframe":
             self.m_handler.Clear(MovieEventHandlers.Type.ENTERFRAME)
-        elif eventName is "update":
+        elif eventName == "update":
             self.m_handler.Clear(MovieEventHandlers.Type.UPDATE)
-        elif eventName is "render":
+        elif eventName == "render":
             self.m_handler.Clear(MovieEventHandlers.Type.RENDER)
         else:
             self.m_eventHandlers.remove(eventName)
@@ -1118,17 +1144,17 @@ class Movie(IObject):
         return self.AddEventHandler(eventName, eventHandler)
 
     def DispatchEvent(self, eventName):
-        if eventName is "load":
+        if eventName == "load":
             self.m_handler.Call(MovieEventHandlers.Type.LOAD, self)
-        elif eventName is "postLoad":
+        elif eventName == "postLoad":
             self.m_handler.Call(MovieEventHandlers.Type.POSTLOAD, self)
-        elif eventName is "unload":
+        elif eventName == "unload":
             self.m_handler.Call(MovieEventHandlers.Type.UNLOAD, self)
-        elif eventName is "enterframe":
+        elif eventName == "enterframe":
             self.m_handler.Call(MovieEventHandlers.Type.ENTERFRAME, self)
-        elif eventName is "update":
+        elif eventName == "update":
             self.m_handler.Call(MovieEventHandlers.Type.UPDATE, self)
-        elif eventName is "render":
+        elif eventName == "render":
             self.m_handler.Call(MovieEventHandlers.Type.RENDER, self)
         else:
             boolean, dictionary = self.m_eventHandlers.TryGetValue(eventName)
@@ -1213,7 +1239,7 @@ class Movie(IObject):
                     else:
                         labelName = self.m_currentLabelsCache[n].name
                         break
-        return None if (labelName is "" or labelName is None) else labelName
+        return None if (labelName == "" or labelName is None) else labelName
 
     def GetCurrentLabels(self):
         self.CacheCurrentLabels()
@@ -1517,7 +1543,7 @@ class Movie(IObject):
         if not isinstance(arg, Movie):
             linkageName = arg
             movieId = self.m_lwf.SearchMovieLinkage(self.m_lwf.GetStringId(linkageName))
-            if movieId is -1:
+            if movieId == -1:
                 return None
 
             handlers = MovieEventHandlers()
@@ -1596,7 +1622,7 @@ class Movie(IObject):
                 self.m_detachedMovies[arg] = True
 
     def DetachFromParent(self):
-        if self.m_type != Format.Object.Type.ATTACHEDMOVIE.value:
+        if self.m_type != Format.Object.Type.ATTACHEDMOVIE:
             return
 
         self.m_active = False
@@ -1675,7 +1701,7 @@ class Movie(IObject):
 
             lwfContainer = LWFContainer(self, child)
 
-            if child.interactive is True:
+            if child.interactive:
                 self.m_lwf.SetInteractive()
             child.parent = self
             child.SetRoot(self.m_lwf.__root)
@@ -1753,7 +1779,7 @@ class Movie(IObject):
                 self.m_detachedLWFs[lwfContainer.child.attachName] = True
 
     def RemoveMovieClup(self):
-        if self.m_type == Format.Object.Type.ATTACHEDMOVIE.value:
+        if self.m_type == Format.Object.Type.ATTACHEDMOVIE:
             self.DetachFromParent()
         elif self.m_lwf.attachName is not None and self.m_lwf.parent is not None:
             self.m_lwf.parent.DetachLWF(self.m_lwf.attachName)
@@ -1806,7 +1832,3 @@ class Movie(IObject):
             return
         bitmapClip.Destroy()
         self.m_bitmapClips.remove(depth)
-
-
-
-

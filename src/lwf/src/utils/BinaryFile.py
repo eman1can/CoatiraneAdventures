@@ -1,3 +1,7 @@
+# External Imports
+from struct import unpack
+
+
 class BinaryReader:
     def __init__(self, bytesArray):
         self.byteArray = bytesArray
@@ -13,7 +17,6 @@ class BinaryReader:
         endPos = self.pos + length
         self.pos += length
         return self.byteArray[startPos:endPos]
-
 
     def ReadChar(self):
         return self.unpack('b')

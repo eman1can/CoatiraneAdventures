@@ -1,3 +1,9 @@
+# Internal Imports
+from ..objects.Object import Object
+
+from ..Format import Format
+
+
 class Particle(Object):
     def __init__(self, lwf, parent, objId):
         super().__init__(lwf, parent, Format.Object.Type.PARTICLE, objId)

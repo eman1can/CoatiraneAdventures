@@ -1,3 +1,8 @@
+# Internal Imports
+from ..Format import Format
+from .Object import Object
+
+
 class BitmapEx(Object):
     def __init__(self, lwf, parent, objId):
         super().__init__(lwf, parent, Format.Object.Type.BITMAPEX, objId)

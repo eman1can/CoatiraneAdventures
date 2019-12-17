@@ -1,3 +1,11 @@
+# Internal Imports
+from ..utils.Type import Matrix, SortedDictionary
+from .Bitmap import Bitmap
+
+# External Imports
+import math
+
+
 class BitmapClip(Bitmap):
     depth = 0
     visible = False
@@ -80,24 +88,28 @@ class BitmapClip(Bitmap):
 
         self.m_matrix.scaleX = m.scaleX * self._matrix.scaleX + m.skew0 * self._matrix.skew1
         self.m_matrix.skew0 = m.scaleX * self._matrix.skew0 + m.skew0 * self._matrix.scaleY
-        self.m_matrix.translateX = m.scaleX * self.x + m.skew0 * self.y + m.translateX + \
-           m.scaleX * self.regX + m.skew0 * self.regY + \
-           self.m_matrix.scaleX * -self.regX + self.m_matrix.skew0 * -self.regY
+        self.m_matrix.translateX = m.scaleX * self.x + m.skew0 * self.y + m.translateX + m.scaleX * self.regX + m.skew0 * self.regY + self.m_matrix.scaleX * -self.regX + self.m_matrix.skew0 * -self.regY
 
         self.m_matrix.skew1 = m.skew1 * self._matrix.scaleX + m.scaleY * self._matrix.skew1
         self.m_matrix.scaleY = m.skew1 * self._matrix.skew0 + m.scaleY * self._matrix.scaleY
         self.m_matrix.translateY = m.skew1 * self.x + m.scaleY * self.y + m.translateY + m.skew1 \
-            * self.regX + m.scaleY * self.regY + self.m_matrix.skew1 * -self.regX + self.m_matrix.scaleY * -self.regY
+                                   * self.regX + m.scaleY * self.regY + self.m_matrix.skew1 * -self.regX + self.m_matrix.scaleY * -self.regY
 
         self.m_colorTransform.Set(c)
         self.m_colorTransform.multi.alpha *= self.alpha
 
         self.m_lwf.RenderObject()
 
-    def DetachFromParent(self):
-        if self.m_parent is not None:
-            self.m_parent.DetachBitmap(self.depth)
-            self.m_parent = None
 
-    def IsBitmapClip(self):
-        return True
+def DetachFromParent(self):
+    if self.m_parent is not None:
+        self.m_parent.DetachBitmap(self.depth)
+        self.m_parent = None
+
+
+def IsBitmapClip(self):
+    return True
+
+
+class BitmapClips(SortedDictionary):
+    pass

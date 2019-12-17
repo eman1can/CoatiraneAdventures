@@ -1,3 +1,9 @@
+# Internal Imports
+from .utils.BinaryFile import BinaryReader
+
+# External Imports
+import re
+
 
 class Format:
     class Constant:
@@ -68,6 +74,7 @@ class Format:
 
     class TextureReplacement(Texture):
         def __init__(self, fname, fmt, w, h, s):
+            super().__init__()
             self.filename = fname
             self.format = int(fmt)
             self.width = w
@@ -651,7 +658,7 @@ class Format:
                     self.controlMoveM = Format.ItemArray(br)
                     self.controlMoveC = Format.ItemArray(br)
                     self.controlMoveMC = Format.ItemArray(br)
-                    if self.formatVersion >= int(Format.Constant.FORMAT_VERSION_141211.value):
+                    if self.formatVersion >= int(Format.Constant.FORMAT_VERSION_141211):
                         self.controlMoveMCB = Format.ItemArray(br)
                     else:
                         self.controlMoveMCB = Format.ItemArray()
@@ -662,4 +669,3 @@ class Format:
                     self.movieLinkage = Format.ItemArray(br)
                     self.stringData = Format.ItemArray(br)
                     self.lwfLength = br.ReadInt32()
-

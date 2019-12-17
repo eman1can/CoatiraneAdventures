@@ -1,3 +1,11 @@
+# Internal Imports
+from ..utils.Type import Matrix, ColorTransform
+from ..utils.Constants import INT32_MINVALUE
+
+# External imports
+import math
+
+
 class Property:
     m_lwf = None
     m_matrix = None

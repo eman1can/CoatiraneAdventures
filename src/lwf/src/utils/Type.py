@@ -1,3 +1,10 @@
+# Internal Imports
+from .BinaryFile import BinaryReader
+
+# External Imports
+from sortedcontainers import SortedDict
+
+
 class Dictionary:
     data = {}
 
@@ -355,8 +362,6 @@ class DetachDict(Dictionary):
     pass
 
 
-class BitmapClips(SortedDictionary):
-    pass
 
 
 
