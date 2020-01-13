@@ -332,8 +332,11 @@ class FilledCharacterPreview(Widget):
             self.agi_image.size = (image_width, image_height)
 
         self.label_words.size = (label_width, label_height * 5)
+        self.label_words.font_size = label_height * 0.85
         self.label_words2.size = (label_width, label_height * 5)
+        self.label_words2.font_size = label_height * 0.85
         self.label_numbers.size = (label_width, label_height * 10)
+        self.label_numbers.font_size = label_height * 0.85
 
         self.char_button.size = size
         if not self.isSelect:

@@ -64,7 +64,9 @@ class Root(ScreenManager):
                 old_screen = self.children[0]
                 next_screen = self.list.pop()
                 next_screen.reload()
-                self.add_widget(next_screen)
+
+                if next_screen not in self.screens:
+                    self.add_widget(next_screen)
                 self.current = next_screen.name
                 if old_screen.name not in self.whitelist:
                     self.remove_widget(old_screen)
