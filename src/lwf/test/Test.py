@@ -1,6 +1,9 @@
+# Internal Imports
+from src.lwf.lwfsrc.LWF import LWF
+
+# External Imports
 from kivy.app import App
 from kivy.uix.widget import Widget
-from src.lwf.src.LWF import LWF
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 
@@ -32,8 +35,8 @@ class WindowObject(Widget):
             win.lwf = lwf
             win.lwf.SetFrameRate(60)
         settings = {}
-        settings['lwf'] = "animated_building.lwf"
-        settings['prefix'] = "animated_building.lwfdata/"
+        settings['lwf'] = "../test_data/animated_building.lwf"
+        settings['prefix'] = "../test_data/animated_building.lwfdata/"
         settings['stage'] = stage
         settings['onload'] = load
         cache.LoadLWF(settings)

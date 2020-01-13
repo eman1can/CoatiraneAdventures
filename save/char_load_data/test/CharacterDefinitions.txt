@@ -1,36 +1,38 @@
 //Name Type Name Id Rank(0 - 10) Health Defense PhysicalAttack MagicalAttack MagicalPoints Strength Magic Endurance Dexterity Agility BasicAtkPwr Atk Type
-Ais,Badass Ais,badass_ais,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-Bell,Hero Bell,hero_bell,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-Elena,Charming Elena,charming_elena,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Leanna,Wilderness Leanna,wilderness_leanna,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Morgan,Traveller Morgan,traveller_morgan,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Morgan,Witchy Morgan,witchy_morgan,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Emilia,Dashing Emilia,dashing_emilia,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Emilia,Swimmer Emilia,swimmers_emilia,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Alexis & Catherine,Entrancing Alexis & Catherine,entrancing_alexis_and_catherine,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Alexis & Catherine,Models Alexis & Catherine,models_alexis_and_catherine,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Alexis,Model Alexis,model_alexis,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Alexis,Ranch Alexis,ranch_alexis,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Alexis,Swimsuit Alexis,swimsuit_alexis,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Abby,Backyard Abby,backyard_abby,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Abby,Fancy Abby,fancy_abby,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Abby,Nextdoor Abby,nextdoor_abby,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Abby,Sunshine Abby,sunshine_abby,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Lexi,Architect Lexi,architect_lexi,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Lexi,Pumpkin Patch Lexi,pumpkin_patch_lexi,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Lexi,Vacation Lexi,vacation_lexi,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Lexi,Wildflower Lexi,wildflower_lexi,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Lexi & Nicole,Harmony Lexi & Nicole Lexi,harmony_lexi_and_nicole,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Nicole,Fashionista Nicole,fashionista_nicole,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Nicole,Woods Nicole,woods_nicole,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Nicole,Rosy Nicole,rosy_nicole,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Hannah,Coffeeshop Hannah,coffeeshop_hannah,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Hannah & Maya,Labryinth Hannah & Maya,labryinth_hannah_and_maya,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Maya,Cowgirl Maya,cowgirl_maya,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Carlie & Maya,Intergalactic Carlie & Maya,intergalactic_carlie_and_maya,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Carlie & Maya,City Girls Carlie & Maya,city_girls_carlie_and_maya,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Carlie,Sunny Day Carlie,sunny_day_carlie,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Carlie,Yaht Carlie,yaht_carlie,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Laura,New Arrival Laura,new_arrival_laura,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Laura,Wonderland Laura,wonderland_laura,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-Aysia,Romantic Aysia,romantic_aysia,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Ais,Badass Ais,badass_ais,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A,Bell,Hero Bell,hero_bell,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A,Elena,Charming Elena,charming_elena,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Leanna,Wilderness Leanna,wilderness_leanna,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Morgan,Traveller Morgan,traveller_morgan,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Morgan,Witchy Morgan,witchy_morgan,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Emilia,Dashing Emilia,dashing_emilia,0,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Emilia,Swimmer Emilia,swimmers_emilia,0,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Alexis & Catherine,Entrancing Alexis & Catherine,entrancing_alexis_and_catherine,0,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Alexis & Catherine,Models Alexis & Catherine,models_alexis_and_catherine,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Alexis,Model Alexis,model_alexis,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Alexis,Ranch Alexis,ranch_alexis,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Alexis,Swimsuit Alexis,swimsuit_alexis,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+S,Alexis,Entrancing Alexis,entrancing_alexis,1,80,8,6,0,3,4,0,5,4,4
+A,Abby,Backyard Abby,backyard_abby,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Abby,Fancy Abby,fancy_abby,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Abby,Nextdoor Abby,nextdoor_abby,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Abby,Sunshine Abby,sunshine_abby,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Lexi,Architect Lexi,architect_lexi,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Lexi,Pumpkin Patch Lexi,pumpkin_patch_lexi,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Lexi,Vacation Lexi,vacation_lexi,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Lexi,Wildflower Lexi,wildflower_lexi,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Lexi & Nicole,Harmony Lexi & Nicole Lexi,harmony_lexi_and_nicole,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Nicole,Fashionista Nicole,fashionista_nicole,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Nicole,Woods Nicole,woods_nicole,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Nicole,Rosy Nicole,rosy_nicole,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Hannah,Coffeeshop Hannah,coffeeshop_hannah,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Hannah & Maya,Labryinth Hannah & Maya,labryinth_hannah_and_maya,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Maya,Cowgirl Maya,cowgirl_maya,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Carlie & Maya,Intergalactic Carlie & Maya,intergalactic_carlie_and_maya,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Carlie & Maya,City Girls Carlie & Maya,city_girls_carlie_and_maya,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Carlie,Sunny Day Carlie,sunny_day_carlie,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Carlie,Yaht Carlie,yaht_carlie,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Laura,New Arrival Laura,new_arrival_laura,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Laura,Wonderland Laura,wonderland_laura,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Aysia,Romantic Aysia,romantic_aysia,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+S,Misha,Enticing Misha,enticing_misha,0,80,8,6,0,3,4,0,5,4,4

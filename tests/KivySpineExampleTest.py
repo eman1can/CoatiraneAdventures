@@ -13,7 +13,7 @@ class MainScreen(Widget):
         super(MainScreen, self).__init__(**kwargs)
         self.skeleton_renderer = renderer = SkeletonRenderer()
         renderer.scale = 2
-        renderer.load('C:/Users/Zoe Wolfe/PycharmProjects/CoatiraneAdventures/src/data/dragon')
+        renderer.load('C:/Users/Zoe Wolfe/PycharmProjects/CoatiraneAdventures/lwfsrc/data/dragon')
         renderer.skeleton.x = 1200
         renderer.skeleton.y = 400
         renderer.state.setAnimation(0, 'flying', True)

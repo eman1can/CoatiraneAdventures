@@ -1,13 +1,9 @@
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 #:import random random
-#:import Gradient Main2.Gradient
-#:import customButton Main2.customButton
+
 <Root>:
     id: screen_manager
     transition: FadeTransition(duration=0.075)
-    NewGameScreen:
-        id: new_game
-
 
 <NewGameScreen>:
     name: 'new_game'
@@ -17,7 +13,7 @@
     FloatLayout:
         Image:
             size_hint: None, None
-            source: 'res/selectTitle.png'
+            source: '../res/screens/text/selectTitle.png'
             keep_ratio: True
             allow_stretch: True
             pos: root.title_x, root.top * 4 / 6
@@ -108,110 +104,6 @@
             size: self.parent.size
             size_hint: None, None
 
-<emptycharacterpreview>:
-    size_hint: None, None
-    size: 250, 650
-<filledcharacterpreviewS>:
-    size_hint: None, None
-    size: 250, 650
-<filledcharacterPreview>:
-    id: preview
-    size_hint: None, None
-    background_normal: ''
-    background_down: ''
-    background_color: 0,0,0,0
-    canvas:
-        Color:
-            rgba: (1,1,1,1)
-        Rectangle:
-            size: root.cWidth,root.cHeight
-            pos: root.x,root.y
-    Image:
-        id: image
-        size_hint: None, None
-        allow_stretch: True
-        keep_ratio: True
-        canvas:
-            Color:
-                rgba: (1,1,1,.65)
-            Rectangle:
-                size: root.cWidth, root.cHeight / 4
-                pos: root.xPos, 0
-            Rectangle:
-                size: root.cWidth, root.cHeight / 10
-                pos: root.xPos, root.cHeight - root.cHeight/10
-        Label:
-            id: physicalattack
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + 10, root.yPos + 120
-            color: 0,0,0,1
-        Label:
-            id: magicalattack
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + 10, root.yPos + 90
-            color: 0,0,0,1
-        Label:
-            id: defense
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + 10, root.yPos + 60
-            color: 0,0,0,1
-        Label:
-            id: magicalpoints
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + 10, root.yPos + 30
-            color: 0,0,0,1
-        Label:
-            id: health
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + 10, root.yPos + 0
-            color: 0,0,0,1
-        Label:
-            id: strength
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 120
-            color: 0,0,0,1
-        Label:
-            id: magic
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 90
-            color: 0,0,0,1
-        Label:
-            id: endurance
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 60
-            color: 0,0,0,1
-        Label:
-            id: dexterity
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 30
-            color: 0,0,0,1
-        Label:
-            id: agility
-            font_size: 30
-            size_hint: None, None
-            size: self.texture_size
-            pos: root.xPos + root.cWidth - self.width - 10, root.yPos + 0
-            color: 0,0,0,1
-
-<CharacterAttributeScreen>
 <Dungeonbattle>
     name: 'dungeon_battle'
     id: dungeonscreen
@@ -322,3 +214,5 @@
             pos: self.pos
 <StatLabel>:
     size: self.texture_size
+
+
