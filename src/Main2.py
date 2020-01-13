@@ -38,6 +38,7 @@ class Root(ScreenManager):
         self.tavern_unlocked = True
 
         App.root = self
+        self.whitelist = ['dungeon_main', 'tavern_main', 'town']
         self.create_screen('new_game')
 
     def display_screen(self, next_screen, direction, track):
@@ -47,11 +48,13 @@ class Root(ScreenManager):
                 if len(self.children) > 0:
                     old_screen = self.children[0]
 
-                self.add_widget(next_screen)
+                if next_screen not in self.screens:
+                    self.add_widget(next_screen)
                 self.current = next_screen.name
 
                 if old_screen is not None:
-                    self.remove_widget(old_screen)
+                    if old_screen.name not in self.whitelist:
+                        self.remove_widget(old_screen)
                     if track:
                         self.list.append(old_screen)
             else:
@@ -63,32 +66,43 @@ class Root(ScreenManager):
                 next_screen.reload()
                 self.add_widget(next_screen)
                 self.current = next_screen.name
-                self.remove_widget(old_screen)
+                if old_screen.name not in self.whitelist:
+                    self.remove_widget(old_screen)
                 return True
             print("No more screens to backtrack.")
 
     def create_screen(self, screen_name, *args):
+        screen = None
+        found = False
         track = True
-        if screen_name == 'select':
-            screen = SelectScreen(self)
-            track = False
-        elif screen_name == 'new_game':
-            screen = NewGameScreen(self)
-            track = False
-        elif screen_name == 'town':
-            screen = TownScreen(self)
-            track = False
-        elif screen_name == 'dungeon_main':
-            screen = DungeonMain(self, self.size)
-            track = True
-        elif screen_name == 'tavern_main':
-            screen = TavernMain(self)
-            screen.check_unlock()
-            track = True
-        elif screen_name == 'select_char':
-            screen = CharacterSelector(self, args[0], args[1])
-        else:
-            raise Exception("Unsupported Screen type", screen_name)
+
+        if screen_name in self.whitelist:
+            for screen_obj in self.screens:
+                if screen_obj.name == screen_name:
+                    found = True
+                    screen = screen_obj
+                    break
+        if not found:
+            if screen_name == 'select':
+                screen = SelectScreen(self)
+                track = False
+            elif screen_name == 'new_game':
+                screen = NewGameScreen(self)
+                track = False
+            elif screen_name == 'town':
+                screen = TownScreen(self)
+                track = False
+            elif screen_name == 'dungeon_main':
+                screen = DungeonMain(self, self.size)
+                track = True
+            elif screen_name == 'tavern_main':
+                screen = TavernMain(self)
+                screen.check_unlock()
+                track = True
+            elif screen_name == 'select_char':
+                screen = CharacterSelector(self, args[0], args[1])
+            else:
+                raise Exception("Unsupported Screen type", screen_name)
         self.display_screen(screen, True, track)
 
 
