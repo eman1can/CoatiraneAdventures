@@ -25,13 +25,14 @@ class CharacterSelector(Screen):
         self.grid_size = (self.slot_size[0], self.slot_size[0])
         if hasLeft:
             self.single_window_size = size[0] * .15, self.size[1] * .85
+            self.single_window_pos = (0, 0)
             self.multi_window_size = size[0] - self.single_window_size[0], self.single_window_size[1]
             self.multi_window_pos = self.single_window_size[0], 0
             if isSupport:
                 char = preview.support
             else:
                 char = preview.char
-            self.single = SinglePreview(main_screen, preview, self.single_window_size, (self.width * .05, self.height * .05), self.slot_size, char, isSupport)
+            self.single = SinglePreview(main_screen, preview, self.single_window_size, self.single_window_pos, self.slot_size, char, isSupport)
             self.add_widget(self.single)
         else:
             self.single_window_size = (0, 0)
