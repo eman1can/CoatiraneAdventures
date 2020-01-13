@@ -1,16 +1,16 @@
 from kivy.uix.screenmanager import Screen
-from kivy.graphics import Color, Rectangle
-
+from kivy.uix.image import Image
 from src.modules.Screens.SinglePreview import SinglePreview
 from src.modules.Screens.ScrollPreview import ScrollPreview
-from src.modules.Screens.GridPreview import GridPreview
-from src.modules.Screens.EmptyCharacterPreview import EmptyCharacterPreviewScreen
+# from src.modules.Screens.GridPreview import GridPreview
 
 class CharacterSelector(Screen):
     def __init__(self, main_screen, preview, isSupport, **kwargs):
         size = main_screen.size
         super().__init__(size=size)
 
+        self.background = Image(source="../res/screens/backgrounds/background.png", size=size, pos=(0, 0), keep_ratio=True, allow_stretch=True)
+        self.add_widget(self.background)
 
         hasLeft = preview.char is not None and not isSupport or isSupport and preview.support is not None
         if not isSupport:

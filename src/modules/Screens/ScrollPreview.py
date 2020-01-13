@@ -13,15 +13,8 @@ class ScrollPreview(Widget):
         self.slot_size = slot_size
         self.main_screen = main_screen
 
-        with self.canvas:
-            Color(0, 1, 0, .5)
-            Rectangle(size=size, pos=pos)
-
         root = ScrollPanel(size_hint=(None, 1), size=(size[0] - slot_size[0], slot_size[1]), pos=(pos[0] + slot_size[0]/2, pos[1] + (size[1] - slot_size[1]) / 2))
         self.layout = GridLayout(rows=1, spacing=10, size_hint_x=None)
-        with self.layout.canvas:
-            Color(1, 0, 0, .5)
-            Rectangle(size=self.layout.size,pos=self.layout.pos)
         self.layout.bind(minimum_width=self.layout.setter('width'))
 
         index = 0
