@@ -8,6 +8,7 @@ class CharacterSelector(Screen):
     def __init__(self, main_screen, preview, isSupport, **kwargs):
         size = main_screen.size
         super().__init__(size=size)
+        self.name = 'select_char'
 
         self.background = Image(source="../res/screens/backgrounds/background.png", size=size, pos=(0, 0), keep_ratio=True, allow_stretch=True)
         self.add_widget(self.background)

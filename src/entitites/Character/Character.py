@@ -312,6 +312,9 @@ class Character:
     def get_agility(self):
         return self.agility_total
 
+    def get_score(self):
+        return self.strength_total
+
 
 class Rank:
     def __init__(self, rank, grid, unlocked, broken, rankstats, maxs):

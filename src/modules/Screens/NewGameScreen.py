@@ -6,7 +6,6 @@ class NewGameScreen(Screen):
 
     def __init__(self, main_screen, **kwargs):
         super(NewGameScreen, self).__init__(**kwargs)
-        self.id = 'new_game'
         self.name = 'new_game'
         self.main_screen = main_screen
         self.bind(size=self.on_size)

@@ -11,7 +11,7 @@ from kivy.metrics import sp
 from src.modules.CustomHoverableButton import CustomHoverableButton
 from src.modules.Screens.CharacterPortfolio import CharacterPortfolio
 class PartyPortfolio(DragBehavior, Widget):
-    def __init__(self, main_screen, size, pos):
+    def __init__(self, main_screen, size, pos, dungeon):
         self.initalized = False
         super().__init__(size=size, pos=pos, size_hint=(None, None))
         self.main_screen = main_screen
@@ -47,11 +47,11 @@ class PartyPortfolio(DragBehavior, Widget):
         self.pos_a = True
         self.add_widget(self.left_arrow)
         self.add_widget(self.right_arrow)
+        self.layout.dungeon = dungeon
         self.layout.show_index(self.main_screen.parties[0])
         self.add_widget(self.layout)
 
         self.initalized = True
-
 
     def reload(self):
         self.layout.slots[self.layout.get_index()].root.reload()
@@ -83,10 +83,16 @@ class PartyPortfolio(DragBehavior, Widget):
         self.left_arrow.size = self.arrow_size
         self.right_arrow.size = self.arrow_size
 
+    def get_party_score(self):
+        if not self.initalized:
+            return 0
+        return self.layout.slots[self.layout.index].root.get_party_score()
+
 class FloatStencil(StencilView):
     def __init__(self, main_screen, size, pos, **kwargs):
         self.initalized = False
         self.main_screen = main_screen
+        self.dungeon = None
         self.fpos = pos[0] - size[0] * 2, pos[1]
         self.fsize = size[0] * 5, size[1]
 
@@ -192,6 +198,8 @@ class FloatStencil(StencilView):
         if self.index >= len(self.slots):
             self.index -= len(self.slots)
         self.slots[self.index].root.reload()
+        if self.dungeon is not None:
+            self.dungeon.update_party_score()
         return self.index
 
     def decrease_index(self):
@@ -220,6 +228,8 @@ class FloatStencil(StencilView):
         if self.index <= -len(self.slots):
             self.index += len(self.slots)
         self.slots[self.index].root.reload()
+        if self.dungeon is not None:
+            self.dungeon.update_party_score()
         return self.index
 
     def nocrease_index(self):
@@ -260,6 +270,8 @@ class FloatStencil(StencilView):
             self.add_widget(widget)
 
         self.index = index
+        if self.dungeon is not None:
+            self.dungeon.update_party_score()
 
     def remove_widget(self, widget):
         self.root.remove_widget(widget)

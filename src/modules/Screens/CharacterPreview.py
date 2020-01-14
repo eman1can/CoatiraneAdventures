@@ -44,6 +44,15 @@ class CharacterPreview(ScreenManager):
             if not self.initalized:
                 return
 
+        def get_score(self):
+            if self.char is None:
+                return 0
+            else:
+                score = self.char.get_score()
+                if self.support is not None:
+                    score += self.support.get_score()
+                return score
+
         def set_empty(self, *args):
             # Want to make an Empty Character Preview and display it
             self.old_screen = None

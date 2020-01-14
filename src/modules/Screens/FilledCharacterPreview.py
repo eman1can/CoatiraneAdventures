@@ -537,6 +537,7 @@ class FilledCharacterPreview(Widget):
                         else:
                             self.preview.set_char_screen(True, self.character, None)
                         self.main_screen.display_screen(None, False, False)
+                        self.main_screen.children[0].update_party_score()
                     else:
                         self.preview.show_select_screen(self, False)
                     return True

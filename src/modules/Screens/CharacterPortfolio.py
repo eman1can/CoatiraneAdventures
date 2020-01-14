@@ -48,6 +48,12 @@ class CharacterPortfolio(Widget):
             preview.pos = current_pos, pos[1]
             current_pos += self.spacer_x + self.slot_x
 
+    def get_party_score(self):
+        party_score = 0
+        for preview in self.previews:
+            party_score += preview.get_score()
+        return party_score
+
     def party_change(self, preview, char, support):
         if not self.initalized:
             return
