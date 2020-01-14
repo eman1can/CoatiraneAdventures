@@ -119,14 +119,11 @@ class Root(ScreenManager):
     # def select(self, screen):
 
     def on_size(self, *args):
-        print("Fix Root Size")
-        for child in self.children:
+        for child in self.screens:
             child.size = self.size
 
     def on_pos(self, *args):
-        print("Fix root pos")
-        for child in self.children:
-            child.pos = self.pos
+        pass
 
 
 class GameApp(App):

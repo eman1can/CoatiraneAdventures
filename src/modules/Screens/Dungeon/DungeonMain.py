@@ -13,15 +13,24 @@ class DungeonMain(Screen):
     wasInCharScreen = BooleanProperty(False)
 
     def __init__(self, main_screen, size, **kwargs):
-        super().__init__(**kwargs)
+        self.initalized = False
+        super().__init__(size=size, **kwargs)
         self.main_screen = main_screen
-        self.screen_size = 3840
 
         self.background = Image(source="../res/screens/backgrounds/background.png", size=size, pos=(0, 0), keep_ratio=True, allow_stretch=True)
 
-        self.back_button = CustomHoverableButton(size=(256 * size[0] / self.screen_size, 256 * size[0] / self.screen_size), pos=(0, size[1] - (256 * size[0] / self.screen_size)), path='../res/screens/buttons/back', on_touch_up=self.on_back_press)
-        self.ascend_button = CustomHoverableButton(size=(450 * size[0] / self.screen_size, 175 * size[0] / self.screen_size), pos=(size[0] - 675 * size[0] / self.screen_size, size[1] / 2 - 900 * size[0] / self.screen_size), path='../res/screens/buttons/AscendButton', on_touch_up=self.ascend)
-        self.descend_button = CustomHoverableButton(size=(450 * size[0] / self.screen_size, 175 * size[0] / self.screen_size), pos=(size[0] - 675 * size[0] / self.screen_size, size[1] / 2), path='../res/screens/buttons/DescendButton', on_touch_up=self.descend)
+        back_button_size = (size[0] * .05, size[0] * .05)
+        back_button_pos = 0, size[1] - back_button_size[1]
+
+        button_x = size[0] * .175
+        button_y = button_x * 175 / 450
+        button_size = button_x, button_y
+        spacer = (size[1] * .6 - button_y * 2) / 3
+        button_pos = size[0] * .8, size[1] * .6 + size[0] * .025 - spacer - button_y
+
+        self.back_button = CustomHoverableButton(size=back_button_size, pos=back_button_pos, path='../res/screens/buttons/back', on_touch_up=self.on_back_press)
+        self.ascend_button = CustomHoverableButton(size=button_size, pos=button_pos, path='../res/screens/buttons/AscendButton', on_touch_up=self.ascend)
+        self.descend_button = CustomHoverableButton(size=button_size, pos=(button_pos[0], button_pos[1] - button_y - spacer), path='../res/screens/buttons/DescendButton', on_touch_up=self.descend)
 
         self.portfolio = PartyPortfolio(main_screen, (size[0] * .75, size[1] * .6), (size[0] * .025, size[0] * .025))
 
@@ -31,8 +40,10 @@ class DungeonMain(Screen):
         self.add_widget(self.descend_button)
         self.add_widget(self.ascend_button)
 
+        self.initalized = True
+
     def on_enter(self, *args):
-        Clock.schedule_interval(lambda dt: self.portfolio.animate_arrows(), 2)
+        Clock.schedule_interval(lambda dt: self.portfolio.animate_arrows(), 3.5)
 
     def on_leave(self, *args):
         Clock.unschedule(lambda dt: self.portfolio.animate_arrows())
@@ -42,11 +53,27 @@ class DungeonMain(Screen):
             self.portfolio.reload()
 
     def on_size(self, instance, size):
+        if not self.initalized:
+            return
         self.background.size = size
-        self.back_button.size = (256 * size[0] / self.screen_size, 256 * size[0] / self.screen_size)
-        self.back_button.pos = (0, size[1] - self.back_button.height)
-        self.portfolio.size = (self.width * .75, self.height * .5)
-        self.portfolio.pos = (self.width * .05, self.width * .05)
+
+        back_button_size = (size[0] * .05, size[0] * .05)
+        back_button_pos = 0, size[1] - back_button_size[1]
+
+        button_x = size[0] * .175
+        button_y = button_x * 175 / 450
+        button_size = button_x, button_y
+        spacer = (size[1] * .6 - button_y * 2) / 3
+        button_pos = size[0] * .8, size[1] * .6 + size[0] * .025 - spacer - button_y
+
+        self.back_button.size = back_button_size
+        self.back_button.pos = back_button_pos
+        self.ascend_button.size = button_size
+        self.ascend_button.pos = button_pos
+        self.descend_button.size = button_size
+        self.descend_button.pos = button_pos[0], button_pos[1] - button_y - spacer
+        self.portfolio.size = (size[0] * .75, size[1] * .6)
+        self.portfolio.pos = (size[0] * .025, size[1] * .025)
 
     def updateCurrent(self):
         if self.first:

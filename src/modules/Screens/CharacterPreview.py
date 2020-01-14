@@ -33,6 +33,17 @@ class CharacterPreview(ScreenManager):
                 self.set_char_screen(False, self.char, self.support)
             self.initalized = True
 
+        def on_size(self, instance, size):
+            if not self.initalized:
+                return
+            for screen in self.screens:
+                screen.size = size
+                screen.pos = (0, 0)
+
+        def on_pos(self, *args):
+            if not self.initalized:
+                return
+
         def set_empty(self, *args):
             # Want to make an Empty Character Preview and display it
             self.old_screen = None
