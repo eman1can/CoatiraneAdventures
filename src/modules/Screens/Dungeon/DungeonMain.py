@@ -18,18 +18,18 @@ class DungeonMain(Screen):
 
         self.background = Image(source="../res/screens/backgrounds/background.png", size=size, pos=(0, 0), keep_ratio=True, allow_stretch=True)
 
-        self.title = Label(text="Coatirane Dungeons", font_size=self.main_screen.width * .1, size_hint=(None, None),
+        self.title = Label(text="Coatirane Dungeons", font_size=size[0] * .1, size_hint=(None, None),
                            color=(1, .2, .2, 1), font_name='../res/fnt/Precious.ttf')
         self.title._label.refresh()
         self.title.size = self.title._label.texture.size
         self.title.pos = size[0] - self.title.width - size[0] * 0.025, size[1] - self.title.height - size[0] * 0.025
 
-        self.level_label = Label(text="Level - " + str(self.level), font_size=self.main_screen.width * .03, size_hint=(None, None), color=(135 / 255, 28 / 255, 100 / 255, 1), font_name='../res/fnt/Precious.ttf' )
+        self.level_label = Label(text="Level - " + str(self.level), font_size=size[0] * .03, size_hint=(None, None), color=(135 / 255, 28 / 255, 100 / 255, 1), font_name='../res/fnt/Precious.ttf' )
         self.level_label._label.refresh()
         self.level_label.size = self.level_label._label.texture.size
         self.level_label.pos = size[0] - self.title.width + self.size[0] * 0.1, size[1] - self.title.height - size[0] * 0.025 - self.level_label.height * 1.5
 
-        self.party_score_label = Label(text="Party Score - " + str(self.party_score), font_size=self.main_screen.width * .03, size_hint=(None, None), color=(24 / 255, 134 / 255, 140 / 255, 1), font_name='../res/fnt/Precious.ttf' )
+        self.party_score_label = Label(text="Party Score - " + str(self.party_score), font_size=size[0] * .03, size_hint=(None, None), color=(24 / 255, 134 / 255, 140 / 255, 1), font_name='../res/fnt/Precious.ttf' )
         self.party_score_label._label.refresh()
         self.party_score_label.size = self.party_score_label._label.texture.size
         self.party_score_label.pos = size[0] - self.title.width - size[0] * 0.025 + self.size[0] * 0.35, size[1] - self.title.height - size[0] * 0.025 - self.level_label.height * 1.5
@@ -81,6 +81,23 @@ class DungeonMain(Screen):
         if not self.initalized:
             return
         self.background.size = size
+
+        self.title.font_size = size[0] * .1
+        self.title._label.refresh()
+        self.title.size = self.title._label.texture.size
+        self.title.pos = size[0] - self.title.width - size[0] * 0.025, size[1] - self.title.height - size[0] * 0.025
+
+        self.level_label.font_size = size[0] * .03
+        self.level_label._label.refresh()
+        self.level_label.size = self.level_label._label.texture.size
+        self.level_label.pos = size[0] - self.title.width + self.size[0] * 0.1, size[1] - self.title.height - size[
+            0] * 0.025 - self.level_label.height * 1.5
+
+        self.party_score_label.font_size = size[0] * .03
+        self.party_score_label._label.refresh()
+        self.party_score_label.size = self.party_score_label._label.texture.size
+        self.party_score_label.pos = size[0] - self.title.width - size[0] * 0.025 + self.size[0] * 0.35, size[
+            1] - self.title.height - size[0] * 0.025 - self.level_label.height * 1.5
 
         back_button_size = (size[0] * .05, size[0] * .05)
         back_button_pos = 0, size[1] - back_button_size[1]

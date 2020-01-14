@@ -65,7 +65,7 @@ class Character:
         self.full_image = Image(source=full_image, allow_stretch=True, keep_ratio=True)
 
         self.select_widget = FilledCharacterPreview(None, None, (935, 250), (-1, -1), True, False, self, None, support, False, size_hint_x=None)
-        self.attr_screen = CharacterAttributeScreen(self, None, self.name, (192, 108), (0, 0)) #char preview name size pos
+        self.attr_screen = CharacterAttributeScreen(None, None, (1920, 1080), (0, 0), self, self.name) #char preview name size pos
 
     def printstats(self):
         pass
@@ -217,9 +217,7 @@ class Character:
                 index += 1
             self.full_image.parent = None
             # self.slide_image.parent.remove_widget(self.slide_image)
-            return self.full_image
-        else:
-            return self.full_image
+        return self.full_image
 
     def get_slide_image(self, new_image_instance):
         if new_image_instance:
@@ -233,9 +231,7 @@ class Character:
                     self.slide_image.parent.children[index].id = 'image_standin_slide'
                 index += 1
             self.slide_image.parent = None
-            return self.slide_image
-        else:
-            return self.slide_image
+        return self.slide_image
 
     def get_preview_image(self, new_image_instance):
         if new_image_instance:
@@ -249,9 +245,7 @@ class Character:
                     self.preview_image.parent.children[index].id = 'image_standin_preview'
                 index += 1
             self.preview_image.parent = None
-            return self.preview_image
-        else:
-            return self.preview_image
+        return self.preview_image
 
     def get_select_widget(self):
         if self.select_widget.parent is not None:
@@ -263,12 +257,18 @@ class Character:
                     self.select_widget.parent.children[index].id = 'widget_standin'
                 index += 1
             self.select_widget.parent = None
-            return self.select_widget
-        else:
-            return self.select_widget
+        return self.select_widget
 
     def get_attr_screen(self):
-        pass
+        if self.attr_screen.parent is not None:
+            index = 0
+            for child in self.attr_screen.parent.children:
+                if child == self.attr_screen:
+                    self.attr_screen.parent.children[index] = Widget()
+                    self.attr_screen.parent.children[index].id = 'widget_standin'
+                index += 1
+            self.attr_screen.parent = None
+        return self.attr_screen
 
     def get_sprite(self):
         return self.sprite

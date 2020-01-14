@@ -5,6 +5,7 @@ from kivy.app import App
 import random
 
 from src.entitites.Character.Scale import Scale
+from src.modules.CustomHoverableButton import CustomHoverableButton
 
 
 class CharacterAttributeScreen(Screen):
@@ -14,8 +15,16 @@ class CharacterAttributeScreen(Screen):
     # charid = StringProperty('')
     # charfullimage = StringProperty('')
 
-    def __init__(self, char, preview, name, size, pos):
+    def __init__(self, main_screen, preview, size, pos, char, name):
+        self.main_screen = main_screen
+        self.preview = preview
+        self.initalized = False
         super(CharacterAttributeScreen, self).__init__(name=name, size=size, pos=pos)
+
+        back_button_size = (size[0] * .05, size[0] * .05)
+        back_button_pos = 0, size[1] - back_button_size[1]
+        self.back_button = CustomHoverableButton(size=back_button_size, pos=back_button_pos, path='../res/screens/buttons/back', on_touch_up=self.on_back_press, background_disabled_normal=True)
+
         # self.charname = char.getname()
         # # self.preview = preview
         # # self.chardisplayname = char.getdisplayname()
@@ -30,8 +39,10 @@ class CharacterAttributeScreen(Screen):
         # self.char = char
         # self.id = self.name
         image = char.get_full_image(False)
-        image.pos = (image.norm_image_size[0] / 2 - size[0] / 2, 0)
-        self.add_widget(image)
+        image.size = (image.image_ratio * size[1], size[1])
+        image.pos = (-(size[0] - image.image_ratio * size[1]) / 2, 0)
+        # image.pos = (image.norm_image_size[0] / 2 - size[0] / 2, 0)
+
         # self.layout.add_widget(image)
         # self.backButton = customButton(id='back', source='res/BackArrow.png', size=(100, 100),
         #                                pos=(100, self.height - 200),
@@ -131,6 +142,16 @@ class CharacterAttributeScreen(Screen):
         # self.layout.add_widget(self.totalstatpreview)
         # self.layout.add_widget(self.rankstatpreview)
         # Clock.schedule_once(self.updatelabels)
+
+        self.add_widget(image)
+        self.add_widget(self.back_button)
+        self.initalized = True
+
+    def on_size(self, instance, size):
+        pass
+
+    def reload(self):
+        pass
 
     def maxOut(self, instance, touch):
         if instance.collide_point(*touch.pos) and instance == self.maxStats:
@@ -491,6 +512,7 @@ class CharacterAttributeScreen(Screen):
         # self.displaynameLabel.pos = self.nameLabel.texture_size[0] + 200 + 100 + self.displaynameLabel.texture_size[0]/2, App.height - 159
         # self.layout.add_widget(self.displaynameLabel)
 
-    def onBackPress(self, instance, touch):
-        if self.backButton.collide_point(*touch.pos):
-            App.root.goto_back()
+    def on_back_press(self, instance, touch):
+        if instance.collide_point(*touch.pos):
+            if self.main_screen is not None:
+                self.main_screen.display_screen(None, False, False)

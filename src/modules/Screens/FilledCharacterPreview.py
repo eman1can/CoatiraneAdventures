@@ -474,9 +474,6 @@ class FilledCharacterPreview(Widget):
                 touch.grab(self)
                 self.emptied = False
                 if touch.button == 'left':
-                    if touch.is_double_tap:
-                        self.main_screen.display_screen(self.character.get_attr_screen(), True, True)
-                        return True
                     if not self.isSelect:
                         self.event = Clock.schedule_once(lambda dt: self.on_char_empty(instance, touch), .25)
                         return True
@@ -494,9 +491,6 @@ class FilledCharacterPreview(Widget):
                 touch.grab(self)
                 self.emptied = False
                 if touch.button == 'left':
-                    if touch.is_double_tap:
-                        self.main_screen.display_screen(self.support.get_attr_screen(), True, True)
-                        return True
                     if not self.isSelect:
                         self.event = Clock.schedule_once(lambda dt: self.on_support_empty(instance, touch), .25)
                         return True
@@ -518,7 +512,11 @@ class FilledCharacterPreview(Widget):
                     self.preview.show_select_screen(self, True)
                     return True
                 elif touch.button == 'right':
-                    self.main_screen.display_screen(self.support.get_attr_screen(), True, True)
+                    screen = self.support.get_attr_screen()
+                    screen.main_screen = self.main_screen
+                    screen.preview = self.preview
+                    screen.reload()
+                    self.main_screen.display_screen(screen, True, True)
                     return True
             return False
 
@@ -542,7 +540,11 @@ class FilledCharacterPreview(Widget):
                         self.preview.show_select_screen(self, False)
                     return True
                 elif touch.button == 'right':
-                    self.main_screen.display_screen(self.character.get_attr_screen(), True, True)
+                    screen = self.character.get_attr_screen()
+                    screen.main_screen = self.main_screen
+                    screen.preview = self.preview
+                    screen.reload()
+                    self.main_screen.display_screen(screen, True, True)
                     return True
             return False
 
