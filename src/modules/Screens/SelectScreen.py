@@ -1,6 +1,8 @@
 from kivy.uix.screenmanager import Screen
+from kivy.uix.label import Label
+from kivy.uix.image import Image
 from kivy.properties import NumericProperty
-
+from kivy.graphics import Color, Rectangle
 from src.modules.CustomHoverableButton import CustomHoverableButton
 
 class SelectScreen(Screen):
@@ -9,16 +11,39 @@ class SelectScreen(Screen):
     title_x = NumericProperty(500)
 
     def __init__(self, main_screen, **kwargs):
+        self.initalized = False
         super(SelectScreen, self).__init__(**kwargs)
         self.main_screen = main_screen
-        self.id = 'select_screen'
         self.name = 'select_screen'
-        self.newgamebell = CustomHoverableButton(size=(600, 600), pos=(200, 200), path='../res/screens/buttons/newgame.bell')
+
+        self.title = Label(text="Select a Character!", font_size=self.main_screen.width * .075, size_hint=(None, None), color=(.8, .8, .8, 1), font_name='../res/fnt/Precious.ttf')
+        self.title._label.refresh()
+        self.title.size = self.title._label.texture.size
+        self.title.pos = (self.main_screen.width - self.title.width) / 2, self.main_screen.height * .85 - self.title.height / 2
+
+        button_size = self.main_screen.width * .25, self.main_screen.width * .25
+        button_pos = self.main_screen.width * .5 / 3, (self.main_screen.height - self.main_screen.width * .25) / 2
+        self.newgamebell = CustomHoverableButton(size=button_size, pos=button_pos, path='../res/screens/buttons/newgame.bell')
         self.newgamebell.bind(on_touch_down=lambda instance, touch: self.chooseCharacter(instance, touch, 'hero_bell'))
-        self.newgameais = CustomHoverableButton(size=(600, 600), pos=(200, 200), path='../res/screens/buttons/newgame.ais')
+        self.newgameais = CustomHoverableButton(size=button_size, pos=(button_pos[0] * 2 + button_size[0], button_pos[1]), path='../res/screens/buttons/newgame.ais')
         self.newgameais.bind(on_touch_down=lambda instance, touch: (self.chooseCharacter(instance, touch, 'badass_ais')))
+
+        self.newgamebell_label = Label(text="Rabbit Foot", font_size=self.main_screen.width * .05, size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Precious.ttf')
+        self.newgamebell_label._label.refresh()
+        self.newgamebell_label.size = self.newgamebell_label._label.texture.size
+        self.newgamebell_label.pos = self.main_screen.width * .5 / 3 * 2 + button_size[0] + (self.main_screen.width * .25 - self.newgamebell_label.width) / 2, (self.main_screen.height - self.main_screen.width * .25) / 2 - self.newgamebell_label.height * 1.75
+
+        self.newgameais_label = Label(text="Battle Princess", font_size=self.main_screen.width * .05, size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Precious.ttf')
+        self.newgameais_label._label.refresh()
+        self.newgameais_label.size = self.newgameais_label._label.texture.size
+        self.newgameais_label.pos = self.main_screen.width * .5 / 3 + (self.main_screen.width * .25 - self.newgameais_label.width) / 2, (self.main_screen.height - self.main_screen.width * .25) / 2 - self.newgameais_label.height * 1.75
+
+        self.add_widget(self.title)
         self.add_widget(self.newgamebell)
         self.add_widget(self.newgameais)
+        self.add_widget(self.newgamebell_label)
+        self.add_widget(self.newgameais_label)
+        self.initalized = True
 
     def chooseCharacter(self, instance, touch, choice):
         if instance.collide_point(*touch.pos):
@@ -48,26 +73,26 @@ class SelectScreen(Screen):
                     return True
 
     def on_size(self, *args):
-        self.font_size = self.height / 9.6
-        self.font_size2 = self.height / 19.2
-        self.newgameais.size = self.height / 2.22, self.height / 2.22
-        self.newgameais.pos = self.width / 3 - self.newgameais.width / 2, self.height * 2 / 8
-        self.newgamebell.size = self.height / 2.22, self.height / 2.22
-        self.newgamebell.pos = self.width * 2 / 3 - self.newgameais.width / 2, self.height * 2 / 8
-        self.title_x = self.width / 4
+        if not self.initalized:
+            return
+        self.title.font_size = self.main_screen.width * .075
+        self.title._label.refresh()
+        self.title.size = self.title._label.texture.size
+        self.title.pos = (self.main_screen.width - self.title.width) / 2, self.main_screen.height * .85 - self.title.height / 2
 
-        # Name, ID, Health, Defense, Physical Attack, magical Attack, Mana, Strength, Magic, Endurance, Agility, Dexterity, Slide Image, Square Image, Full Image
+        button_size = self.main_screen.width * .25, self.main_screen.width * .25
+        button_pos = self.main_screen.width * .5 / 3, (self.main_screen.height - self.main_screen.width * .25) / 2
+        self.newgameais.size = button_size
+        self.newgameais.pos = button_pos
+        self.newgamebell.size = button_size
+        self.newgamebell.pos = button_pos[0] * 2 + button_size[0], button_pos[1]
 
-        # Lena | fanciful_lena
-        # Min: H 110 M 0 Str 20 Mag 0 End 14 Agi 15 Dex 16 | MAtk 10 PAtk 20 Defense 14
-        # Max: H 3432 M 0 Str 1220 Mag 0 End 414 Agi 512 Dex 467 | MAtk 315 PAtk 1220 Defense 414
-        # Physical Type
-        # Base: Foe: Lo Physical Attack w/ 5% stun
-        # 1) Foes: Mid Physical Attack && Foes: Str -10%
-        # 2) Foes: High Physical Attack w/ temp Str Boost
-        # 3) Allies: Str +50% && Self Str +75% for 2 turns
-        # Special: Ultra Physical Attack with temp Str Boost && Allies +10% to health of damage
-        # For Each Rank -> I to S
-        # For Each  Rank -> Level 0 -> 50
-        # For each Rank, Attribute star w/ unlocks by Gems
-        # For Each Rank, you choose an ability
+        self.newgamebell_label.font_size = self.main_screen.width * .05
+        self.newgamebell_label._label.refresh()
+        self.newgamebell_label.size = self.newgamebell_label._label.texture.size
+        self.newgamebell_label.pos = self.main_screen.width * .5 / 3 * 2 + button_size[0] + (self.main_screen.width * .25 - self.newgamebell_label.width) / 2, (self.main_screen.height - self.main_screen.width * .25) / 2 - self.newgamebell_label.height * 1.75
+
+        self.newgameais_label.font_size = self.main_screen.width * .05
+        self.newgameais_label._label.refresh()
+        self.newgameais_label.size = self.newgameais_label._label.texture.size
+        self.newgameais_label.pos = self.main_screen.width * .5 / 3 + (self.main_screen.width * .25 - self.newgameais_label.width) / 2, (self.main_screen.height - self.main_screen.width * .25) / 2 - self.newgameais_label.height * 1.75
