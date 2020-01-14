@@ -1,61 +1,76 @@
 import random
+import math
+from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty
 from kivy.uix.image import Image
 from kivy.uix.widget import Widget
 from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreview
 from src.modules.Screens.CharacterAttributeScreens.CharacterAttributeScreen import CharacterAttributeScreen
+from src.entitites.Character.Scale import Scale
 
 class Character:
-    def __init__(self, index, support, name, displayname, id, rank, type, health, defense, physicalattack, magicalattack, magicalpoints, strength, magic, endurance, dexterity, agility, slide_image, preview_image, full_image, moves, program_type):
+    health_base = NumericProperty(0)
+    mana_base = NumericProperty(0)
+    strength_base = NumericProperty(0)
+    magic_base = NumericProperty(0)
+    endurance_base = NumericProperty(0)
+    dexterity_base = NumericProperty(0)
+    agility_base = NumericProperty(0)
+
+    def __init__(self, index, support, name, displayname, id, rank, type, health, defense, physicalattack, magicalattack, mana, strength, magic, endurance, dexterity, agility, slide_image, preview_image, full_image, moves, familias, program_type):
         super().__init__()
         self.name = name
+        self.display_name = displayname
         self.support = support
         self.first = False
         self.index = index
 
+        # Experimental
+        self.familia = None
+        for familia in familias:
+            if familia.name == 'Hestia':
+                self.familia = familia
+                break
+        self.race = 'Human'
+        self.gender = 'Female'
+        self.score = 0
+        self.worth = 0
+        self.high_dmg = 0
+        self.floor_depth = 0
+        self.monsters_slain = 0
+        self.people_slain = 0
+
+        self.equipment = Equipment(None, None, None, None, None, None)
+
+        # End Experimental
+
         self.sprite = None
         self.id = id
         self.moves = moves
+        print("Type: ", type)
         if type == 0:
-            self.type = 'magical'
+            self.type = 'Magical'
+            print("Magical")
+        elif type == 1:
+            self.type = 'Physical'
+            print("Physical")
         else:
-            self.type = 'physical'
-        # print(str(self.moves))
-        self.currentRank = 1
+            self.type = 'Balance'
+            print("Balance")
 
-        self.phyatk_total = physicalattack
-        self.magatk_total = magicalattack
-        self.health_total = health
-        self.mana_total = magicalpoints
-        self.defense_total = defense
-        self.strength_total = strength
-        self.magic_total = magic
-        self.endurance_total = endurance
-        self.dexterity_total = dexterity
-        self.agility_total = agility
+        self.current_rank = 1
 
-
-        self.exphealthtotal = 0
-        self.expmptotal = 0
-        self.expdeftotal = 0
-        self.expstrtotal = 0
-        self.expmagtotal = 0
-        self.expagitotal = 0
-        self.expdextotal = 0
-        self.expendtotal = 0
+        self.health_base = health
+        self.mana_base = mana
+        self.strength_base = strength
+        self.magic_base = magic
+        self.endurance_base = endurance
+        self.dexterity_base = dexterity
+        self.agility_base = agility
 
         try:
-            self.ranks = Rank.loadWeights("../save/char_load_data/" + program_type + '/ranks/' + id + '.txt', id, rank, [health, magicalpoints, defense, strength, magic, agility, dexterity, endurance], program_type)
+            self.ranks = Rank.load_weights("../save/char_load_data/" + program_type + '/ranks/' + id + '.txt', id, rank, [health, mana, defense, strength, magic, agility, dexterity, endurance], program_type)
         except FileNotFoundError:
-            self.ranks = Rank.loadWeights("../save/char_load_data/" + program_type + '/ranks/base.txt', id, rank, [health, magicalpoints, defense, strength, magic, agility, dexterity, endurance], program_type)
-        caps = self.ranks.pop()
-        self.totalCaps = []
-        for x in caps:
-            self.totalCaps.append(float(x))
-        self.updateCharValues()
-        # self.ranks = Grid.loadgrids('grids/base.txt', rank)
-        # for x in range(len(rank)):
-        #     if not rank[x] == 0:
-        #         self.ranks.append(Rank(x, ))
+            self.ranks = Rank.load_weights("../save/char_load_data/" + program_type + '/ranks/base.txt', id, rank, [health, mana, defense, strength, magic, agility, dexterity, endurance], program_type)
 
         self.slide_image_source = slide_image
         self.slide_image = Image(source=slide_image, allow_stretch=True, keep_ratio=True)
@@ -67,140 +82,32 @@ class Character:
         self.select_widget = FilledCharacterPreview(None, None, (935, 250), (-1, -1), True, False, self, None, support, False, size_hint_x=None)
         self.attr_screen = CharacterAttributeScreen(None, None, (1920, 1080), (0, 0), self, self.name) #char preview name size pos
 
-    def printstats(self):
-        pass
-        # print("Total Health: " + str(self.totalHealth))
-        # print("Total MP: " + str(self.totalMP))
-        # print("Total Defense: " + str(self.totalDefense))
-        # print("Total Strength: " + str(self.totalStrength))
-        # print("Total Magic: " + str(self.totalMagic))
-        # print("Total Agiliity: " + str(self.totalAgility))
-        # print("Total Dexterity: " + str(self.totalDexterity))
-        # print("Total Endurance: " + str(self.totalEndurance))
-        # print("Rank Health: " + str(self.ranks[self.currentRank-1].rankhealth))
-        # print("Rank MP: " + str(self.ranks[self.currentRank - 1].rankmagicalpoints))
-        # print("Rank Defense: " + str(self.ranks[self.currentRank - 1].rankdefense))
-        # print("Rank Strength: " + str(self.ranks[self.currentRank - 1].rankstrength))
-        # print("Rank Magic: " + str(self.ranks[self.currentRank - 1].rankmagic))
-        # print("Rank Agility: " + str(self.ranks[self.currentRank - 1].rankagility))
-        # print("Rank Dexterity: " + str(self.ranks[self.currentRank - 1].rankdexterity))
-        # print("Rank Endurance: " + str(self.ranks[self.currentRank-1].rankendurance))
-
-
-    def updateCharValues(self):
-        self.totalPhysicalAttack = 0
-        self.totalMagicalAttack = 0
-        self.totalDefense = 0
-        self.totalHealth = 0
-        self.totalMP = 0
-        self.totalStrength = 0
-        self.totalMagic = 0
-        self.totalAgility = 0
-        self.totalDexterity = 0
-        self.totalEndurance = 0
-
-        self.exphealthtotal = 0
-        self.expmptotal = 0
-        self.expdeftotal = 0
-        self.expstrtotal = 0
-        self.expmagtotal = 0
-        self.expagitotal = 0
-        self.expdextotal = 0
-        self.expendtotal = 0
-
-        for x in self.ranks:
-            values = x.getRankStats()
-            self.totalHealth += values[0]
-            self.totalMP += values[1]
-            self.totalDefense += values[2]
-            self.totalPhysicalAttack += values[3]
-            self.totalMagicalAttack += values[4]
-            self.totalStrength += values[3]
-            self.totalMagic += values[4]
-            self.totalAgility += values[5]
-            self.totalDexterity += values[6]
-            self.totalEndurance += values[7]
-
-            self.totalHealth += values[8]
-            self.totalMP += values[9]
-            self.totalDefense += values[10]
-            self.totalPhysicalAttack += values[11]
-            self.totalMagicalAttack += values[12]
-            self.totalStrength += values[11]
-            self.totalMagic += values[12]
-            self.totalAgility += values[13]
-            self.totalDexterity += values[14]
-            self.totalEndurance += values[15]
-
-            self.exphealthtotal += values[8]
-            self.expmptotal += values[9]
-            self.expdeftotal += values[10]
-            self.expstrtotal += values[11]
-            self.expmagtotal += values[12]
-            self.expagitotal += values[13]
-            self.expdextotal += values[14]
-            self.expendtotal += values[15]
-        '''
-        Attribute Scales. Used for scoring:
-        S: 1-4500
-        A: 1-3200
-        D: 1-3200
-        E: 1-3200
-        Character Attributes
-        Base Attributes: Hp 33 Mp 13 S 1.75 A 5.5 D 4.4 E 4.6
-        Rank 1-10
-        Rank Breaking will add a 10% multiplier to the scores for that rank, but in attribute skill and slot scores
-        Level Attribute Caps: (Difference between rank / amount of attribute slots is added at each slot release for that rank)
-        1:  Hp 102  Mp 19  S 7      A 19    D 14.6  E 15.4
-        2:  Hp 228  Mp 29  S 21.25  A 41.5  D 31.6  E 33.4
-        3:  Hp 438  Mp 43  S 49     A 73    D 55.4  E 58.6
-        4:  Hp 732  Mp 61  S 94.75  A 113.5 D 86    E 91
-        5:  Hp 1110 Mp 83  S 163    A 163   D 123.4 E 130.6
-        6:  Hp 1572 Mp 109 S 238.25 A 221.5 D 167.6 E 177.4
-        7:  Hp 2118 Mp 139 S 385    A 289   D 218.6 E 231.4
-        8:  Hp 2748 Mp 173 S 547.75 A 365.5 D 276.4 E 292.6
-        9:  Hp 3462 Mp 211 S 751    A 451   D 341   E 361
-        10: Hp 4260 Mp 253 S 999.25 A 545.5 D 412.4 E 436.6
-        
-        Level Attribute Slots: (Amount, Weight, Total_Points): (Unlocks Attribute Caps & Adds base amount to character. Requres Gems & experience to unlock)
-        1: S 3 A 2 D 2 E 2
-           S 3 A 3 D 2 E 2
-           S 9 A 6 D 4 E 4
-        2: S 5 A 4 D 3 E 4
-           S 9 A 8 D 5 E 7
-           S 45 A 32 D 4 E 4
-        3:
-        4:
-        5:
-        6:
-        7:
-        8:
-        9:
-        10:
-        
-        
-        
-        '''
 
     def is_support(self):
         return self.support
 
+    def get_type(self):
+        return self.type
+
     def get_index(self):
         return self.index
+
+    def get_current_rank(self):
+        return self.current_rank
 
     def get_rank(self, rankNum):
         return self.ranks[rankNum - 1]
 
-    def rankup(self):
-        if self.currentRank < 10:
-            self.currentRank += 1
-            self.ranks[self.currentRank-1].unlocked = True
+    def rank_up(self):
+        if self.current_rank < 10:
+            self.current_rank += 1
+            self.ranks[self.current_rank - 1].unlocked = True
         else:
             raise Exception("Character at max rank")
 
-    def rankbreak(self):
-        if not self.ranks[self.currentRank-1].broken:
-            self.ranks[self.currentRank-1].breakRank()
+    def rank_break(self):
+        if not self.ranks[self.current_rank - 1].broken:
+            self.ranks[self.current_rank - 1].break_rank()
         else:
             raise Exception("Character already rank broken")
 
@@ -276,198 +183,177 @@ class Character:
     def get_name(self):
         return self.name
 
+    def get_display_name(self):
+        return self.display_name
+
     def get_id(self):
         return self.id
 
     def get_move(self, movenum):
         return self.moves[movenum]
 
-    def get_phyatk(self):
-        return self.phyatk_total
+    def get_phyatk(self, rank=0):
+        return self.get_strength(rank) + self.equipment.get_phyatk()
 
-    def get_magatk(self):
-        return self.magatk_total
+    def get_magatk(self, rank=0):
+        return self.get_magic(rank) + self.equipment.get_magatk()
 
-    def get_health(self):
-        return self.health_total
+    def get_defense(self, rank=0):
+        return self.get_endurance(rank) + self.equipment.get_defense()
 
-    def get_defense(self):
-        return self.defense_total
+    def get_health(self, rank=0):
+        if rank > 0:
+            return self.get_rank(rank).get_health()
+        health = self.health_base + self.equipment.get_health()
+        for rank in self.ranks:
+            if rank.unlocked:
+                health += rank.get_health()
+        return health
 
-    def get_mana(self):
-        return self.mana_total
+    def get_mana(self, rank=0):
+        if rank > 0:
+            return self.get_rank(rank).get_mana()
+        mana = self.mana_base + self.equipment.get_mana()
+        for rank in self.ranks:
+            if rank.unlocked:
+                mana += rank.get_mana()
+        return mana
 
-    def get_strength(self):
-        return self.strength_total
+    def get_strength(self, rank=0):
+        if rank > 0:
+            return self.get_rank(rank).get_strength()
+        strength = self.strength_base + self.equipment.get_strength()
+        for rank in self.ranks:
+            if rank.unlocked:
+                strength += rank.get_strength()
+        return strength
 
-    def get_magic(self):
-        return self.magic_total
+    def get_strength_rank(self, rank=0):
+        return Scale.getScaleAsImagePath(self.get_strength(rank), 999)
 
-    def get_endurance(self):
-        return self.endurance_total
+    def get_magic(self, rank=0):
+        if rank > 0:
+            return self.get_rank(rank).get_magic()
+        magic = self.magic_base + self.equipment.get_magic()
+        for rank in self.ranks:
+            if rank.unlocked:
+                magic += rank.get_magic()
+        return magic
 
-    def get_dexterity(self):
-        return self.dexterity_total
+    def get_magic_rank(self, rank=0):
+        return Scale.getScaleAsImagePath(self.get_magic(rank), 999)
 
-    def get_agility(self):
-        return self.agility_total
+    def get_endurance(self, rank=0):
+        if rank > 0:
+            return self.get_rank(rank).get_endurance()
+        endurance = self.endurance_base + self.equipment.get_endurance()
+        for rank in self.ranks:
+            if rank.unlocked:
+                endurance += rank.get_endurance()
+        return endurance
+
+    def get_endurance_rank(self, rank=0):
+        return Scale.getScaleAsImagePath(self.get_endurance(rank), 999)
+
+    def get_dexterity(self, rank=0):
+        if rank > 0:
+            return self.get_rank(rank).get_dexterity()
+        dexterity = self.dexterity_base + self.equipment.get_dexterity()
+        for rank in self.ranks:
+            if rank.unlocked:
+                dexterity += rank.get_dexterity()
+        return dexterity
+
+    def get_dexterity_rank(self, rank=0):
+        return Scale.getScaleAsImagePath(self.get_dexterity(rank), 999)
+
+    def get_agility(self, rank=0):
+        if rank > 0:
+            return self.get_rank(rank).get_agility()
+        agility = self.agility_base + self.equipment.get_agility()
+        for rank in self.ranks:
+            if rank.unlocked:
+                agility += rank.get_agility()
+        return agility
+
+    def get_agility_rank(self, rank=0):
+        return Scale.getScaleAsImagePath(self.get_agility(rank), 999)
 
     def get_score(self):
-        return self.strength_total
+        return self.score
 
 
 class Rank:
+    ability_max = NumericProperty(999)
+    health_max = NumericProperty(999)
+    mana_max = NumericProperty(299)
+
+    # Defense is endurance
+    # Attack is Strength / Magic / Both
+
+    health = NumericProperty(0)
+    mana = NumericProperty(0)
+
+    strength = NumericProperty(0)
+    strength_board = NumericProperty(0)
+    magic = NumericProperty(0)
+    magic_board = NumericProperty(0)
+    endurance = NumericProperty(0)
+    endurance_board = NumericProperty(0)
+    dexterity = NumericProperty(0)
+    dexterity_board = NumericProperty(0)
+    agility = NumericProperty(0)
+    agility_board = NumericProperty(0)
+
     def __init__(self, rank, grid, unlocked, broken, rankstats, maxs):
-        self.strengthMax = float(maxs[0])
-        self.magicMax = float(maxs[1])
-        self.agilityMax = float(maxs[2])
-        self.dexterityMax = float(maxs[3])
-        self.enduranceMax = float(maxs[4])
-        self.expHpCap = float(maxs[9])
-        self.expMpCap = float(maxs[10])
-        self.expDefCap = float(maxs[11])
-        self.expStrCap = float(maxs[5])
-        # self.expMagCap = maxs[11]
-        self.expAgiCap = float(maxs[6])
-        self.expDexCap = float(maxs[7])
-        self.expEndCap = float(maxs[8])
-        self.broken = False
-
-        self.rankhealth = 0
-        self.rankmagicalpoints = 0
-        self.rankdefense = 0
-        self.rankstrength = 0
-        self.rankmagic = 0
-        self.rankagility = 0
-        self.rankdexterity = 0
-        self.rankendurance = 0
-
-        self.exphealth = 0
-        self.expmagicalpoints = 0
-        self.expdefense = 0
-        self.expstrength = 0
-        self.expmagic = 0
-        self.expagility = 0
-        self.expdexterity = 0
-        self.expendurance = 0
-
-        self.exphealthraw = 0
-        self.expmagicalpointsraw = 0
-        self.expdefenseraw = 0
-        self.expstrengthraw = 0
-        self.expmagicraw = 0
-        self.expagilityraw = 0
-        self.expdexterityraw = 0
-        self.expenduranceraw = 0
-
-
-        self.rankhealthraw = float(rankstats[0])
-        self.rankmagicalpointsraw = float(rankstats[1])
-        self.rankdefenseraw = float(rankstats[2])
-        self.rankstrengthraw = float(rankstats[3])
-        self.rankmagicraw = float(rankstats[4])
-        self.rankagilityraw = float(rankstats[5])
-        self.rankdexterityraw = float(rankstats[6])
-        self.rankenduranceraw = float(rankstats[7])
-
-        self.rankhealthtotal = 0
-        self.rankmagicalpointstotal = 0
-        self.rankdefensetotal = 0
-        self.rankstrengthtotal = 0
-        self.rankmagictotal = 0
-        self.rankagilitytotal = 0
-        self.rankdexteritytotal = 0
-        self.rankendurancetotal = 0
-
-        self.calcvalues()
         self.unlocked = unlocked
         self.broken = broken
-        self.brkinc = 1.13
         self.rankNum = rank
         self.grid = grid
+        self.brkinc = 1.13
+
         self.grid.count()
 
-    def updateValues(self, hp, mp, defen, str, mag, agi, dex, end):
-        self.rankhealthraw += hp
-        self.rankmagicalpointsraw += mp
-        self.rankdefenseraw += defen
-        self.rankstrengthraw += str
-        self.rankmagicraw += mag
-        self.rankagilityraw += agi
-        self.rankdexterityraw += dex
-        self.rankenduranceraw += end
-        self.calcvalues()
+    def get_health(self):
+        return math.floor(self.health)
 
-    def updateexpValues(self, hp, mp, defen, str, mag, agi, dex, end):
-        self.exphealthraw += hp
-        self.expmagicalpointsraw += mp
-        self.expdefenseraw += defen
-        self.expstrengthraw += str
-        self.expmagicraw += mag
-        self.expagilityraw += agi
-        self.expdexterityraw += dex
-        self.expenduranceraw += end
-        self.calcexpvalues()
+    def get_health_cap(self):
+        return self.health_max
 
-    def calcvalues(self):
-        if self.broken:
-            mul = self.brkinc
-        else:
-            mul = 1
-        self.rankhealth = self.rankhealthraw * mul
-        self.rankmagicalpoints = self.rankmagicalpointsraw * mul
-        self.rankdefense = self.rankdefenseraw * mul
-        self.rankstrength = self.rankstrengthraw * mul
-        self.rankmagic = self.rankmagicraw * mul
-        self.rankagility = self.rankagilityraw * mul
-        self.rankdexterity = self.rankdexterityraw * mul
-        self.rankendurance = self.rankenduranceraw * mul
-        self.calctotalvalues()
-    def calcexpvalues(self):
-        if self.broken:
-            mul = self.brkinc
-        else:
-            mul = 1
-        self.exphealth = self.exphealthraw * mul
-        self.expmagicalpoints = self.expmagicalpointsraw * mul
-        self.expdefense = self.expdefenseraw * mul
-        self.expstrength = self.expstrengthraw * mul
-        self.expmagic = self.expmagicraw * mul
-        self.expagility = self.expagilityraw * mul
-        self.expdexterity = self.expdexterityraw * mul
-        self.expendurance = self.expenduranceraw * mul
-        self.calctotalvalues()
-    def calctotalvalues(self):
-        self.rankhealthtotal = self.exphealth + self.rankhealth
-        self.rankmagicalpointstotal = self.expmagicalpoints + self.rankmagicalpoints
-        self.rankdefensetotal = self.expdefense + self.rankdefense
-        self.rankstrengthtotal = self.expstrength + self.rankstrength
-        self.rankmagictotal = self.expmagic + self.rankmagic
-        self.rankagilitytotal = self.expagility + self.rankagility
-        self.rankdexteritytotal = self.expdexterity + self.rankdexterity
-        self.rankendurancetotal = self.expendurance + self.rankendurance
-    # def setWeights(self, SW, AW, DW, EW):
-    #     self.grid.SW = SW
-    #     self.grid.AW = AW
-    #     self.grid.DW = DW
-    #     self.grid.EW = EW
-    #     self.calculate()
+    def get_mana(self):
+        return math.floor(self.mana)
 
-    def getRankStats(self):
-        self.calcvalues()
-        return [self.rankhealth, self.rankmagicalpoints, self.rankdefense, self.rankstrength, self.rankmagic,
-                self.rankagility, self.rankdexterity, self.rankendurance, self.exphealth, self.expmagicalpoints,
-                self.expdefense, self.expstrength, self.expmagic, self.expagility, self.expdexterity, self.expendurance]
+    def get_mana_cap(self):
+        return self.mana_max
 
-    def breakRank(self):
+    def get_ability_cap(self):
+        return self.ability_max
+
+    def get_strength(self):
+        return math.floor(self.strength) + math.floor(self.strength_board)
+
+    def get_magic(self):
+        return math.floor(self.magic) + math.floor(self.magic_board)
+
+    def get_endurance(self):
+        return math.floor(self.endurance) + math.floor(self.endurance_board)
+
+    def get_dexterity(self):
+        return math.floor(self.dexterity) + math.floor(self.dexterity_board)
+
+    def get_agility(self):
+        return math.floor(self.agility) + math.floor(self.agility_board)
+
+    def get_rank_stats(self):
+        return [self.get_health(), self.get_mana(), self.get_strength(), self.get_magic(), self.get_endurance(), self.get_dexterity(), self.get_agility()]
+
+    def break_rank(self):
         print("Rank breaking")
         self.broken = True
-        self.calcvalues()
-        self.calcexpvalues()
 
 
     @staticmethod
-    def loadWeights(filename, id, ranknums, basevalues, program_type):
+    def load_weights(filename, id, ranknums, basevalues, program_type):
         file = open(filename)
         try:
             grids = Grid.loadgrids("../save/char_load_data/" + program_type + "/grids/" + id + ".txt")
@@ -500,20 +386,136 @@ class Rank:
                 ranks.append(values)
         return ranks
 
+class Equipment:
+    helmet = ObjectProperty(None)
+    grieves = ObjectProperty(None)
+    gloves = ObjectProperty(None)
+    chest = ObjectProperty(None)
+    leggings = ObjectProperty(None)
+    boots = ObjectProperty(None)
+    items = ReferenceListProperty(helmet, grieves, gloves, chest, leggings, boots)
+
+    def __init__(self, helmet, grieves, gloves, chest, leggings, boots):
+        self.helmet = helmet
+        self.grieves = grieves
+        self.gloves = gloves
+        self.chest = chest
+        self.leggings = leggings
+        self.boots = boots
+
+    def get_health(self):
+        health = 0
+        for item in self.items:
+            if item is not None:
+                health += item.get_health()
+        return health
+
+    def get_mana(self):
+        mana = 0
+        for item in self.items:
+            if item is not None:
+                mana += item.get_mana()
+        return mana
+
+    def get_phyatk(self):
+        atk = 0
+        for item in self.items:
+            if item is not None:
+                atk += item.get_phyatk()
+        return atk
+
+    def get_magatk(self):
+        atk = 0
+        for item in self.items:
+            if item is not None:
+                atk += item.get_magatk()
+        return atk
+
+    def get_defense(self):
+        defense = 0
+        for item in self.items:
+            if item is not None:
+                defense += item.get_defense()
+        return defense
+
+    def get_strength(self):
+        strength = 0
+        for item in self.items:
+            if item is not None:
+                strength += item.get_strength()
+        return strength
+
+    def get_magic(self):
+        magic = 0
+        for item in self.items:
+            if item is not None:
+                magic += item.get_magic()
+        return magic
+
+    def get_endurance(self):
+        endurance = 0
+        for item in self.items:
+            if item is not None:
+                endurance += item.get_endurance()
+        return endurance
+
+    def get_dexterity(self):
+        dexterity = 0
+        for item in self.items:
+            if item is not None:
+                dexterity += item.get_dexterity()
+        return dexterity
+
+    def get_agility(self):
+        agility = 0
+        for item in self.items:
+            if item is not None:
+                agility += item.get_agility()
+        return agility
+
+class Equipment_Item:
+    def __init__(self, name, type, values):
+        self.name = name
+        self.type = type
+        self.values = values
+
+    def get_name(self):
+        return self.name
+
+    def get_type(self):
+        return self.type
+
+    def get_health(self):
+        return self.values[0]
+
+    def get_mana(self):
+        return self.values[1]
+
+    def get_phyatk(self):
+        return self.values[2]
+
+    def get_magatk(self):
+        return self.values[3]
+
+    def get_defense(self):
+        return self.values[4]
+
+    def get_strength(self):
+        return self.values[5]
+
+    def get_magic(self):
+        return self.values[6]
+
+    def get_endurance(self):
+        return self.values[7]
+
+    def get_dexterity(self):
+        return self.values[8]
+
+    def get_agility(self):
+        return self.values[9]
 
 
-    # def calculate(self):
-    #     self.S = self.grid.S * self.grid.SW
-    #     self.A = self.grid.A * self.grid.AW
-    #     self.D = self.grid.D * self.grid.DW
-    #     self.E = self.grid.E * self.grid.EW
-    #     self.SBrk = int(self.S * self.brkinc)
-    #     self.ABrk = int(self.A * self.brkinc)
-    #     self.DBrk = int(self.D * self.brkinc)
-    #     self.EBrk = int(self.E * self.brkinc)
-    #
-    # def getStats(self):
-    #     return [self.S, self.A, self.D, self.E, self.SBrk, self.ABrk, self.DBrk, self.EBrk]
 
 class Grid:
     def __init__(self, grid, weights):

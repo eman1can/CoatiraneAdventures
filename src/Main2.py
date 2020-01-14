@@ -3,8 +3,9 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.image import Image
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from src.entitites.Character.Character import Character, Move
+from src.entitites.Character.Familia import Familia
 Config.set('input', 'mouse', 'mouse, multitouch_on_demand')
 from src.modules.Screens.NewGameScreen import NewGameScreen
 from src.modules.Screens.SelectScreen import SelectScreen
@@ -17,11 +18,13 @@ from src.entitites.EnemyType import EnemyType
 
 class Root(ScreenManager):
 
-    def __init__(self, moves, enemies, floors, chars, **kwargs):
+    def __init__(self, moves, enemies, floors, familias, chars, **kwargs):
         super().__init__(**kwargs)
+        self.transition = FadeTransition(duration=0.25)
         self.list = []
         self.children = []
 
+        self.familias = familias
         self.characters = chars
         self.floors = floors
         self.enemies = enemies
@@ -57,19 +60,26 @@ class Root(ScreenManager):
                         self.remove_widget(old_screen)
                     if track:
                         self.list.append(old_screen)
+                        print("Track ", old_screen.name)
+                print(self.list)
             else:
                 raise Exception("Going forward only works with Screen Objects!")
         else:
             if self.list:
-                old_screen = self.children[0]
+                old_screen = None
+                if len(self.children) > 0:
+                    old_screen = self.children[0]
                 next_screen = self.list.pop()
+                print("Back to ", next_screen.name)
                 next_screen.reload()
 
                 if next_screen not in self.screens:
                     self.add_widget(next_screen)
                 self.current = next_screen.name
-                if old_screen.name not in self.whitelist:
-                    self.remove_widget(old_screen)
+                if old_screen is not None:
+                    if old_screen.name not in self.whitelist:
+                        self.remove_widget(old_screen)
+                print(self.list)
                 return True
             print("No more screens to backtrack.")
 
@@ -172,10 +182,11 @@ class GameApp(App):
     def load_game(self, dt):
         moves = self.build_moves()
         enemies = self.build_enemies(moves)
-        chars = self.build_chars(moves)
+        familias = self.build_familias()
+        chars = self.build_chars(moves, familias)
         floors = self.build_floors(enemies)
 
-        self.root = Root(moves, enemies, floors, chars)
+        self.root = Root(moves, enemies, floors, familias, chars)
         self.root.size = self.size
 
         self.background.remove_widget(self.loading_screen)
@@ -257,7 +268,13 @@ class GameApp(App):
             raise Exception("Failed to open Enemy Definition file!")
         return enemies
 
-    def build_chars(self, moves):
+    def build_familias(self):
+        print("Loading Familias!")
+        familia_array = []
+        familia_array.append(Familia('Hestia'))
+        return familia_array
+
+    def build_chars(self, moves, familias):
         print("Loading Characters!")
         characterArray = []
         file = open("../save/char_load_data/" + self.program_type + "/CharacterDefinitions.txt", "r")
@@ -273,7 +290,7 @@ class GameApp(App):
                     rank = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                     # for x in range(len(values)):
                     #     print("%d : %s" % (x, str(values[x]))
-                    res_path = '../res/characters/' + self.program_type + "/" + values[1] + "/" + values[3] + "/" + values[3]
+                    res_path = '../res/characters/' + self.program_type + "/" + values[3] + "/" + values[3]
                     move = None
                     print(values)
                     if values[0] == 'A':
@@ -283,7 +300,7 @@ class GameApp(App):
                               int(values[7]), int(values[8]), int(values[9]), int(values[10]), int(values[11]),
                               int(values[12]), int(values[13]), int(values[14]),
                               res_path + '_slide.png', res_path + '_preview.png',
-                              res_path + '_full.png', move, self.program_type)
+                              res_path + '_full.png', move, familias, self.program_type)
                     characterArray.append(char)
                     count += 1
             file.close()
