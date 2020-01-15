@@ -1,5 +1,4 @@
 from kivy.clock import Clock
-from kivy.animation import Animation
 from kivy.uix.scrollview import ScrollView
 
 class ScrollPanel(ScrollView):
@@ -8,7 +7,7 @@ class ScrollPanel(ScrollView):
         self.smooth_scroll_end = 15
 
     def on_scroll_start(self, touch, check_children=True):
-        #Makes Scrolling up and down into left and right
+        # Makes Scrolling up and down into left and right
         if check_children:
             touch.push()
             touch.apply_transform_2d(self.to_local)
@@ -48,41 +47,53 @@ class ScrollPanel(ScrollView):
         ud['in_bar_y'] = (scroll_bar and height_scrollable and
                           (0 <= d[self.bar_pos_y] <= self.bar_width))
 
-        if vp and 'button' in touch.profile and \
-                touch.button.startswith('scroll'):
+        if vp and 'button' in touch.profile and touch.button.startswith('scroll'):
             btn = touch.button
             m = self.scroll_wheel_distance
             e = None
 
-            if ((btn == 'scrolldown' and self.scroll_x <= 0) or
-                    (btn == 'scrollup' and self.scroll_x >= 1) or
-                    (btn == 'scrollleft' and self.scroll_x >= 1) or
-                    (btn == 'scrollright' and self.scroll_x <= 0)):
-                return False
-
-            if (self.effect_y and self.do_scroll_x and width_scrollable and
-                    btn in ('scrolldown', 'scrollup')):
-                e = self.effect_y if ud['in_bar_y'] else self.effect_x
-
-            elif (self.effect_y and self.do_scroll_x and width_scrollable and
-                  btn in ('scrollleft', 'scrollright')):
-                e = self.effect_y if ud['in_bar_y'] else self.effect_x
-
-            if e:
-                if btn in ('scrollup', 'scrollleft'):
-                    if self.smooth_scroll_end:
-                        e.velocity -= m * self.smooth_scroll_end
-                    else:
-                        e.value = max(e.value - m, e.min)
-                        e.velocity = 0
-                elif btn in ('scrolldown', 'scrollright'):
-                    if self.smooth_scroll_end:
-                        e.velocity += m * self.smooth_scroll_end
-                    else:
-                        e.value = min(e.value + m, e.max)
-                        e.velocity = 0
-                touch.ud[self._get_uid('svavoid')] = True
-                e.trigger_velocity_update()
+            if self.do_scroll_x:
+                if ((btn in ('scrolldown', 'scrollleft') and self.scroll_x <= 0) or
+                        (btn in ('scrollup', 'scrollright') and self.scroll_x >= 1)):
+                    return False
+                if self.effect_y and width_scrollable:
+                    e = self.effect_y if ud['in_bar_y'] else self.effect_x
+                if e:
+                    if btn in ('scrollup', 'scrollleft'):
+                        if self.smooth_scroll_end:
+                            e.velocity -= m * self.smooth_scroll_end
+                        else:
+                            e.value = max(e.value - m, e.min)
+                            e.velocity = 0
+                    elif btn in ('scrolldown', 'scrollright'):
+                        if self.smooth_scroll_end:
+                            e.velocity += m * self.smooth_scroll_end
+                        else:
+                            e.value = min(e.value + m, e.max)
+                            e.velocity = 0
+                    touch.ud[self._get_uid('svavoid')] = True
+                    e.trigger_velocity_update()
+            elif self.do_scroll_y:
+                if ((btn in ('scrolldown', 'scrollleft') and self.scroll_y <= 0) or
+                  (btn in ('scrollup', 'scrollright') and self.scroll_y >= 1)):
+                    return False
+                if self.effect_x and height_scrollable:
+                    e = self.effect_x if ud['in_bar_x'] else self.effect_y
+                if e:
+                    if btn in ('scrolldown', 'scrollleft'):
+                        if self.smooth_scroll_end:
+                            e.velocity -= m * self.smooth_scroll_end
+                        else:
+                            e.value = max(e.value - m, e.min)
+                            e.velocity = 0
+                    elif btn in ('scrollup', 'scrollright'):
+                        if self.smooth_scroll_end:
+                            e.velocity += m * self.smooth_scroll_end
+                        else:
+                            e.value = min(e.value + m, e.max)
+                            e.velocity = 0
+                    touch.ud[self._get_uid('svavoid')] = True
+                    e.trigger_velocity_update()
             return True
 
         in_bar = ud['in_bar_x'] or ud['in_bar_y']
@@ -90,13 +101,9 @@ class ScrollPanel(ScrollView):
             return self.simulate_touch_down(touch)
 
         if in_bar:
-            if (ud['in_bar_y'] and not
-            self._touch_in_handle(
-                self._handle_y_pos, self._handle_y_size, touch)):
+            if ud['in_bar_y'] and not self._touch_in_handle(self._handle_y_pos, self._handle_y_size, touch):
                 self.scroll_y = (touch.y - self.y) / self.height
-            elif (ud['in_bar_x'] and not
-            self._touch_in_handle(
-                self._handle_x_pos, self._handle_x_size, touch)):
+            elif ud['in_bar_x'] and not self._touch_in_handle(self._handle_x_pos, self._handle_x_size, touch):
                 self.scroll_x = (touch.x - self.x) / self.width
 
         # no mouse scrolling, so the user is going to drag the scrollview with

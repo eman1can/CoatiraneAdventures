@@ -1,10 +1,7 @@
 from kivy.uix.widget import Widget
-from kivy.uix.label import Label
-from kivy.graphics import Color, Rectangle
 from kivy.uix.gridlayout import GridLayout
 
 from src.modules.ScrollPanel import ScrollPanel
-from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreview
 
 class ScrollPreview(Widget):
     def __init__(self, main_screen, preview, size, pos, slot_size, characters, isSupport):
@@ -13,8 +10,11 @@ class ScrollPreview(Widget):
         self.slot_size = slot_size
         self.main_screen = main_screen
 
-        root = ScrollPanel(size_hint=(None, 1), size=(size[0] - slot_size[0], slot_size[1]), pos=(pos[0] + slot_size[0]/2, pos[1] + (size[1] - slot_size[1]) / 2))
-        self.layout = GridLayout(rows=1, spacing=10, size_hint_x=None)
+        preview_width = size[0] - slot_size[0]
+        gap = preview_width * 0.0125
+
+        root = ScrollPanel(size_hint=(None, 1), size=(preview_width, slot_size[1] + gap * 2), pos=(pos[0] + slot_size[0]/2, pos[1] + (size[1] - slot_size[1]) / 2), do_scroll_y=False)
+        self.layout = GridLayout(rows=1, padding=gap, spacing=gap, size_hint_x=None)
         self.layout.bind(minimum_width=self.layout.setter('width'))
 
         index = 0
@@ -28,6 +28,7 @@ class ScrollPreview(Widget):
                 widget.reload()
                 self.layout.add_widget(widget)
                 index += 1
+
         root.add_widget(self.layout)
         self.add_widget(root)
 

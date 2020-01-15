@@ -4,6 +4,7 @@ from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProper
 from kivy.uix.image import Image
 from kivy.uix.widget import WidgetBase, Widget
 from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreview
+from src.modules.Screens.SquareCharacterPreview import SquareCharacterPreview
 from src.modules.Screens.CharacterAttributeScreens.CharacterAttributeScreen import CharacterAttributeScreen
 from src.entitites.Character.Scale import Scale
 
@@ -46,16 +47,12 @@ class Character(WidgetBase):
         self.sprite = None
         self.id = id
         self.moves = moves
-        print("Type: ", type)
         if type == 0:
             self.type = 'Magical'
-            print("Magical")
         elif type == 1:
             self.type = 'Physical'
-            print("Physical")
         else:
             self.type = 'Balance'
-            print("Balance")
 
         self.current_rank = 1
 
@@ -74,10 +71,9 @@ class Character(WidgetBase):
         self.select_widget = None
         self.attr_screen = None
 
-    def load_preview(self):
+    def load_elements(self):
         self.select_widget = FilledCharacterPreview(None, None, (935, 250), (-1, -1), True, False, self, None, self.support, False, size_hint_x=None)
-
-    def load_attr_screen(self):
+        self.select_square_widget = SquareCharacterPreview(None, None, (250, 250), (-1, -1), True, False, self, None, self.support, False, size_hint=(None, None))
         self.attr_screen = CharacterAttributeScreen(None, None, (1920, 1080), (0, 0), self, self.name) #char preview name size pos
 
     def is_support(self):
@@ -192,6 +188,21 @@ class Character(WidgetBase):
                 index += 1
             self.select_widget.parent = None
         return self.select_widget
+
+    def get_select_square_widget(self):
+        if self.select_square_widget is None:
+            raise Exception("Character was not fully loaded!")
+
+        if self.select_square_widget.parent is not None:
+            # self.select_widget.parent.select_widget_loaded = False
+            index = 0
+            for child in self.select_square_widget.parent.children:
+                if child == self.select_square_widget:
+                    self.select_square_widget.parent.children[index] = Widget()
+                    self.select_square_widget.parent.children[index].id = 'widget_standin'
+                index += 1
+            self.select_square_widget.parent = None
+        return self.select_square_widget
 
     def get_attr_screen(self):
         if self.attr_screen is None:

@@ -1,7 +1,8 @@
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.core.window import Window
-from kivy.properties import BooleanProperty
+from kivy.properties import BooleanProperty, NumericProperty, ReferenceListProperty, StringProperty
+
 
 class HoverBehavior(object):
     """Hover behavior.
@@ -23,10 +24,10 @@ class HoverBehavior(object):
         Window.bind(mouse_pos=self.on_mouse_pos)
         super(HoverBehavior, self).__init__(**kwargs)
 
-    def on_mouse_pos(self, *args):
+    def on_mouse_pos(self, instance, pos):
         if not self.get_root_window():
-            return  # do proceed if I'm not displayed <=> If have no parent
-        pos = args[1]
+            return
+        # do proceed if I'm not displayed <=> If have no parent
         # Next line to_widget allow to compensate for relative layout
         inside = self.collide_point(*self.to_widget(*pos))
         if self.hovered == inside:
@@ -44,60 +45,98 @@ class HoverBehavior(object):
     def on_leave(self):
         pass
 
-class
 
-class CustomHoverableButton(Button, HoverBehavior):
+class ToggleBehavior(object):
+    """Toggle Behaviour
+    :Events:
+        `on_state_one`
+            Fired when the first state is entered
+        `on_state_two`
+            First when the second state is entered
+    """
+    toggle_enabled = BooleanProperty(False)
+    toggle_state = BooleanProperty(False)
+    width = NumericProperty(100.0)
+    height = NumericProperty(100.0)
+    x = NumericProperty(0.0)
+    y = NumericProperty(0.0)
+    size = ReferenceListProperty(width, height)
+    pos = ReferenceListProperty(x, y)
+    '''Contains the current state of the toggle
+    False - State one
+    True - State two
+    '''
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('size', (0, 0))
-        kwargs.setdefault('pos', (0, 0))
-        kwargs.setdefault('size_hint', (None, None))
-        kwargs.setdefault('background_disabled_down', '')
-        if kwargs is not None:
-            if kwargs.get('size'):
-                self.size = kwargs.get('size')
-            if kwargs.get('pos'):
-                self.pos = kwargs.get('pos')
-            if kwargs.get('path'):
-                self.path = kwargs.pop('path')
-                self.collide_image = self.path + ".collision.png"
-                self.background_normal = self.path + ".normal.png"
-                self.background_down = self.path + ".down.png"
-                self.background_hover = self.path + ".hover.png"
-                if (kwargs.get('background_disabled_normal') is not None):
-                    if (kwargs.pop('background_disabled_normal')):
-                        self.background_disabled_normal = self.path + ".disabled.normal.png"
-                if (kwargs.get('background_disabled_down') is not None):
-                    if (kwargs.pop('background_disabled_down')):
-                        self.background_disabled_down = self.path + ".disabled.down.png"
-                if kwargs.get('normal'):
-                    self.background_normal = kwargs.pop('normal')
-                if kwargs.get('hover'):
-                    self.background_hover = kwargs.pop('hover')
-                if kwargs.get('collision'):
-                    self.collide_image = kwargs.pop('collision')
-            else:
-                self.path = None
-                if kwargs.get('collide_image'):
-                    self.collide_image = kwargs.pop('collide_image')
-                if kwargs.get('background_normal'):
-                    self.background_normal = kwargs.pop('background_normal')
-                if kwargs.get('background_disabled_normal'):
-                    self.background_disabled_normal = kwargs.pop('background_disabled_normal')
-                if kwargs.get('background_disabled_down'):
-                    self.background_disabled_down = kwargs.pop('background_disabled_down')
-                if kwargs.get('background_down'):
-                    self.background_down = kwargs.pop('background_down')
-                if kwargs.get('background_hover'):
-                    self.background_hover = kwargs.pop('background_hover')
-                else:
-                    self.background_hover = None
+        self.register_event_type('on_state_one')
+        self.register_event_type('on_state_two')
+        Window.bind(on_touch_down=self.on_click)
         super().__init__(**kwargs)
-        self.size_hint = (None, None)
+
+    def on_click(self, instance, touch):
+        if not self.toggle_enabled:
+            return
+        if not self.get_root_window():
+            return
+        x, y = touch.pos
+        if self.x < x < self.x + self.width and self.y < y < self.y + self.height:
+            self.toggle_state = not self.toggle_state
+            if self.toggle_state:
+                self.dispatch('on_state_two')
+            else:
+                self.dispatch('on_state_one')
+
+    def on_state_one(self):
+        pass
+
+    def on_state_two(self):
+        pass
+
+
+class HTButton(Button, ToggleBehavior, HoverBehavior):
+    width = NumericProperty(100.0)
+    height = NumericProperty(100.0)
+    x = NumericProperty(0.0)
+    y = NumericProperty(0.0)
+    size = ReferenceListProperty(width, height)
+    pos = ReferenceListProperty(x, y)
+
+    path = StringProperty(None)
+    collide_image = StringProperty(None)
+    background_normal = StringProperty(None)
+    background_down = StringProperty(None)
+    background_hover = StringProperty(None)
+
+    background_disabled_normal_use = BooleanProperty(False)
+    background_disabled_normal = StringProperty(None)
+    background_disabled_down_use = BooleanProperty(False)
+    background_disabled_down = StringProperty(None)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self.path is not None:
+            if self.collide_image is None:
+                self.collide_image = self.path + ".collision.png"
+            if self.background_normal is None:
+                self.background_normal = self.path + ".normal.png"
+            if self.background_down is None:
+                self.background_down = self.path + ".down.png"
+            if self.background_hover is None:
+                self.background_hover = self.path + ".hover.png"
+            if self.background_disabled_normal is None:
+                if self.background_disabled_normal_use:
+                    self.background_disabled_normal = self.path + '.disabled.normal.png'
+                else:
+                    self.background_disabled_normal = ''
+            if self.background_disabled_down is None:
+                if self.background_disabled_down_use:
+                    self.background_disabled_down = self.path + '.disabled.down.png'
+                else:
+                    self.background_disabled_down = ''
+
         self.disabled = False
         self._collide_image = Image(source=self.collide_image, keep_data=True)._coreimage
         self.background_normal_temp = self.background_normal
-
 
     def collide_point(self, x, y):
         if self.x <= x <= self.right and self.y <= y <= self.top:
