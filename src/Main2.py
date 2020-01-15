@@ -298,8 +298,7 @@ class GameApp(App):
                               res_path + '_slide.png', res_path + '_preview.png',
                               res_path + '_full.png', move, familias, self.program_type,
                                      health_base=values[5], mana_base=values[9], strength_base=values[10], magic_base=values[11], endurance_base=values[12], dexterity_base=values[13], agility_base=values[14])
-                    char.load_preview()
-                    char.load_attr_screen()
+                    char.load_elements()
                     characterArray.append(char)
                     count += 1
             file.close()

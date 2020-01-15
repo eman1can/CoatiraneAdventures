@@ -8,7 +8,7 @@ from kivy.uix.behaviors import DragBehavior
 from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import Clock
 from kivy.metrics import sp
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 from src.modules.Screens.CharacterPortfolio import CharacterPortfolio
 class PartyPortfolio(DragBehavior, Widget):
     def __init__(self, main_screen, size, pos, dungeon):
@@ -39,9 +39,9 @@ class PartyPortfolio(DragBehavior, Widget):
 
         self.arrow_size = size[0] * 0.05, size[0] * 0.05 * 120 / 72
         self.animate_distance = size[0] * .025
-        self.left_arrow = CustomHoverableButton(path='../res/screens/buttons/ArrowLeft', hover='../res/screens/buttons/ArrowLeft.normal.png', size=self.arrow_size, pos=(pos[0] + size[0] * .05 - self.arrow_size[0], pos[1] + (size[1] * 0.8) / 2 - self.arrow_size[1] / 2))
+        self.left_arrow = HTButton(path='../res/screens/buttons/ArrowLeft', background_hover='../res/screens/buttons/ArrowLeft.normal.png', size=self.arrow_size, pos=(pos[0] + size[0] * .05 - self.arrow_size[0], pos[1] + (size[1] * 0.8) / 2 - self.arrow_size[1] / 2))
         self.left_arrow.bind(on_touch_up = lambda instance, touch: self.on_arrow_touch(instance, touch, True))
-        self.right_arrow = CustomHoverableButton(path='../res/screens/buttons/ArrowRight', hover='../res/screens/buttons/ArrowRight.normal.png', size=self.arrow_size, pos=(pos[0] + size[0] * .95, pos[1] + (size[1] * 0.8) / 2 - self.arrow_size[1] / 2))
+        self.right_arrow = HTButton(path='../res/screens/buttons/ArrowRight', background_hover='../res/screens/buttons/ArrowRight.normal.png', size=self.arrow_size, pos=(pos[0] + size[0] * .95, pos[1] + (size[1] * 0.8) / 2 - self.arrow_size[1] / 2))
         self.right_arrow.bind(on_touch_up = lambda instance, touch: self.on_arrow_touch(instance, touch, False))
 
         self.pos_a = True

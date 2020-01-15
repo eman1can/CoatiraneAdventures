@@ -2,7 +2,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import SlideTransition, RiseInTransition
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 from src.modules.Screens.RecruitPreview import RecruitPreview
 
 import random
@@ -17,15 +17,15 @@ class TavernMain(Screen):
                         source='../res/screens/backgrounds/collage.png')
         self.title = Label(text="[b]Recruitment[/b]", markup=True, font_size=175, color=(1, 1, 1, 1),
                            pos=(650, main_screen.height - 200), size=(200, 50), size_hint=(None, None))
-        self.recruitButton = CustomHoverableButton(path='../res/screens/buttons/recruitButton', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
-                                          pos=(main_screen.width / 2 - 270 / 2, 100), on_touch_down=self.onRecruit)
+        self.recruitButton = HTButton(path='../res/screens/buttons/recruitButton', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
+                                      pos=(main_screen.width / 2 - 270 / 2, 100), on_touch_down=self.onRecruit)
         self.lock = Image(size=size, pos=(0, 0), allow_stretch=True, keep_ratio=True,
                           source='../res/screens/backgrounds/locked.png')
         # print("Locking")
         self.locked = True
         self.disabled = False
         self.screen_size = 3840
-        self.back_button = CustomHoverableButton(size=(256 * size[0] / self.screen_size, 256 * size[0] / self.screen_size), pos=(0, size[1] - (256 * size[0] / self.screen_size)), path='../res/screens/buttons/back', on_touch_up=self.on_back_press)
+        self.back_button = HTButton(size=(256 * size[0] / self.screen_size, 256 * size[0] / self.screen_size), pos=(0, size[1] - (256 * size[0] / self.screen_size)), path='../res/screens/buttons/back', on_touch_up=self.on_back_press)
 
         self.add_widget(self.bg)
         self.add_widget(self.title)

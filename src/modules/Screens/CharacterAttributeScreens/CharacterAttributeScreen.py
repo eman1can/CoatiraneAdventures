@@ -6,7 +6,7 @@ from kivy.app import App
 import random
 
 from src.entitites.Character.Scale import Scale
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 
 
 class CharacterAttributeScreen(Screen):
@@ -18,7 +18,7 @@ class CharacterAttributeScreen(Screen):
 
         back_button_size = (size[0] * .05, size[0] * .05)
         back_button_pos = 0, size[1] - back_button_size[1]
-        self.back_button = CustomHoverableButton(size=back_button_size, pos=back_button_pos, path='../res/screens/buttons/back', on_touch_down=self.on_back_press, background_disabled_normal=True)
+        self.back_button = HTButton(size=back_button_size, pos=back_button_pos, path='../res/screens/buttons/back', on_touch_down=self.on_back_press, background_disabled_normal_use=True)
 
         # Overlays & Backgrounds
         self.background = Image(source="../res/screens/backgrounds/charattributebg.png", size=size, pos=(0, 0), keep_ratio=False, allow_stretch=True)
@@ -527,9 +527,9 @@ class CharacterAttributeScreen(Screen):
 
         height = self.size[1] * 0.05
         spacer = self.size[0] * 0.025
-        self.status_board = CustomHoverableButton(size=(height * 475 / 125, height), border=[0, 0, 0, 0], pos=(overlay_pos[0] - spacer - height * 475 / 125, overlay_pos[1]), path='../res/screens/buttons/long_stat', size_hint=(None, None), color=(0, 0, 0, 1), text="Status Board", font_size=height * 0.8, font_name='../res/fnt/Gabriola.ttf', on_touch_down=self.on_status_board)
-        self.change_equip = CustomHoverableButton(size=(height * 475 / 125, height), border=[0, 0, 0, 0], pos=(overlay_pos[0] - spacer * 2 - self.status_board.width - height * 475 / 125, overlay_pos[1]), path='../res/screens/buttons/long_stat', size_hint=(None, None), color=(0, 0, 0, 1), text="Change Equip", font_size=height * 0.8, font_name='../res/fnt/Gabriola.ttf', on_touch_down=self.on_change_equip)
-        self.image_preview = CustomHoverableButton(size=(height * 200 / 125, height), border=[0, 0, 0, 0], pos=(overlay_pos[0] - spacer * 3 - self.status_board.width - self.change_equip.width - height * 200 / 125, overlay_pos[1]), path='../res/screens/buttons/preview', size_hint=(None, None), on_touch_down=self.on_preview)
+        self.status_board = HTButton(size=(height * 475 / 125, height), border=[0, 0, 0, 0], pos=(overlay_pos[0] - spacer - height * 475 / 125, overlay_pos[1]), path='../res/screens/buttons/long_stat', size_hint=(None, None), color=(0, 0, 0, 1), text="Status Board", font_size=height * 0.8, font_name='../res/fnt/Gabriola.ttf', on_touch_down=self.on_status_board)
+        self.change_equip = HTButton(size=(height * 475 / 125, height), border=[0, 0, 0, 0], pos=(overlay_pos[0] - spacer * 2 - self.status_board.width - height * 475 / 125, overlay_pos[1]), path='../res/screens/buttons/long_stat', size_hint=(None, None), color=(0, 0, 0, 1), text="Change Equip", font_size=height * 0.8, font_name='../res/fnt/Gabriola.ttf', on_touch_down=self.on_change_equip)
+        self.image_preview = HTButton(size=(height * 200 / 125, height), border=[0, 0, 0, 0], pos=(overlay_pos[0] - spacer * 3 - self.status_board.width - self.change_equip.width - height * 200 / 125, overlay_pos[1]), path='../res/screens/buttons/preview', size_hint=(None, None), on_touch_down=self.on_preview)
 
         # ###### DEV BUTTONS ######
         # self.maxStats = Button(text="Max Stats", font_size=40, pos=(500, 1000), size=(200, 200),

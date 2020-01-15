@@ -4,7 +4,7 @@ from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.properties import NumericProperty, StringProperty, BooleanProperty
 from src.modules.PartyPortfolio import PartyPortfolio
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 
 class DungeonMain(Screen):
     level = NumericProperty(1)
@@ -44,9 +44,9 @@ class DungeonMain(Screen):
         spacer = (size[1] * .6 - button_y * 2) / 3
         button_pos = size[0] * .8, size[1] * .6 + size[0] * .025 - spacer - button_y
 
-        self.back_button = CustomHoverableButton(size=back_button_size, pos=back_button_pos, path='../res/screens/buttons/back', on_touch_up=self.on_back_press, background_disabled_normal=True)
-        self.ascend_button = CustomHoverableButton(size=button_size, pos=button_pos, path='../res/screens/buttons/AscendButton', on_touch_up=self.ascend, background_disabled_normal=True)
-        self.descend_button = CustomHoverableButton(size=button_size, pos=(button_pos[0], button_pos[1] - button_y - spacer), path='../res/screens/buttons/DescendButton', on_touch_up=self.descend)
+        self.back_button = HTButton(size=back_button_size, pos=back_button_pos, size_hint=(None, None), path='../res/screens/buttons/back', on_touch_up=self.on_back_press, background_disabled_normal_use=True)
+        self.ascend_button = HTButton(size=button_size, pos=button_pos, size_hint=(None, None), path='../res/screens/buttons/AscendButton', on_touch_up=self.ascend, background_disabled_normal_use=True)
+        self.descend_button = HTButton(size=button_size, pos=(button_pos[0], button_pos[1] - button_y - spacer), size_hint=(None, None), path='../res/screens/buttons/DescendButton', on_touch_up=self.descend)
 
         self.portfolio = PartyPortfolio(main_screen, (size[0] * .75, size[1] * .6), (size[0] * .025, size[0] * .025), self)
 

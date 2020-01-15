@@ -7,9 +7,7 @@ from kivy.uix.label import Label
 from kivy.input.providers.wm_touch import WM_MotionEvent
 from kivy.clock import Clock
 
-from datetime import datetime
-
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 
 class FilledCharacterPreviewScreen(Screen):
     def __init__(self, main_screen, preview, size, pos, isSelect, character, support, isSupport):
@@ -67,11 +65,11 @@ class FilledCharacterPreview(Widget):
             # Load non-support Overlay
             if isSelect:
                 # Load Empty Overlay
-                self.char_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button', collision='../res/screens/buttons/char_button_select.collision.png')
+                self.char_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button', collide_image='../res/screens/buttons/char_button_select.collision.png')
                 self.overlay = Image(source="../res/screens/stats/preview_overlay_empty.png", size=size, pos=pos, allow_stretch=True)
             else:
                 # Load Empty Add Overlay
-                self.char_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button')
+                self.char_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button')
                 self.overlay = Image(source="../res/screens/stats/preview_overlay_empty_add.png", size=size, pos=pos, allow_stretch=True)
         else:
             self.support_image = support.get_preview_image(new_image_instance)
@@ -83,15 +81,15 @@ class FilledCharacterPreview(Widget):
                 # Cannot have a selection preview that has a support character
                 raise Exception("Selection preview cannot have a support character")
             else:
-                self.char_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button_full')
+                self.char_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button_full')
                 self.overlay = Image(source="../res/screens/stats/preview_overlay_full.png", size=size, pos=pos, allow_stretch=True)
         self.char_button.bind(on_touch_down=self.on_char_touch_down, on_touch_up=self.on_char_touch_up)
 
         if not self.isSelect:
             if support is None:
-                self.support_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/support_button')
+                self.support_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/support_button')
             else:
-                self.support_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/support_button_full')
+                self.support_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/support_button_full')
             self.support_button.bind(on_touch_down=self.on_support_touch_down, on_touch_up=self.on_support_touch_up)
 
         self.add_widget(self.background)
@@ -257,10 +255,10 @@ class FilledCharacterPreview(Widget):
         self.add_widget(self.label_numbers)
 
         self.initalized = True
-        self.size = size
-        self.pos = pos
 
     def reload(self):
+        if not self.initalized:
+            return
         if not self.slide_image_loaded:
             self.char_image = self.character.get_slide_image(False)
             index = 0
@@ -290,6 +288,7 @@ class FilledCharacterPreview(Widget):
         if not self.initalized:
             return False
         self.background.size = size
+        self.overlay.size = size
 
         self.preview_wgap = 5 * size[0] / self.preview_width
         self.preview_hgap = 5 * size[1] / self.preview_height
@@ -300,8 +299,6 @@ class FilledCharacterPreview(Widget):
         self.char_image.height = self.image_width * self.char_image.texture_size[1] / self.char_image.texture_size[0]
         if self.support is not None:
             self.support_image.size = self.image_width, self.image_width
-
-        self.overlay.size = size
 
         count = 0
         star_width = (size[1] * 62 / self.preview_height) / 1.5
@@ -550,10 +547,3 @@ class FilledCharacterPreview(Widget):
                     self.main_screen.display_screen(screen, True, True)
                     return True
             return False
-
-
-
-
-
-
-

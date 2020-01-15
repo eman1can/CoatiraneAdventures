@@ -2,7 +2,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
 from kivy.properties import NumericProperty
 
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 
 class TownScreen(Screen):
 
@@ -20,24 +20,24 @@ class TownScreen(Screen):
         current_button_width = .1 * main_screen.width
         current_button_height = .05 * main_screen.height
 
-        self.tavern_button = CustomHoverableButton(size=small_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/TavernButton', collision='../res/screens/buttons/smallbutton.collision.png')
+        self.tavern_button = HTButton(size=small_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/TavernButton', collide_image='../res/screens/buttons/smallbutton.collision.png')
         self.tavern_button.bind(on_touch_down=self.onTavern)
         current_button_width += small_button_size[0]
         current_button_width += .025 * main_screen.width
 
-        self.shopButton = CustomHoverableButton(size=small_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/ShopButton', collision='../res/screens/buttons/smallbutton.collision.png')
+        self.shopButton = HTButton(size=small_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/ShopButton', collide_image='../res/screens/buttons/smallbutton.collision.png')
         current_button_width += small_button_size[0]
         current_button_width += .025 * main_screen.width
 
-        self.craftingButton = CustomHoverableButton(size=small_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/CraftingButton', collision='../res/screens/buttons/smallbutton.collision.png')
+        self.craftingButton = HTButton(size=small_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/CraftingButton', collide_image='../res/screens/buttons/smallbutton.collision.png')
         current_button_width += small_button_size[0]
         current_button_width += .025 * main_screen.width
 
-        self.questButton = CustomHoverableButton(size=small_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/QuestButton', collision='../res/screens/buttons/smallbutton.collision.png')
+        self.questButton = HTButton(size=small_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/QuestButton', collide_image='../res/screens/buttons/smallbutton.collision.png')
         current_button_width += small_button_size[0]
         current_button_width += .5 * main_screen.width
 
-        self.dungeonButton = CustomHoverableButton(size=large_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/DungeonButton', collision='../res/screens/buttons/largebutton.collision.png')
+        self.dungeonButton = HTButton(size=large_button_size, pos=(current_button_width, current_button_height), size_hint=(None, None), path='../res/screens/buttons/DungeonButton', collide_image='../res/screens/buttons/largebutton.collision.png')
         self.dungeonButton.bind(on_touch_down=self.onDungeon)
 
         self.add_widget(self.bgImage)

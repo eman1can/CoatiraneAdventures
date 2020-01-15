@@ -1,6 +1,6 @@
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 
 class NewGameScreen(Screen):
 
@@ -11,9 +11,9 @@ class NewGameScreen(Screen):
         self.bind(size=self.on_size)
         self.background = Image(source='../res/screens/backgrounds/newgamebackground.png', keep_ratio=False, allow_stretch=True,
                                 size_hint=(None, None))
-        self.newgame = CustomHoverableButton(size=(750, 350), pos=(100, 100), path='../res/screens/buttons/newgame')
+        self.newgame = HTButton(size=(750, 350), pos=(100, 100), size_hint=(None, None), path='../res/screens/buttons/newgame')
         self.newgame.bind(on_touch_down=self.on_new_game)
-        self.loadgame = CustomHoverableButton(size=(750, 350), pos=(800, 100),  path='../res/screens/buttons/loadgame', background_disabled_normal=True)
+        self.loadgame = HTButton(size=(750, 350), pos=(800, 100), size_hint=(None, None), path='../res/screens/buttons/loadgame', background_disabled_normal_use=True)
         self.title = Image(source='../res/screens/backgrounds/Title.png', keep_ratio=True, allow_stretch=True, size_hint=(None, None))
 
         self.loadgame.disabled = True

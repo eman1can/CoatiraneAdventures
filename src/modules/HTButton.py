@@ -44,6 +44,8 @@ class HoverBehavior(object):
     def on_leave(self):
         pass
 
+class
+
 class CustomHoverableButton(Button, HoverBehavior):
 
     def __init__(self, **kwargs):

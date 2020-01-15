@@ -2,7 +2,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.label import Label
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 from kivy.input.providers.wm_touch import WM_MotionEvent
 
 class EmptyCharacterPreviewScreen(Screen):
@@ -16,7 +16,7 @@ class EmptyCharacterPreviewScreen(Screen):
         self._touch = None
         self.name = 'empty'
 
-        self.button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/empty_overlay', on_touch_down=self.on_button_touch_down, on_touch_up=self.on_button_touch_up)
+        self.button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/empty_overlay', on_touch_down=self.on_button_touch_down, on_touch_up=self.on_button_touch_up)
         self.add_widget(self.button)
 
         self.initalized = True

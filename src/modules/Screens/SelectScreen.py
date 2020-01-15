@@ -3,7 +3,7 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.properties import NumericProperty
 from kivy.graphics import Color, Rectangle
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 
 class SelectScreen(Screen):
     font_size = NumericProperty(150)
@@ -23,9 +23,9 @@ class SelectScreen(Screen):
 
         button_size = self.main_screen.width * .25, self.main_screen.width * .25
         button_pos = self.main_screen.width * .5 / 3, (self.main_screen.height - self.main_screen.width * .25) / 2
-        self.newgamebell = CustomHoverableButton(size=button_size, pos=button_pos, path='../res/screens/buttons/newgame.bell')
+        self.newgamebell = HTButton(size=button_size, pos=button_pos, size_hint=(None, None), path='../res/screens/buttons/newgame.bell')
         self.newgamebell.bind(on_touch_down=lambda instance, touch: self.chooseCharacter(instance, touch, 'hero_bell'))
-        self.newgameais = CustomHoverableButton(size=button_size, pos=(button_pos[0] * 2 + button_size[0], button_pos[1]), path='../res/screens/buttons/newgame.ais')
+        self.newgameais = HTButton(size=button_size, pos=(button_pos[0] * 2 + button_size[0], button_pos[1]), size_hint=(None, None), path='../res/screens/buttons/newgame.ais')
         self.newgameais.bind(on_touch_down=lambda instance, touch: (self.chooseCharacter(instance, touch, 'badass_ais')))
 
         self.newgamebell_label = Label(text="Rabbit Foot", font_size=self.main_screen.width * .05, size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Precious.ttf')

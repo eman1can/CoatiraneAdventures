@@ -2,7 +2,7 @@ from kivy.uix.screenmanager import Screen, RiseInTransition
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 
-from src.modules.CustomHoverableButton import CustomHoverableButton
+from src.modules.HTButton import HTButton
 
 import random
 
@@ -18,12 +18,12 @@ class RecruitPreview(Screen):
         self.title = Label(text="[b]" + char.get_name() + "[/b]", markup=True, color=(1, 1, 1, 1), size=(200, 50),
                            font_size=80, pos=((self.main_screen.width - (self.main_screen.height * 2 / 3)) / 2, self.main_screen.height - 100))
         self.add_widget(self.title)
-        self.rollAgainButton = CustomHoverableButton(path='../res/screens/buttons/RecruitButtonRollAgain', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
-                                            pos=(200 - 135, self.main_screen.height / 2), on_touch_down=self.onRollAgain)
-        self.confirmButton = CustomHoverableButton(path='../res/screens/buttons/RecruitButtonConfirm', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
-                                          pos=(self.main_screen.width - 200 - 135, self.main_screen.height / 2), on_touch_down=self.onConfirm)
-        self.cancelButton = CustomHoverableButton(path='../res/screens/buttons/RecruitButtonCancel', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
-                                         pos=(self.main_screen.width - 200 - 135, self.main_screen.height / 2 - 200), on_touch_down=self.onCancel)
+        self.rollAgainButton = HTButton(path='../res/screens/buttons/RecruitButtonRollAgain', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
+                                        pos=(200 - 135, self.main_screen.height / 2), on_touch_down=self.onRollAgain)
+        self.confirmButton = HTButton(path='../res/screens/buttons/RecruitButtonConfirm', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
+                                      pos=(self.main_screen.width - 200 - 135, self.main_screen.height / 2), on_touch_down=self.onConfirm)
+        self.cancelButton = HTButton(path='../res/screens/buttons/RecruitButtonCancel', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
+                                     pos=(self.main_screen.width - 200 - 135, self.main_screen.height / 2 - 200), on_touch_down=self.onCancel)
         self.add_widget(self.rollAgainButton)
         self.add_widget(self.confirmButton)
         self.add_widget(self.cancelButton)
