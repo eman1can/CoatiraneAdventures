@@ -45,3 +45,6 @@ class CharacterSelector(Screen):
         if self.single is not None:
             self.single.reload()
         # self.grid = GridPreview(self.multi_window_size, self.multi_window_pos, self.grid_size, characters, main_screen)
+
+    def reload(self):
+        pass

@@ -25,6 +25,9 @@ class Familia:
         else:
             return 'S'
 
+    def get_rank_as_image_path(self):
+        return "../res/screens/stats/" + self.get_rank() + ".png"
+
     def get_name(self):
         return self.name
 

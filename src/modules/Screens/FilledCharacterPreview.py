@@ -107,7 +107,6 @@ class FilledCharacterPreview(Widget):
         star_height_overlap = .5
         stars_width = star_size[0] * star_columns * star_width_overlap
         star_start = size[0] / 2 - stars_width / 2, size[1] - self.preview_hgap - star_size[1]
-
         for level in character.ranks:
             star_row = int(count / star_columns)
             star_column = count % star_columns
@@ -126,8 +125,7 @@ class FilledCharacterPreview(Widget):
                         Image(source="../res/screens/stats/rankbrk.png", pos=star_pos, size=star_size, size_hint=(None, None), opacity=1))
                 self.add_widget(self.stars[count])
             else:
-                self.stars.append(
-                    Image(source='../res/screens/stats/star.png', pos=star_pos, size=star_size, size_hint=(None, None), opacity=0))
+                self.stars.append(Image(source='../res/screens/stats/star.png', pos=star_pos, size=star_size, size_hint=(None, None), opacity=0))
                 self.add_widget(self.stars[count])
             count += 1
         if support is not None:
@@ -535,7 +533,10 @@ class FilledCharacterPreview(Widget):
                         else:
                             self.preview.set_char_screen(True, self.character, None)
                         self.main_screen.display_screen(None, False, False)
-                        self.main_screen.children[0].update_party_score()
+                        for screen in self.main_screen.screens:
+                            if screen.name == 'dungeon_main':
+                                screen.update_party_score()
+                                break
                     else:
                         self.preview.show_select_screen(self, False)
                     return True

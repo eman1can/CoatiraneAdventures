@@ -255,7 +255,6 @@ class GameApp(App):
                     for x in range(int(values[14])):
                         EnemyMoves.append(Move.getmove(moves, values[15 + (2 * x)]))
                         movePropabilities.append(values[16 + (2 * x)])
-
                     enemies.append(
                         EnemyType(values[0], int(values[3]), int(values[1]), int(values[2]), int(values[4]),
                                   int(values[5]), int(values[6]), int(values[7]), int(values[8]), int(values[9]),
@@ -296,11 +295,11 @@ class GameApp(App):
                     if values[0] == 'A':
                         move = Move.getmove(moves, values[15]), Move.getmove(moves, values[16]), Move.getmove(moves, values[17]), Move.getmove(moves, values[18]), Move.getmove(moves, values[19])
                     char = Character(count, values[0] == 'S', values[1], values[2], values[3], rank, values[4],
-                              int(values[5]), int(values[6]),
-                              int(values[7]), int(values[8]), int(values[9]), int(values[10]), int(values[11]),
-                              int(values[12]), int(values[13]), int(values[14]),
                               res_path + '_slide.png', res_path + '_preview.png',
-                              res_path + '_full.png', move, familias, self.program_type)
+                              res_path + '_full.png', move, familias, self.program_type,
+                                     health_base=values[5], mana_base=values[9], strength_base=values[10], magic_base=values[11], endurance_base=values[12], dexterity_base=values[13], agility_base=values[14])
+                    char.load_preview()
+                    char.load_attr_screen()
                     characterArray.append(char)
                     count += 1
             file.close()
@@ -347,5 +346,5 @@ class GameApp(App):
 if __name__ == "__main__":
     game = GameApp()
     #The main game loop must be running before loading can take place, but running main loop will cancel game load id placed after
-    Clock.schedule_once(game.load_game, 2)
+    Clock.schedule_once(game.load_game, 2.5)
     game.run()

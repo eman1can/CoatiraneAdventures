@@ -1,15 +1,19 @@
 class Scale:
-    threshSSS = 1.30
-    threshSS = 1.10
-    threshS = 0.95
-    threshA = 0.85
-    threshB = 0.77
-    threshC = 0.66
-    threshD = 0.55
-    threshE = 0.44
+    threshSSS = 1.2  #1200-1400
+    threshSS = 1   # 1000-1199
+    threshS = 0.9  # 900-999
+    threshA = 0.8  # 800-899
+    threshB = 0.7  # 700-799
+    threshC = 0.6  # 600-699
+    threshD = 0.5  # 500-599
+    threshE = 0.4  # 400-499
+    threshF = 0.3  # 300-399
+    threshG = 0.2  # 200-299
+    threshH = 0.1  # 100-199
+
     @staticmethod
-    def getScale(value, max):
-        val = value/max
+    def get_scale(value, max_val):
+        val = value / max_val
         if val > Scale.threshSSS:
             return "SSS"
         elif val > Scale.threshSS:
@@ -26,61 +30,44 @@ class Scale:
             return "D"
         elif val > Scale.threshE:
             return "E"
-        else:
+        elif val > Scale.threshF:
             return "F"
+        elif val > Scale.threshG:
+            return "G"
+        elif val > Scale.threshH:
+            return "H"
+        else:
+            return "I"
 
     @staticmethod
-    def getScale_as_number(value, max):
-        val = value / max
+    def get_scale_as_number(value, max_val):
+        val = value / max_val
         if val > Scale.threshSSS:
-            return 1.3
+            return Scale.threshSSS
         elif val > Scale.threshSS:
-            return 1.1
+            return Scale.threshSS
         elif val > Scale.threshS:
-            return 1
+            return Scale.threshS
         elif val > Scale.threshA:
-            return 1
+            return Scale.threshA
         elif val > Scale.threshB:
-            return .8
+            return Scale.threshB
         elif val > Scale.threshC:
-            return .6
+            return Scale.threshC
         elif val > Scale.threshD:
-            return .4
+            return Scale.threshD
         elif val > Scale.threshE:
-            return .2
+            return Scale.threshE
+        elif val > Scale.threshF:
+            return Scale.threshF
+        elif val > Scale.threshG:
+            return Scale.threshG
+        elif val > Scale.threshH:
+            return Scale.threshH
         else:
             return 0
 
 
     @staticmethod
-    def getScaleAsImagePath(value, max):
-        val = value / max
-        # print(str(value) + " " + str(max) + " " + str(val))
-        # print(str(Scale.threshA) + str(val > Scale.threshA))
-        if val > Scale.threshSSS:
-            # print("return scale SSS")
-            return '../res/screens/stats/GradeSSS.png'
-        elif val > Scale.threshSS:
-            # print("return scale SS")
-            return '../res/screens/stats/GradeSS.png'
-        elif val > Scale.threshS:
-            # print("return scale S")
-            return '../res/screens/stats/GradeS.png'
-        elif val > Scale.threshA:
-            # print("return scale A")
-            return '../res/screens/stats/GradeA.png'
-        elif val > Scale.threshB:
-            # print("return scale B")
-            return '../res/screens/stats/GradeD.png'
-        elif val > Scale.threshC:
-            # print("return scale C")
-            return '../res/screens/stats/GradeC.png'
-        elif val > Scale.threshD:
-            # print("return scale D")
-            return '../res/screens/stats/GradeD.png'
-        elif val > Scale.threshE:
-            # print("return scale E")
-            return '../res/screens/stats/GradeE.png'
-        else:
-            # print("return scale F")
-            return '../res/screens/stats/GradeF.png'
+    def get_scale_as_image_path(value, max_val):
+        return "../res/screens/stats/" + Scale.get_scale(value, max_val) + ".png"

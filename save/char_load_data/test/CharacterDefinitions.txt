@@ -1,18 +1,18 @@
 //Name Type Name Id Rank(0 - 10) Health Defense PhysicalAttack MagicalAttack MagicalPoints Strength Magic Endurance Dexterity Agility BasicAtkPwr Atk Type
-A,Ais,Badass Ais,badass_ais,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A,Bell,Hero Bell,hero_bell,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A,Ais Wallenstein,Badass Ais,badass_ais,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A,Bell Cranell,Hero Bell,hero_bell,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
 A,Elena,Charming Elena,charming_elena,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Leanna,Wilderness Leanna,wilderness_leanna,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Morgan,Traveller Morgan,traveller_morgan,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Morgan,Witchy Morgan,witchy_morgan,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Emilia,Dashing Emilia,dashing_emilia,0,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Emilia,Swimmer Emilia,swimmers_emilia,0,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-A,Alexis & Catherine,Entrancing Alexis & Catherine,entrancing_alexis_and_catherine,0,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-A,Alexis & Catherine,Models Alexis & Catherine,models_alexis_and_catherine,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-A,Alexis,Model Alexis,model_alexis,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-A,Alexis,Ranch Alexis,ranch_alexis,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-A,Alexis,Swimsuit Alexis,swimsuit_alexis,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-S,Alexis,Entrancing Alexis,entrancing_alexis,1,80,8,6,0,3,4,0,5,4,4
+A,Alexis & Catherine,Entrancing,entrancing_alexis_and_catherine,0,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Alexis & Catherine,Models,models_alexis_and_catherine,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Alexis Cordova,Model,model_alexis,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Alexis Cordova,Ranch,ranch_alexis,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Alexis Cordova,Swimsuit,swimsuit_alexis,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+S,Alexis Cordova,Entrancing,entrancing_alexis,1,80,8,6,0,3,4,0,5,4,4
 A,Abby,Backyard Abby,backyard_abby,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Abby,Fancy Abby,fancy_abby,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Abby,Nextdoor Abby,nextdoor_abby,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
@@ -21,7 +21,7 @@ A,Lexi,Architect Lexi,architect_lexi,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiend
 A,Lexi,Pumpkin Patch Lexi,pumpkin_patch_lexi,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Lexi,Vacation Lexi,vacation_lexi,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Lexi,Wildflower Lexi,wildflower_lexi,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
-A,Lexi & Nicole,Harmony Lexi & Nicole Lexi,harmony_lexi_and_nicole,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
+A,Lexi & Nicole,Harmony Lexi & Nicole,harmony_lexi_and_nicole,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Nicole,Fashionista Nicole,fashionista_nicole,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Nicole,Woods Nicole,woods_nicole,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga
 A,Nicole,Rosy Nicole,rosy_nicole,1,105,12,8,0,7,8,0,9,8,7,Mid P.Attack,Fiendfyre,Tenebris,Drill,Lil Rafaga

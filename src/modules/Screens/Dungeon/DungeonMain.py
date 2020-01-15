@@ -14,6 +14,7 @@ class DungeonMain(Screen):
     def __init__(self, main_screen, size, **kwargs):
         self.initalized = False
         super().__init__(size=size, **kwargs)
+        self.name = 'dungeon_main'
         self.main_screen = main_screen
 
         self.background = Image(source="../res/screens/backgrounds/background.png", size=size, pos=(0, 0), keep_ratio=True, allow_stretch=True)
@@ -24,7 +25,7 @@ class DungeonMain(Screen):
         self.title.size = self.title._label.texture.size
         self.title.pos = size[0] - self.title.width - size[0] * 0.025, size[1] - self.title.height - size[0] * 0.025
 
-        self.level_label = Label(text="Level - " + str(self.level), font_size=size[0] * .03, size_hint=(None, None), color=(135 / 255, 28 / 255, 100 / 255, 1), font_name='../res/fnt/Precious.ttf' )
+        self.level_label = Label(text="Level - " + str(self.level), font_size=size[0] * .03, size_hint=(None, None), color=(135 / 255, 28 / 255, 100 / 255, 1), font_name='../res/fnt/Precious.ttf')
         self.level_label._label.refresh()
         self.level_label.size = self.level_label._label.texture.size
         self.level_label.pos = size[0] - self.title.width + self.size[0] * 0.1, size[1] - self.title.height - size[0] * 0.025 - self.level_label.height * 1.5
@@ -33,7 +34,6 @@ class DungeonMain(Screen):
         self.party_score_label._label.refresh()
         self.party_score_label.size = self.party_score_label._label.texture.size
         self.party_score_label.pos = size[0] - self.title.width - size[0] * 0.025 + self.size[0] * 0.35, size[1] - self.title.height - size[0] * 0.025 - self.level_label.height * 1.5
-
 
         back_button_size = (size[0] * .05, size[0] * .05)
         back_button_pos = 0, size[1] - back_button_size[1]
@@ -67,9 +67,11 @@ class DungeonMain(Screen):
         Clock.schedule_interval(lambda dt: self.portfolio.animate_arrows(), 3.5)
         self.update_party_score()
         self.update_buttons()
+        self.back_button.disabled = False
 
     def on_leave(self, *args):
         Clock.unschedule(lambda dt: self.portfolio.animate_arrows())
+        self.back_button.disabled = True
 
     def reload(self):
         if self.portfolio is not None:
@@ -192,6 +194,7 @@ class DungeonMain(Screen):
         if instance.collide_point(*touch.pos):
             # print("Delve")
             self.level += 1
+            self.update_buttons()
             # descend = False
             # for x in self.main_screen.parties[0]:
             #     if not x == None:
@@ -208,6 +211,7 @@ class DungeonMain(Screen):
         if instance.collide_point(*touch.pos):
             if not instance.disabled:
                 self.level -= 1
+                self.update_buttons()
                 # # print("Ascend")
                 # if len(shownparty) > 0:
                 #     print("Ascending from dungeon")

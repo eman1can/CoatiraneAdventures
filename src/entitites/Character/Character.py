@@ -2,12 +2,12 @@ import random
 import math
 from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty
 from kivy.uix.image import Image
-from kivy.uix.widget import Widget
+from kivy.uix.widget import WidgetBase, Widget
 from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreview
 from src.modules.Screens.CharacterAttributeScreens.CharacterAttributeScreen import CharacterAttributeScreen
 from src.entitites.Character.Scale import Scale
 
-class Character:
+class Character(WidgetBase):
     health_base = NumericProperty(0)
     mana_base = NumericProperty(0)
     strength_base = NumericProperty(0)
@@ -16,8 +16,8 @@ class Character:
     dexterity_base = NumericProperty(0)
     agility_base = NumericProperty(0)
 
-    def __init__(self, index, support, name, displayname, id, rank, type, health, defense, physicalattack, magicalattack, mana, strength, magic, endurance, dexterity, agility, slide_image, preview_image, full_image, moves, familias, program_type):
-        super().__init__()
+    def __init__(self, index, support, name, displayname, id, rank, type, slide_image, preview_image, full_image, moves, familias, program_type, **kwargs):
+        super().__init__(**kwargs)
         self.name = name
         self.display_name = displayname
         self.support = support
@@ -39,7 +39,7 @@ class Character:
         self.monsters_slain = 0
         self.people_slain = 0
 
-        self.equipment = Equipment(None, None, None, None, None, None)
+        self.equipment = Equipment()
 
         # End Experimental
 
@@ -59,18 +59,10 @@ class Character:
 
         self.current_rank = 1
 
-        self.health_base = health
-        self.mana_base = mana
-        self.strength_base = strength
-        self.magic_base = magic
-        self.endurance_base = endurance
-        self.dexterity_base = dexterity
-        self.agility_base = agility
-
         try:
-            self.ranks = Rank.load_weights("../save/char_load_data/" + program_type + '/ranks/' + id + '.txt', id, rank, [health, mana, defense, strength, magic, agility, dexterity, endurance], program_type)
+            self.ranks = Rank.load_weights("../save/char_load_data/" + program_type + '/ranks/' + id + '.txt', id, rank, program_type)
         except FileNotFoundError:
-            self.ranks = Rank.load_weights("../save/char_load_data/" + program_type + '/ranks/base.txt', id, rank, [health, mana, defense, strength, magic, agility, dexterity, endurance], program_type)
+            self.ranks = Rank.load_weights("../save/char_load_data/" + program_type + '/ranks/base.txt', id, rank, program_type)
 
         self.slide_image_source = slide_image
         self.slide_image = Image(source=slide_image, allow_stretch=True, keep_ratio=True)
@@ -79,9 +71,14 @@ class Character:
         self.full_image_source = full_image
         self.full_image = Image(source=full_image, allow_stretch=True, keep_ratio=True)
 
-        self.select_widget = FilledCharacterPreview(None, None, (935, 250), (-1, -1), True, False, self, None, support, False, size_hint_x=None)
-        self.attr_screen = CharacterAttributeScreen(None, None, (1920, 1080), (0, 0), self, self.name) #char preview name size pos
+        self.select_widget = None
+        self.attr_screen = None
 
+    def load_preview(self):
+        self.select_widget = FilledCharacterPreview(None, None, (935, 250), (-1, -1), True, False, self, None, self.support, False, size_hint_x=None)
+
+    def load_attr_screen(self):
+        self.attr_screen = CharacterAttributeScreen(None, None, (1920, 1080), (0, 0), self, self.name) #char preview name size pos
 
     def is_support(self):
         return self.support
@@ -91,6 +88,33 @@ class Character:
 
     def get_index(self):
         return self.index
+
+    def get_familia(self):
+        return self.familia
+
+    def get_race(self):
+        return self.race
+
+    def get_gender(self):
+        return self.gender
+
+    def get_worth(self):
+        return self.worth
+
+    def get_high_dmg(self):
+        return self.high_dmg
+
+    def get_floor_depth(self):
+        return self.floor_depth
+
+    def get_monsters_killed(self):
+        return self.monsters_slain
+
+    def get_people_killed(self):
+        return self.people_slain
+
+    def get_equipment(self):
+        return self.equipment
 
     def get_current_rank(self):
         return self.current_rank
@@ -155,6 +179,9 @@ class Character:
         return self.preview_image
 
     def get_select_widget(self):
+        if self.select_widget is None:
+            raise Exception("Character was not fully loaded!")
+
         if self.select_widget.parent is not None:
             # self.select_widget.parent.select_widget_loaded = False
             index = 0
@@ -167,6 +194,9 @@ class Character:
         return self.select_widget
 
     def get_attr_screen(self):
+        if self.attr_screen is None:
+            raise Exception("Character was not fully loaded!")
+
         if self.attr_screen.parent is not None:
             index = 0
             for child in self.attr_screen.parent.children:
@@ -229,7 +259,7 @@ class Character:
         return strength
 
     def get_strength_rank(self, rank=0):
-        return Scale.getScaleAsImagePath(self.get_strength(rank), 999)
+        return Scale.get_scale_as_image_path(self.get_strength(rank), 999)
 
     def get_magic(self, rank=0):
         if rank > 0:
@@ -241,7 +271,7 @@ class Character:
         return magic
 
     def get_magic_rank(self, rank=0):
-        return Scale.getScaleAsImagePath(self.get_magic(rank), 999)
+        return Scale.get_scale_as_image_path(self.get_magic(rank), 999)
 
     def get_endurance(self, rank=0):
         if rank > 0:
@@ -253,7 +283,7 @@ class Character:
         return endurance
 
     def get_endurance_rank(self, rank=0):
-        return Scale.getScaleAsImagePath(self.get_endurance(rank), 999)
+        return Scale.get_scale_as_image_path(self.get_endurance(rank), 999)
 
     def get_dexterity(self, rank=0):
         if rank > 0:
@@ -265,7 +295,7 @@ class Character:
         return dexterity
 
     def get_dexterity_rank(self, rank=0):
-        return Scale.getScaleAsImagePath(self.get_dexterity(rank), 999)
+        return Scale.get_scale_as_image_path(self.get_dexterity(rank), 999)
 
     def get_agility(self, rank=0):
         if rank > 0:
@@ -277,13 +307,13 @@ class Character:
         return agility
 
     def get_agility_rank(self, rank=0):
-        return Scale.getScaleAsImagePath(self.get_agility(rank), 999)
+        return Scale.get_scale_as_image_path(self.get_agility(rank), 999)
 
     def get_score(self):
         return self.score
 
 
-class Rank:
+class Rank(WidgetBase):
     ability_max = NumericProperty(999)
     health_max = NumericProperty(999)
     mana_max = NumericProperty(299)
@@ -305,7 +335,8 @@ class Rank:
     agility = NumericProperty(0)
     agility_board = NumericProperty(0)
 
-    def __init__(self, rank, grid, unlocked, broken, rankstats, maxs):
+    def __init__(self, rank, grid, unlocked, broken, **kwargs):
+        super().__init__(**kwargs)
         self.unlocked = unlocked
         self.broken = broken
         self.rankNum = rank
@@ -353,7 +384,7 @@ class Rank:
 
 
     @staticmethod
-    def load_weights(filename, id, ranknums, basevalues, program_type):
+    def load_weights(filename, id, ranknums, program_type):
         file = open(filename)
         try:
             grids = Grid.loadgrids("../save/char_load_data/" + program_type + "/grids/" + id + ".txt")
@@ -361,47 +392,42 @@ class Rank:
             grids = Grid.loadgrids("../save/char_load_data/" + program_type + "/grids/base.txt")
         ranks = []
         count = 1
-        print("Loading Weights & girds")
-        for x in file:
-            values = x[:-1].split(' ', -1)
-            print("Loaded: " + str(values))
-            if not count == 11:
-                if ranknums[count-1] == 1:
-                    unlocked = True
-                    broken = False
-                elif ranknums[count-1] == 2:
-                    unlocked = True
-                    broken = True
-                else:
-                    unlocked = False
-                    broken = False
-                if count == 1:
-                    actvalues = basevalues
-                else:
-                    actvalues = [0, 0, 0, 0, 0, 0, 0, 0]
-                rank = Rank(count, grids[count-1], unlocked, broken, actvalues, values)
-                count+=1
-                ranks.append(rank)
-            else:
-                ranks.append(values)
+        # print("Loading Weights & girds")
+        for level in range(0, 10):
+            unlocked = True
+            broken = True
+            ranks.append(Rank(count, grids[count - 1], unlocked, broken))
+        # for x in file:
+        #     values = x[:-1].split(' ', -1)
+        #     print("Loaded: " + str(values))
+        #     if not count == 11:
+        #         if ranknums[count-1] == 1:
+        #             unlocked = True
+        #             broken = False
+        #         elif ranknums[count-1] == 2:
+        #             unlocked = True
+        #             broken = True
+        #         else:
+        #             unlocked = False
+        #             broken = False
+        #         rank = Rank(count, grids[count-1], unlocked, broken)
+        #         count += 1
+        #         ranks.append(rank)
+        #     else:
+        #         ranks.append(values)
         return ranks
 
-class Equipment:
+class Equipment(WidgetBase):
     helmet = ObjectProperty(None)
-    grieves = ObjectProperty(None)
+    vambraces = ObjectProperty(None)
     gloves = ObjectProperty(None)
     chest = ObjectProperty(None)
     leggings = ObjectProperty(None)
     boots = ObjectProperty(None)
-    items = ReferenceListProperty(helmet, grieves, gloves, chest, leggings, boots)
+    items = ReferenceListProperty(helmet, vambraces, gloves, chest, leggings, boots)
 
-    def __init__(self, helmet, grieves, gloves, chest, leggings, boots):
-        self.helmet = helmet
-        self.grieves = grieves
-        self.gloves = gloves
-        self.chest = chest
-        self.leggings = leggings
-        self.boots = boots
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def get_health(self):
         health = 0
@@ -474,13 +500,17 @@ class Equipment:
         return agility
 
 class Equipment_Item:
-    def __init__(self, name, type, values):
+    def __init__(self, name, id, type, values):
         self.name = name
+        self.id = id
         self.type = type
         self.values = values
 
     def get_name(self):
         return self.name
+
+    def get_id(self):
+        return self.id
 
     def get_type(self):
         return self.type
