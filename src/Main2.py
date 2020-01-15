@@ -294,7 +294,7 @@ class GameApp(App):
                     print(values)
                     if values[0] == 'A':
                         move = Move.getmove(moves, values[15]), Move.getmove(moves, values[16]), Move.getmove(moves, values[17]), Move.getmove(moves, values[18]), Move.getmove(moves, values[19])
-                    char = Character(count, values[0] == 'S', values[1], values[2], values[3], rank, values[4],
+                    char = Character(count, values[0] == 'S', values[1], values[2], values[3], rank, int(values[4]),
                               res_path + '_slide.png', res_path + '_preview.png',
                               res_path + '_full.png', move, familias, self.program_type,
                                      health_base=values[5], mana_base=values[9], strength_base=values[10], magic_base=values[11], endurance_base=values[12], dexterity_base=values[13], agility_base=values[14])
