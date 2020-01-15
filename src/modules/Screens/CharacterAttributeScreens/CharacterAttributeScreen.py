@@ -18,7 +18,7 @@ class CharacterAttributeScreen(Screen):
 
         back_button_size = (size[0] * .05, size[0] * .05)
         back_button_pos = 0, size[1] - back_button_size[1]
-        self.back_button = HTButton(size=back_button_size, pos=back_button_pos, path='../res/screens/buttons/back', on_touch_down=self.on_back_press, background_disabled_normal_use=True)
+        self.back_button = HTButton(size=back_button_size, pos=back_button_pos, size_hint=(None, None), path='../res/screens/buttons/back', on_touch_down=self.on_back_press, background_disabled_normal_use=True)
 
         # Overlays & Backgrounds
         self.background = Image(source="../res/screens/backgrounds/charattributebg.png", size=size, pos=(0, 0), keep_ratio=False, allow_stretch=True)

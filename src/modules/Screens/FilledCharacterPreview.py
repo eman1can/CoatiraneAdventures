@@ -98,6 +98,10 @@ class FilledCharacterPreview(Widget):
             self.add_widget(self.support_image)
         self.add_widget(self.overlay)
 
+        self.add_widget(self.char_button)
+        if not self.isSelect:
+            self.add_widget(self.support_button)
+
         self.stars = []
         count = 0
         star_width = (size[1] * 62 / self.preview_height) / 1.5
@@ -170,10 +174,6 @@ class FilledCharacterPreview(Widget):
                               size_hint=(None, None), opacity=0))
                     self.add_widget(self.stars[count])
                 count += 1
-
-        self.add_widget(self.char_button)
-        if not self.isSelect:
-            self.add_widget(self.support_button)
 
         label_height = (size[1] * 120 / self.preview_height) / 4
         image_width = label_height

@@ -26,6 +26,8 @@ class SquareCharacterPreview(Widget):
         self.isSupport = isSupport
         self.event = None
 
+        self.has_stat = False
+
         self.preview_width = 250
         self.preview_height = 250
 
@@ -42,16 +44,39 @@ class SquareCharacterPreview(Widget):
         self.char_image.height = self.image_height
         self.char_image.pos = pos[0] + self.preview_wgap, pos[1] + self.preview_hgap
 
-        self.char_button = Button(background_color=(0, 0, 0, 0), size=size, pos=pos, on_touch_down=self.on_char_touch_down, on_touch_up=self.on_char_touch_up)
-
-        self.char_button = None
-
         self.char_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button_square')
-        self.overlay = Image(source="../res/screens/stats/preview_overlay_square_empty.png", size=size, pos=pos, allow_stretch=True)
+        self.char_button.bind(on_touch_down=self.on_char_touch_down, on_touch_up=self.on_char_touch_up)
+
+        if self.has_stat:
+            self.overlay = Image(source="../res/screens/stats/preview_overlay_square_stat.png", size=size, pos=pos, allow_stretch=True)
+        else:
+            self.overlay = Image(source="../res/screens/stats/preview_overlay_square_empty.png", size=size, pos=pos, allow_stretch=True)
 
         self.add_widget(self.background)
         self.add_widget(self.char_image)
+        self.add_widget(self.char_button)
         self.add_widget(self.overlay)
+
+        self.stars = []
+        star_width = (self.size[1] * 62 / self.preview_height) / 2.5
+        star_size = star_width, star_width
+        dist = ((self.size[0] - self.preview_wgap * 2) - star_width * 10) / 2
+        start = (size[0] - self.preview_wgap * 2 - (star_width * 10 + dist * 10)) / 4
+        count = 0
+        for level in character.ranks:
+            star_pos = pos[0] + self.preview_wgap + star_width * count + dist * count + start, pos[1] + self.preview_hgap
+            count += 1
+
+            if level.unlocked:
+                if not level.broken:
+                    star = Image(source="../res/screens/stats/star.png", pos=star_pos, size=star_size, size_hint=(None, None), opacity=1)
+                else:
+                    star = Image(source="../res/screens/stats/rankbrk.png", pos=star_pos, size=star_size, size_hint=(None, None), opacity=1)
+            else:
+                star = Image(source='../res/screens/stats/star.png', pos=star_pos, size=star_size, size_hint=(None, None), opacity=0)
+            self.stars.append(star)
+            self.add_widget(star)
+            count += 1
 
         self.initalized = True
 
@@ -82,8 +107,7 @@ class SquareCharacterPreview(Widget):
         self.image_width = size[0] - self.preview_wgap * 2
         self.image_height = size[1] - self.preview_hgap * 2
 
-        self.char_image.width = self.image_width
-        self.char_image.height = self.image_width
+        self.char_image.size = self.image_width, self.image_width
 
         self.char_button.size = size
 
@@ -93,8 +117,15 @@ class SquareCharacterPreview(Widget):
         self.background.pos = pos
         self.overlay.pos = pos
         self.char_image.pos = pos[0] + self.preview_wgap, pos[1] + self.preview_hgap
-
         self.char_button.pos = pos
+
+        star_width = (self.size[1] * 62 / self.preview_height) / 2.5
+        dist = ((self.size[0] - self.preview_wgap * 2) - star_width * 10) / 2
+        start = (self.size[0] - self.preview_wgap * 2 - (star_width * 10 + dist * 10)) / 4
+        count = 0
+        for star in self.stars:
+            star.pos = pos[0] + self.preview_wgap + star_width * count + dist * count + start, pos[1] + self.preview_hgap
+            count += 1
 
     def on_char_touch_down(self, instance, touch):
         if instance.collide_point(*touch.pos):
