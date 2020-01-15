@@ -58,16 +58,20 @@ class FilledCharacterPreview(Widget):
         self.char_image.height = self.image_width * self.char_image.texture_size[1] / self.char_image.texture_size[0]
         self.char_image.pos = pos[0] + self.preview_wgap, pos[1] + size[1] - self.char_image.height - self.preview_hgap - (60 * size[1] / self.preview_height)
 
+
         self.char_button = Button(background_color=(0, 0, 0, 0), size=size, pos=pos, on_touch_down=self.on_char_touch_down, on_touch_up=self.on_char_touch_up)
 
+        self.char_button = None
         self.support_image = None
         if support is None:
             # Load non-support Overlay
             if isSelect:
                 # Load Empty Overlay
+                self.char_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button', collision='../res/screens/buttons/char_button_select.collision.png')
                 self.overlay = Image(source="../res/screens/stats/preview_overlay_empty.png", size=size, pos=pos, allow_stretch=True)
             else:
                 # Load Empty Add Overlay
+                self.char_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button')
                 self.overlay = Image(source="../res/screens/stats/preview_overlay_empty_add.png", size=size, pos=pos, allow_stretch=True)
         else:
             self.support_image = support.get_preview_image(new_image_instance)
@@ -79,17 +83,15 @@ class FilledCharacterPreview(Widget):
                 # Cannot have a selection preview that has a support character
                 raise Exception("Selection preview cannot have a support character")
             else:
+                self.char_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button_full')
                 self.overlay = Image(source="../res/screens/stats/preview_overlay_full.png", size=size, pos=pos, allow_stretch=True)
+        self.char_button.bind(on_touch_down=self.on_char_touch_down, on_touch_up=self.on_char_touch_up)
 
         if not self.isSelect:
             if support is None:
-                self.support_button = CustomHoverableButton(
-                    background_normal='../res/screens/stats/support_button.normal.png', background_down='',
-                    collide_image='../res/screens/stats/support_button.collide.png', size=size, pos=pos)
+                self.support_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/support_button')
             else:
-                self.support_button = CustomHoverableButton(
-                    background_normal='../res/screens/stats/support_button.normal.png', background_down='',
-                    collide_image='../res/screens/stats/support_button_full.collide.png', size=size, pos=pos)
+                self.support_button = CustomHoverableButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/support_button_full')
             self.support_button.bind(on_touch_down=self.on_support_touch_down, on_touch_up=self.on_support_touch_up)
 
         self.add_widget(self.background)
