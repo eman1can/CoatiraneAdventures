@@ -1,13 +1,22 @@
 from kivy.config import Config
 from kivy.utils import platform
+
+Config.set('input', 'mouse', 'mouse, multitouch_on_demand')
+Config.set('kivy', 'exit_on_escape', 0)
+Config.set('kivy', 'window_icon', '../res/screens/icon.ico')
+Config.set('graphics', 'fbo', 'hardware')
+Config.set('graphics', 'default_font', '../res/fnt/Gabriola.ttf')
+if platform == 'win':
+    Config.set('kivy', 'pause_on_minimize', 1)
+
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
+
 from src.entitites.Character.Character import Character, Move
 from src.entitites.Character.Familia import Familia
-Config.set('input', 'mouse', 'mouse, multitouch_on_demand')
 from src.modules.Screens.NewGameScreen import NewGameScreen
 from src.modules.Screens.SelectScreen import SelectScreen
 from src.modules.Screens.TownScreen import TownScreen
