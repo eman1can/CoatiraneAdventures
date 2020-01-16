@@ -1,4 +1,5 @@
 from kivy.config import Config
+from kivy.utils import platform
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -15,107 +16,88 @@ from src.modules.Screens.TavernMain import TavernMain
 from src.modules.Screens.CharacterSelector import CharacterSelector
 from src.modules.Screens.Dungeon.Floor import Floor
 from src.entitites.EnemyType import EnemyType
+import math
 
 class Root(ScreenManager):
-
     def __init__(self, moves, enemies, floors, familias, chars, **kwargs):
+        self.initalized = False
         super().__init__(**kwargs)
-        self.transition = FadeTransition(duration=0.25)
-        self.list = []
-        self.children = []
+        App.root = self
 
         self.familias = familias
         self.characters = chars
         self.floors = floors
         self.enemies = enemies
         self.moves = moves
-        self.parties = []
-        self.parties.append(0)
-        for x in range(10):
-            self.parties.append([None, None, None, None, None, None, None, None,
-                                 None, None, None, None, None, None, None, None])
+
+        self.transition = FadeTransition(duration=0.25)
         self.obtained_characters = []
         self.obtained_characters_a = []
         self.obtained_characters_s = []
-
         self.tavern_unlocked = True
+        self.whitelist = ['dungeon_main', 'tavern_main', 'town_screen']
+        self.children = []
+        self.parties = [0]
+        self.list = []
+        self._size = (0, 0)
 
-        App.root = self
-        self.whitelist = ['dungeon_main', 'tavern_main', 'town']
+        for x in range(10):
+            self.parties.append([None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None])
+
         self.create_screen('new_game')
+        self.create_screen('select_screen')
+        for screen in self.whitelist:
+            self.create_screen(screen)
+        self.current = 'new_game'
+        self.initalized = True
 
     def display_screen(self, next_screen, direction, track):
-        if direction == True:
-            if isinstance(next_screen, Screen):
-                old_screen = None
-                if len(self.children) > 0:
-                    old_screen = self.children[0]
-
-                if next_screen not in self.screens:
-                    self.add_widget(next_screen)
-                self.current = next_screen.name
-
-                if old_screen is not None:
-                    if old_screen.name not in self.whitelist:
-                        self.remove_widget(old_screen)
-                    if track:
-                        self.list.append(old_screen)
-                        print("Track ", old_screen.name)
-                print(self.list)
-            else:
-                raise Exception("Going forward only works with Screen Objects!")
-        else:
-            if self.list:
-                old_screen = None
-                if len(self.children) > 0:
-                    old_screen = self.children[0]
+        old_screen = None
+        if not isinstance(next_screen, Screen) and next_screen is not None:
+            for screen in self.screens:
+                if screen.name == next_screen:
+                    next_screen = screen
+                    break
+        if len(self.children) > 0:
+            old_screen = self.children[0]
+        if not direction:
+            if len(self.list) > 0:
                 next_screen = self.list.pop()
-                print("Back to ", next_screen.name)
                 next_screen.reload()
-
-                if next_screen not in self.screens:
-                    self.add_widget(next_screen)
-                self.current = next_screen.name
-                if old_screen is not None:
-                    if old_screen.name not in self.whitelist:
-                        self.remove_widget(old_screen)
-                print(self.list)
-                return True
-            print("No more screens to backtrack.")
+            else:
+                print("No more screens to backtrack.")
+                return
+        if next_screen not in self.screens:
+            self.add_widget(next_screen)
+        self.current = next_screen.name
+        if old_screen is not None:
+            if old_screen.name not in self.whitelist:
+                self.remove_widget(old_screen)
+            if track:
+                self.list.append(old_screen)
 
     def create_screen(self, screen_name, *args):
         screen = None
-        found = False
-        track = True
-
-        if screen_name in self.whitelist:
-            for screen_obj in self.screens:
-                if screen_obj.name == screen_name:
-                    found = True
-                    screen = screen_obj
-                    break
-        if not found:
-            if screen_name == 'select':
-                screen = SelectScreen(self)
-                track = False
-            elif screen_name == 'new_game':
-                screen = NewGameScreen(self)
-                track = False
-            elif screen_name == 'town':
-                screen = TownScreen(self)
-                track = False
-            elif screen_name == 'dungeon_main':
-                screen = DungeonMain(self, self.size)
-                track = True
-            elif screen_name == 'tavern_main':
-                screen = TavernMain(self)
-                screen.check_unlock()
-                track = True
-            elif screen_name == 'select_char':
-                screen = CharacterSelector(self, args[0], args[1])
-            else:
-                raise Exception("Unsupported Screen type", screen_name)
-        self.display_screen(screen, True, track)
+        for screen_current in self.screens:
+            if screen_current.name == screen_name:
+                return
+        if screen_name == 'select_screen':
+            screen = SelectScreen(self)
+        elif screen_name == 'new_game':
+            screen = NewGameScreen(self)
+        elif screen_name == 'town_screen':
+            screen = TownScreen(self)
+        elif screen_name == 'dungeon_main':
+            screen = DungeonMain(self, self.size)
+        elif screen_name == 'tavern_main':
+            screen = TavernMain(self)
+            screen.check_unlock()
+        elif screen_name == 'select_char':
+            screen = CharacterSelector(self, args[0], args[1])
+        else:
+            raise Exception("Unsupported Screen type", screen_name)
+        screen.size = self.size
+        self.add_widget(screen)
 
 
     def display_attribute_screen(self, character):
@@ -128,53 +110,44 @@ class Root(ScreenManager):
 
     # def select(self, screen):
 
-    def on_size(self, *args):
-        for child in self.screens:
-            child.size = self.size
+    def on_size(self, instance, size):
+        if not self.initalized or self._size == size:
+            return
+        self._size = size
+        print(size)
 
-    def on_pos(self, *args):
-        pass
+        for child in self.screens:
+            print(child, self.size)
+            child.size = self.size
 
 
 class GameApp(App):
-    title = 'Coatirane Adventures'
+    title = 'Coatirane Adventures - Alpha 0.1'
 
     def __init__(self, *args, **kwargs):
+        Window.bind(on_resize=self.on_resize)
+        Window.bind(on_request_close=self.close_app)
+        self.initalized = False
         super().__init__(**kwargs)
-        self.maxWidth = 4830
-        self.maxHeight = 2160
         self.program_type = "test"
+        self._size = (0, 0)
 
     def build(self):
-        App.tavern_unlocked = False
-        # Only works for windows machines!
-        # user32 = ctypes.windll.user32
-        # width = math.floor(user32.GetSystemMetrics(0) * 2 / 3)
-        # height = math.floor(user32.GetSystemMetrics(1) * 2 / 3)
-
-        width = 1920
-        height = 1080
-        if width > self.maxWidth:
-            width = self.maxWidth
-        if height > self.maxHeight:
-            height = self.maxHeight
-        self.background = Image(source="../res/screens/game_bounds.png", allow_stretch=True, keep_ratio=True, size=(width, height))
-        App.width = width
-        App.height = height
-        self.old_size = (width, height)
-        Window.size = (width, height)
-        self.ratio = width, height
-        self.no_trigger = False
-
-        Window.bind(on_resize=self.on_resize)
-        Window.minimum_width = 960
-        Window.minimum_height = 540
-        Window.left = 256
-        Window.top = 256
-        self.size = (width, height)
-        # Window.left = math.floor((user32.GetSystemMetrics(0) - width) / 2)
-        # Window.top = math.floor((user32.GetSystemMetrics(1) - height) / 2)
-        Window.borderless = 0
+        if platform == 'win':
+            import ctypes
+            user32 = ctypes.windll.user32
+            width = math.floor(user32.GetSystemMetrics(0) * 2 / 3)
+            height = math.floor(user32.GetSystemMetrics(1) * 2 / 3)
+            Window.size = width, height
+            Window.left = math.floor((user32.GetSystemMetrics(0) - width) / 2)
+            Window.top = math.floor((user32.GetSystemMetrics(1) - height) / 2)
+            Window.borderless = 0
+        elif platform == 'android' or platform == 'ios':
+            width, height = Window.size
+        else:
+            raise Exception("Running on unsupported Platform!")
+        self._size = (width, height)
+        self.background = Image(source="../res/screens/game_bounds.png", allow_stretch=True, size=(width, height))
         self.loading_screen = Image(source="../res/screens/splash.bmp", allow_stretch=True, keep_ratio=True, size=(width, height))
         self.background.add_widget(self.loading_screen)
         return self.background
@@ -187,19 +160,29 @@ class GameApp(App):
         floors = self.build_floors(enemies)
 
         self.root = Root(moves, enemies, floors, familias, chars)
-        self.root.size = self.size
+        self.root.size = Window.size
 
         self.background.remove_widget(self.loading_screen)
         self.background.add_widget(self.root)
+        self.initalized = True
 
     def on_resize(self, *args):
         Clock.unschedule(self.fix_size)
         Clock.schedule_once(self.fix_size, .25)
 
     def fix_size(self, *args):
+        if not self.initalized or self._size == Window.size:
+            return
+        self._size = Window.size
+
+        self.background.size = Window.size
         offset = Window.width/2 - self.background.norm_image_size[0]/2, Window.height/2 - self.background.norm_image_size[1]/2
+
         self.root.size = self.background.norm_image_size
         self.root.pos = offset
+
+    def close_app(self, *args):
+        print("Close Me")
 
     def build_moves(self):
         print("Loading Moves")
@@ -212,7 +195,6 @@ class GameApp(App):
                 if x[0] != '/':
                     totalNum += 1
                     values = x[:-1].split(",", -1)
-                    print("Loaded: " + str(values))
                     # MoveName, MovePower, EffectNum, MoveEffects
                     effects = []
                     effects.append(["Stun", 0])
@@ -249,7 +231,6 @@ class GameApp(App):
                 if x[0] != '/':
                     totalNum += 1
                     values = x[:-1].split(",", -1)
-                    print("Loaded: " + str(values))
                     EnemyMoves = []
                     movePropabilities = []
                     for x in range(int(values[14])):
@@ -286,7 +267,6 @@ class GameApp(App):
                     values = x[:-1].split(",", -1)
                     for index in range(0, len(values)):
                         values[index] = values[index].strip()
-                    print("Loaded: " + str(values))
                     # 0 Type (A | S)
                     # 1 Attack Type (0, 1, 2)
                     # 2 Health Base
@@ -339,7 +319,6 @@ class GameApp(App):
                 if x[0] != '/':
                     totalNum += 1
                     values = x[:-1].split(",", -1)
-                    print("Loaded: " + str(values))
                     propabilities = []
                     floorEnemies = []
                     boss = None
