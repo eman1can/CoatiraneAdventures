@@ -2,7 +2,7 @@ from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.core.window import Window
 from kivy.properties import BooleanProperty, NumericProperty, ReferenceListProperty, StringProperty
-
+from kivy.graphics import PushMatrix, PopMatrix, Rotate
 
 class HoverBehavior(object):
     """Hover behavior.
@@ -71,7 +71,6 @@ class ToggleBehavior(object):
     def __init__(self, **kwargs):
         self.register_event_type('on_state_one')
         self.register_event_type('on_state_two')
-        Window.bind(on_touch_down=self.on_click)
         super().__init__(**kwargs)
 
     def on_click(self, instance, touch):
@@ -79,8 +78,7 @@ class ToggleBehavior(object):
             return
         if not self.get_root_window():
             return
-        x, y = touch.pos
-        if self.x < x < self.x + self.width and self.y < y < self.y + self.height:
+        if self.collide_point(*touch.pos):
             self.toggle_state = not self.toggle_state
             if self.toggle_state:
                 self.dispatch('on_state_two')
@@ -95,6 +93,7 @@ class ToggleBehavior(object):
 
 
 class HTButton(Button, ToggleBehavior, HoverBehavior):
+    angle = NumericProperty(0.0)
     width = NumericProperty(100.0)
     height = NumericProperty(100.0)
     x = NumericProperty(0.0)
@@ -115,6 +114,17 @@ class HTButton(Button, ToggleBehavior, HoverBehavior):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.rotate = Rotate(angle=self.angle)
+
+        self.canvas.before.add(PushMatrix())
+        self.canvas.before.add(self.rotate)
+        self.canvas.after.add(PopMatrix())
+
+        self.bind(pos=self.update_canvas)
+        self.bind(size=self.update_canvas)
+
+        if self.toggle_enabled:
+            self.bind(on_touch_down=self.on_click)
         if self.path is not None:
             if self.collide_image is None:
                 self.collide_image = self.path + ".collision.png"
@@ -138,6 +148,9 @@ class HTButton(Button, ToggleBehavior, HoverBehavior):
         self.disabled = False
         self._collide_image = Image(source=self.collide_image, keep_data=True)._coreimage
         self.background_normal_temp = self.background_normal
+
+    def update_canvas(self, *args):
+        self.rotate.origin = self.center
 
     def collide_point(self, x, y):
         if self.x <= x <= self.right and self.y <= y <= self.top:
