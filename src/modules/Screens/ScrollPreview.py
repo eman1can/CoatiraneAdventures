@@ -1,20 +1,25 @@
 from kivy.uix.widget import Widget
+from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
 
 from src.modules.ScrollPanel import ScrollPanel
 from src.modules.Sortable import Sortable
+from src.modules.Filterable import Filterable
 
-class ScrollPreview(Sortable, Widget):
+
+class ScrollPreview(Filterable, Sortable, Widget):
     def __init__(self, main_screen, preview, size, pos, slot_size, characters, isSupport):
         super().__init__(size=size, pos=pos)
 
         self.slot_size = slot_size
         self.main_screen = main_screen
+        self.non_label_added = False
 
         preview_width = size[0] - slot_size[0]
         gap = preview_width * 0.0125
 
         root = ScrollPanel(size_hint=(None, 1), size=(preview_width, slot_size[1] + gap * 2), pos=(pos[0] + slot_size[0]/2, pos[1] + (size[1] - slot_size[1]) / 2), do_scroll_y=False)
+        self.non_label = Label(size=self.size, text="No results", font_name='../res/fnt/Gabriola.ttf', font_size=preview_width * 0.125, color=(0,0,0,1))
         self.layout = GridLayout(rows=1, padding=gap, spacing=gap, size_hint_x=None)
         self.layout.bind(minimum_width=self.layout.setter('width'))
 
@@ -38,15 +43,29 @@ class ScrollPreview(Sortable, Widget):
                 index += 1
 
         self.no_sort = True
-        self.previews = previews
-        self.values = values
+        self.no_filter = True
+        self.previews_filter = previews
+        self.previews_sort = previews
+        self.values_sort = values
         self.no_sort = False
-        self.sort()
+        self.no_filter = False
+        self.filter()
 
         root.add_widget(self.layout)
         self.add_widget(root)
 
     def on_after_sort(self):
-        print(self.layout.children)
-        self.layout.children = self.previews
+        if self.non_label_added:
+            self.non_label_added = False
+            self.remove_widget(self.non_label)
+        self.layout.clear_widgets()
+        for preview in self.previews_sort:
+            self.layout.add_widget(preview)
+        if len(self.previews_sort) == 0:
+            self.non_label_added = True
+            self.add_widget(self.non_label)
 
+
+    def on_after_filter(self):
+        self.previews_sort = self.output
+        self.force_update_values()

@@ -87,7 +87,7 @@ class CharacterAttributeScreen(Screen):
         self.name_label.size = self.name_label._label.texture.size
         self.name_label.pos = (overlay_pos[0] + (overlay_size[0] - self.name_label.width) / 2), overlay_pos[1] + overlay_size[1] * .95 - self.display_name_label.height - self.name_label.height
 
-        self.overlay_bar = Image(source="../res/screens/stats/overlay_bar.png", size=(overlay_size[0] * .6, overlay_size[1] * 10 / 610 + 5), pos=(overlay_pos[0] + overlay_size[0] * .2, overlay_pos[1] + overlay_size[1] * .93 - self.display_name_label.height - self.name_label.height), size_hint=(None, None), keep_ratio=True, allow_stretch=True)
+        self.overlay_bar = Image(source="../res/screens/stats/overlay_bar.png", size=(overlay_size[0] * .6, overlay_size[1] * 20 / 620), pos=(overlay_pos[0] + overlay_size[0] * .2, overlay_pos[1] + overlay_size[1] * .93 - self.display_name_label.height - self.name_label.height), size_hint=(None, None), keep_ratio=True, allow_stretch=True)
 
         self.total_label = Label(text="Total Stats", font_size=size[0] * .01625, size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
         self.total_label._label.refresh()

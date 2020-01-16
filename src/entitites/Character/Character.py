@@ -39,6 +39,7 @@ class Character(WidgetBase):
         self.floor_depth = 0
         self.monsters_slain = 0
         self.people_slain = 0
+        self.element = 'light'
 
         self.equipment = Equipment()
 
@@ -51,8 +52,12 @@ class Character(WidgetBase):
             self.type = 'Magical'
         elif type == 1:
             self.type = 'Physical'
+        elif type == 2:
+            self.type = 'Balanced'
+        elif type == 3:
+            self.type = 'Defensive'
         else:
-            self.type = 'Balance'
+            self.type = 'Healing'
 
         self.current_rank = 1
 
@@ -111,6 +116,9 @@ class Character(WidgetBase):
 
     def get_equipment(self):
         return self.equipment
+
+    def get_element(self):
+        return self.element
 
     def get_current_rank(self):
         return self.current_rank
