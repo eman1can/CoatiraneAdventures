@@ -14,6 +14,7 @@ class HoverBehavior(object):
     """
 
     hovered = BooleanProperty(False)
+    do_hover = BooleanProperty(True)
     '''Contains the last relevant point received by the Hoverable. This can
     be used in `on_enter` or `on_leave` in order to know where was dispatched the event.
     '''
@@ -25,7 +26,7 @@ class HoverBehavior(object):
         super(HoverBehavior, self).__init__(**kwargs)
 
     def on_mouse_pos(self, instance, pos):
-        if not self.get_root_window():
+        if not self.get_root_window() or not self.do_hover:
             return
         # do proceed if I'm not displayed <=> If have no parent
         # Next line to_widget allow to compensate for relative layout

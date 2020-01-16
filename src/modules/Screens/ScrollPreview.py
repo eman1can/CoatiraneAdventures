@@ -2,8 +2,9 @@ from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 
 from src.modules.ScrollPanel import ScrollPanel
+from src.modules.Sortable import Sortable
 
-class ScrollPreview(Widget):
+class ScrollPreview(Sortable, Widget):
     def __init__(self, main_screen, preview, size, pos, slot_size, characters, isSupport):
         super().__init__(size=size, pos=pos)
 
@@ -18,6 +19,8 @@ class ScrollPreview(Widget):
         self.layout.bind(minimum_width=self.layout.setter('width'))
 
         index = 0
+        previews = []
+        values = []
         for character in characters:
             if character != preview.char and not isSupport or isSupport and character != preview.support:
                 widget = character.get_select_widget()
@@ -26,9 +29,24 @@ class ScrollPreview(Widget):
                 widget.size = slot_size
                 widget.pos = (-1, -1)
                 widget.reload()
+
+                previews.append(widget)
+                values.append(character.get_strength())
+                widget.char = character
+
                 self.layout.add_widget(widget)
                 index += 1
 
+        self.no_sort = True
+        self.previews = previews
+        self.values = values
+        self.no_sort = False
+        self.sort()
+
         root.add_widget(self.layout)
         self.add_widget(root)
+
+    def on_after_sort(self):
+        print(self.layout.children)
+        self.layout.children = self.previews
 

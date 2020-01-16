@@ -25,6 +25,7 @@ class SquareCharacterPreview(Widget):
         self.isSelect = isSelect  # Will Alaways be True
         self.isSupport = isSupport
         self.event = None
+        self.char = None
 
         self.has_stat = False
 

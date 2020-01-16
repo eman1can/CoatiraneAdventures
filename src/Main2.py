@@ -284,20 +284,42 @@ class GameApp(App):
                 if x[0] != '/':
                     totalNum += 1
                     values = x[:-1].split(",", -1)
-                    # print("Loaded: " + str(values))
-                    # Type Name,Type Name,Id,Rank(0 - 10),Health,Defense PhysicalAttack MagicalAttack MagicalPoints Strength Magic Endurance Dexterity Agility BasicAtkPwr Atk Type
+                    for index in range(0, len(values)):
+                        values[index] = values[index].strip()
+                    print("Loaded: " + str(values))
+                    # 0 Type (A | S)
+                    # 1 Attack Type (0, 1, 2)
+                    # 2 Health Base
+                    # 3 Mana Base
+                    # 4 Strength Base
+                    # 5 Magic Base
+                    # 6 Endurance Base
+                    # 7 Dexterity Base
+                    # 8 Agility Base
+                    # 9 Name
+                    # 10 NickName
+                    # 11 id
+                    # if 0 A:
+                    #   12 Move 1
+                    #   13 Move 2
+                    #   14 Move 3
+                    #   15 Move 4
+                    #   16 Move Special
                     rank = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    # for x in range(len(values)):
-                    #     print("%d : %s" % (x, str(values[x]))
-                    res_path = '../res/characters/' + self.program_type + "/" + values[3] + "/" + values[3]
+                    res_path = '../res/characters/' + self.program_type + "/" + values[11] + "/" + values[11]
                     move = None
-                    print(values)
                     if values[0] == 'A':
-                        move = Move.getmove(moves, values[15]), Move.getmove(moves, values[16]), Move.getmove(moves, values[17]), Move.getmove(moves, values[18]), Move.getmove(moves, values[19])
-                    char = Character(count, values[0] == 'S', values[1], values[2], values[3], rank, int(values[4]),
+                        move = Move.getmove(moves, values[12]), Move.getmove(moves, values[13]), Move.getmove(moves, values[14]), Move.getmove(moves, values[15]), Move.getmove(moves, values[16])
+                    char = Character(count, values[0] == 'S', values[9], values[10], values[11], rank, int(values[1]),
                               res_path + '_slide.png', res_path + '_preview.png',
                               res_path + '_full.png', move, familias, self.program_type,
-                                     health_base=values[5], mana_base=values[9], strength_base=values[10], magic_base=values[11], endurance_base=values[12], dexterity_base=values[13], agility_base=values[14])
+                                     health_base=int(values[2]),
+                                     mana_base=int(values[3]),
+                                     strength_base=int(values[4]),
+                                     magic_base=int(values[5]),
+                                     endurance_base=int(values[6]),
+                                     dexterity_base=int(values[7]),
+                                     agility_base=int(values[8]))
                     char.load_elements()
                     characterArray.append(char)
                     count += 1
