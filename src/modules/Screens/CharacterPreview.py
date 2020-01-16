@@ -82,8 +82,9 @@ class CharacterPreview(ScreenManager):
 
         def set_char_screen(self, resolve, character, support):
             #Want to set the char screen using the correct overlay
+            print(resolve, character.get_name(), support)
             self.old_screen = None
-            if len(self.children) > 0:
+            if len(self.children) > 0 and (self.char != character or self.support != support):
                 self.old_screen = self.children[0]
             if resolve:
                 spt = self.parent.resolve(self, character, support)
@@ -98,7 +99,7 @@ class CharacterPreview(ScreenManager):
                 if child.name == name:
                     self.transition.direction = 'left'
                     self.current = self.preview.name
-                    if self.old_screen != None:
+                    if self.old_screen is not None:
                         if self.old_screen.name != 'empty':
                             self.remove_widget(self.old_screen)
                     return True
@@ -108,7 +109,7 @@ class CharacterPreview(ScreenManager):
             self.add_widget(self.preview)
             self.transition.direction = 'left'
             self.current = self.preview.name
-            if self.old_screen != None:
+            if self.old_screen is not None:
                 if self.old_screen.name != 'empty':
                     self.remove_widget(self.old_screen)
 
