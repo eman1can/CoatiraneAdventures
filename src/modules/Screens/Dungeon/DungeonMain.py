@@ -2,6 +2,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
 from kivy.uix.image import Image
 from kivy.uix.label import Label
+from kivy.uix.effectwidget import EffectWidget, HorizontalBlurEffect
 from kivy.properties import NumericProperty, StringProperty, BooleanProperty
 from src.modules.PartyPortfolio import PartyPortfolio
 from src.modules.HTButton import HTButton
@@ -19,8 +20,7 @@ class DungeonMain(Screen):
 
         self.background = Image(source="../res/screens/backgrounds/background.png", size=size, pos=(0, 0), keep_ratio=True, allow_stretch=True)
 
-        self.title = Label(text="Coatirane Dungeons", font_size=size[0] * .1, size_hint=(None, None),
-                           color=(1, .2, .2, 1), font_name='../res/fnt/Precious.ttf')
+        self.title = Label(text="Coatirane Dungeons", font_size=size[0] * .1, size_hint=(None, None), color=(1, .2, .2, 1), font_name='../res/fnt/Precious.ttf')
         self.title._label.refresh()
         self.title.size = self.title._label.texture.size
         self.title.pos = size[0] - self.title.width - size[0] * 0.025, size[1] - self.title.height - size[0] * 0.025

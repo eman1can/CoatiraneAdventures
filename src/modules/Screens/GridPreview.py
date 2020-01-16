@@ -37,6 +37,17 @@ class GridPreview(Filterable, Sortable, Widget):
                 widget.pos = (-1, -1)
                 widget.reload()
 
+                if character in self.main_screen.parties[self.main_screen.parties[0] + 1]:
+                    tag = Label(text="selected", color=(1, 1, 1, 1), font_size=slot_size[0] * 0.25, font_name='../res/fnt/Gabriola.ttf', outline_color=(0, 0, 0, 1), outline_width=1)
+                    tag._label.refresh()
+                    tag.size = slot_size[0], tag._label.texture.size[0]
+                    tag.pos = (widget.pos[0], widget.pos[1] + slot_size[1] - tag.height)
+                    widget.tag = tag
+                    widget.has_tag = True
+                    widget.add_widget(tag)
+                elif widget.has_tag:
+                    widget.has_tag = False
+                    widget.remove_widget(widget.tag)
                 previews.append(widget)
                 values.append(character.get_strength())
                 widget.char = character

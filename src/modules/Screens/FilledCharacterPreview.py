@@ -40,6 +40,8 @@ class FilledCharacterPreview(Widget):
         self.isSelect = isSelect
         self.isSupport = isSupport
         self.event = None
+        self.has_tag = False
+        self.tag = None
 
         self.preview_width = 250
         self.preview_height = 935
@@ -424,6 +426,9 @@ class FilledCharacterPreview(Widget):
         self.char_button.pos = pos
         if not self.isSelect:
             self.support_button.pos = pos
+
+        if self.has_tag:
+            self.tag.pos = pos[0], pos[1] + self.size[1] - (60 * self.size[1] / self.preview_height) - self.tag.height
 
     def updateStars(self, character, support):
         # print("updating preview stars")

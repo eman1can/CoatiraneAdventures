@@ -28,6 +28,8 @@ class SquareCharacterPreview(Widget):
         self.char = None
 
         self.has_stat = False
+        self.has_tag = False
+        self.tag = None
 
         self.preview_width = 250
         self.preview_height = 250
@@ -119,6 +121,8 @@ class SquareCharacterPreview(Widget):
         self.overlay.pos = pos
         self.char_image.pos = pos[0] + self.preview_wgap, pos[1] + self.preview_hgap
         self.char_button.pos = pos
+        if self.has_tag:
+            self.tag.pos = pos[0], pos[1] + self.size[1] - self.tag.height
 
         star_width = (self.size[1] * 62 / self.preview_height) / 2.5
         dist = ((self.size[0] - self.preview_wgap * 2) - star_width * 10) / 2

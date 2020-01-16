@@ -17,7 +17,7 @@ class TavernMain(Screen):
                         source='../res/screens/backgrounds/collage.png')
         self.title = Label(text="[b]Recruitment[/b]", markup=True, font_size=175, color=(1, 1, 1, 1),
                            pos=(650, main_screen.height - 200), size=(200, 50), size_hint=(None, None))
-        self.recruitButton = HTButton(path='../res/screens/buttons/recruitButton', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
+        self.recruitButton = HTButton(path='../res/screens/buttons/recruitButton', collide_image="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
                                       pos=(main_screen.width / 2 - 270 / 2, 100), on_touch_down=self.onRecruit)
         self.lock = Image(size=size, pos=(0, 0), allow_stretch=True, keep_ratio=True,
                           source='../res/screens/backgrounds/locked.png')
