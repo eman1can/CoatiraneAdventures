@@ -9,48 +9,62 @@ import random
 class RecruitPreview(Screen):
 
     def __init__(self, main_screen, char, **kwargs):
+        self.initalized = False
+        super().__init__(**kwargs)
+        self.name = 'recruit ' + char.get_name()
+
         self.main_screen = main_screen
-        super().__init__(**kwargs, name='RecruitPreview_%s' % char.get_id(), id='RecruitPreview')
-        self.image = char.get_full_image(False)
-        self.image.size = (self.main_screen.height * 2 / 3, self.main_screen.height * 2 / 3)
-        self.image.pos = (0, 0)
-        self.add_widget(self.image)
-        self.title = Label(text="[b]" + char.get_name() + "[/b]", markup=True, color=(1, 1, 1, 1), size=(200, 50),
-                           font_size=80, pos=((self.main_screen.width - (self.main_screen.height * 2 / 3)) / 2, self.main_screen.height - 100))
-        self.add_widget(self.title)
-        self.rollAgainButton = HTButton(path='../res/screens/buttons/RecruitButtonRollAgain', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
-                                        pos=(200 - 135, self.main_screen.height / 2), on_touch_down=self.onRollAgain)
-        self.confirmButton = HTButton(path='../res/screens/buttons/RecruitButtonConfirm', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
-                                      pos=(self.main_screen.width - 200 - 135, self.main_screen.height / 2), on_touch_down=self.onConfirm)
-        self.cancelButton = HTButton(path='../res/screens/buttons/RecruitButtonCancel', collision="../res/screens/buttons/largebutton.collision.png", size=(270, 180),
-                                     pos=(self.main_screen.width - 200 - 135, self.main_screen.height / 2 - 200), on_touch_down=self.onCancel)
-        self.add_widget(self.rollAgainButton)
-        self.add_widget(self.confirmButton)
-        self.add_widget(self.cancelButton)
         self.char = char
 
-    def on_size(self, *args):
-        self.rollAgainButton.size = self.height / 4, self.height / 6
-        self.rollAgainButton.pos = self.height / 5.4 - self.rollAgainButton.width / 2, self.height / 2 - self.rollAgainButton.height / 2
-        self.confirmButton.size = self.height / 4, self.height / 6
-        self.confirmButton.pos = self.width - self.height / 5.4 - self.confirmButton.width / 2, self.height / 2
-        self.cancelButton.size = self.height / 4, self.height / 6
-        self.cancelButton.pos = self.width - self.height / 5.4 - self.cancelButton.width / 2, self.height / 2 - self.rollAgainButton.height
+        self._size = (0, 0)
 
-    def onRollAgain(self, instance, touch):
+        self.background = Image(source="../res/screens/backgrounds/recruit_background.png", allow_stretch=True)
+
+        self.image = char.get_full_image(False)
+        self.title = Label(text="[b]" + char.get_name() + "[/b]", markup=True, color=(1, 1, 1, 1), font_name="../res/fnt/Precious.ttf")
+        self.roll_again = HTButton(path='../res/screens/buttons/RecruitButtonRollAgain', collide_image="../res/screens/buttons/largebutton.collision.png", size_hint=(None, None), on_touch_down=self.on_roll_again)
+        self.confirm = HTButton(path='../res/screens/buttons/RecruitButtonConfirm', collide_image="../res/screens/buttons/largebutton.collision.png", size_hint=(None, None), on_touch_down=self.on_confirm)
+        self.cancel = HTButton(path='../res/screens/buttons/RecruitButtonCancel', collide_image="../res/screens/buttons/largebutton.collision.png", size_hint=(None, None), on_touch_down=self.on_cancel)
+
+        self.add_widget(self.title)
+        self.add_widget(self.image)
+        self.add_widget(self.roll_again)
+        self.add_widget(self.confirm)
+        self.add_widget(self.cancel)
+        self.initalized = True
+
+    def on_size(self, instance, size):
+        if not self.initalized or self._size == size:
+            return
+        self._size = size.copy()
+
+        self.title.font_size = self.height * 0.15
+        self.title.texture_update()
+        self.title.size = self.title.texture_size
+        self.title.pos = self.width / 2 - self.title.width / 2, self.height * 0.9
+
+        self.image.size = size
+        self.image.pos = (0, 0)
+
+        button_size = self.height * 0.25 * 1016 / 716, self.height * 0.25
+        self.roll_again.size = button_size
+        self.roll_again.pos = self.width / 2 - button_size[0] * 1.75, button_size[1] * 0.25
+        self.confirm.size = button_size
+        self.confirm.pos = self.width / 2 - button_size[0] * 0.5, button_size[1] * 0.25
+        self.cancel.size = button_size
+        self.cancel.pos = self.width / 2 + button_size[0] * .75, button_size[1] * 0.25
+
+    def on_roll_again(self, instance, touch):
         if instance.collide_point(*touch.pos):
-            notobtained = False
-            while not notobtained:
+            not_obtained = False
+            while not not_obtained:
                 index = random.randint(0, len(self.main_screen.characters) - 1)
-                print(str(index))
-                print(str(self.main_screen.obtained_characters))
-                notobtained = index not in self.main_screen.obtained_characters
-            print(str(self.main_screen.characters[index].get_name()))
+                not_obtained = index not in self.main_screen.obtained_characters
             preview = RecruitPreview(self.main_screen, self.main_screen.characters[index])
-            self.main_screen.transition = RiseInTransition(duration=.3)
+            preview.size = self.size
             self.main_screen.display_screen(preview, True, False)
 
-    def onConfirm(self, instance, touch):
+    def on_confirm(self, instance, touch):
         if instance.collide_point(*touch.pos):
             self.main_screen.obtained_characters.append(self.char.get_index())
             if self.char.is_support():
@@ -59,6 +73,6 @@ class RecruitPreview(Screen):
                 self.main_screen.obtained_characters_a.append(self.char.get_index())
             self.main_screen.display_screen(None, False, False)
 
-    def onCancel(self, instance, touch):
+    def on_cancel(self, instance, touch):
         if instance.collide_point(*touch.pos):
             self.main_screen.display_screen(None, False, False)

@@ -20,9 +20,9 @@ class TavernMain(Screen):
 
         self.background = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/collage.png')
         self.lock = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/locked.png')
-        self.title = Label(text="[b]Recruitment[/b]", markup=True, color=(1, 1, 1, 1), size_hint=(None, None), font_name='../res/fnt/Precious.ttf')
+        self.title = Label(text="[b]Recruitment[/b]", markup=True, color=(1, 1, 1, 1), size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=1, outline_color=(0, 0, 0, 1))
 
-        self.recruit_button = HTButton(path='../res/screens/buttons/recruitButton', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", on_touch_down=self.onRecruit)
+        self.recruit_button = HTButton(path='../res/screens/buttons/recruitButton', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", on_touch_down=self.on_recruit)
         self.back_button = HTButton(path='../res/screens/buttons/back', size_hint=(None, None), on_touch_down=self.on_back_press)
 
         self.add_widget(self.background)
@@ -40,10 +40,10 @@ class TavernMain(Screen):
         self.background.size = self.size
         self.lock.size = self.size
 
-        self.title.font_size = self.width * 0.15
+        self.title.font_size = self.width * 0.0725
         self.title.texture_update()
         self.title.size = self.title.texture_size
-        self.title.pos = self.width * 0.1, self.height * 0.95 - self.title.height
+        self.title.pos = self.width * 0.2, self.height * 0.95 - self.title.height
 
         self.recruit_button.size = self.height * 0.15 * 1016 / 716, self.height * 0.15
         self.recruit_button.pos = self.width * 0.5 - self.recruit_button.width * 0.5, self.height * 0.1
@@ -54,14 +54,15 @@ class TavernMain(Screen):
     def reload(self):
         pass
 
-    def onRecruit(self, instance, touch):
+    def on_recruit(self, instance, touch):
         if instance.collide_point(*touch.pos):
             if self.unlocked:
-                notobtained = False
-                while not notobtained:
+                not_obtained = False
+                while not not_obtained:
                     index = random.randint(0, len(self.main_screen.characters) - 1)
-                    notobtained = index not in self.main_screen.obtained_characters
-                screen = RecruitPreview(self.main_screen, self.main_screen.characters[index], size=self.size)
+                    not_obtained = index not in self.main_screen.obtained_characters
+                screen = RecruitPreview(self.main_screen, self.main_screen.characters[index])
+                screen.size = self.size
                 self.main_screen.display_screen(screen, True, True)
 
     def check_unlock(self):

@@ -22,8 +22,8 @@ class SelectScreen(Screen):
         self.new_game_bell = HTButton(size_hint=(None, None), path='../res/screens/buttons/newgame.bell', on_touch_down=lambda instance, touch: self.choose_character(instance, touch, 'hero_bell'))
         self.new_game_ais = HTButton(size_hint=(None, None), path='../res/screens/buttons/newgame.ais', on_touch_down=lambda instance, touch: (self.choose_character(instance, touch, 'badass_ais')))
 
-        self.new_game_bell_label = Label(text="Rabbit Foot", size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=0.25, outline_color=(1, 0, 0, .75))
-        self.new_game_ais_label = Label(text="Battle Princess", size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=0.25, outline_color=(0, 0, 1, .75))
+        self.new_game_bell_label = Label(text="Rabbit Foot", size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=0.25, color=(0, 0, 0, 1), outline_color=(1, 0, 0, .75))
+        self.new_game_ais_label = Label(text="Battle Princess", size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=0.25, color=(0, 0, 0, 1), outline_color=(0, 0, 1, .75))
 
         self.add_widget(self.background)
         self.add_widget(self.title)
