@@ -3,7 +3,7 @@ from kivy.utils import platform
 
 Config.set('input', 'mouse', 'mouse, multitouch_on_demand')
 Config.set('kivy', 'exit_on_escape', 0)
-Config.set('kivy', 'window_icon', '../res/screens/icon.ico')
+Config.set('kivy', 'window_icon', '../res/screens/icon.png')
 Config.set('graphics', 'fbo', 'hardware')
 Config.set('graphics', 'default_font', '../res/fnt/Gabriola.ttf')
 if platform == 'win':
@@ -97,7 +97,7 @@ class Root(ScreenManager):
         elif screen_name == 'town_screen':
             screen = TownScreen(self)
         elif screen_name == 'dungeon_main':
-            screen = DungeonMain(self, self.size)
+            screen = DungeonMain(self)
         elif screen_name == 'tavern_main':
             screen = TavernMain(self)
             screen.check_unlock()
