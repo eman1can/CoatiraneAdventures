@@ -1,57 +1,52 @@
+from kivy.metrics import sp
+from kivy.clock import Clock
+from kivy.animation import Animation
+from kivy.properties import ObjectProperty, ListProperty, NumericProperty, BooleanProperty
+from kivy.uix.stencilview import StencilView
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.behaviors import DragBehavior
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
-from kivy.animation import Animation
-from kivy.graphics import Color, Rectangle
-from functools import partial
-from kivy.uix.stencilview import StencilView
-from kivy.uix.behaviors import DragBehavior
-from kivy.uix.floatlayout import FloatLayout
-from kivy.clock import Clock
-from kivy.metrics import sp
-from src.modules.HTButton import HTButton
+
 from src.modules.Screens.CharacterPortfolio import CharacterPortfolio
+from src.modules.HTButton import HTButton
+
+
 class PartyPortfolio(DragBehavior, Widget):
-    def __init__(self, main_screen, size, pos, dungeon):
-        self.initalized = False
-        super().__init__(size=size, pos=pos, size_hint=(None, None))
-        self.main_screen = main_screen
+    initialized = BooleanProperty(False)
+    dungeon = ObjectProperty(None)
+    main_screen = ObjectProperty(None)
+    drag_widgets = ListProperty([])
+    animate_distance = NumericProperty(0)
+    pos_a = BooleanProperty(False)
 
-        self.layout = FloatStencil(main_screen, size, pos)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-        self.portfolios = []
+        self._size = (0, 0)
+        self._pos = (-1, -1)
+
+        self.layout = FloatStencil(main_screen=self.main_screen, dungeon=self.dungeon, size_hint=(None, None))
 
         for x in range(0, len(self.main_screen.parties) - 1):
-            party_label = Label(text="Party " + str(x + 1), color=(0, 0, 0, 1), font_name="../res/fnt/Precious.ttf", font_size=150 * size[1] / self.main_screen.width)
-            party_label._label.refresh()
-            party_label.size = party_label._label.texture.size
-            party_label.pos = pos[0] + size[0] * 0.025, pos[1] + size[1] - party_label.height
+            portfolio = CharacterPortfolio(party=self.main_screen.parties[x + 1], main_screen=self.main_screen, size_hint=(None, None))
+            party_label = Label(text="Party " + str(x + 1), color=(0, 0, 0, 1), font_name="../res/fnt/Precious.ttf")
 
-            drag = DragWidget(size, pos)
-            portfolio = CharacterPortfolio(self.main_screen, drag.wid_size, drag.wid_pos, self.main_screen.parties[x + 1])
+            drag = DragWidget(root=portfolio, title=party_label, size_hint=(None, None))
+            self.drag_widgets.append(drag)
 
-            drag.root = portfolio
-            drag.title = party_label
-
-            self.portfolios.append(portfolio)
             drag.add_widget(portfolio)
             drag.add_widget(party_label)
             self.layout.add_object(drag)
 
-        self.arrow_size = size[0] * 0.05, size[0] * 0.05 * 120 / 72
-        self.animate_distance = size[0] * .025
-        self.left_arrow = HTButton(path='../res/screens/buttons/ArrowLeft', background_hover='../res/screens/buttons/ArrowLeft.normal.png', size=self.arrow_size, pos=(pos[0] + size[0] * .05 - self.arrow_size[0], pos[1] + (size[1] * 0.8) / 2 - self.arrow_size[1] / 2))
-        self.left_arrow.bind(on_touch_up = lambda instance, touch: self.on_arrow_touch(instance, touch, True))
-        self.right_arrow = HTButton(path='../res/screens/buttons/ArrowRight', background_hover='../res/screens/buttons/ArrowRight.normal.png', size=self.arrow_size, pos=(pos[0] + size[0] * .95, pos[1] + (size[1] * 0.8) / 2 - self.arrow_size[1] / 2))
-        self.right_arrow.bind(on_touch_up = lambda instance, touch: self.on_arrow_touch(instance, touch, False))
+        self.left_arrow = HTButton(path='../res/screens/buttons/ArrowLeft', background_hover='../res/screens/buttons/ArrowLeft.normal.png', on_touch_down=lambda instance, touch: self.on_arrow_touch(instance, touch, True))
+        self.right_arrow = HTButton(path='../res/screens/buttons/ArrowRight', background_hover='../res/screens/buttons/ArrowRight.normal.png', on_touch_down=lambda instance, touch: self.on_arrow_touch(instance, touch, False))
 
-        self.pos_a = True
         self.add_widget(self.left_arrow)
         self.add_widget(self.right_arrow)
-        self.layout.dungeon = dungeon
-        self.layout.show_index(self.main_screen.parties[0])
         self.add_widget(self.layout)
-
-        self.initalized = True
+        self.layout.show_index(self.main_screen.parties[0])
+        self.initialized = True
 
     def reload(self):
         self.layout.slots[self.layout.get_index()].root.reload()
@@ -75,54 +70,72 @@ class PartyPortfolio(DragBehavior, Widget):
         self.pos_a = not self.pos_a
 
     def on_size(self, instance, size):
-        if not self.initalized:
+        if not self.initialized or self._size == size:
             return
+        self._size = size.copy()
 
         self.layout.size = size
-        self.arrow_size = size[0] * 0.05, size[0] * 0.05 * 120 / 72
+        self.arrow_size = self.width * 0.05, self.width * 0.05 * 120 / 72
         self.left_arrow.size = self.arrow_size
         self.right_arrow.size = self.arrow_size
 
+    def on_pos(self, isntance, pos):
+        if not self.initialized or self._pos == pos:
+            return
+        self._pos = pos.copy()
+
+        self.layout.pos = self.pos
+        self.left_arrow.pos = self.x, self.y + self.height / 2 - self.arrow_size[1] / 2
+        self.right_arrow.pos = self.x + self.width - self.arrow_size[0], self.y + self.height / 2 - self.arrow_size[1] / 2
+
     def get_party_score(self):
-        if not self.initalized:
+        if not self.initialized:
             return 0
         return self.layout.slots[self.layout.index].root.get_party_score()
 
+
 class FloatStencil(StencilView):
-    def __init__(self, main_screen, size, pos, **kwargs):
-        self.initalized = False
-        self.main_screen = main_screen
-        self.dungeon = None
-        self.fpos = pos[0] - size[0] * 2, pos[1]
-        self.fsize = size[0] * 5, size[1]
+    initialized = BooleanProperty(False)
+    dungeon = ObjectProperty(None)
+    main_screen = ObjectProperty(None)
+    slots = ListProperty([])
+    index = NumericProperty(-1)
 
-        super().__init__(size=size, pos=pos, size_hint=(None, None), **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-        self.root = FloatLayout(size=self.fsize, pos=self.fpos)
+        self._size = (0, 0)
+        self._pos = (-1, -1)
+
+        self.root = FloatLayout()
+
         self.add_widget(self.root)
-
-        self.slots = []
-        self.index = -1
-
-        self.initalized = True
+        self.initialized = True
 
     def on_size(self, instance, size):
-        if not self.initalized:
+        if not self.initialized or self._size == size:
             return
+        self._size = size.copy()
 
-        self.fsize = size[0] * 5, size[1]
-        self.fpos = self.pos[0] - size[0] * 2, self.pos[1]
-        self.root.size = self.fsize
-        self.root.pos = self.fpos
+        self.root.size = self.width * 5, self.height
 
         for slot in self.slots:
             slot.size = size
 
-        self.slots[(self.index - 1) % len(self.slots)].pos = (self.x - self.width, self.pos[1])
-        self.slots[self.index].pos = (self.x, self.pos[1])
-        self.slots[(self.index + 1) % len(self.slots)].pos = (self.x + self.width, self.pos[1])
+        self.slots[(self.index - 1) % len(self.slots)].pos = (self.x - self.width, self.y)
+        self.slots[self.index].pos = self.pos
+        self.slots[(self.index + 1) % len(self.slots)].pos = (self.x + self.width, self.y)
 
+    def on_pos(self, isntance, pos):
+        if not self.initialized or self._pos == pos:
+            return
+        self._pos = pos.copy()
 
+        self.root.pos = self.x - self.width * 2, self.y
+
+        self.slots[(self.index - 1) % len(self.slots)].pos = (self.x - self.width, self.y)
+        self.slots[self.index].pos = self.pos
+        self.slots[(self.index + 1) % len(self.slots)].pos = (self.x + self.width, self.y)
 
     def add_object(self, object):
         # 0 Is the Current
@@ -153,7 +166,6 @@ class FloatStencil(StencilView):
             return self.slots[self.index].dispatch('on_touch_down', touch)
         return super().on_touch_down(touch)
 
-
     def add_widget(self, widget, index=0, canvas=None):
         if widget == self.root:
             return super().add_widget(widget, index, canvas)
@@ -179,24 +191,17 @@ class FloatStencil(StencilView):
         next_obj = self.slots[(self.index + 2) % len(self.slots)]
 
         self.remove_widget(left_obj)
+        self.add_widget(next_obj)
 
         next_obj.x = self.x + self.width * 2
 
-        anim = Animation(x=self.x - self.width, duration=.25)
-        anim.start(current_obj)
-        anim = Animation(x=self.x, duration=.25)
-        anim.start(right_obj)
-        anim = Animation(x=self.x + self.width, duration=.25)
-        anim.start(next_obj)
-
-        self.add_widget(next_obj)
+        self.animate(current_obj, right_obj, next_obj)
 
         self.index += 1
-
-
-        self.main_screen.parties[0] = self.index
         if self.index >= len(self.slots):
             self.index -= len(self.slots)
+
+        self.main_screen.parties[0] = self.index
         self.slots[self.index].root.reload()
         if self.dungeon is not None:
             self.dungeon.update_party_score()
@@ -209,42 +214,35 @@ class FloatStencil(StencilView):
         right_obj = self.slots[(self.index + 1) % len(self.slots)]
 
         self.remove_widget(right_obj)
+        self.add_widget(next_obj)
 
         next_obj.x = self.x - self.width * 2
 
-        anim = Animation(x=self.x + self.width, duration=.25)
-        anim.start(current_obj)
-        anim = Animation(x=self.x, duration=.25)
-        anim.start(left_obj)
-        anim = Animation(x=self.x - self.width, duration=.25)
-        anim.start(next_obj)
-
-        self.add_widget(next_obj)
+        self.animate(next_obj, left_obj, current_obj)
 
         self.index -= 1
-
-
-        self.main_screen.parties[0] = self.index
         if self.index <= -len(self.slots):
             self.index += len(self.slots)
+
+        self.main_screen.parties[0] = self.index
         self.slots[self.index].root.reload()
         if self.dungeon is not None:
             self.dungeon.update_party_score()
         return self.index
 
     def nocrease_index(self):
-        left_obj = self.slots[(self.index - 1)  % len(self.slots)]
+        left_obj = self.slots[(self.index - 1) % len(self.slots)]
         current_obj = self.slots[self.index]
-        right_obj = self.slots[(self.index + 1)  % len(self.slots)]
+        right_obj = self.slots[(self.index + 1) % len(self.slots)]
 
-        anim = Animation(x=self.x - self.width, duration=.25)
-        anim.start(left_obj)
-        anim = Animation(x=self.x, duration=.25)
-        anim.start(current_obj)
-        anim = Animation(x=self.x + self.width, duration=.25)
-        anim.start(right_obj)
+        self.animate(left_obj, current_obj, right_obj)
 
         return self.index
+
+    def animate(self, left, middle, right):
+        Animation(x=self.x - self.width, duration=.25).start(left)
+        Animation(x=self.x, duration=.25).start(middle)
+        Animation(x=self.x + self.width, duration=.25).start(right)
 
     def show_index(self, index):
         left_obj = self.slots[(self.index - 1) % len(self.slots)]
@@ -252,10 +250,11 @@ class FloatStencil(StencilView):
         right_obj = self.slots[(self.index + 1) % len(self.slots)]
 
         left_next_obj = self.slots[(index - 1) % len(self.slots)]
-        left_next_obj.x = self.x - self.width
         current_next_obj = self.slots[index]
-        current_next_obj.x = self.x
         right_next_obj = self.slots[(index + 1) % len(self.slots)]
+
+        left_next_obj.x = self.x - self.width
+        current_next_obj.x = self.x
         right_next_obj.x = self.x + self.width
 
         src_array = [left_obj, current_obj, right_obj]
@@ -276,44 +275,49 @@ class FloatStencil(StencilView):
     def remove_widget(self, widget):
         self.root.remove_widget(widget)
 
+
 class DragWidget(Widget):
-    def __init__(self, size, pos, **kwargs):
-        self.initalized = False
-        super().__init__(size=size, pos=pos, size_hint=(None, None), **kwargs)
+    initialized = BooleanProperty(False)
+    root = ObjectProperty(None)
+    title = ObjectProperty(None)
+    reset_pos = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
         self.drag_distance = 0
         self.drag_timeout = 250
-        self.root = None
         self._parent = None
-        self._pos = pos
-
-        self.wid_size = size[0] * 0.95, size[1] * .9
-        self.wid_pos = pos[0] + size[0] * 0.025, pos[1]
-
         self._drag_touch = None
 
+        self._pos = (0, 0)
+        self._size = (0, 0)
+
         self.callback = lambda : self.after_end()
-        self.initalized = True
+        self.initialized = True
 
     def on_size(self, instance, size):
-        if not self.initalized:
+        if not self.initialized or self._size == size:
             return False
+        self._size = size.copy()
+
         if self.root is not None:
-            self.wid_size = size[0] * 0.95, size[1] * .9
-            self.root.size = self.wid_size
+            self.root.size = self.width * 0.95, self.height * .9
         if self.title is not None:
-            self.title.font_size=150 * size[1] / 1920
-            self.title._label.refresh()
-            self.title.size = self.title._label.texture.size
-            self.title.pos = (self.pos[0] + size[0] * 0.025, self.pos[1] + self.size[1] - self.title.size[1])
+            self.title.font_size = 150 * size[1] / 1920
+            self.title.texture_update()
+            self.title.size = self.title.texture_size
+            self.title.pos = (self.x + self.width * 0.025, self.y + self.y - self.title.height)
 
     def on_pos(self, instance, pos):
-        if not self.initalized:
+        if not self.initialized or self._pos == pos:
             return False
+        self._pos = pos.copy()
+
         if self.root is not None:
-            self.wid_pos = pos[0] + self.size[0] * 0.025, pos[1]
-            self.root.pos = self.wid_pos
+            self.root.pos = self.x + self.width * 0.025, self.y
         if self.title is not None:
-            self.title.pos = (pos[0] + self.size[0] * 0.025, pos[1] + self.size[1] - self.title.size[1])
+            self.title.pos = (self.x + self.width * 0.025, self.y + self.height - self.title.height)
 
     def collide_point(self, x, y):
         if self._parent.is_current(self):
@@ -325,11 +329,11 @@ class DragWidget(Widget):
         return '{0}.{1}'.format(prefix, self.uid)
 
     def on_touch_down(self, touch):
-        #If outside bounds
+        # If outside bounds
         if not self.collide_point(*touch.pos):
             return True
 
-        #If already have a drag touch that is propigating, ignore others
+        # If already have a drag touch that is propigating, ignore others
         if self._drag_touch:
             return True
 
@@ -340,7 +344,7 @@ class DragWidget(Widget):
                 self._parent.decrease_index()
             return True
 
-
+        self.reset_pos = self.pos.copy()
         self._drag_touch = touch
         touch.grab(self)
         touch.ud[self._get_uid()] = {
@@ -348,8 +352,7 @@ class DragWidget(Widget):
             'dx': 0,
             'dy': 0
         }
-        Clock.schedule_once(self._change_touch_mode,
-                            self.drag_timeout / 1000)
+        Clock.schedule_once(self._change_touch_mode, self.drag_timeout / 1000)
         return True
 
     def _change_touch_mode(self, *args):
@@ -368,11 +371,10 @@ class DragWidget(Widget):
 
         for child in self.children:
             child.dispatch('on_touch_down', touch)
-
         return
 
     def on_touch_move(self, touch):
-        #If not the same touch, kill it
+        # If not the same touch, kill it
         if touch.grab_current is not self:
             return True
 
@@ -413,9 +415,9 @@ class DragWidget(Widget):
 
     def after_end(self):
         if self._parent.is_current(self):
-            if abs(self.x - self._pos[0]) > self.width * 5 / 8:
-                if min(self.x - self._pos[0], self._pos[0] + self.width - (self.x + self.width)) == \
-                        self.x - self._pos[0]:
+            if abs(self.x - self.reset_pos[0]) > self.width * 5 / 8:
+                if min(self.x - self.reset_pos[0], self.reset_pos[0] + self.width - (self.x + self.width)) == \
+                        self.x - self.reset_pos[0]:
                     # Go Left
                     self._parent.increase_index()
                 else:
