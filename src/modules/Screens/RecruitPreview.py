@@ -1,4 +1,5 @@
-from kivy.uix.screenmanager import Screen, RiseInTransition
+from kivy.properties import ObjectProperty, BooleanProperty
+from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 
@@ -7,13 +8,13 @@ from src.modules.HTButton import HTButton
 import random
 
 class RecruitPreview(Screen):
+    initialized = BooleanProperty(False)
+    main_screen = ObjectProperty(None)
 
-    def __init__(self, main_screen, char, **kwargs):
-        self.initalized = False
+    def __init__(self, char, **kwargs):
         super().__init__(**kwargs)
-        self.name = 'recruit ' + char.get_name()
+        self.name = 'recruit_' + char.get_name()
 
-        self.main_screen = main_screen
         self.char = char
 
         self._size = (0, 0)
@@ -31,10 +32,10 @@ class RecruitPreview(Screen):
         self.add_widget(self.roll_again)
         self.add_widget(self.confirm)
         self.add_widget(self.cancel)
-        self.initalized = True
+        self.initialized = True
 
     def on_size(self, instance, size):
-        if not self.initalized or self._size == size:
+        if not self.initialized or self._size == size:
             return
         self._size = size.copy()
 
