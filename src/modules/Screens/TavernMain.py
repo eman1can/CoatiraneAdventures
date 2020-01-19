@@ -1,21 +1,23 @@
+from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import SlideTransition, RiseInTransition
-from src.modules.HTButton import HTButton
-from src.modules.Screens.RecruitPreview import RecruitPreview
+
 import random
+
+from src.modules.HTButton import HTButton
 
 
 class TavernMain(Screen):
-    def __init__(self, main_screen, **kwargs):
-        self.initalized = False
+    initialized = BooleanProperty(False)
+    main_screen = ObjectProperty(None)
+    unlocked = BooleanProperty(True)
+
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.name = 'tavern_main'
 
-        self.main_screen = main_screen
-
-        self.unlocked = True
         self._size = (0, 0)
 
         self.background = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/collage.png')
@@ -30,10 +32,13 @@ class TavernMain(Screen):
         self.add_widget(self.recruit_button)
         self.add_widget(self.lock)
         self.add_widget(self.back_button)
-        self.initalized = True
+        self.initialized = True
+
+    def on_enter(self, *args):
+        self.check_unlock()
 
     def on_size(self, instance, size):
-        if not self.initalized or self._size == size:
+        if not self.initialized or self._size == size:
             return
         self._size = size.copy()
 
@@ -58,12 +63,14 @@ class TavernMain(Screen):
         if instance.collide_point(*touch.pos):
             if self.unlocked:
                 not_obtained = False
-                while not not_obtained:
-                    index = random.randint(0, len(self.main_screen.characters) - 1)
-                    not_obtained = index not in self.main_screen.obtained_characters
-                screen = RecruitPreview(self.main_screen, self.main_screen.characters[index])
-                screen.size = self.size
-                self.main_screen.display_screen(screen, True, True)
+                if self.main_screen.obtained_characters == len(self.main_screen.characters):
+                    print("Obtained All Characters")
+                else:
+                    while not not_obtained:
+                        index = random.randint(0, len(self.main_screen.characters) - 1)
+                        not_obtained = index not in self.main_screen.obtained_characters
+                    self.main_screen.create_screen('recruit', self.main_screen.characters[index])
+                    self.main_screen.display_screen('recruit_' + self.main_screen.characters[index].get_name(), True, True)
 
     def check_unlock(self):
         self.unlocked = self.main_screen.tavern_unlocked
