@@ -1,3 +1,4 @@
+from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
 from kivy.uix.image import Image
@@ -10,50 +11,41 @@ from kivy.clock import Clock
 from src.modules.HTButton import HTButton
 
 class SquareCharacterPreview(Widget):
-    def __init__(self, main_screen, preview, size, pos, isSelect, has_screen, character, support, isSupport, new_image_instance, **kwargs):
-        self.initalized = False
-        if pos == (-1, -1):
-            super().__init__(size=size, **kwargs)
-        else:
-            super().__init__(size=size, pos=pos)
+    initialized = BooleanProperty(False)
+    main_screen = ObjectProperty(None)
+    preview = ObjectProperty(None)
 
-        self.main_screen = main_screen
-        self.has_screen = has_screen
-        self.preview = preview
-        self.character = character
-        self.support = support
-        self.isSelect = isSelect  # Will Alaways be True
-        self.isSupport = isSupport
-        self.event = None
-        self.char = None
+    is_select = BooleanProperty(False)
+    has_screen = BooleanProperty(False)
+    is_support = BooleanProperty(False)
+    new_image_instance = BooleanProperty(False)
 
-        self.has_stat = False
-        self.has_tag = False
-        self.tag = None
+    event = ObjectProperty(None)
+    has_tag = BooleanProperty(False)
+    has_stat = BooleanProperty(False)
+    tag = ObjectProperty(None)
 
-        self.preview_width = 250
-        self.preview_height = 250
+    character = ObjectProperty(None)
+    support = ObjectProperty(None)
 
-        self.preview_wgap = 5 * size[0] / self.preview_width
-        self.preview_hgap = 5 * size[1] / self.preview_height
-        self.image_width = size[0] - self.preview_wgap * 2
-        self.image_height = self.image_width
+    def __init__(self, **kwargs):
+        super().__init__(size_hint=(None, None), **kwargs)
 
-        self.background = Image(source="../res/screens/stats/preview_square_background.png", size=size, pos=pos, allow_stretch=True)
+        self._size = (0, 0)
+        self._pos = (-1, -1)
 
-        self.char_image = character.get_preview_image(new_image_instance)
+        self.background = Image(source="../res/screens/stats/preview_square_background.png", allow_stretch=True)
+
+        self.char_image = self.character.get_preview_image(self.new_image_instance)
         self.preview_image_loaded = True
-        self.char_image.width = self.image_width
-        self.char_image.height = self.image_height
-        self.char_image.pos = pos[0] + self.preview_wgap, pos[1] + self.preview_hgap
 
-        self.char_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button_square')
+        self.char_button = HTButton(path='../res/screens/buttons/char_button_square')
         self.char_button.bind(on_touch_down=self.on_char_touch_down, on_touch_up=self.on_char_touch_up)
 
         if self.has_stat:
-            self.overlay = Image(source="../res/screens/stats/preview_overlay_square_stat.png", size=size, pos=pos, allow_stretch=True)
+            self.overlay = Image(source="../res/screens/stats/preview_overlay_square_stat.png", allow_stretch=True)
         else:
-            self.overlay = Image(source="../res/screens/stats/preview_overlay_square_empty.png", size=size, pos=pos, allow_stretch=True)
+            self.overlay = Image(source="../res/screens/stats/preview_overlay_square_empty.png", allow_stretch=True)
 
         self.add_widget(self.background)
         self.add_widget(self.char_image)
@@ -61,30 +53,21 @@ class SquareCharacterPreview(Widget):
         self.add_widget(self.overlay)
 
         self.stars = []
-        star_width = (self.size[1] * 62 / self.preview_height) / 2.5
-        star_size = star_width, star_width
-        dist = ((self.size[0] - self.preview_wgap * 2) - star_width * 10) / 2
-        start = (size[0] - self.preview_wgap * 2 - (star_width * 10 + dist * 10)) / 4
-        count = 0
-        for level in character.ranks:
-            star_pos = pos[0] + self.preview_wgap + star_width * count + dist * count + start, pos[1] + self.preview_hgap
-            count += 1
-
+        for level in self.character.ranks:
             if level.unlocked:
                 if not level.broken:
-                    star = Image(source="../res/screens/stats/star.png", pos=star_pos, size=star_size, size_hint=(None, None), opacity=1)
+                    star = Image(source="../res/screens/stats/star.png", size_hint=(None, None), opacity=1)
                 else:
-                    star = Image(source="../res/screens/stats/rankbrk.png", pos=star_pos, size=star_size, size_hint=(None, None), opacity=1)
+                    star = Image(source="../res/screens/stats/rankbrk.png", size_hint=(None, None), opacity=1)
             else:
-                star = Image(source='../res/screens/stats/star.png', pos=star_pos, size=star_size, size_hint=(None, None), opacity=0)
+                star = Image(source='../res/screens/stats/star.png', size_hint=(None, None), opacity=0)
             self.stars.append(star)
             self.add_widget(star)
-            count += 1
 
-        self.initalized = True
+        self.initialized = True
 
     def reload(self):
-        if not self.initalized:
+        if not self.initialized:
             return
         if not self.preview_image_loaded:
             self.char_image = self.character.get_preview_image(False)
@@ -94,42 +77,48 @@ class SquareCharacterPreview(Widget):
                     self.children[index] = self.char_image
                     self.char_image.parent = self
                 index += 1
-            self.slide_image_loaded = True
-            self.char_image.width = self.image_width
-            self.char_image.height = self.image_height
-            self.char_image.pos = self.pos[0] + self.preview_wgap, self.pos[1] + self.preview_hgap
+            self.preview_image_loaded = True
 
     def on_size(self, instance, size):
-        if not self.initalized:
+        if not self.initialized or self._size == size:
             return False
-        self.background.size = size
-        self.overlay.size = size
+        self._size = size.copy()
+        self.background.size = self.size
+        self.overlay.size = self.size
+        self.char_image.size = self.size
+        self.char_button.size = self.size
 
-        self.preview_wgap = 5 * size[0] / self.preview_width
-        self.preview_hgap = 5 * size[1] / self.preview_height
-        self.image_width = size[0] - self.preview_wgap * 2
-        self.image_height = size[1] - self.preview_hgap * 2
+        if self.has_tag:
+            self.tag.font_size = size[0] * 0.125
+            self.tag.texture_update()
+            self.tag.size = self.width, self.tag.texture_size[1]
 
-        self.char_image.size = self.image_width, self.image_width
-
-        self.char_button.size = size
+        star_width = (self.height * 62 / 250) / 2.5
+        for star in self.stars:
+            star.size = star_width, star_width
 
     def on_pos(self, instance, pos):
-        if not self.initalized:
+        if not self.initialized or self._pos == pos:
             return False
-        self.background.pos = pos
-        self.overlay.pos = pos
-        self.char_image.pos = pos[0] + self.preview_wgap, pos[1] + self.preview_hgap
-        self.char_button.pos = pos
-        if self.has_tag:
-            self.tag.pos = pos[0], pos[1] + self.size[1] - self.tag.height
+        self._pos = pos.copy()
 
-        star_width = (self.size[1] * 62 / self.preview_height) / 2.5
-        dist = ((self.size[0] - self.preview_wgap * 2) - star_width * 10) / 2
-        start = (self.size[0] - self.preview_wgap * 2 - (star_width * 10 + dist * 10)) / 4
+        self.background.pos = self.pos
+        self.overlay.pos = self.pos
+        self.char_image.pos = self.pos
+        self.char_button.pos = self.pos
+
+        if self.has_tag:
+            self.tag.pos = self.x + self.width / 2 - self.tag.width / 2, self.height - self.tag.height
+
+        preview_wgap = self.width * 5 / 250
+        preview_hgap = self.height * 5 / 250
+
+        star_width = (self.height * 62 / 250) / 2.5
+        dist = ((self.width - preview_wgap * 2) - star_width * 10) / 2
+        start = (self.width - preview_wgap * 2 - (star_width * 10 + dist * 10)) / 4
         count = 0
         for star in self.stars:
-            star.pos = pos[0] + self.preview_wgap + star_width * count + dist * count + start, pos[1] + self.preview_hgap
+            star.pos = self.x + preview_wgap + star_width * count + dist * count + start, self.y + preview_hgap
             count += 1
 
     def on_char_touch_down(self, instance, touch):
@@ -146,7 +135,7 @@ class SquareCharacterPreview(Widget):
                 if touch.button == 'left':
                     if self.event is not None:
                         self.event.cancel()
-                    if self.isSupport:
+                    if self.is_support:
                         self.preview.set_char_screen(True, self.preview.char, self.character)
                     else:
                         self.preview.set_char_screen(True, self.character, None)
