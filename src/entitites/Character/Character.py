@@ -1,6 +1,6 @@
 import random
 import math
-from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty
+from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty, StringProperty, BooleanProperty, ListProperty
 from kivy.uix.image import Image
 from kivy.uix.widget import WidgetBase, Widget
 from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreview
@@ -17,13 +17,23 @@ class Character(WidgetBase):
     dexterity_base = NumericProperty(0)
     agility_base = NumericProperty(0)
 
-    def __init__(self, index, support, name, displayname, id, rank, type, slide_image, preview_image, full_image, moves, familias, program_type, **kwargs):
+    name = StringProperty(None)
+    display_name = StringProperty(None)
+    id = StringProperty(None)
+    _is_support = BooleanProperty(False)
+    index = NumericProperty(0)
+
+    slide_image_source = StringProperty(None)
+    slide_support_image_source = StringProperty(None)
+    preview_image_source = StringProperty(None)
+    full_image_source = StringProperty(None)
+    program_type = StringProperty(None)
+
+    current_rank = NumericProperty(1)
+    current_health = NumericProperty(0)
+
+    def __init__(self, rank, type, moves, familias, **kwargs):
         super().__init__(**kwargs)
-        self.name = name
-        self.display_name = displayname
-        self.support = support
-        self.first = False
-        self.index = index
 
         # Experimental
         self.familia = None
@@ -45,8 +55,6 @@ class Character(WidgetBase):
 
         # End Experimental
 
-        self.sprite = None
-        self.id = id
         self.moves = moves
         if type == 0:
             self.type = 'Magical'
@@ -59,30 +67,24 @@ class Character(WidgetBase):
         else:
             self.type = 'Healing'
 
-        self.current_rank = 1
-
         try:
-            self.ranks = Rank.load_weights("../save/char_load_data/" + program_type + '/ranks/' + id + '.txt', id, rank, program_type)
+            self.ranks = Rank.load_weights("../save/char_load_data/" + self.program_type + '/ranks/' + self.id + '.txt', self.id, rank, self.program_type)
         except FileNotFoundError:
-            self.ranks = Rank.load_weights("../save/char_load_data/" + program_type + '/ranks/base.txt', id, rank, program_type)
+            self.ranks = Rank.load_weights("../save/char_load_data/" + self.program_type + '/ranks/base.txt', self.id, rank, self.program_type)
 
-        self.slide_image_source = slide_image
-        self.slide_image = Image(source=slide_image, allow_stretch=True, keep_ratio=True)
-        self.preview_image_source = preview_image
-        self.preview_image = Image(source=preview_image, allow_stretch=True, keep_ratio=True)
-        self.full_image_source = full_image
-        self.full_image = Image(source=full_image, allow_stretch=True, keep_ratio=True)
+        self.slide_image = Image(source=self.slide_image_source, allow_stretch=True)
+        if self._is_support:
+            self.slide_support_image = Image(source=self.slide_support_image_source, allow_stretch=True)
+        self.preview_image = Image(source=self.preview_image_source, allow_stretch=True)
+        self.full_image = Image(source=self.full_image_source, allow_stretch=True)
 
-        self.select_widget = None
-        self.attr_screen = None
-
-    def load_elements(self):
-        self.select_widget = FilledCharacterPreview(None, None, (935, 250), (-1, -1), True, False, self, None, self.support, False, size_hint_x=None)
-        self.select_square_widget = SquareCharacterPreview(None, None, (250, 250), (-1, -1), True, False, self, None, self.support, False, size_hint=(None, None))
-        self.attr_screen = CharacterAttributeScreen(None, None, (1920, 1080), (0, 0), self, self.name) #char preview name size pos
+    def load_elements(self): #MAINSCREEN preview size pos is_select, has_screen, char, support, is_support, new_instance
+        self.select_widget = FilledCharacterPreview(is_select=True, is_support=self._is_support, character=self, size_hint_x=None)
+        self.select_square_widget = SquareCharacterPreview(is_select=True, character=self, is_support=self._is_support)
+        self.attr_screen = CharacterAttributeScreen(char=self) #char preview name size pos
 
     def is_support(self):
-        return self.support
+        return self._is_support
 
     def get_type(self):
         return self.type
@@ -167,6 +169,20 @@ class Character(WidgetBase):
                 index += 1
             self.slide_image.parent = None
         return self.slide_image
+
+    def get_slide_support_image(self, new_image_instance):
+        if new_image_instance:
+            return Image(source=self.slide_support_image_source, allow_stretch=True, keep_ratio=True)
+        if self.slide_support_image.parent is not None:
+            self.slide_support_image.parent.slide_support_image_loaded = False
+            index = 0
+            for child in self.slide_support_image.parent.children:
+                if child == self.slide_support_image:
+                    self.slide_support_image.parent.children[index] = Widget()
+                    self.slide_support_image.parent.children[index].id = 'image_standin_slide'
+                index += 1
+            self.slide_support_image.parent = None
+        return self.slide_support_image
 
     def get_preview_image(self, new_image_instance):
         if new_image_instance:
@@ -436,17 +452,25 @@ class Rank(WidgetBase):
         #         ranks.append(values)
         return ranks
 
-class Equipment(WidgetBase):
-    helmet = ObjectProperty(None)
-    vambraces = ObjectProperty(None)
-    gloves = ObjectProperty(None)
-    chest = ObjectProperty(None)
-    leggings = ObjectProperty(None)
-    boots = ObjectProperty(None)
-    items = ReferenceListProperty(helmet, vambraces, gloves, chest, leggings, boots)
 
+class Equipment(WidgetBase):
+    weapon = ObjectProperty(None, allownone=True)
+    necklace = ObjectProperty(None, allownone=True)
+    bracelet = ObjectProperty(None, allownone=True)
+    helmet = ObjectProperty(None, allownone=True)
+    vambraces = ObjectProperty(None, allownone=True)
+    gloves = ObjectProperty(None, allownone=True)
+    chest = ObjectProperty(None, allownone=True)
+    leggings = ObjectProperty(None, allownone=True)
+    boots = ObjectProperty(None, allownone=True)
+    items = ReferenceListProperty(weapon, necklace, bracelet, helmet, vambraces, gloves, chest, leggings, boots)
+    types = ListProperty(['weapon', 'necklace', 'bracelet', 'helmet', 'vambraces', 'gloves', 'chest', 'leggings', 'boots'])
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+    def get_type(self, type):
+
+        return self.items[self.types.index(type)]
 
     def get_health(self):
         health = 0
@@ -518,6 +542,7 @@ class Equipment(WidgetBase):
                 agility += item.get_agility()
         return agility
 
+
 class Equipment_Item:
     def __init__(self, name, id, type, values):
         self.name = name
@@ -563,6 +588,12 @@ class Equipment_Item:
 
     def get_agility(self):
         return self.values[9]
+
+    def get_durability(self):
+        return self.values[10]
+
+    def get_durability_current(self):
+        return self.values[11]
 
 
 
