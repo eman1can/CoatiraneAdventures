@@ -1,11 +1,10 @@
 from kivy.config import Config
-from kivy.utils import platform
-
 Config.set('input', 'mouse', 'mouse, multitouch_on_demand')
 Config.set('kivy', 'exit_on_escape', 0)
 Config.set('kivy', 'window_icon', '../res/screens/icon.png')
 Config.set('graphics', 'fbo', 'hardware')
 Config.set('graphics', 'default_font', '../res/fnt/Gabriola.ttf')
+from kivy.utils import platform
 if platform == 'win':
     Config.set('kivy', 'pause_on_minimize', 1)
 
@@ -17,14 +16,15 @@ from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 
 from src.entitites.Character.Character import Character, Move
 from src.entitites.Character.Familia import Familia
+from src.entitites.EnemyType import EnemyType
 from src.modules.Screens.NewGameScreen import NewGameScreen
 from src.modules.Screens.SelectScreen import SelectScreen
 from src.modules.Screens.TownScreen import TownScreen
 from src.modules.Screens.Dungeon.DungeonMain import DungeonMain
-from src.modules.Screens.TavernMain import TavernMain
-from src.modules.Screens.CharacterSelector import CharacterSelector
 from src.modules.Screens.Dungeon.Floor import Floor
-from src.entitites.EnemyType import EnemyType
+from src.modules.Screens.TavernMain import TavernMain
+from src.modules.Screens.RecruitPreview import RecruitPreview
+from src.modules.Screens.CharacterSelector import CharacterSelector
 import math
 
 class Root(ScreenManager):
@@ -91,20 +91,22 @@ class Root(ScreenManager):
             if screen_current.name == screen_name:
                 return
         if screen_name == 'select_screen':
-            screen = SelectScreen(self)
+            screen = SelectScreen(main_screen=self)
         elif screen_name == 'new_game':
-            screen = NewGameScreen(self)
+            screen = NewGameScreen(main_screen=self)
         elif screen_name == 'town_screen':
-            screen = TownScreen(self)
+            screen = TownScreen(main_screen=self)
         elif screen_name == 'dungeon_main':
-            screen = DungeonMain(self)
+            screen = DungeonMain(main_screen=self)
         elif screen_name == 'tavern_main':
-            screen = TavernMain(self)
-            screen.check_unlock()
+            screen = TavernMain(main_screen=self)
         elif screen_name == 'select_char':
-            screen = CharacterSelector(self, args[0], args[1])
+            screen = CharacterSelector(main_screen=self, preview=args[0], is_support=args[1])
+        elif screen_name == 'recruit':
+            screen = RecruitPreview(args[0], main_screen=self)
         else:
             raise Exception("Unsupported Screen type", screen_name)
+        print("Make ", screen_name, " w/ ", self.size)
         screen.size = self.size
         self.add_widget(screen)
 
@@ -299,9 +301,8 @@ class GameApp(App):
                     move = None
                     if values[0] == 'A':
                         move = Move.getmove(moves, values[12]), Move.getmove(moves, values[13]), Move.getmove(moves, values[14]), Move.getmove(moves, values[15]), Move.getmove(moves, values[16])
-                    char = Character(count, values[0] == 'S', values[9], values[10], values[11], rank, int(values[1]),
-                              res_path + '_slide.png', res_path + '_preview.png',
-                              res_path + '_full.png', move, familias, self.program_type,
+                    char = Character(rank, int(values[1]), move, familias, index=count, _is_support=values[0] == 'S', name=values[9], display_name=values[10], id=values[11],
+                                     slide_image_source=res_path + '_slide.png', slide_support_image_source=res_path + '_slide_support.png', preview_image_source=res_path + '_preview.png', full_image_source=res_path + '_full.png', program_type=self.program_type,
                                      health_base=int(values[2]),
                                      mana_base=int(values[3]),
                                      strength_base=int(values[4]),
