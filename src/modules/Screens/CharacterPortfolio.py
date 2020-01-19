@@ -1,51 +1,57 @@
+from kivy.properties import ObjectProperty, ListProperty, NumericProperty, BooleanProperty
 from kivy.uix.widget import Widget
+
 from src.modules.Screens.CharacterPreview import CharacterPreview
 
+
 class CharacterPortfolio(Widget):
-    def __init__(self, main_screen, size, pos, party):
-        self.initalized = False
-        super().__init__(size=size, pos=pos)
-        self.main_screen = main_screen
-        self.party = party
+    initialized = BooleanProperty(False)
+    main_screen = ObjectProperty(None)
+    party = ListProperty(None)
+    previews = ListProperty([])
 
-        self.previews = []
+    slot_x = NumericProperty(0)
+    slot_size = ListProperty([0, 0])
+    spacer_x = NumericProperty(0)
 
-        self.slot_x = size[1] * 250 / 935
-        self.slot_size = (self.slot_x, size[1])
-        self.spacer_x = (self.size[0] - self.slot_x * 8) / (8 + 1)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-        current_pos = pos[0] + self.spacer_x
+        self._size = (0, 0)
+        self._pos = (0, 0)
 
         for x in range(0, 8):
-            char = party[x]
-            support = party[x + 8]
-            preview = CharacterPreview(main_screen, self.slot_size, (current_pos, pos[1]), False, char=char, support=support)
-            current_pos += self.spacer_x + self.slot_x
+            char = self.party[x]
+            support = self.party[x + 8]
+            preview = CharacterPreview(main_screen=self.main_screen, is_select=False, char=char, support=support, index=x)
 
             self.previews.append(preview)
             self.add_widget(preview)
-        self.initalized = True
+        self.initialized = True
 
     def on_size(self, instance, size):
-        if not self.initalized:
+        if not self.initialized or self._size == size:
             return
-        self.slot_x = size[1] * 250 / 935
-        self.slot_size = (self.slot_x, size[1])
-        self.spacer_x = (size[0] - self.slot_x * 8) / (8 + 1)
+        self._size = size.copy()
 
-        current_pos = self.pos[0] + self.spacer_x
+        self.slot_x = self.height * 250 / 935
+        self.slot_size = self.slot_x, self.height
+        self.spacer_x = (self.width - self.slot_x * 8) / (8 + 1)
+
+        current_pos = self.x + self.spacer_x
         for preview in self.previews:
             preview.size = self.slot_size
-            preview.pos = current_pos, self.pos[1]
+            preview.pos = current_pos, self.y
             current_pos += self.spacer_x + self.slot_x
 
     def on_pos(self, instance, pos):
-        if not self.initalized:
+        if not self.initialized or self._pos == pos:
             return
-        current_pos = pos[0] + self.spacer_x
+        self._pos = pos.copy()
+
+        current_pos = self.x + self.spacer_x
         for preview in self.previews:
-            preview.size = self.slot_size
-            preview.pos = current_pos, pos[1]
+            preview.pos = current_pos, self.y
             current_pos += self.spacer_x + self.slot_x
 
     def get_party_score(self):
@@ -55,12 +61,8 @@ class CharacterPortfolio(Widget):
         return party_score
 
     def party_change(self, preview, char, support):
-        if not self.initalized:
-            return
-        for x in range(len(self.previews)):
-            if self.previews[x] == preview:
-                self.party[x] = char
-                self.party[x + 8] = support
+                self.party[preview.index] = char
+                self.party[preview.index + 8] = support
 
     def resolve(self, dest, character, support):
         # if selecting a support that is already selected
