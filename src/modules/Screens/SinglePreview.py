@@ -1,15 +1,37 @@
+from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.widget import Widget
+from kivy.uix.gridlayout import GridLayout
 
 from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreview
 
+
 class SinglePreview(Widget):
-    def __init__(self, main_screen, preview, size, pos, slot_size, character, isSupport):
-        super().__init__(size=size, pos=pos)
-        self.slot_size = slot_size
-        self.main_screen = main_screen
-        self.slot_pos = pos[0] + (size[0] - slot_size[0]) / 2, pos[1] + (size[1] - slot_size[1]) / 2
-        self.char = FilledCharacterPreview(main_screen, preview, slot_size, self.slot_pos, True, False, character, None, isSupport, True)
-        self.add_widget(self.char)
+    initialized = BooleanProperty(False)
+    main_screen = ObjectProperty(None)
+
+    preview = ObjectProperty(None)
+    character = ObjectProperty(None)
+    is_support = BooleanProperty(False)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self._size = (0, 0)
+
+        self.root = FilledCharacterPreview(main_screen=self.main_screen, preview=self.preview, is_select=True, character=self.character, is_support=self.is_support, new_image_instance=True)
+
+        self.add_widget(self.root)
+        self.initialized = True
+
+    def on_size(self, instance, size):
+        if not self.initialized or self._size == size:
+            return
+        self._size = size.copy()
+
+        gap = self.height * 0.025
+        slot_size = (self.height - gap * 2) * 250 / 935, self.height - gap * 2
+        self.root.size = slot_size
+        self.root.pos = self.x + (self.width - self.root.width) / 2, self.y + (self.height - self.root.height) / 2
 
     def reload(self):
-        self.char.reload()
+        self.root.reload()
