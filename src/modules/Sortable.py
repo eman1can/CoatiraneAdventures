@@ -5,6 +5,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.properties import BooleanProperty, ListProperty, StringProperty
 from src.modules.HTButton import HTButton
 
+
 class Sortable(object):
     previews_sort = ListProperty(None)
     values_sort = ListProperty(None)
@@ -117,7 +118,6 @@ class Sortable(object):
 
     def force_update_values(self):
         self.no_sort = True
-        index = 0
         values = []
         for preview in self.previews_sort:
             if self.sort_type == 'Strength':
@@ -153,7 +153,6 @@ class Sortable(object):
             else:
                 value = None
             values.append(value)
-            index += 1
         self.values_sort = values
         self.no_sort = False
         self.sort()
@@ -163,43 +162,42 @@ class Sortable(object):
 
 
 class SortWidget(Widget):
+    initialized = BooleanProperty(False)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        width, height = self.height * 0.9 * 750 / 600, self.height * 0.9
-        x, y = (self.width - width) / 2, (self.height - height) / 2
-        self.shadow = Image(source='../res/screens/backgrounds/shadow.png', size=self.size, pos=self.pos, keep_ratio=True, allow_stretch=True)
-        self.shadow.bind(on_touch_down=self.toss, on_touch_up=self.toss)
-        self.background = Image(source="../res/screens/stats/sort_background.png", size=(width, height), pos=(x, y), keep_ratio=True, allow_stretch=True)
-        self.title = Label(text="Sort", font_size=self.height * .125, font_name="../res/fnt/Precious.ttf", color=(0, 0, 0, 1), size_hint=(None, None))
-        self.title._label.refresh()
-        self.title.size = self.title._label.texture.size
-        self.title.pos = (x + (width - self.title.width) / 2, y + height - self.title.height * 1.125)
 
-        button_size = height * 0.15 * 570 / 215, height * 0.15
-        gap = (width * 0.9 - button_size[0] * 3) / 4, (height * 0.55 - button_size[1] * 5) / 6
-        gap2 = (width * 0.9 - button_size[0] * 2) / 3, (height * 0.175 - button_size[1]) / 2
-        self.overlay_bar1 = Image(source="../res/screens/stats/overlay_bar.png", size=(width * 0.8, width * 0.8 * 20 / 620), pos=(x + width * 0.1, self.title.y - ((width - gap[0] * 2) * 10 / 610 + 5)), size_hint=(None, None), keep_ratio=True, allow_stretch=True)
-        self.overlay_bar2 = Image(source="../res/screens/stats/overlay_bar.png", size=(width * 0.8, width * 0.8 * 20 / 620), pos=(x + width * 0.1, y + height * 0.625), size_hint=(None, None), keep_ratio=True, allow_stretch=True)
-        self.layout = GridLayout(cols=3, rows=5, padding=gap, spacing=gap, size=(width * 0.9, height * 0.55), pos=(x + width * 0.05, y + height * 0.05))
-        self.layout2 = GridLayout(cols=2, rows=1, padding=gap2, spacing=gap2, size=(width, self.overlay_bar1.y - self.overlay_bar2.y - self.overlay_bar2.height), pos=(x + width * 0.05, self.overlay_bar2.y + self.overlay_bar2.height * 2))
+        self._size = (0, 0)
 
-        self.ascending = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Ascending", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.descending = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Descending", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.strength = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Strength", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.magic = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Magic", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.endurance = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Endurance", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.dexterity = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Dexterity", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.agility = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Agility", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.health = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Health", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.mana = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Mana", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.phyatk = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Phy. Atk", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.magatk = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Mag. Atk", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.defense = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Defense", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.party = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Party", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.rank = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Rank", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.name = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Name", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.score = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Score", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
-        self.worth = HTButton(size=button_size, size_hint=(None, None), border=[0, 0, 0, 0], path="../res/screens/buttons/long_stat", text="Worth", font_size=button_size[1] * 0.5, font_name="../res/fnt/Gabriola.ttf", color=(0, 0, 0, 1))
+        self.shadow = Image(source='../res/screens/backgrounds/shadow.png', allow_stretch=True)
+        self.shadow.bind(on_touch_down=self.toss)
+        self.background = Image(source="../res/screens/stats/sort_background.png", allow_stretch=True)
+
+        self.title = Label(text="Sort", font_name="../res/fnt/Precious.ttf", color=(0, 0, 0, 1), size_hint=(None, None))
+
+        self.overlay_bar1 = Image(source="../res/screens/stats/overlay_bar.png", size_hint=(None, None), allow_stretch=True)
+        self.overlay_bar2 = Image(source="../res/screens/stats/overlay_bar.png", size_hint=(None, None), allow_stretch=True)
+
+        self.layout = GridLayout(cols=3, rows=5)
+        self.layout2 = GridLayout(cols=2, rows=1)
+
+        self.ascending = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Ascending")
+        self.descending = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Descending")
+        self.strength = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Strength")
+        self.magic = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Magic")
+        self.endurance = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Endurance")
+        self.dexterity = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Dexterity")
+        self.agility = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Agility")
+        self.health = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Health")
+        self.mana = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Mana")
+        self.phyatk = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Phy. Atk")
+        self.magatk = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Mag. Atk")
+        self.defense = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Defense")
+        self.party = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Party")
+        self.rank = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Rank")
+        self.name = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Name")
+        self.score = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Score")
+        self.worth = HTButton(size_hint=(None, None), path="../res/screens/buttons/long_stat", text="Worth")
 
         self.add_widget(self.shadow)
         self.add_widget(self.background)
@@ -225,6 +223,78 @@ class SortWidget(Widget):
         self.layout.add_widget(self.name)
         self.layout.add_widget(self.score)
         self.layout.add_widget(self.worth)
+        self.initialized = True
+
+    def on_size(self, instance, size):
+        if not self.initialized or self._size == size:
+            return
+        self._size = size.copy()
+
+        width, height = self.height * 0.9 * 750 / 600, self.height * 0.9
+        x, y = (self.width - width) / 2, (self.height - height) / 2
+
+        self.shadow.size = self.size
+        self.background.size = width, height
+        self.background.pos = x, y
+
+        self.title.font_size = self.height * .125
+        self.title.texture_update()
+        self.title.size = self.title.texture_size
+        self.title.pos = (x + (width - self.title.width) / 2, y + height - self.title.height * 1.125)
+
+        button_size = height * 0.15 * 570 / 215, height * 0.15
+        gap = (width * 0.9 - button_size[0] * 3) / 4, (height * 0.55 - button_size[1] * 5) / 6
+        gap2 = (width * 0.9 - button_size[0] * 2) / 3, (height * 0.175 - button_size[1]) / 2
+
+        self.overlay_bar1.size = width * 0.8, width * 0.8 * 20 / 620
+        self.overlay_bar1.pos = x + width * 0.1, self.title.y - width * 0.8 * 20 / 620
+        self.overlay_bar2.size = width * 0.8, width * 0.8 * 20 / 620
+        self.overlay_bar2.pos = x + width * 0.1, y + height * 0.625
+
+        self.layout.padding = gap
+        self.layout.spacing = gap
+        self.layout.size = width * 0.9, height * 0.55
+        self.layout.pos = x + width * 0.05, y + height * 0.05
+
+        self.layout2.padding = gap2
+        self.layout2.spacing = gap2
+        self.layout2.size = width * 0.9, self.overlay_bar1.y - self.overlay_bar2.y - self.overlay_bar2.height
+        self.layout2.pos = x + width * 0.05, self.overlay_bar2.y + self.overlay_bar2.height * 2
+
+        self.ascending.size = button_size
+        self.ascending.font_size = button_size[1] * 0.5
+        self.descending.size = button_size
+        self.descending.font_size = button_size[1] * 0.5
+        self.strength.size = button_size
+        self.strength.font_size = button_size[1] * 0.5
+        self.magic.size = button_size
+        self.magic.font_size = button_size[1] * 0.5
+        self.endurance.size = button_size
+        self.endurance.font_size = button_size[1] * 0.5
+        self.dexterity.size = button_size
+        self.dexterity.font_size = button_size[1] * 0.5
+        self.agility.size = button_size
+        self.agility.font_size = button_size[1] * 0.5
+        self.health.size = button_size
+        self.health.font_size = button_size[1] * 0.5
+        self.mana.size = button_size
+        self.mana.font_size = button_size[1] * 0.5
+        self.phyatk.size = button_size
+        self.phyatk.font_size = button_size[1] * 0.5
+        self.magatk.size = button_size
+        self.magatk.font_size = button_size[1] * 0.5
+        self.defense.size = button_size
+        self.defense.font_size = button_size[1] * 0.5
+        self.party.size = button_size
+        self.party.font_size = button_size[1] * 0.5
+        self.rank.size = button_size
+        self.rank.font_size = button_size[1] * 0.5
+        self.name.size = button_size
+        self.name.font_size = button_size[1] * 0.5
+        self.score.size = button_size
+        self.score.font_size = button_size[1] * 0.5
+        self.worth.size = button_size
+        self.worth.font_size = button_size[1] * 0.5
 
     def toss(self, *args):
         return True
