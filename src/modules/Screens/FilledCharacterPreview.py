@@ -1,98 +1,106 @@
+from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty
+from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.widget import Widget
-
 from kivy.uix.label import Label
 from kivy.input.providers.wm_touch import WM_MotionEvent
-from kivy.clock import Clock
 
 from src.modules.HTButton import HTButton
 
+
 class FilledCharacterPreviewScreen(Screen):
-    def __init__(self, main_screen, preview, size, pos, isSelect, character, support, isSupport):
-        pos = (0, 0) # Posistion gets reset
-        super().__init__(size=size, pos=pos)
-        self.main_screen = main_screen
-        self.preview = FilledCharacterPreview(main_screen, preview, size, pos, isSelect, True, character, support, isSupport, False)
-        self.add_widget(self.preview)
+    initialized = BooleanProperty(False)
+
+    def __init__(self, main_screen, preview, is_support, character, support, **kwargs):
+        print("Filled Screen: ", self.pos)
+        pos = (0, 0)  # Posistion gets reset
+        super().__init__(size_hint=(None, None), **kwargs)
+        self.name = character.get_id()
         if support is not None:
-            self.name = character.get_id() + "_" + support.get_id()
-        else:
-            self.name = character.get_id()
+            self.name += "_" + support.get_id()
+
+        self._size = (0, 0)
+
+        self.preview = FilledCharacterPreview(main_screen=main_screen, preview=preview, is_support=is_support, is_select=False, has_screen=True, character=character, support=support)
+
+        self.add_widget(self.preview)
+        self.initialized = True
+
+    def on_size(self, instance, size):
+        if not self.initialized or self._size == size:
+            return
+        self._size = size.copy()
+
+        self.preview.size = self.size
 
     def reload(self):
         self.preview.reload()
 
+
 class FilledCharacterPreview(Widget):
-    def __init__(self, main_screen, preview, size, pos, isSelect, has_screen, character, support, isSupport, new_image_instance, **kwargs):
-        self.initalized = False
-        if pos == (-1, -1):
-            super().__init__(size=size, **kwargs)
-        else:
-            super().__init__(size=size, pos=pos)
+    initialized = BooleanProperty(False)
+    main_screen = ObjectProperty(None, allownone=True)
+    preview = ObjectProperty(None, allownone=True)
 
-        self.main_screen = main_screen
-        self.has_screen = has_screen
-        self.preview = preview
-        self.character = character
-        self.support = support
-        self.isSelect = isSelect
-        self.isSupport = isSupport
-        self.event = None
-        self.has_tag = False
-        self.tag = None
+    new_image_instance = BooleanProperty(False)
+    has_screen = BooleanProperty(False)
+    emptied = BooleanProperty(False)
+    event = ObjectProperty(None, allownone=True)
+    has_tag = BooleanProperty(False)
+    tag = ObjectProperty(None, allownone=True)
 
-        self.preview_width = 250
-        self.preview_height = 935
+    preview_wgap = NumericProperty(0)
+    preview_hgap = NumericProperty(0)
+    image_width = NumericProperty(0)
 
-        self.preview_wgap = 5 * size[0] / self.preview_width
-        self.preview_hgap = 5 * size[1] / self.preview_height
-        self.image_width = size[0] - self.preview_wgap * 2
-        self.image_height = 635 * size[1] / self.preview_height - self.preview_hgap * 2
+    is_select = BooleanProperty(False)
+    is_support = BooleanProperty(False)
+    character = ObjectProperty(None, allownone=True)
+    support = ObjectProperty(None, allownone=True)
 
-        self.background = Image(source="../res/screens/stats/preview_background.png", size=size, pos=pos, allow_stretch=True)
-        self.char_image = character.get_slide_image(new_image_instance)
+    def __init__(self, **kwargs):
+        super().__init__(size_hint=(None, None), **kwargs)
+
+        self._size = (0, 0)
+        self._pos = (0, 0)
+
+        self.background = Image(source="../res/screens/stats/preview_background.png", allow_stretch=True)
+        self.char_image = self.character.get_slide_image(self.new_image_instance)
         self.slide_image_loaded = True
-        self.char_image.width = self.image_width
-        self.char_image.height = self.image_width * self.char_image.texture_size[1] / self.char_image.texture_size[0]
-        self.char_image.pos = pos[0] + self.preview_wgap, pos[1] + size[1] - self.char_image.height - self.preview_hgap - (60 * size[1] / self.preview_height)
 
-
-        self.char_button = Button(background_color=(0, 0, 0, 0), size=size, pos=pos, on_touch_down=self.on_char_touch_down, on_touch_up=self.on_char_touch_up)
-
-        self.char_button = None
-        self.support_image = None
-        if support is None:
+        if self.support is None:
             # Load non-support Overlay
-            if isSelect:
+            self.support_image = None
+            if self.is_select:
                 # Load Empty Overlay
-                self.char_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button', collide_image='../res/screens/buttons/char_button_select.collision.png')
-                self.overlay = Image(source="../res/screens/stats/preview_overlay_empty.png", size=size, pos=pos, allow_stretch=True)
+                self.char_button = HTButton(path='../res/screens/buttons/char_button', collide_image='../res/screens/buttons/char_button_select.collision.png')
+                self.overlay = Image(source="../res/screens/stats/preview_overlay_empty.png", allow_stretch=True)
             else:
                 # Load Empty Add Overlay
-                self.char_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button')
-                self.overlay = Image(source="../res/screens/stats/preview_overlay_empty_add.png", size=size, pos=pos, allow_stretch=True)
+                self.char_button = HTButton(path='../res/screens/buttons/char_button')
+                self.overlay = Image(source="../res/screens/stats/preview_overlay_empty_add.png", allow_stretch=True)
         else:
-            self.support_image = support.get_preview_image(new_image_instance)
-            self.preview_image_loaded = True
-            self.support_image.size = self.image_width, self.image_width
-            self.support_image.pos = self.preview_wgap, size[1] - self.image_height - self.preview_hgap
+            self.support_image = self.support.get_slide_support_image(self.new_image_instance)
+            self.slide_support_image_loaded = True
 
-            if isSelect:
+            if self.is_select:
                 # Cannot have a selection preview that has a support character
                 raise Exception("Selection preview cannot have a support character")
             else:
-                self.char_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/char_button_full')
-                self.overlay = Image(source="../res/screens/stats/preview_overlay_full.png", size=size, pos=pos, allow_stretch=True)
+                self.char_button = HTButton(path='../res/screens/buttons/char_button_full')
+                self.overlay = Image(source="../res/screens/stats/preview_overlay_full.png", allow_stretch=True)
         self.char_button.bind(on_touch_down=self.on_char_touch_down, on_touch_up=self.on_char_touch_up)
 
-        if not self.isSelect:
-            if support is None:
-                self.support_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/support_button')
+        if not self.is_select:
+            if self.support is None:
+                self.support_button = HTButton(path='../res/screens/buttons/support_button')
             else:
-                self.support_button = HTButton(size=size, pos=pos, size_hint=(None, None), border=[0, 0, 0, 0], path='../res/screens/buttons/support_button_full')
+                self.support_button = HTButton(path='../res/screens/buttons/support_button_full')
             self.support_button.bind(on_touch_down=self.on_support_touch_down, on_touch_up=self.on_support_touch_up)
+        else:
+            self.support_button = None
 
         self.add_widget(self.background)
         self.add_widget(self.char_image)
@@ -101,118 +109,54 @@ class FilledCharacterPreview(Widget):
         self.add_widget(self.overlay)
 
         self.add_widget(self.char_button)
-        if not self.isSelect:
+        if not self.is_select:
             self.add_widget(self.support_button)
 
         self.stars = []
-        count = 0
-        star_width = (size[1] * 62 / self.preview_height) / 1.5
-        star_size = star_width, star_width
-        star_columns = 5
-        star_width_overlap = .75
-        star_height_overlap = .5
-        stars_width = star_size[0] * star_columns * star_width_overlap
-        star_start = size[0] / 2 - stars_width / 2, size[1] - self.preview_hgap - star_size[1]
-        for level in character.ranks:
-            star_row = int(count / star_columns)
-            star_column = count % star_columns
 
-            star_x = star_column * star_size[0] * star_width_overlap
-            star_y = star_row * star_size[1] * star_height_overlap
-            star_offset = (-15 * (star_row + 1)) + (30 * star_row)
-            star_pos = pos[0] + star_x + star_start[0] + star_offset, pos[1] + size[1] - star_size[1] - star_y - self.preview_wgap
-
+        for level in self.character.ranks:
             if level.unlocked:
                 if not level.broken:
-                    self.stars.append(
-                        Image(source="../res/screens/stats/star.png", pos=star_pos, size=star_size, size_hint=(None, None), opacity=1))
+                    star = Image(source="../res/screens/stats/star.png", size_hint=(None, None), opacity=1)
                 else:
-                    self.stars.append(
-                        Image(source="../res/screens/stats/rankbrk.png", pos=star_pos, size=star_size, size_hint=(None, None), opacity=1))
-                self.add_widget(self.stars[count])
+                    star = Image(source="../res/screens/stats/rankbrk.png", size_hint=(None, None), opacity=1)
             else:
-                self.stars.append(Image(source='../res/screens/stats/star.png', pos=star_pos, size=star_size, size_hint=(None, None), opacity=0))
-                self.add_widget(self.stars[count])
-            count += 1
-        if support is not None:
-            diamond_top = 545 * size[1] / self.preview_height
-            diamond_center = 426.5 * size[1] / self.preview_height
-            diamond_bottom = 309 * size[1] / self.preview_height
+                star = Image(source='../res/screens/stats/star.png', size_hint=(None, None), opacity=0)
+            star.type = True
+            self.stars.append(star)
+            self.add_widget(star)
 
-            diamond_left = 7 * size[0] / self.preview_width
-            diamond_middle = size[0] / 2
-
-            space = (diamond_middle - diamond_left) / 5, (diamond_center - diamond_bottom) / 5
-
-            for level in support.ranks:
-                scount = (count - 10)
-                if scount < 3:
-                    column = row = (count - 10) % 5 + 1
-                    star_pos = size[0] / 2 - star_size[0] * 1.1 - space[0] * column, diamond_bottom - star_size[1] * 1.1 + space[1] * (row + 1)
-                elif scount < 6:
-                    column = row = (count - 13) % 5 + 1
-                    star_pos = size[0] / 2 + star_size[0] * .1 + space[0] * column, diamond_bottom - star_size[1] * 1.1 + space[1] * (row + 1)
-                elif scount < 8:
-                    column = row = (count - 15) % 5
-                    star_pos = size[0] / 2 - star_size[0] * 1.4 - space[0] * column, diamond_top - star_size[1] * .1 - space[1] * (row + 1)
-                else:
-                    column = row = (count - 17) % 5
-                    star_pos = size[0] / 2 + star_size[0] * .4 + space[0] * column, diamond_top - star_size[1] * .1 - space[1] * (row + 1)
-
+        if self.support is not None:
+            for level in self.support.ranks:
                 if level.unlocked:
                     if not level.broken:
-                        self.stars.append(
-                            Image(source="../res/screens/stats/star.png", pos=star_pos, size=star_size,
-                                  size_hint=(None, None), opacity=1))
+                        star = Image(source="../res/screens/stats/star.png", size_hint=(None, None), opacity=1)
                     else:
-                        self.stars.append(
-                            Image(source="../res/screens/stats/rankbrk.png", pos=star_pos,
-                                  size=star_size,
-                                  size_hint=(None, None), opacity=1))
-                    self.add_widget(self.stars[count])
+                        star = Image(source="../res/screens/stats/rankbrk.png", size_hint=(None, None), opacity=1)
                 else:
-                    self.stars.append(
-                        Image(source='../res/screens/stats/star.png', pos=star_pos, size=star_size,
-                              size_hint=(None, None), opacity=0))
-                    self.add_widget(self.stars[count])
-                count += 1
+                    star = Image(source='../res/screens/stats/star.png', size_hint=(None, None), opacity=0)
+                star.type = False
+                self.stars.append(star)
+                self.add_widget(star)
 
-        label_height = (size[1] * 120 / self.preview_height) / 4
-        image_width = label_height
-        image_height = image_width
-        label_width = (size[0] - self.preview_wgap * 2 - image_width * 1.75) / 2
         text_color = (.796, .773, .678, 1)
 
-        image_wstart = pos[0] + self.preview_wgap + image_width/2
-        image_hstart = pos[1] + (size[1] * 310 / self.preview_height)
+        self.phyatk_image = Image(source='../res/screens/stats/PhysicalAttack.png')
+        self.magatk_image = Image(source='../res/screens/stats/MagicalAttack.png')
+        self.hp_image = Image(source='../res/screens/stats/Health.png')
+        self.mp_image = Image(source='../res/screens/stats/Mana.png')
+        self.def_image = Image(source='../res/screens/stats/Defense.png')
 
-        label_wstart = image_wstart + image_width
-        label_hstart = pos[1] + (size[1] * 310 / self.preview_height)
+        self.str_image = Image(source='../res/screens/stats/Str.png')
+        self.mag_image = Image(source='../res/screens/stats/Mag.png')
+        self.end_image = Image(source='../res/screens/stats/End.png')
+        self.dex_image = Image(source='../res/screens/stats/Dex.png')
+        self.agi_image = Image(source='../res/screens/stats/Agi.png')
 
-        self.phyatk_image = Image(source='../res/screens/stats/PhysicalAttack.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height))
-        self.magatk_image = Image(source='../res/screens/stats/MagicalAttack.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height*2))
-        self.hp_image = Image(source='../res/screens/stats/Health.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height * 3))
-        self.mp_image = Image(source='../res/screens/stats/Mana.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height * 4))
-        self.def_image = Image(source='../res/screens/stats/Defense.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height * 5))
+        self.label_words = Label(text='Strength\nMagic\nHealth\nMana\nDefense', halign="left", color=text_color)
+        self.label_words2 = Label(text='trength\nagic\nndurance\nexterity\ngility', halign="left", color=text_color)
 
-        self.str_image = Image(source='../res/screens/stats/Str.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height * 6))
-        self.mag_image = Image(source='../res/screens/stats/Mag.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height * 7))
-        self.end_image = Image(source='../res/screens/stats/End.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height * 8))
-        self.dex_image = Image(source='../res/screens/stats/Dex.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height * 9))
-        self.agi_image = Image(source='../res/screens/stats/Agi.png', size=(image_width, image_height), pos=(image_wstart, image_hstart - image_height * 10))
-
-        self.label_words = Label(text='Strength\nMagic\nHealth\nMana\nDefense', halign="left", font_size=label_height * 0.85, color=text_color)
-        self.label_words.bind(text_size=self.label_words.setter('size'))
-        self.label_words.pos = (label_wstart + image_width * .25, label_hstart - label_height*5)
-        self.label_words.size = (label_width, label_height*5)
-
-        self.label_words2 = Label(text='trength\nagic\nndurance\nexterity\ngility', halign="left",
-                                       font_size=label_height * 0.85, color=text_color)
-        self.label_words2.bind(text_size=self.label_words.setter('size'))
-        self.label_words2.pos = (label_wstart + self.preview_wgap, label_hstart - label_height * 10)
-        self.label_words2.size = (label_width, label_height * 5)
-
-        if support is None:
+        if self.support is None:
             text = str(self.character.get_phyatk())    + "\n" + \
                    str(self.character.get_magatk())    + "\n" + \
                    str(self.character.get_health())    + "\n" + \
@@ -235,10 +179,7 @@ class FilledCharacterPreview(Widget):
                    str(self.character.get_dexterity() + self.support.get_dexterity()) + "\n" + \
                    str(self.character.get_agility()   + self.support.get_agility())
 
-        self.label_numbers = Label(text=text, halign="right", font_size=label_height * 0.85, color=text_color)
-        self.label_numbers.bind(text_size=self.label_numbers.setter('size'))
-        self.label_numbers.pos = (label_wstart + label_width, label_hstart - label_height*10)
-        self.label_numbers.size = (label_width, label_height*10)
+        self.label_numbers = Label(text=text, halign="right", color=text_color)
 
         self.add_widget(self.phyatk_image)
         self.add_widget(self.magatk_image)
@@ -255,11 +196,10 @@ class FilledCharacterPreview(Widget):
         self.add_widget(self.label_words)
         self.add_widget(self.label_words2)
         self.add_widget(self.label_numbers)
-
-        self.initalized = True
+        self.initialized = True
 
     def reload(self):
-        if not self.initalized:
+        if not self.initialized:
             return
         if not self.slide_image_loaded:
             self.char_image = self.character.get_slide_image(False)
@@ -270,51 +210,47 @@ class FilledCharacterPreview(Widget):
                     self.char_image.parent = self
                 index += 1
             self.slide_image_loaded = True
-            self.char_image.width = self.image_width
-            self.char_image.height = self.image_width * self.char_image.texture_size[1] / self.char_image.texture_size[0]
-            self.char_image.pos = self.pos[0] + self.preview_wgap, self.pos[1] + self.size[1] - self.char_image.height - self.preview_hgap - (60 * self.size[1] / self.preview_height)
+            self.char_image.size = self.size
+            self.char_image.pos = self.pos
         if self.support is not None:
-            if not self.preview_image_loaded:
-                self.support_image = self.support.get_preview_image(False)
+            if not self.slide_support_image_loaded:
+                self.support_image = self.support.get_slide_support_image(False)
                 index = 0
                 for child in self.children:
-                    if child.id == 'image_standin_preview':
+                    if child.id == 'image_standin_slide_support':
                         self.children[index] = self.support_image
                         self.support_image.parent = self
                     index += 1
-                self.preview_image_loaded = True
-                self.support_image.size = self.image_width, self.image_width
-                self.support_image.pos = self.preview_wgap, self.size[1] - self.image_height - self.preview_hgap
+                self.slide_support_image_loaded = True
+                self.support_image.size = self.size
+                self.support_image.pos = self.pos
 
     def on_size(self, instance, size):
-        if not self.initalized:
+        if not self.initialized or self._size == size:
             return False
-        self.background.size = size
-        self.overlay.size = size
+        self._size = size.copy()
 
-        self.preview_wgap = 5 * size[0] / self.preview_width
-        self.preview_hgap = 5 * size[1] / self.preview_height
-        self.image_width = size[0] - self.preview_wgap * 2
-        self.image_height = 635 * size[1] / self.preview_height - self.preview_hgap * 2
-
-        self.char_image.width = self.image_width
-        self.char_image.height = self.image_width * self.char_image.texture_size[1] / self.char_image.texture_size[0]
+        self.background.size = self.size
+        self.char_image.size = self.size
         if self.support is not None:
-            self.support_image.size = self.image_width, self.image_width
+            self.support_image.size = self.size
+        self.overlay.size = self.size
+        self.char_button.size = size
+        if not self.is_select:
+            self.support_button.size = self.size
 
-        count = 0
-        star_width = (size[1] * 62 / self.preview_height) / 1.5
-        star_size = star_width, star_width
-        for level in self.character.ranks:
-            self.stars[count].size = star_size
-            count += 1
+        self.preview_wgap = 5 * self.width / 250
+        self.preview_hgap = 5 * self.height / 935
 
-        if self.support is not None:
-            for level in self.character.ranks:
-                self.stars[count].size = star_size
-                count += 1
+        star_size_large = (size[1] * 62 / 935) / 1.5, (size[1] * 62 / 935) / 1.5
+        star_size_small = (size[1] * 120 / 935) / 4, (size[1] * 120 / 935) / 4
+        for star in self.stars:
+            if star.type:
+                star.size = star_size_large
+            else:
+                star.size = star_size_small
 
-        label_height = (size[1] * 120 / self.preview_height) / 4
+        label_height = (size[1] * 120 / 935) / 4
         image_width = label_height
         image_height = image_width
         label_width = (size[0] - self.preview_wgap * 2 - image_width * 1.75) / 2
@@ -330,56 +266,54 @@ class FilledCharacterPreview(Widget):
             self.dex_image.size = \
             self.agi_image.size = (image_width, image_height)
 
-        self.label_words.size = (label_width, label_height * 5)
         self.label_words.font_size = label_height * 0.85
-        self.label_words2.size = (label_width, label_height * 5)
+        self.label_words.size = (label_width, label_height * 5)
         self.label_words2.font_size = label_height * 0.85
-        self.label_numbers.size = (label_width, label_height * 10)
+        self.label_words2.size = (label_width, label_height * 5)
         self.label_numbers.font_size = label_height * 0.85
-
-        self.char_button.size = size
-        if not self.isSelect:
-            self.support_button.size = size
+        self.label_numbers.size = (label_width, label_height * 10)
 
     def on_pos(self, instance, pos):
-        if not self.initalized:
+        if not self.initialized or self._pos == pos:
             return False
-        self.background.pos = pos
-        self.char_image.pos = pos[0] + self.preview_wgap, pos[1] + self.size[1] - self.char_image.height - self.preview_hgap - (60 * self.size[1] / self.preview_height)
-        if self.support is not None:
-            self.support_image.pos = self.preview_wgap, self.size[1] - self.image_height - self.preview_hgap
-        self.overlay.pos = pos
+        self._pos = pos.copy()
 
-        count = 0
-        star_width = (self.size[1] * 62 / self.preview_height) / 1.5
-        star_size = star_width, star_width
+        self.background.pos = self.pos
+        self.char_image.pos = self.pos
+        self.overlay.pos = self.pos
+        self.char_button.pos = pos
+        if not self.is_select:
+            self.support_button.pos = pos
+        if self.support is not None:
+            self.support_image.pos = pos
+
+        star_size = (self.size[1] * 62 / 935) / 1.5, (self.size[1] * 62 / 935) / 1.5
         star_columns = 5
         star_width_overlap = .75
         star_height_overlap = .5
         stars_width = star_size[0] * star_columns * star_width_overlap
         star_start = self.size[0] / 2 - stars_width / 2, self.size[1] - self.preview_hgap - star_size[1]
-        for level in self.character.ranks:
-            star_row = int(count / star_columns)
-            star_column = count % star_columns
 
-            star_x = star_column * star_size[0] * star_width_overlap
-            star_y = star_row * star_size[1] * star_height_overlap
-            star_offset = (-15 * (star_row + 1)) + (30 * star_row)
-            star_pos = pos[0] + star_x + star_start[0] + star_offset, pos[1] + self.size[1] - star_size[
-                1] - star_y - self.preview_wgap
-            self.stars[count].pos = star_pos
-            count += 1
         if self.support is not None:
-            diamond_top = 545 * self.size[1] / self.preview_height
-            diamond_center = 426.5 * self.size[1] / self.preview_height
-            diamond_bottom = 309 * self.size[1] / self.preview_height
+            diamond_top = 545 * self.size[1] / 935
+            diamond_center = 426.5 * self.size[1] / 935
+            diamond_bottom = 309 * self.size[1] / 935
 
-            diamond_left = 7 * self.size[0] / self.preview_width
+            diamond_left = 7 * self.size[0] / 250
             diamond_middle = self.size[0] / 2
-
             space = (diamond_middle - diamond_left) / 5, (diamond_center - diamond_bottom) / 5
 
-            for level in self.support.ranks:
+        count = 0
+        for star in self.stars:
+            if star.type:
+                star_row = int(count / star_columns)
+                star_column = count % star_columns
+
+                star_x = star_column * star_size[0] * star_width_overlap
+                star_y = star_row * star_size[1] * star_height_overlap
+                star_offset = (-15 * (star_row + 1)) + (30 * star_row)
+                self.stars[count].pos = pos[0] + star_x + star_start[0] + star_offset, pos[1] + self.size[1] - star_size[ 1] - star_y - self.preview_wgap
+            else:
                 scount = (count - 10)
                 if scount < 3:
                     column = row = (count - 10) % 5 + 1
@@ -394,19 +328,19 @@ class FilledCharacterPreview(Widget):
                     column = row = (count - 17) % 5
                     star_pos = self.size[0] / 2 + star_size[0] * .4 + space[0] * column, diamond_top - star_size[1] * .1 - space[1] * (row + 1)
                 self.stars[count].pos = star_pos
-                count += 1
+            count += 1
 
-        label_height = (self.size[1] * 120 / self.preview_height) / 4
+        label_height = (self.size[1] * 120 / 935) / 4
         image_width = label_height
-        image_height = image_width
         label_width = (self.size[0] - self.preview_wgap * 2 - image_width * 1.75) / 2
-        text_color = (.796, .773, .678, 1)
+        # image_height = image_width
+        # text_color = (.796, .773, .678, 1)
 
         image_wstart = pos[0] + self.preview_wgap + image_width / 2
-        image_hstart = pos[1] + (self.size[1] * 310 / self.preview_height)
+        image_hstart = pos[1] + (self.size[1] * 310 / 935)
 
         label_wstart = image_wstart + image_width
-        label_hstart = pos[1] + (self.size[1] * 310 / self.preview_height)
+        label_hstart = pos[1] + (self.size[1] * 310 / 935)
 
         self.phyatk_image.pos = image_wstart, image_hstart - image_width
         self.magatk_image.pos = image_wstart, image_hstart - image_width * 2
@@ -421,24 +355,16 @@ class FilledCharacterPreview(Widget):
 
         self.label_words.pos = (label_wstart + image_width * .25, label_hstart - label_height * 5)
         self.label_words2.pos = (label_wstart + self.preview_wgap, label_hstart - label_height * 10)
-        self.label_numbers.pos = (label_wstart + label_width, label_hstart - label_height*10)
-
-        self.char_button.pos = pos
-        if not self.isSelect:
-            self.support_button.pos = pos
+        self.label_numbers.pos = (label_wstart + label_width, label_hstart - label_height * 10)
 
         if self.has_tag:
-            self.tag.pos = pos[0], pos[1] + self.size[1] - (60 * self.size[1] / self.preview_height) - self.tag.height
+            self.tag.pos = pos[0], pos[1] + self.size[1] - (60 * self.size[1] / 935) - self.tag.height
 
     def updateStars(self, character, support):
-        # print("updating preview stars")
         count = 0
         for level in character.ranks:
-            # print(str(self.stars[count].opacity))
             if level.unlocked:
                 if not level.broken:
-                    if self.stars[count].source != '../res/screens/stats/star.png':
-                        self.stars[count].source = '../res/screens/stats/star.png'
                     self.stars[count].opacity = 1
                 else:
                     if self.stars[count].source != '../res/screens/stats/rankbrk.png':
@@ -447,11 +373,8 @@ class FilledCharacterPreview(Widget):
             count += 1
         if support is not None:
             for level in support.ranks:
-                # print(str(self.stars[count].opacity))
                 if level.unlocked:
                     if not level.broken:
-                        if self.stars[count].source != '../res/screens/stats/star.png':
-                            self.stars[count].source = '../res/screens/stats/star.png'
                         self.stars[count].opacity = 1
                     else:
                         if self.stars[count].source != '../res/screens/stats/rankbrk.png':
@@ -476,7 +399,7 @@ class FilledCharacterPreview(Widget):
                 touch.grab(self)
                 self.emptied = False
                 if touch.button == 'left':
-                    if not self.isSelect:
+                    if not self.is_select:
                         self.event = Clock.schedule_once(lambda dt: self.on_char_empty(instance, touch), .25)
                         return True
 
@@ -493,7 +416,7 @@ class FilledCharacterPreview(Widget):
                 touch.grab(self)
                 self.emptied = False
                 if touch.button == 'left':
-                    if not self.isSelect:
+                    if not self.is_select:
                         self.event = Clock.schedule_once(lambda dt: self.on_support_empty(instance, touch), .25)
                         return True
 
@@ -531,8 +454,8 @@ class FilledCharacterPreview(Widget):
                 if touch.button == 'left':
                     if self.event is not None:
                         self.event.cancel()
-                    if self.isSelect:
-                        if self.isSupport:
+                    if self.is_select:
+                        if self.is_support:
                             self.preview.set_char_screen(True, self.preview.char, self.character)
                         else:
                             self.preview.set_char_screen(True, self.character, None)
