@@ -1,3 +1,4 @@
+from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
 from kivy.uix.image import Image
@@ -6,12 +7,13 @@ from src.modules.HTButton import HTButton
 
 
 class SelectScreen(Screen):
-    def __init__(self, main_screen, **kwargs):
-        self.initalized = False
+    initialized = BooleanProperty(False)
+    main_screen = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
         super(SelectScreen, self).__init__(**kwargs)
 
         self.name = 'select_screen'
-        self.main_screen = main_screen
 
         self._size = (0, 0)
 
@@ -19,8 +21,8 @@ class SelectScreen(Screen):
 
         self.title = Label(text="Select a Character!", size_hint=(None, None), color=(.8, .8, .8, 1), font_name='../res/fnt/Precious.ttf', outline_width=1, outline_color=(0, 0, 0, .75))
 
-        self.new_game_bell = HTButton(size_hint=(None, None), path='../res/screens/buttons/newgame.bell', on_touch_down=lambda instance, touch: self.choose_character(instance, touch, 'hero_bell'))
-        self.new_game_ais = HTButton(size_hint=(None, None), path='../res/screens/buttons/newgame.ais', on_touch_down=lambda instance, touch: (self.choose_character(instance, touch, 'badass_ais')))
+        self.new_game_bell = HTButton(size_hint=(None, None), path='../res/screens/buttons/newgame.bell', on_release=lambda instance: self.choose_character(instance, 'hero_bell'))
+        self.new_game_ais = HTButton(size_hint=(None, None), path='../res/screens/buttons/newgame.ais', on_release=lambda instance: (self.choose_character(instance, 'badass_ais')))
 
         self.new_game_bell_label = Label(text="Rabbit Foot", size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=0.25, color=(0, 0, 0, 1), outline_color=(1, 0, 0, .75))
         self.new_game_ais_label = Label(text="Battle Princess", size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=0.25, color=(0, 0, 0, 1), outline_color=(0, 0, 1, .75))
@@ -31,36 +33,35 @@ class SelectScreen(Screen):
         self.add_widget(self.new_game_ais)
         self.add_widget(self.new_game_bell_label)
         self.add_widget(self.new_game_ais_label)
-        self.initalized = True
+        self.initialized = True
 
-    def choose_character(self, instance, touch, choice):
-        if instance.collide_point(*touch.pos):
-            print('Chosen Character: %s, adding to char Array.' % choice)
-            # for x in self.main_screen.characters:
-            #     if x.get_index() > 2 and x.get_id() != 'enticing_misha':
-            #         self.main_screen.obtained_characters.append(x.get_index())
-            #         if x.is_support():
-            #             self.main_screen.obtained_characters_s.append(x.get_index())
-            #         else:
-            #             self.main_screen.obtained_characters_a.append(x.get_index())
-            char = support = False
-            for x in self.main_screen.characters:
-                id = x.get_id()
-                if id == choice:
-                    x.first = True
-                    self.main_screen.obtained_characters.append(x.get_index())
-                    self.main_screen.obtained_characters_a.append(x.get_index())
-                    char = True
-                if id == 'enticing_misha':
-                    self.main_screen.obtained_characters.append(x.get_index())
-                    self.main_screen.obtained_characters_s.append(x.get_index())
-                    support = True
-                if char and support:
-                    self.main_screen.display_screen('town_screen', True, False)
-                    return
+    def choose_character(self, instance, choice):
+        # print('Chosen Character: %s, adding to char Array.' % choice)
+        for x in self.main_screen.characters:
+            self.main_screen.obtained_characters.append(x.get_index())
+            if x.is_support():
+                self.main_screen.obtained_characters_s.append(x.get_index())
+            else:
+                self.main_screen.obtained_characters_a.append(x.get_index())
+        self.main_screen.display_screen('town_screen', True, False)
+        # char = support = False
+        # for x in self.main_screen.characters:
+        #     id = x.get_id()
+        #     if id == choice:
+        #         x.first = True
+        #         self.main_screen.obtained_characters.append(x.get_index())
+        #         self.main_screen.obtained_characters_a.append(x.get_index())
+        #         char = True
+        #     if id == 'enticing_misha':
+        #         self.main_screen.obtained_characters.append(x.get_index())
+        #         self.main_screen.obtained_characters_s.append(x.get_index())
+        #         support = True
+        #     if char and support:
+        #         self.main_screen.display_screen('town_screen', True, False)
+        #         return
 
     def on_size(self, instance, size):
-        if not self.initalized or self._size == size:
+        if not self.initialized or self._size == size:
             return
         self._size = size.copy()
 

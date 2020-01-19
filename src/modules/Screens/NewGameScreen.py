@@ -1,3 +1,4 @@
+from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
 
@@ -5,37 +6,36 @@ from src.modules.HTButton import HTButton
 
 
 class NewGameScreen(Screen):
-    def __init__(self, main_screen, **kwargs):
-        self.initalized = False
+    initialized = BooleanProperty(False)
+    main_screen = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
         super(NewGameScreen, self).__init__(**kwargs)
 
         self.name = 'new_game'
-        self.main_screen = main_screen
 
         self._size = (0, 0)
 
         self.background = Image(source='../res/screens/backgrounds/newgamebackground.png', allow_stretch=True)
         self.title = Image(source='../res/screens/backgrounds/Title.png', allow_stretch=True, size_hint=(None, None))
 
-        self.new_game = HTButton(size_hint=(None, None), path='../res/screens/buttons/newgame', on_touch_down=self.on_new_game)
-        self.load_game = HTButton(size_hint=(None, None), path='../res/screens/buttons/loadgame', background_disabled_normal_use=True, on_touch_down=self.on_load_game)
+        self.new_game = HTButton(size_hint=(None, None), path='../res/screens/buttons/newgame', on_release=self.on_new_game)
+        self.load_game = HTButton(size_hint=(None, None), path='../res/screens/buttons/loadgame', on_release=self.on_load_game)
 
         self.add_widget(self.background)
         self.add_widget(self.new_game)
         self.add_widget(self.load_game)
         self.add_widget(self.title)
-        self.initalized = True
+        self.initialized = True
 
-    def on_new_game(self, instance, touch):
-        if instance.collide_point(*touch.pos):
-            self.main_screen.display_screen('select_screen', True, False)
+    def on_new_game(self, instance):
+        self.main_screen.display_screen('select_screen', True, False)
 
-    def on_load_game(self, instance, touch):
-        if instance.collide_point(*touch.pos):
-            pass
+    def on_load_game(self, instance):
+        pass
 
     def on_size(self, instance, size):
-        if not self.initalized or self._size == size:
+        if not self.initialized or self._size == size:
             return
         self._size = size.copy()
 
