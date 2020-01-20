@@ -17,6 +17,7 @@ class GridPreview(Filterable, Sortable, Widget):
 
     characters = ListProperty([])
     is_support = BooleanProperty(False)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         print("Init Grid Preview w/ ", self.size)
@@ -75,6 +76,7 @@ class GridPreview(Filterable, Sortable, Widget):
         hgap = ((self.width - slot_size) - slot_size * count) / (count + 1)
 
         self.non_label.font_size = (self.width - vgap * 2) * 0.125
+        self.non_label.size = self.size
 
         self.root.size = self.width - vgap * 2, self.height - vgap * 2
         self.root.pos = self.x + vgap, self.y + vgap
@@ -115,6 +117,8 @@ class GridPreview(Filterable, Sortable, Widget):
                 self.add_widget(self.non_label)
 
     def on_after_filter(self):
+        if self.parent is not None:
+            self.parent.update_number(len(self.output))
         self.no_sort = True
         self.previews_sort = self.output
         self.force_update_values()

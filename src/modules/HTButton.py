@@ -177,6 +177,7 @@ class HTButton(Widget):
 
     def _do_press(self):
         if self.toggle_enabled:
+            self.toggle_state = not self.toggle_state
             if not self.state.startswith('hover'):
                 self.state = 'down' if self.toggle_state else 'normal'
             else:
@@ -240,7 +241,6 @@ class HTButton(Widget):
             self._do_release()
         self.dispatch('on_release')
         if self.toggle_enabled:
-            self.toggle_state = not self.toggle_state
             if self.toggle_state:
                 self.dispatch('on_toggle_down')
             else:

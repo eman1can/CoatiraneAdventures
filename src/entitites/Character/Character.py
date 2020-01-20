@@ -61,11 +61,11 @@ class Character(WidgetBase):
         elif type == 1:
             self.type = 'Physical'
         elif type == 2:
-            self.type = 'Balanced'
+            self.type = 'Balance'
         elif type == 3:
             self.type = 'Defensive'
         else:
-            self.type = 'Healing'
+            self.type = 'Healer'
 
         try:
             self.ranks = Rank.load_weights("../save/char_load_data/" + self.program_type + '/ranks/' + self.id + '.txt', self.id, rank, self.program_type)

@@ -2,6 +2,7 @@ from kivy.properties import BooleanProperty, ObjectProperty
 from kivy.graphics import Color, Rectangle
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
+from kivy.uix.label import Label
 
 from src.modules.Screens.SinglePreview import SinglePreview
 from src.modules.Screens.ScrollPreview import ScrollPreview
@@ -23,6 +24,8 @@ class CharacterSelector(Screen):
         self.name = 'select_char'
 
         self._size = (0, 0)
+
+        self.back_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/back', on_release=self.on_back_press)
 
         self.background = Image(source="../res/screens/backgrounds/background.png", allow_stretch=True)
         self.overlay = Image(source='../res/screens/backgrounds/select_char_overlay.png', allow_stretch=True)
@@ -96,6 +99,9 @@ class CharacterSelector(Screen):
         self.filter_button = HTButton(size_hint=(None, None), text="Filter", path="../res/screens/buttons/long_stat", on_release=self.on_filter)
         self.toggle_button = HTButton(size_hint=(None, None), text="Switch Display", path='../res/screens/buttons/long_stat', toggle_enabled=True, on_toggle_up=self.on_scroll, on_toggle_down=self.on_grid)
 
+        self.number_icon = Image(source="../res/screens/stats/icon.png", size_hint=(None, None), allow_stretch=True)
+        self.number_label = Label(text=str(0), font_name="../res/fnt/Precious.ttf", color=(0, 0, 0, 1), size_hint=(None, None))
+
         self.add_widget(self.background)
         self.add_widget(self.overlay)
         if self.has_left:
@@ -110,7 +116,13 @@ class CharacterSelector(Screen):
         self.add_widget(self.sort_button)
         self.add_widget(self.filter_button)
         self.add_widget(self.toggle_button)
+        self.add_widget(self.number_icon)
+        self.add_widget(self.number_label)
+        self.add_widget(self.back_button)
         self.initialized = True
+
+    def on_pre_enter(self, *args):
+        self.update_number(len(self.grid.previews_sort))
 
     def on_size(self, instance, size):
         if not self.initialized or self._size == size:
@@ -140,6 +152,16 @@ class CharacterSelector(Screen):
         self.filter_button.pos = (self.width - button_size[0] * 3) * 2 / 4 + button_size[0], self.height * 0.85 + self.height * 0.075 - button_size[1] / 2
         self.toggle_button.font_size = button_size[1] * 0.45
         self.toggle_button.pos = (self.width - button_size[0] * 3) * 3 / 4 + button_size[0] * 2, self.height * 0.85 + self.height * 0.075 - button_size[1] / 2
+
+        self.number_label.font_size = self.toggle_button.height / 2
+        self.number_label.texture_update()
+        self.number_label.size = self.number_label.texture_size
+        self.number_icon.size = self.toggle_button.height / 2, self.toggle_button.height / 2
+        self.number_icon.pos = self.toggle_button.x + self.toggle_button.width + (self.width - self.toggle_button.x - self.toggle_button.width - self.number_icon.width - self.number_label.width) / 2, self.height * 0.85 + self.height * 0.15 * 0.5 - self.number_icon.height / 2
+        self.number_label.pos = self.number_icon.x + self.number_icon.width, self.number_icon.y
+
+        self.back_button.size = self.width * .05, self.width * .05
+        self.back_button.pos = 0, self.height - self.back_button.height
 
     def reload(self):
         pass
@@ -209,3 +231,10 @@ class CharacterSelector(Screen):
         for preview in self.scroll.previews_sort:
             preview.char_button.do_hover = True
         self.remove_widget(self.filter)
+
+    def update_number(self, number):
+        self.number_label.text = str(number)
+
+    def on_back_press(self, instance):
+        if not instance.disabled:
+            self.main_screen.display_screen(None, False, False)

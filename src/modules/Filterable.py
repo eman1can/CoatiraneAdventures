@@ -13,7 +13,7 @@ class Filterable(object):
                     'type_physical', 'type_magical', 'type_balanced', 'type_defensive', 'type_healing',
                     'rank_1', 'rank_2', 'rank_3', 'rank_4', 'rank_5', 'rank_6', 'rank_7', 'rank_8', 'rank_9', 'rank_10'])
     filters_applied = ListProperty(['type_light', 'type_dark', 'type_earth', 'type_wind', 'type_thunder', 'type_fire', 'type_water',
-                    'type_physical', 'type_magical', 'type_balanced', 'type_defensive', 'type_healing',
+                    'type_physical', 'type_magical', 'type_balance', 'type_defensive', 'type_healer',
                     'rank_1', 'rank_2', 'rank_3', 'rank_4', 'rank_5', 'rank_6', 'rank_7', 'rank_8', 'rank_9', 'rank_10'])
     no_filter = BooleanProperty(False)
 
@@ -51,11 +51,11 @@ class Filterable(object):
                 stage2.append(preview)
             elif 'type_physical' in self.filters_applied and preview.char.get_type() == 'Physical':
                 stage2.append(preview)
-            elif 'type_balanced' in self.filters_applied and preview.char.get_type() == 'Balanced':
+            elif 'type_balance' in self.filters_applied and preview.char.get_type() == 'Balance':
                 stage2.append(preview)
             elif 'type_defensive' in self.filters_applied and preview.char.get_type() == 'Defensive':
                 stage2.append(preview)
-            elif 'type_healing' in self.filters_applied and preview.char.get_type() == 'Healing':
+            elif 'type_healer' in self.filters_applied and preview.char.get_type() == 'Healer':
                 stage2.append(preview)
         output = []
         for preview in stage2:

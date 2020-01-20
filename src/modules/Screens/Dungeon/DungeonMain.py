@@ -25,7 +25,7 @@ class DungeonMain(Screen):
 
         self.background = Image(source="../res/screens/backgrounds/background.png", allow_stretch=True)
 
-        self.title = Label(text="Coatirane Dungeons", size_hint=(None, None), color=(1, .2, .2, 1), font_name='../res/fnt/Precious.ttf')
+        self.title = Label(text="Coatirane Dungeons", size_hint=(None, None), color=(127 / 255, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
         self.level_label = Label(text="Level - " + str(self.level), size_hint=(None, None), color=(135 / 255, 28 / 255, 100 / 255, 1), font_name='../res/fnt/Precious.ttf')
         self.party_score_label = Label(text="Party Score - " + str(self.party_score), size_hint=(None, None), color=(24 / 255, 134 / 255, 140 / 255, 1), font_name='../res/fnt/Precious.ttf' )
 

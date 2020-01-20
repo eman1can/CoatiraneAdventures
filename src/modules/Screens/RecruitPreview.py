@@ -62,7 +62,7 @@ class RecruitPreview(Screen):
             return
         self._size = size.copy()
 
-        ratio = 150 /575
+        ratio = 150 / 575
 
         self.background.size = self.size
 
@@ -81,13 +81,13 @@ class RecruitPreview(Screen):
 
         self.char_type_flag.size = self.width * 0.275, self.width * 0.33 * ratio
         self.char_type_flag.pos = self.width - self.char_type_flag.width, self.height - self.char_type_flag.height * 1.25
-        self.char_type_flag_label.font_size = self.width * 0.33 * ratio * 0.6
+        self.char_type_flag_label.font_size = self.width * 0.30 * ratio * 0.55
         self.char_type_flag_label.size = self.width * 0.275 * 0.83, self.width * 0.33 * ratio * 0.85
         self.char_type_flag_label.pos = self.width - self.char_type_flag_label.width, self.height - self.char_type_flag.height * 1.25 + self.char_type_flag.height * 0.15
 
         self.type_flag.size = self.width * 0.275, self.width * 0.33 * ratio
         self.type_flag.pos = self.width - self.type_flag.width, self.char_type_flag.y - self.type_flag.height * 1.25
-        self.type_flag_label.font_size = self.width * 0.33 * ratio * 0.6
+        self.type_flag_label.font_size = self.width * 0.30 * ratio * 0.55
         self.type_flag_label.size = self.width * 0.275 * 0.83, self.width * 0.33 * ratio * 0.85
         self.type_flag_label.pos = self.width - self.type_flag_label.width, self.char_type_flag.y - self.type_flag.height * 1.25 + self.type_flag.height * 0.15
 

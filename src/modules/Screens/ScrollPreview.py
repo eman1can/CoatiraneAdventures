@@ -77,6 +77,7 @@ class ScrollPreview(Filterable, Sortable, Widget):
         slot_size = (self.height - gap * 2) * 250 / 935, self.height - gap * 2
 
         self.non_label.font_size = (self.width - gap * 2) * 0.125
+        self.non_label.size = self.size
 
         self.root.size = self.width - gap * 2, slot_size[1]
         self.root.pos = self.x + gap, self.y + gap
@@ -115,5 +116,10 @@ class ScrollPreview(Filterable, Sortable, Widget):
             self.add_widget(self.non_label)
 
     def on_after_filter(self):
+        if self.parent is not None:
+            self.parent.update_number(len(self.output))
         self.previews_sort = self.output
+        print(self.previews_filter)
+        print(self.filters_applied)
+        print(self.previews_sort)
         self.force_update_values()
