@@ -72,11 +72,11 @@ class Character(WidgetBase):
         except FileNotFoundError:
             self.ranks = Rank.load_weights("../save/char_load_data/" + self.program_type + '/ranks/base.txt', self.id, rank, self.program_type)
 
-        self.slide_image = Image(source=self.slide_image_source, allow_stretch=True)
+        self.slide_image = Image(source=self.slide_image_source, allow_stretch=True, size_hint=(None, None))
         if self._is_support:
-            self.slide_support_image = Image(source=self.slide_support_image_source, allow_stretch=True)
-        self.preview_image = Image(source=self.preview_image_source, allow_stretch=True)
-        self.full_image = Image(source=self.full_image_source, allow_stretch=True)
+            self.slide_support_image = Image(source=self.slide_support_image_source, allow_stretch=True, size_hint=(None, None))
+        self.preview_image = Image(source=self.preview_image_source, allow_stretch=True, size_hint=(None, None))
+        self.full_image = Image(source=self.full_image_source, allow_stretch=True, size_hint=(None, None))
 
     def load_elements(self): #MAINSCREEN preview size pos is_select, has_screen, char, support, is_support, new_instance
         self.select_widget = FilledCharacterPreview(is_select=True, is_support=self._is_support, character=self, size_hint_x=None)

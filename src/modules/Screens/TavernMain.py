@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import SlideTransition, RiseInTransition, SwapTransition
+from kivy.core.audio import SoundLoader
 
 import random
 
@@ -20,12 +21,14 @@ class TavernMain(Screen):
 
         self._size = (0, 0)
 
-        self.background = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/collage.png')
+        self.background = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/collage.png', size_hint=(None, None))
         self.lock = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/locked.png')
         self.title = Label(text="[b]Recruitment[/b]", markup=True, color=(1, 1, 1, 1), size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=2, outline_color=(0, 0, 0, 1))
 
-        self.recruit_button = HTButton(path='../res/screens/buttons/recruitButton', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", on_release=self.on_recruit)
+        self.recruit_button = HTButton(path='../res/screens/buttons/recruit_button', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", text="Recruit", font_name='../res/fnt/Precious.ttf', label_color=(1, 1, 1, 1), on_release=self.on_recruit)
         self.back_button = HTButton(path='../res/screens/buttons/back', size_hint=(None, None), on_release=self.on_back_press)
+
+        self.sound = SoundLoader.load('../res/snd/recruit.wav')
 
         self.add_widget(self.background)
         self.add_widget(self.title)
@@ -53,6 +56,8 @@ class TavernMain(Screen):
 
         self.recruit_button.size = self.height * 0.15 * 1016 / 716, self.height * 0.15
         self.recruit_button.pos = self.width * 0.5 - self.recruit_button.width * 0.5, self.height * 0.1
+        self.recruit_button.font_size = self.recruit_button.height * 0.1875
+        self.recruit_button.label_padding = [0, self.recruit_button.height * 0.4, 0, 0]
 
         self.back_button.size = self.width * .05, self.width * .05
         self.back_button.pos = 0, self.height - self.back_button.height
@@ -71,7 +76,8 @@ class TavernMain(Screen):
                 index = random.randint(0, len(unobtained_characters) - 1)
                 viewed_characters = [unobtained_characters[index]]
                 self.main_screen.create_screen('recruit', unobtained_characters[index], viewed_characters)
-                self.main_screen.transition = SwapTransition()
+                self.main_screen.transition = SwapTransition(duration=2)
+                self.sound.play()
                 self.main_screen.display_screen('recruit_' + unobtained_characters[index].get_id(), True, True)
 
     def check_unlock(self):
