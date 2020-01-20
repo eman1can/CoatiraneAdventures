@@ -37,28 +37,31 @@ class SelectScreen(Screen):
 
     def choose_character(self, instance, choice):
         # print('Chosen Character: %s, adding to char Array.' % choice)
-        for x in self.main_screen.characters:
-            self.main_screen.obtained_characters.append(x.get_index())
-            if x.is_support():
-                self.main_screen.obtained_characters_s.append(x.get_index())
-            else:
-                self.main_screen.obtained_characters_a.append(x.get_index())
-        self.main_screen.display_screen('town_screen', True, False)
-        # char = support = False
-        # for x in self.main_screen.characters:
-        #     id = x.get_id()
-        #     if id == choice:
-        #         x.first = True
-        #         self.main_screen.obtained_characters.append(x.get_index())
-        #         self.main_screen.obtained_characters_a.append(x.get_index())
-        #         char = True
-        #     if id == 'enticing_misha':
-        #         self.main_screen.obtained_characters.append(x.get_index())
-        #         self.main_screen.obtained_characters_s.append(x.get_index())
-        #         support = True
-        #     if char and support:
-        #         self.main_screen.display_screen('town_screen', True, False)
-        #         return
+        testing = False
+        if (testing):
+            for x in self.main_screen.characters:
+                self.main_screen.obtained_characters.append(x.get_index())
+                if x.is_support():
+                    self.main_screen.obtained_characters_s.append(x.get_index())
+                else:
+                    self.main_screen.obtained_characters_a.append(x.get_index())
+            self.main_screen.display_screen('town_screen', True, False)
+        else:
+            char = support = False
+            for x in self.main_screen.characters:
+                id = x.get_id()
+                if id == choice:
+                    x.first = True
+                    self.main_screen.obtained_characters.append(x.get_index())
+                    self.main_screen.obtained_characters_a.append(x.get_index())
+                    char = True
+                if id == 'enticing_misha':
+                    self.main_screen.obtained_characters.append(x.get_index())
+                    self.main_screen.obtained_characters_s.append(x.get_index())
+                    support = True
+                if char and support:
+                    self.main_screen.display_screen('town_screen', True, False)
+                    return
 
     def on_size(self, instance, size):
         if not self.initialized or self._size == size:

@@ -2,7 +2,7 @@ from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.screenmanager import Screen
 from kivy.uix.image import Image
 from kivy.uix.label import Label
-from kivy.uix.screenmanager import SlideTransition, RiseInTransition
+from kivy.uix.screenmanager import SlideTransition, RiseInTransition, SwapTransition
 
 import random
 
@@ -12,7 +12,7 @@ from src.modules.HTButton import HTButton
 class TavernMain(Screen):
     initialized = BooleanProperty(False)
     main_screen = ObjectProperty(None)
-    unlocked = BooleanProperty(True)
+    unlocked = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -22,10 +22,10 @@ class TavernMain(Screen):
 
         self.background = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/collage.png')
         self.lock = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/locked.png')
-        self.title = Label(text="[b]Recruitment[/b]", markup=True, color=(1, 1, 1, 1), size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=1, outline_color=(0, 0, 0, 1))
+        self.title = Label(text="[b]Recruitment[/b]", markup=True, color=(1, 1, 1, 1), size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=2, outline_color=(0, 0, 0, 1))
 
-        self.recruit_button = HTButton(path='../res/screens/buttons/recruitButton', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", on_touch_down=self.on_recruit)
-        self.back_button = HTButton(path='../res/screens/buttons/back', size_hint=(None, None), on_touch_down=self.on_back_press)
+        self.recruit_button = HTButton(path='../res/screens/buttons/recruitButton', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", on_release=self.on_recruit)
+        self.back_button = HTButton(path='../res/screens/buttons/back', size_hint=(None, None), on_release=self.on_back_press)
 
         self.add_widget(self.background)
         self.add_widget(self.title)
@@ -35,7 +35,8 @@ class TavernMain(Screen):
         self.initialized = True
 
     def on_enter(self, *args):
-        self.check_unlock()
+        if not self.unlocked:
+            self.check_unlock()
 
     def on_size(self, instance, size):
         if not self.initialized or self._size == size:
@@ -59,24 +60,24 @@ class TavernMain(Screen):
     def reload(self):
         pass
 
-    def on_recruit(self, instance, touch):
-        if instance.collide_point(*touch.pos):
-            if self.unlocked:
-                not_obtained = False
-                if self.main_screen.obtained_characters == len(self.main_screen.characters):
-                    print("Obtained All Characters")
-                else:
-                    while not not_obtained:
-                        index = random.randint(0, len(self.main_screen.characters) - 1)
-                        not_obtained = index not in self.main_screen.obtained_characters
-                    self.main_screen.create_screen('recruit', self.main_screen.characters[index])
-                    self.main_screen.display_screen('recruit_' + self.main_screen.characters[index].get_name(), True, True)
+    def on_recruit(self, instance):
+        if self.unlocked:
+            print(self.main_screen.obtained_characters)
+            print(self.main_screen.characters)
+            if self.main_screen.obtained_characters == len(self.main_screen.characters):
+                print("Obtained All Characters")
+            else:
+                unobtained_characters = [char for char in self.main_screen.characters if char.index not in self.main_screen.obtained_characters]
+                index = random.randint(0, len(unobtained_characters) - 1)
+                viewed_characters = [unobtained_characters[index]]
+                self.main_screen.create_screen('recruit', unobtained_characters[index], viewed_characters)
+                self.main_screen.transition = SwapTransition()
+                self.main_screen.display_screen('recruit_' + unobtained_characters[index].get_id(), True, True)
 
     def check_unlock(self):
         self.unlocked = self.main_screen.tavern_unlocked
         if self.unlocked:
             self.remove_widget(self.lock)
 
-    def on_back_press(self, instance, touch):
-        if instance.collide_point(*touch.pos):
-            self.main_screen.display_screen(None, False, False)
+    def on_back_press(self, instance):
+        self.main_screen.display_screen(None, False, False)

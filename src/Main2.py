@@ -103,7 +103,7 @@ class Root(ScreenManager):
         elif screen_name == 'select_char':
             screen = CharacterSelector(main_screen=self, preview=args[0], is_support=args[1])
         elif screen_name == 'recruit':
-            screen = RecruitPreview(args[0], main_screen=self)
+            screen = RecruitPreview(character=args[0], viewed_characters=args[1], main_screen=self)
         else:
             raise Exception("Unsupported Screen type", screen_name)
         print("Make ", screen_name, " w/ ", self.size)

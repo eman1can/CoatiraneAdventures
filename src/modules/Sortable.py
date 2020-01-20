@@ -9,7 +9,7 @@ from src.modules.HTButton import HTButton
 class Sortable(object):
     previews_sort = ListProperty(None)
     values_sort = ListProperty(None)
-    ascending = BooleanProperty(False)
+    ascending = BooleanProperty(True)
     sort_type = StringProperty('Strength')
     no_sort = BooleanProperty(False)
 
