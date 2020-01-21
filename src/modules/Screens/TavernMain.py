@@ -13,7 +13,6 @@ from src.modules.HTButton import HTButton
 class TavernMain(Screen):
     initialized = BooleanProperty(False)
     main_screen = ObjectProperty(None)
-    unlocked = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -22,7 +21,6 @@ class TavernMain(Screen):
         self._size = (0, 0)
 
         self.background = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/collage.png', size_hint=(None, None))
-        self.lock = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/locked.png')
         self.title = Label(text="[b]Recruitment[/b]", markup=True, color=(1, 1, 1, 1), size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=2, outline_color=(0, 0, 0, 1))
 
         self.recruit_button = HTButton(path='../res/screens/buttons/recruit_button', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", text="Recruit", font_name='../res/fnt/Precious.ttf', label_color=(1, 1, 1, 1), on_release=self.on_recruit)
@@ -33,13 +31,8 @@ class TavernMain(Screen):
         self.add_widget(self.background)
         self.add_widget(self.title)
         self.add_widget(self.recruit_button)
-        self.add_widget(self.lock)
         self.add_widget(self.back_button)
         self.initialized = True
-
-    def on_enter(self, *args):
-        if not self.unlocked:
-            self.check_unlock()
 
     def on_size(self, instance, size):
         if not self.initialized or self._size == size:
@@ -47,7 +40,6 @@ class TavernMain(Screen):
         self._size = size.copy()
 
         self.background.size = self.size
-        self.lock.size = self.size
 
         self.title.font_size = self.width * 0.0725
         self.title.texture_update()
@@ -79,11 +71,6 @@ class TavernMain(Screen):
                 self.main_screen.transition = SwapTransition(duration=2)
                 self.sound.play()
                 self.main_screen.display_screen('recruit_' + unobtained_characters[index].get_id(), True, True)
-
-    def check_unlock(self):
-        self.unlocked = self.main_screen.tavern_unlocked
-        if self.unlocked:
-            self.remove_widget(self.lock)
 
     def on_back_press(self, instance):
         self.main_screen.display_screen(None, False, False)

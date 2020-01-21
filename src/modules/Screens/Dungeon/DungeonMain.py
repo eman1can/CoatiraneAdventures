@@ -35,6 +35,7 @@ class DungeonMain(Screen):
 
         self.back_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/back', on_release=self.on_back_press)
         self.ascend_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/AscendButton', on_release=self.ascend)
+        self.ascend_lock = Image(source="../res/screens/buttons/dungeon_button_lock.png", allow_stretch=True, size_hint=(None, None))
         self.descend_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/DescendButton', on_release=self.descend)
 
         self.portfolio = PartyPortfolio(main_screen=self.main_screen, dungeon=self, size_hint=(None, None))
@@ -47,6 +48,7 @@ class DungeonMain(Screen):
         self.add_widget(self.back_button)
         self.add_widget(self.descend_button)
         self.add_widget(self.ascend_button)
+        self.add_widget(self.ascend_lock)
         self.initialized = True
 
     def on_enter(self, *args):
@@ -95,6 +97,8 @@ class DungeonMain(Screen):
 
         self.ascend_button.size = button_width, button_height
         self.ascend_button.pos = button_x, button_y
+        self.ascend_lock.size = button_width, button_height
+        self.ascend_lock.pos = button_x, button_y
         self.descend_button.size = button_width, button_height
         self.descend_button.pos = button_x, button_y - button_height - spacer
 
@@ -134,11 +138,13 @@ class DungeonMain(Screen):
         if self.level == 0:
             self.back_button.disabled = False
             self.back_button.opacity = 1
+            self.ascend_lock.opacity = 1
             self.ascend_button.disabled = True
             self.portfolio.update_lock(False)
         else:
             self.back_button.disabled = True
             self.back_button.opacity = 0
+            self.ascend_lock.opacity = 0
             self.ascend_button.disabled = False
             self.portfolio.update_lock(True)
 
