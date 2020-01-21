@@ -58,19 +58,16 @@ class TavernMain(Screen):
         pass
 
     def on_recruit(self, instance):
-        if self.unlocked:
-            print(self.main_screen.obtained_characters)
-            print(self.main_screen.characters)
-            if self.main_screen.obtained_characters == len(self.main_screen.characters):
-                print("Obtained All Characters")
-            else:
-                unobtained_characters = [char for char in self.main_screen.characters if char.index not in self.main_screen.obtained_characters]
-                index = random.randint(0, len(unobtained_characters) - 1)
-                viewed_characters = [unobtained_characters[index]]
-                self.main_screen.create_screen('recruit', unobtained_characters[index], viewed_characters)
-                self.main_screen.transition = SwapTransition(duration=2)
-                self.sound.play()
-                self.main_screen.display_screen('recruit_' + unobtained_characters[index].get_id(), True, True)
+        if self.main_screen.obtained_characters == len(self.main_screen.characters):
+            print("Obtained All Characters")
+        else:
+            unobtained_characters = [char for char in self.main_screen.characters if char.index not in self.main_screen.obtained_characters]
+            index = random.randint(0, len(unobtained_characters) - 1)
+            viewed_characters = [unobtained_characters[index]]
+            self.main_screen.create_screen('recruit', unobtained_characters[index], viewed_characters)
+            self.main_screen.transition = SwapTransition(duration=2)
+            self.sound.play()
+            self.main_screen.display_screen('recruit_' + unobtained_characters[index].get_id(), True, True)
 
     def on_back_press(self, instance):
         self.main_screen.display_screen(None, False, False)

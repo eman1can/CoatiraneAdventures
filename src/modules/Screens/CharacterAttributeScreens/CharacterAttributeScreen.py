@@ -47,6 +47,10 @@ class CharacterAttributeScreen(Screen):
         self.type = Image(source="../res/screens/recruit/" + str(self.char.get_type()).lower() + "_flag.png", size_hint=(None, None), allow_stretch=True)
         self.type_label = Label(text=str(self.char.get_type()) + " Type", size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf')
 
+        self.element_flag_background = Image(source="../res/screens/attribute/" + self.char.get_element().lower() + "_flag.png", allow_stretch=True, size_hint=(None, None))
+        self.element_flag_label = Label(text=self.char.get_element().capitalize(), color=(0, 0, 0, 1), font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.element_flag_image = Image(source="../res/screens/attribute/" + self.char.get_element().lower() + ".png", allow_stretch=True, size_hint=(None, None))
+
         # Stars
         self.stars = []
         for level in self.char.ranks:
@@ -245,6 +249,9 @@ class CharacterAttributeScreen(Screen):
         self.add_widget(self.flag_label)
         self.add_widget(self.type)
         self.add_widget(self.type_label)
+        self.add_widget(self.element_flag_background)
+        self.add_widget(self.element_flag_label)
+        self.add_widget(self.element_flag_image)
 
         self.add_widget(self.display_name_label)
         self.add_widget(self.name_label)
@@ -393,6 +400,16 @@ class CharacterAttributeScreen(Screen):
         self.type_label.font_size = type_size[1] * 0.65
         self.type_label.size = flag_size[0] * 0.83, flag_size[1] * 0.85
         self.type_label.pos = type_pos[0] + type_size[0] * 0.17, type_pos[1] + type_size[1] * 0.15
+
+        element_flag_size = (self.height - self.type.y) * 150 / 400 * 1.25, (self.height - self.type.y) * 1.25
+        element_flag_pos = overlay_pos[0] + overlay_size[0] - element_flag_size[0] - gap, self.type_label.pos[1] - element_flag_size[1]
+        self.element_flag_background.size = element_flag_size
+        self.element_flag_background.pos = element_flag_pos
+        self.element_flag_label.font_size = element_flag_size[1] * 0.1
+        self.element_flag_label.size = element_flag_size[0], element_flag_size[1] * 0.6
+        self.element_flag_label.pos = element_flag_pos[0], element_flag_pos[1] + element_flag_size[1] * 0.4
+        self.element_flag_image.size = element_flag_size[0] * 0.3, element_flag_size[0] * 0.3
+        self.element_flag_image.pos = element_flag_pos[0] + element_flag_size[0] * 0.35, element_flag_pos[1] + element_flag_size[0] * 0.65
 
         add_x = False
         count = 0

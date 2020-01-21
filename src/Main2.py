@@ -43,7 +43,7 @@ class Root(ScreenManager):
         self.obtained_characters = []
         self.obtained_characters_a = []
         self.obtained_characters_s = []
-        self.tavern_locked = True
+        self.tavern_locked = False
         self.crafting_locked = True
         self.whitelist = ['dungeon_main', 'tavern_main', 'town_screen']
         self.children = []

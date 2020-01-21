@@ -36,6 +36,10 @@ class RecruitPreview(Screen):
         self.type_flag = Image(source="../res/screens/recruit/" + self.character.get_type().lower() + "_flag.png", allow_stretch=True, size_hint=(None, None))
         self.type_flag_label = Label(text=self.character.get_type().capitalize() + " Type", color=(1, 1, 1, 1), font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
 
+        self.element_flag_background = Image(source="../res/screens/attribute/" + self.character.get_element().lower() + "_flag.png", allow_stretch=True, size_hint=(None, None))
+        self.element_flag_label = Label(text=self.character.get_element().capitalize(), color=(0, 0, 0, 1), font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.element_flag_image = Image(source="../res/screens/attribute/" + self.character.get_element().lower() + ".png", allow_stretch=True, size_hint=(None, None))
+
         self.roll_again = HTButton(path='../res/screens/buttons/recruit_button', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", text="Roll Again", font_name='../res/fnt/Precious.ttf', label_color=(1, 1, 1, 1), on_release=self.on_roll_again)
         self.confirm = HTButton(path='../res/screens/buttons/recruit_button_confirm', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", text="Confirm", font_name='../res/fnt/Precious.ttf', label_color=(1, 1, 1, 1), on_release=self.on_confirm)
         self.cancel = HTButton(path='../res/screens/buttons/recruit_button_cancel', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", text="Cancel", font_name='../res/fnt/Precious.ttf', label_color=(1, 1, 1, 1), on_release=self.on_cancel)
@@ -51,6 +55,9 @@ class RecruitPreview(Screen):
         self.add_widget(self.char_type_flag_label)
         self.add_widget(self.type_flag)
         self.add_widget(self.type_flag_label)
+        self.add_widget(self.element_flag_background)
+        self.add_widget(self.element_flag_label)
+        self.add_widget(self.element_flag_image)
         self.add_widget(self.roll_again)
         self.add_widget(self.confirm)
         self.add_widget(self.cancel)
@@ -91,6 +98,15 @@ class RecruitPreview(Screen):
         self.type_flag_label.size = self.width * 0.275 * 0.83, self.width * 0.33 * ratio * 0.85
         self.type_flag_label.pos = self.width - self.type_flag_label.width, self.char_type_flag.y - self.type_flag.height * 1.25 + self.type_flag.height * 0.15
 
+        element_flag_size = (self.height - self.type_flag.y) * 150 / 400, self.height - self.type_flag.y
+        element_flag_pos = self.type_flag.x - element_flag_size[0] * 1.5, self.type_flag.y
+        self.element_flag_background.size = element_flag_size
+        self.element_flag_background.pos = element_flag_pos
+        self.element_flag_label.font_size = element_flag_size[1] * 0.1
+        self.element_flag_label.size = element_flag_size[0], element_flag_size[1] * 0.6
+        self.element_flag_label.pos = element_flag_pos[0], element_flag_pos[1] + element_flag_size[1] * 0.4
+        self.element_flag_image.size = element_flag_size[0] * 0.3, element_flag_size[0] * 0.3
+        self.element_flag_image.pos = element_flag_pos[0] + element_flag_size[0] * 0.35, element_flag_pos[1] + element_flag_size[0] * 0.65
 
         button_size = self.type_flag.y * 0.2 * 1016 / 716, self.type_flag.y * 0.2
         self.roll_again.size = button_size
