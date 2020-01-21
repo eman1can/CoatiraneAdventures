@@ -42,7 +42,7 @@ class CharacterPreview(ScreenManager):
             score = self.char.get_score()
             if self.support is not None:
                 score += self.support.get_score()
-            return score
+            return round(score, 1)
 
     def update_lock(self, locked):
         if len(self.children) > 0:

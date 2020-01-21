@@ -28,9 +28,9 @@ class PartyPortfolio(DragBehavior, Widget):
 
         self.layout = FloatStencil(main_screen=self.main_screen, dungeon=self.dungeon, size_hint=(None, None))
 
-        for x in range(0, len(self.main_screen.parties) - 1):
-            portfolio = CharacterPortfolio(party=self.main_screen.parties[x + 1], main_screen=self.main_screen, dungeon=self.dungeon, size_hint=(None, None))
-            party_label = Label(text="Party " + str(x + 1), color=(0, 0, 0, 1), font_name="../res/fnt/Precious.ttf")
+        for index in range(0, len(self.main_screen.parties) - 1):
+            portfolio = CharacterPortfolio(party=self.main_screen.parties[index + 1], party_index=index, main_screen=self.main_screen, dungeon=self.dungeon, size_hint=(None, None))
+            party_label = Label(text="Party " + str(index + 1), color=(0, 0, 0, 1), font_name="../res/fnt/Precious.ttf")
 
             drag = DragWidget(root=portfolio, title=party_label, size_hint=(None, None))
             self.drag_widgets.append(drag)

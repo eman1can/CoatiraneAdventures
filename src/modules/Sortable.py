@@ -102,7 +102,7 @@ class Sortable(object):
             elif self.sort_type == 'Defense':
                 value += preview.char.get_defense()
             elif self.sort_type == 'Party':
-                value += preview.char.get_index() #Placeholder
+                value += self.calculate_party_index(preview.char)
             elif self.sort_type == 'Rank':
                 value += preview.char.get_current_rank()
             elif self.sort_type == 'Name':
@@ -141,7 +141,7 @@ class Sortable(object):
             elif self.sort_type == 'Defense':
                 value = preview.char.get_defense()
             elif self.sort_type == 'Party':
-                value = preview.char.get_index()  # Placeholder
+                value = self.calculate_party_index(preview.char)
             elif self.sort_type == 'Rank':
                 value = preview.char.get_current_rank()
             elif self.sort_type == 'Name':
@@ -156,6 +156,19 @@ class Sortable(object):
         self.values_sort = values
         self.no_sort = False
         self.sort()
+
+    def calculate_party_index(self, char):
+        index = 0
+        print("Finding ", char)
+        for party in self.main_screen.parties[1:]:
+            print(party)
+            for character in party:
+                if character == char:
+                    print(index)
+                    return index
+                index += 1
+        print(index)
+        return index
 
     def on_after_sort(self):
         pass

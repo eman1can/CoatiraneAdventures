@@ -9,6 +9,7 @@ class CharacterPortfolio(Widget):
     main_screen = ObjectProperty(None)
     dungeon = ObjectProperty(None)
     party = ListProperty(None)
+    party_index = NumericProperty(None)
     previews = ListProperty([])
 
     slot_x = NumericProperty(0)
@@ -63,11 +64,12 @@ class CharacterPortfolio(Widget):
         party_score = 0
         for preview in self.previews:
             party_score += preview.get_score()
-        return party_score
+        return round(party_score, 1)
 
     def party_change(self, preview, char, support):
-                self.party[preview.index] = char
-                self.party[preview.index + 8] = support
+        self.party[preview.index] = char
+        self.party[preview.index + 8] = support
+        self.main_screen.parties[self.party_index + 1] = self.party
 
     def resolve(self, dest, character, support):
         # if selecting a support that is already selected
