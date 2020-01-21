@@ -34,9 +34,9 @@ class DungeonMain(Screen):
         self.party_score_label = Label(text="Party Score - " + str(self.party_score), size_hint=(None, None), color=(24 / 255, 134 / 255, 140 / 255, 1), font_name='../res/fnt/Precious.ttf' )
 
         self.back_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/back', on_release=self.on_back_press)
-        self.ascend_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/AscendButton', on_release=self.ascend)
+        self.ascend_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/AscendButton', on_release=self.ascend, text="Ascend", font_name="../res/fnt/Precious.ttf")
         self.ascend_lock = Image(source="../res/screens/buttons/dungeon_button_lock.png", allow_stretch=True, size_hint=(None, None))
-        self.descend_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/DescendButton', on_release=self.descend)
+        self.descend_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/DescendButton', on_release=self.descend, text="Descend", font_name="../res/fnt/Precious.ttf")
 
         self.portfolio = PartyPortfolio(main_screen=self.main_screen, dungeon=self, size_hint=(None, None))
 
@@ -97,10 +97,12 @@ class DungeonMain(Screen):
 
         self.ascend_button.size = button_width, button_height
         self.ascend_button.pos = button_x, button_y
+        self.ascend_button.font_size = self.ascend_button.height * 0.6
         self.ascend_lock.size = button_width, button_height
         self.ascend_lock.pos = button_x, button_y
         self.descend_button.size = button_width, button_height
         self.descend_button.pos = button_x, button_y - button_height - spacer
+        self.descend_button.font_size = self.descend_button.height * 0.6
 
         self.portfolio.size = self.width * .75, self.height * .6
         self.portfolio.pos = self.width * .025, self.height * .025
