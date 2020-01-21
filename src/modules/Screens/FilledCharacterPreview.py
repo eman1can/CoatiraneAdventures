@@ -28,6 +28,9 @@ class FilledCharacterPreviewScreen(Screen):
         self.add_widget(self.preview)
         self.initialized = True
 
+    def update_lock(self, locked):
+        self.preview.update_lock(locked)
+
     def on_size(self, instance, size):
         if not self.initialized or self._size == size:
             return
@@ -59,6 +62,8 @@ class FilledCharacterPreview(Widget):
     is_support = BooleanProperty(False)
     character = ObjectProperty(None, allownone=True)
     support = ObjectProperty(None, allownone=True)
+
+    locked = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super().__init__(size_hint=(None, None), **kwargs)
@@ -186,6 +191,8 @@ class FilledCharacterPreview(Widget):
 
         self.label_numbers = Label(text=text, halign="right", color=text_color)
 
+        self.lock = Image(source="../res/screens/stats/lock.png", allow_stretch=True, size_hint=(None, None), opacity=0)
+
         self.add_widget(self.phyatk_image)
         self.add_widget(self.magatk_image)
         self.add_widget(self.hp_image)
@@ -201,6 +208,7 @@ class FilledCharacterPreview(Widget):
         self.add_widget(self.label_words)
         self.add_widget(self.label_words2)
         self.add_widget(self.label_numbers)
+        self.add_widget(self.lock)
         self.initialized = True
 
     def reload(self):
@@ -281,6 +289,9 @@ class FilledCharacterPreview(Widget):
         self.label_words2.size = (label_width, label_height * 5)
         self.label_numbers.font_size = label_height * 0.85
         self.label_numbers.size = (label_width, label_height * 10)
+
+        self.lock.size = self.width * 0.3, self.width * 0.3
+        self.lock.pos = self.x + self.width - self.width * 0.3, self.y + self.height - self.width * 0.3
 
     def on_pos(self, instance, pos):
         if not self.initialized or self._pos == pos:
@@ -369,6 +380,8 @@ class FilledCharacterPreview(Widget):
         self.label_words2.pos = (label_wstart + self.preview_wgap, label_hstart - label_height * 10)
         self.label_numbers.pos = (label_wstart + label_width, label_hstart - label_height * 10)
 
+        self.lock.pos = self.x + self.width - self.width * 0.3, self.y + self.height - self.width * 0.3
+
         if self.has_tag:
             self.tag.pos = pos[0], pos[1] + self.size[1] - (60 * self.size[1] / 935) - self.tag.height
 
@@ -394,6 +407,13 @@ class FilledCharacterPreview(Widget):
                         self.stars[count].opacity = 1
                 count += 1
 
+    def update_lock(self, locked):
+        self.locked = locked
+        if self.locked:
+            self.lock.opacity = 1
+        else:
+            self.lock.opacity = 0
+
     def is_valid_touch(self, instance, touch):
         if not self.has_screen:
             return True
@@ -405,7 +425,7 @@ class FilledCharacterPreview(Widget):
 
     def on_char_touch_down(self, instance, touch):
         if instance.collide_point(*touch.pos):
-            if self.is_valid_touch(instance, touch):
+            if self.is_valid_touch(instance, touch) and not self.locked:
                 if isinstance(touch, WM_MotionEvent):
                     touch.button = 'left'
                 touch.grab(self)
@@ -422,7 +442,7 @@ class FilledCharacterPreview(Widget):
 
     def on_support_touch_down(self, instance, touch):
         if instance.collide_point(*touch.pos):
-            if self.is_valid_touch(instance, touch):
+            if self.is_valid_touch(instance, touch) and not self.locked:
                 if isinstance(touch, WM_MotionEvent):
                     touch.button = 'left'
                 touch.grab(self)
@@ -439,7 +459,7 @@ class FilledCharacterPreview(Widget):
 
     def on_support_touch_up(self, instance, touch):
         if instance.collide_point(*touch.pos):
-            if touch.grab_current == self and not self.emptied:
+            if touch.grab_current == self and not self.emptied and not self.locked:
                 touch.ungrab(self)
                 if isinstance(touch, WM_MotionEvent):
                     touch.button = 'left'
@@ -459,7 +479,7 @@ class FilledCharacterPreview(Widget):
 
     def on_char_touch_up(self, instance, touch):
         if instance.collide_point(*touch.pos):
-            if touch.grab_current == self and not self.emptied:
+            if touch.grab_current == self and not self.emptied and not self.locked:
                 touch.ungrab(self)
                 if isinstance(touch, WM_MotionEvent):
                     touch.button = 'left'

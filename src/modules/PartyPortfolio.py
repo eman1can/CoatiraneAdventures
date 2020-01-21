@@ -51,6 +51,10 @@ class PartyPortfolio(DragBehavior, Widget):
     def reload(self):
         self.layout.slots[self.layout.get_index()].root.reload()
 
+    def update_lock(self, locked):
+        for drag_widget in self.drag_widgets:
+            drag_widget.root.update_lock(locked)
+
     def on_arrow_touch(self, instance, touch, direction):
         if instance.collide_point(*touch.pos):
             if direction:

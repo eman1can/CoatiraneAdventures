@@ -44,6 +44,10 @@ class CharacterPreview(ScreenManager):
                 score += self.support.get_score()
             return score
 
+    def update_lock(self, locked):
+        if len(self.children) > 0:
+            self.children[0].update_lock(locked)
+
     def set_empty(self, *args):
         # Want to make an Empty Character Preview and display it
         old_screen = None

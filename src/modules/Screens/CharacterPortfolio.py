@@ -45,6 +45,10 @@ class CharacterPortfolio(Widget):
             preview.pos = current_pos, self.y
             current_pos += self.spacer_x + self.slot_x
 
+    def update_lock(self, locked):
+        for preview in self.previews:
+            preview.update_lock(locked)
+
     def on_pos(self, instance, pos):
         if not self.initialized or self._pos == pos:
             return

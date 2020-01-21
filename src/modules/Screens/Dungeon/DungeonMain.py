@@ -12,7 +12,7 @@ class DungeonMain(Screen):
     initialized = BooleanProperty(False)
     main_screen = ObjectProperty(None)
     party_score = NumericProperty(0)
-    level = NumericProperty(1)
+    level = NumericProperty(0)
     boss = BooleanProperty(False)
 
     def __init__(self, **kwargs):
@@ -26,7 +26,11 @@ class DungeonMain(Screen):
         self.background = Image(source="../res/screens/backgrounds/background.png", allow_stretch=True)
 
         self.title = Label(text="Coatirane Dungeons", size_hint=(None, None), color=(127 / 255, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
-        self.level_label = Label(text="Level - " + str(self.level), size_hint=(None, None), color=(135 / 255, 28 / 255, 100 / 255, 1), font_name='../res/fnt/Precious.ttf')
+        if self.level == 0:
+            level_text = "Level - Surface"
+        else:
+            level_text = "Level - " + str(self.level)
+        self.level_label = Label(text=level_text, size_hint=(None, None), color=(135 / 255, 28 / 255, 100 / 255, 1), font_name='../res/fnt/Precious.ttf')
         self.party_score_label = Label(text="Party Score - " + str(self.party_score), size_hint=(None, None), color=(24 / 255, 134 / 255, 140 / 255, 1), font_name='../res/fnt/Precious.ttf' )
 
         self.back_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/back', on_release=self.on_back_press)
@@ -101,8 +105,10 @@ class DungeonMain(Screen):
         if not self.initialized or self._level == level:
             return
         self._level = level
-
-        self.level_label.text = "Level - " + str(self.level)
+        if self.level == 0:
+            self.level_label.text = "Level - Surface"
+        else:
+            self.level_label.text = "Level - " + str(self.level)
         self.level_label.texture_update()
         self.level_label.size = self.level_label.texture_size
         self.level_label.pos = self.width - self.title.width + self.width * 0.1, self.height - self.title.height - self.width * 0.025 - self.level_label.height * 1.5
@@ -125,14 +131,16 @@ class DungeonMain(Screen):
             self.party_score = party_score
 
     def update_buttons(self):
-        if (self.level < 2):
+        if self.level == 0:
             self.back_button.disabled = False
             self.back_button.opacity = 1
             self.ascend_button.disabled = True
+            self.portfolio.update_lock(False)
         else:
             self.back_button.disabled = True
             self.back_button.opacity = 0
             self.ascend_button.disabled = False
+            self.portfolio.update_lock(True)
 
     def on_back_press(self, instance):
         if not instance.disabled:
