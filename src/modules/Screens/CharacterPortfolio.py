@@ -7,6 +7,7 @@ from src.modules.Screens.CharacterPreview import CharacterPreview
 class CharacterPortfolio(Widget):
     initialized = BooleanProperty(False)
     main_screen = ObjectProperty(None)
+    dungeon = ObjectProperty(None)
     party = ListProperty(None)
     previews = ListProperty([])
 
@@ -23,7 +24,7 @@ class CharacterPortfolio(Widget):
         for x in range(0, 8):
             char = self.party[x]
             support = self.party[x + 8]
-            preview = CharacterPreview(main_screen=self.main_screen, is_select=False, char=char, support=support, index=x)
+            preview = CharacterPreview(main_screen=self.main_screen, dungeon=self.dungeon, is_select=False, char=char, support=support, index=x)
 
             self.previews.append(preview)
             self.add_widget(preview)

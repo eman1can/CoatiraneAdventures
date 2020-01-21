@@ -8,6 +8,7 @@ from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreviewScr
 class CharacterPreview(ScreenManager):
     initialized = BooleanProperty(False)
     main_screen = ObjectProperty(None)
+    dungeon = ObjectProperty(None)
     is_select = BooleanProperty(False)
     is_disabled = BooleanProperty(False)
     index = NumericProperty(-1)
@@ -66,7 +67,8 @@ class CharacterPreview(ScreenManager):
             preview.size = self.size
             self.add_widget(preview)
             self.current = preview.name
-
+        if self.dungeon is not None:
+            self.dungeon.update_party_score()
         if old_screen is not None:
             self.remove_widget(old_screen)
 
@@ -94,6 +96,7 @@ class CharacterPreview(ScreenManager):
                 return True
         if not self.is_select and self.initialized:
             self.parent.party_change(self, self.char, self.support)
+            self.dungeon.update_party_score()
         preview = FilledCharacterPreviewScreen(self.main_screen, self, False, character, support)
         preview.size = self.size
         preview.preview.pos = (0, 0)# Force update pos, since the screen will never update pos after initialization. Only needed for new screens.

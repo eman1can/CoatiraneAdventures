@@ -77,11 +77,49 @@ class Character(WidgetBase):
             self.slide_support_image = Image(source=self.slide_support_image_source, allow_stretch=True, size_hint=(None, None))
         self.preview_image = Image(source=self.preview_image_source, allow_stretch=True, size_hint=(None, None))
         self.full_image = Image(source=self.full_image_source, allow_stretch=True, size_hint=(None, None))
+        self.select_widget = None
+        self.select_square_widget = None
+        self.attr_screen = None
+        self.update_score()
 
-    def load_elements(self): #MAINSCREEN preview size pos is_select, has_screen, char, support, is_support, new_instance
+    def load_elements(self):
         self.select_widget = FilledCharacterPreview(is_select=True, is_support=self._is_support, character=self, size_hint_x=None)
         self.select_square_widget = SquareCharacterPreview(is_select=True, character=self, is_support=self._is_support)
         self.attr_screen = CharacterAttributeScreen(char=self) #char preview name size pos
+
+    def update_score(self):
+        score = 0
+        if self.type == 'Physical':
+            score += self.get_strength() / 7.5
+            score += self.get_magic() / 10
+            score += self.get_endurance() / 8.5
+            score += self.get_dexterity() / 9
+            score += self.get_agility() / 9
+        elif self.type == 'Magical':
+            score += self.get_strength() / 10
+            score += self.get_magic() / 7.5
+            score += self.get_endurance() / 10
+            score += self.get_dexterity() / 9
+            score += self.get_agility() / 9
+        elif self.type == 'Balance':
+            score += self.get_strength() / 8.5
+            score += self.get_magic() / 8.5
+            score += self.get_endurance() / 9.5
+            score += self.get_dexterity() / 9
+            score += self.get_agility() / 9
+        elif self.type == 'Defensive':
+            score += self.get_strength() / 8.5
+            score += self.get_magic() / 10
+            score += self.get_endurance() / 7.5
+            score += self.get_dexterity() / 9
+            score += self.get_agility() / 9
+        elif self.type == 'Healer':
+            score += self.get_strength() / 10
+            score += self.get_magic() / 8.5
+            score += self.get_endurance() / 10
+            score += self.get_dexterity() / 9
+            score += self.get_agility() / 9
+        self.score = score
 
     def is_support(self):
         return self._is_support
@@ -137,7 +175,8 @@ class Character(WidgetBase):
 
     def rank_break(self):
         if not self.ranks[self.current_rank - 1].broken:
-            self.ranks[self.current_rank - 1].break_rank()
+            self.ranks[self.current_rank - 1].break_rank(self.type)
+            self.update_score()
         else:
             raise Exception("Character already rank broken")
 
@@ -345,7 +384,51 @@ class Character(WidgetBase):
         return Scale.get_scale_as_image_path(self.get_agility(rank), 999)
 
     def get_score(self):
-        return self.score
+        return round(self.score, 1)
+
+    def update_health(self, health_change, rank, board=False):
+        self.ranks[rank].update_health(health_change, board)
+        self.update_score()
+
+    def update_mana(self, mana_change, rank, board=False):
+        self.ranks[rank].update_mana(mana_change, board)
+        self.update_score()
+
+    def update_strength(self, strength_change, rank, board=False):
+        self.ranks[rank].update_strength(strength_change, board)
+        self.update_score()
+
+    def update_magic(self, magic_change, rank, board=False):
+        self.ranks[rank].update_magic(magic_change, board)
+        self.update_score()
+
+    def update_endurance(self, endurance_change, rank, board=False):
+        self.ranks[rank].update_endurance(endurance_change, board)
+        self.update_score()
+
+    def update_dexterity(self, dexterity_change, rank, board=False):
+        self.ranks[rank].update_dexterity(dexterity_change, board)
+        self.update_score()
+
+    def update_agility(self, agility_change, rank, board=False):
+        self.ranks[rank].update_agility(agility_change, board)
+        self.update_score()
+
+    def equip_equipment(self, slot, equipment):
+        if self.equipment.get_type(slot) is not None:
+            print("Item already equipped")
+        else:
+            self.equipment.set_type(slot, equipment)
+        self.update_score()
+
+    def unequip_equipment(self, slot):
+        if self.equipment.get_type(slot) is None:
+            print("There is no item equipped")
+        else:
+            self.equipment.set_type(slot, None)
+
+    def update_equipment(self, slot, stat):
+        self.equipment.update_type(slot, stat)
 
 
 class Rank(WidgetBase):
@@ -413,10 +496,60 @@ class Rank(WidgetBase):
     def get_rank_stats(self):
         return [self.get_health(), self.get_mana(), self.get_strength(), self.get_magic(), self.get_endurance(), self.get_dexterity(), self.get_agility()]
 
-    def break_rank(self):
-        print("Rank breaking")
+    def break_rank(self, type):
         self.broken = True
+        self.health *= self.brkinc
+        if type == 'Physical':
+            self.mana *= self.brkinc * 0.75
+            self.strength *= self.brkinc
+            self.strength_board *= self.brkinc
+            self.magic *= self.brkinc * 0.75
+            self.magic_board *= self.brkinc * 0.75
+            self.endurance *= self.brkinc * 0.75
+            self.endurance_board *= self.brkinc * 0.75
+        elif type == 'Magical':
+            self.mana *= self.brkinc
+            self.strength *= self.brkinc * 0.75
+            self.strength_board *= self.brkinc * 0.75
+            self.magic *= self.brkinc
+            self.magic_board *= self.brkinc
+            self.endurance *= self.brkinc * 0.75
+            self.endurance_board *= self.brkinc * 0.75
+        elif type == 'Balanced':
+            self.mana *= self.brkinc * 0.75
+            self.strength *= self.brkinc * 0.9
+            self.strength_board *= self.brkinc * 0.9
+            self.magic *= self.brkinc * 0.9
+            self.magic_board *= self.brkinc * 0.9
+            self.endurance *= self.brkinc * 0.75
+            self.endurance_board *= self.brkinc * 0.75
+        elif type == 'Defensive':
+            self.mana *= self.brkinc * 0.75
+            self.strength *= self.brkinc * 0.9
+            self.strength_board *= self.brkinc * 0.9
+            self.magic *= self.brkinc * 0.75
+            self.magic_board *= self.brkinc * 0.75
+            self.endurance *= self.brkinc
+            self.endurance_board *= self.brkinc
+        elif type == 'Healer':
+            self.mana *= self.brkinc * 0.9
+            self.strength *= self.brkinc * 0.75
+            self.strength_board *= self.brkinc * 0.75
+            self.magic *= self.brkinc * 0.9
+            self.magic_board *= self.brkinc * 0.9
+            self.endurance *= self.brkinc * 0.75
+            self.endurance_board *= self.brkinc * 0.75
+        self.dexterity *= self.brkinc * 0.9
+        self.dexterity_board *= self.brkinc * 0.9
+        self.agility *= self.brkinc * 0.9
+        self.agility_board *= self.brkinc * 0.9
 
+    def update_strength(self, strength_change, board=False):
+        if board:
+            self.strength_board += strength_change
+        else:
+            if self.strength < self.ability_max:
+                self.strength += strength_change
 
     @staticmethod
     def load_weights(filename, id, ranknums, program_type):
@@ -465,11 +598,11 @@ class Equipment(WidgetBase):
     boots = ObjectProperty(None, allownone=True)
     items = ReferenceListProperty(weapon, necklace, ring, helmet, vambraces, gloves, chest, leggings, boots)
     types = ListProperty(['weapon', 'necklace', 'ring', 'helmet', 'vambraces', 'gloves', 'chest', 'leggings', 'boots'])
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def get_type(self, type):
-
         return self.items[self.types.index(type)]
 
     def get_health(self):
@@ -542,6 +675,12 @@ class Equipment(WidgetBase):
                 agility += item.get_agility()
         return agility
 
+    def set_type(self, type, item):
+        self.items[self.types.index(type)] = item
+
+    def update_type(self, type, stat):
+        item = self.items[self.types.index(type)]
+
 
 class Equipment_Item:
     def __init__(self, name, id, type, values):
@@ -594,7 +733,6 @@ class Equipment_Item:
 
     def get_durability_current(self):
         return self.values[11]
-
 
 
 class Grid:
@@ -703,6 +841,7 @@ class Move:
                 # print("Found Move")
                 return x
         return None
+
 
 class Attack:
     def __init__(self, name, ttype, type, damage):
