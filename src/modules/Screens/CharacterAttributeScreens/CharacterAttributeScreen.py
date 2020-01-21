@@ -163,7 +163,7 @@ class CharacterAttributeScreen(Screen):
 
         self.weapon = EquipmentSlot(item=self.char.get_equipment().weapon, slot_name='weapon', color=equipment_color, font=equipment_font)
         self.necklace = EquipmentSlot(item=self.char.get_equipment().necklace, slot_name='necklace', color=equipment_color, font=equipment_font)
-        self.ring = EquipmentSlot(item=self.char.get_equipment().bracelet, slot_name='bracelet', color=equipment_color, font=equipment_font)
+        self.ring = EquipmentSlot(item=self.char.get_equipment().ring, slot_name='ring', color=equipment_color, font=equipment_font)
         self.helmet = EquipmentSlot(item=self.char.get_equipment().helmet, slot_name='helmet', color=equipment_color, font=equipment_font)
         self.vambraces = EquipmentSlot(item=self.char.get_equipment().vambraces, slot_name='vambraces', color=equipment_color, font=equipment_font)
         self.gloves = EquipmentSlot(item=self.char.get_equipment().gloves, slot_name='gloves', color=equipment_color, font=equipment_font)
@@ -374,8 +374,8 @@ class CharacterAttributeScreen(Screen):
         self.overlay.size = overlay_size
         self.overlay.pos = overlay_pos
 
+        gap = 10 * overlay_size[1] / 610
         flag_size = overlay_size[0] * 0.25, overlay_size[0] * 0.25 * 150 / 619
-        gap = 10 * overlay_size[0] / overlay_size[1]
         flag_pos = overlay_pos[0] + gap, overlay_pos[1] + overlay_size[1] - flag_size[1] - gap
 
         self.flag.size = flag_size

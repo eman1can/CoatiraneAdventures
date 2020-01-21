@@ -70,6 +70,9 @@ class FilledCharacterPreview(Widget):
         self.char_image = self.character.get_slide_image(self.new_image_instance)
         self.slide_image_loaded = True
 
+        self.type_flag = Image(source="../res/screens/stats/" + str(self.character.get_type()).lower() + "_flag.png", size_hint=(None, None), allow_stretch=True)
+        self.type_flag_label = Label(text=str(self.character.get_type()) + " Type", size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf')
+
         if self.support is None:
             # Load non-support Overlay
             self.support_image = None
@@ -107,7 +110,9 @@ class FilledCharacterPreview(Widget):
         if self.support_image is not None:
             self.add_widget(self.support_image)
         self.add_widget(self.overlay)
-
+        if self.is_select:
+            self.add_widget(self.type_flag)
+            self.add_widget(self.type_flag_label)
         self.add_widget(self.char_button)
         if not self.is_select:
             self.add_widget(self.support_button)
@@ -242,6 +247,10 @@ class FilledCharacterPreview(Widget):
         self.preview_wgap = 5 * self.width / 250
         self.preview_hgap = 5 * self.height / 935
 
+        self.type_flag.size = self.width * 0.75, self.width * 0.75 * 150 / 619
+        self.type_flag_label.size = self.type_flag.width * 0.83, self.type_flag.height * 0.85
+        self.type_flag_label.font_size = self.type_flag.size[1] * 0.7
+
         star_size_large = (size[1] * 62 / 935) / 1.5, (size[1] * 62 / 935) / 1.5
         star_size_small = (size[1] * 120 / 935) / 4, (size[1] * 120 / 935) / 4
         for star in self.stars:
@@ -287,12 +296,15 @@ class FilledCharacterPreview(Widget):
         if self.support is not None:
             self.support_image.pos = pos
 
+        self.type_flag.pos = self.x + self.preview_wgap * 0.6, self.y + self.height - self.preview_hgap - (600 * self.height / 935)
+        self.type_flag_label.pos = self.x + self.preview_wgap * 0.6, self.y + self.height - self.preview_hgap - (600 * self.height / 935)
+
         star_size = (self.size[1] * 62 / 935) / 1.5, (self.size[1] * 62 / 935) / 1.5
         star_columns = 5
         star_width_overlap = .75
         star_height_overlap = .5
         stars_width = star_size[0] * star_columns * star_width_overlap
-        star_start = self.size[0] / 2 - stars_width / 2, self.size[1] - self.preview_hgap - star_size[1]
+        star_start = self.width / 2 - stars_width / 2, self.height - self.preview_hgap - star_size[1]
 
         if self.support is not None:
             diamond_top = 545 * self.size[1] / 935
@@ -317,13 +329,13 @@ class FilledCharacterPreview(Widget):
                 scount = (count - 10)
                 if scount < 3:
                     column = row = (count - 10) % 5 + 1
-                    star_pos = self.size[0] / 2 - star_size[0] * 1.1 - space[0] * column, diamond_bottom - star_size[1] * 1.1 + space[1] * (row + 1)
+                    star_pos = self.width / 2 - star_size[0] * 1.1 - space[0] * column, diamond_bottom - star_size[1] * 1.1 + space[1] * (row + 1)
                 elif scount < 6:
                     column = row = (count - 13) % 5 + 1
-                    star_pos = self.size[0] / 2 + star_size[0] * .1 + space[0] * column, diamond_bottom - star_size[1] * 1.1 + space[1] * (row + 1)
+                    star_pos = self.width / 2 + star_size[0] * .1 + space[0] * column, diamond_bottom - star_size[1] * 1.1 + space[1] * (row + 1)
                 elif scount < 8:
                     column = row = (count - 15) % 5
-                    star_pos = self.size[0] / 2 - star_size[0] * 1.4 - space[0] * column, diamond_top - star_size[1] * .1 - space[1] * (row + 1)
+                    star_pos = self.width / 2 - star_size[0] * 1.4 - space[0] * column, diamond_top - star_size[1] * .1 - space[1] * (row + 1)
                 else:
                     column = row = (count - 17) % 5
                     star_pos = self.size[0] / 2 + star_size[0] * .4 + space[0] * column, diamond_top - star_size[1] * .1 - space[1] * (row + 1)
