@@ -40,7 +40,10 @@ class GridPreview(Filterable, Sortable, Widget):
                 widget.preview = self.preview
                 widget.reload()
 
-                if character in self.main_screen.parties[self.main_screen.parties[0] + 1]:
+                party_index = self.main_screen.parties[0]
+                if party_index >= 0:
+                    party_index += 1
+                if character in self.main_screen.parties[party_index]:
                     if not widget.has_tag:
                         tag = Label(text="selected", color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf', outline_color=(0, 0, 0, 1), outline_width=1)
                         widget.tag = tag
