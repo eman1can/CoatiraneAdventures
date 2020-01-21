@@ -33,18 +33,18 @@ class CharacterAttributeScreen(Screen):
         self.char_image = self.char.get_full_image(False)
         self.full_image_loaded = True
 
-        self.overlay_background = Image(source="../res/screens/stats/stat_background.png", size_hint=(None, None), allow_stretch=True)
-        self.overlay = Image(source="../res/screens/stats/stat_background_overlay.png", size_hint=(None, None), allow_stretch=True)
+        self.overlay_background = Image(source="../res/screens/attribute/stat_background.png", size_hint=(None, None), allow_stretch=True)
+        self.overlay = Image(source="../res/screens/attribute/stat_background_overlay.png", size_hint=(None, None), allow_stretch=True)
 
 
-        self.flag = Image(source="../res/screens/stats/flag.png", size_hint=(None, None), allow_stretch=True)
+        self.flag = Image(source="../res/screens/attribute/char_type_flag.png", size_hint=(None, None), allow_stretch=True)
         if self.char.is_support():
             text = "Supporter"
         else:
             text = "Adventurer"
         self.flag_label = Label(text=text, size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf')
 
-        self.type = Image(source="../res/screens/stats/type_" + str(self.char.get_type())[0].lower() + ".png", size_hint=(None, None), allow_stretch=True)
+        self.type = Image(source="../res/screens/recruit/" + str(self.char.get_type()).lower() + "_flag.png", size_hint=(None, None), allow_stretch=True)
         self.type_label = Label(text=str(self.char.get_type()) + " Type", size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf')
 
         # Stars
@@ -69,37 +69,37 @@ class CharacterAttributeScreen(Screen):
         self.rank_abilities = Label(text="Rank Abilities", size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
 
         # Health
-        self.stat_bar_health = Image(source="../res/screens/stats/stat_bar.png", size_hint=(None, None), allow_stretch=True)
+        self.stat_bar_health = Image(source="../res/screens/attribute/stat_bar.png", size_hint=(None, None), allow_stretch=True)
         self.stat_image_health = Image(source="../res/screens/stats/Health.png", size_hint=(None, None), allow_stretch=True)
         self.stat_label_health = Label(text="Health", size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf')
         self.stat_label_health_number = Label(text=str(self.char.get_health()), size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Gabriola.ttf')
 
         # Mana
-        self.stat_bar_mana = Image(source="../res/screens/stats/stat_bar.png", size_hint=(None, None), allow_stretch=True)
+        self.stat_bar_mana = Image(source="../res/screens/attribute/stat_bar.png", size_hint=(None, None), allow_stretch=True)
         self.stat_image_mana = Image(source="../res/screens/stats/Mana.png", size_hint=(None, None), allow_stretch=True)
         self.stat_label_mana = Label(text="Mana", size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf')
         self.stat_label_mana_number = Label(text=str(self.char.get_mana()), size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Gabriola.ttf')
 
         # Phy Attack
-        self.stat_bar_phyattack = Image(source="../res/screens/stats/stat_bar.png", size_hint=(None, None), allow_stretch=True)
+        self.stat_bar_phyattack = Image(source="../res/screens/attribute/stat_bar.png", size_hint=(None, None), allow_stretch=True)
         self.stat_image_phyattack = Image(source="../res/screens/stats/PhysicalAttack.png", size_hint=(None, None), allow_stretch=True)
         self.stat_label_phyattack = Label(text="P. Attack", size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf')
         self.stat_label_phyattack_number = Label(text=str(self.char.get_phyatk()), size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Gabriola.ttf')
 
         # Mag Attack
-        self.stat_bar_magattack = Image(source="../res/screens/stats/stat_bar.png",size_hint=(None, None), allow_stretch=True)
+        self.stat_bar_magattack = Image(source="../res/screens/attribute/stat_bar.png",size_hint=(None, None), allow_stretch=True)
         self.stat_image_magattack = Image(source="../res/screens/stats/MagicalAttack.png", size_hint=(None, None), allow_stretch=True)
         self.stat_label_magattack = Label(text="M. Attack", size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf')
         self.stat_label_magattack_number = Label(text=str(self.char.get_magatk()), size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Gabriola.ttf')
 
         # Defense
-        self.stat_bar_defense = Image(source="../res/screens/stats/stat_bar.png", size_hint=(None, None), allow_stretch=True)
+        self.stat_bar_defense = Image(source="../res/screens/attribute/stat_bar.png", size_hint=(None, None), allow_stretch=True)
         self.stat_image_defense = Image(source="../res/screens/stats/Defense.png", size_hint=(None, None), allow_stretch=True)
         self.stat_label_defense = Label(text="Defense", size_hint=(None, None), color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf')
         self.stat_label_defense_number = Label(text=str(self.char.get_defense()), size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Gabriola.ttf')
 
         # Rank Total Stats
-        self.rank_total_overlay = Image(source="../res/screens/stats/ability_overlay.png", size_hint=(None, None), allow_stretch=True)
+        self.rank_total_overlay = Image(source="../res/screens/attribute/ability_overlay.png", size_hint=(None, None), allow_stretch=True)
         rank_stat_color = 0, 0, 0, 1
 
         # Strength
@@ -128,7 +128,7 @@ class CharacterAttributeScreen(Screen):
         self.rank_total_agility_label_number = Label(text=str(self.char.get_agility()), size_hint=(None, None), color=rank_stat_color, font_name='../res/fnt/Gabriola.ttf')
 
         # Current Rank Stats
-        self.rank_current_overlay = Image(source="../res/screens/stats/ability_overlay.png", size_hint=(None, None), allow_stretch=True)
+        self.rank_current_overlay = Image(source="../res/screens/attribute/ability_overlay.png", size_hint=(None, None), allow_stretch=True)
 
         # Strength
         self.rank_current_strength_label = Label(text="Strength", size_hint=(None, None), color=rank_stat_color, font_name='../res/fnt/Gabriola.ttf')
@@ -163,7 +163,7 @@ class CharacterAttributeScreen(Screen):
 
         self.weapon = EquipmentSlot(item=self.char.get_equipment().weapon, slot_name='weapon', color=equipment_color, font=equipment_font)
         self.necklace = EquipmentSlot(item=self.char.get_equipment().necklace, slot_name='necklace', color=equipment_color, font=equipment_font)
-        self.bracelet = EquipmentSlot(item=self.char.get_equipment().bracelet, slot_name='bracelet', color=equipment_color, font=equipment_font)
+        self.ring = EquipmentSlot(item=self.char.get_equipment().bracelet, slot_name='bracelet', color=equipment_color, font=equipment_font)
         self.helmet = EquipmentSlot(item=self.char.get_equipment().helmet, slot_name='helmet', color=equipment_color, font=equipment_font)
         self.vambraces = EquipmentSlot(item=self.char.get_equipment().vambraces, slot_name='vambraces', color=equipment_color, font=equipment_font)
         self.gloves = EquipmentSlot(item=self.char.get_equipment().gloves, slot_name='gloves', color=equipment_color, font=equipment_font)
@@ -173,7 +173,7 @@ class CharacterAttributeScreen(Screen):
 
         # Neat Stats
         neat_stat_color = 0, 0, 0, 1
-        self.neat_stat_overlay = Image(source="../res/screens/stats/stat_overlay.png", size_hint=(None, None), allow_stretch=True)
+        self.neat_stat_overlay = Image(source="../res/screens/attribute/stat_overlay.png", size_hint=(None, None), allow_stretch=True)
 
         self.neat_stat_layout = GridLayout(cols=3, rows=3, size_hint=(None, None))
 
@@ -339,7 +339,7 @@ class CharacterAttributeScreen(Screen):
 
         self.equipment_layout.add_widget(self.weapon)
         self.equipment_layout.add_widget(self.necklace)
-        self.equipment_layout.add_widget(self.bracelet)
+        self.equipment_layout.add_widget(self.ring)
         self.equipment_layout.add_widget(self.helmet)
         self.equipment_layout.add_widget(self.vambraces)
         self.equipment_layout.add_widget(self.gloves)
@@ -362,7 +362,8 @@ class CharacterAttributeScreen(Screen):
         self.back_button.pos = 0, self.height - self.back_button.height
 
         self.char_image.size = (self.char_image.image_ratio * self.height, self.height)
-        self.char_image.pos = (-(self.width - self.char_image.image_ratio * self.height) / 2, 0)
+        # self.char_image.size = self.size
+        # self.char_image.pos = (-(self.width - self.char_image.image_ratio * self.height) / 2, 0)
 
         overlay_size = self.height * .9 * 620 / 610, self.height * .9
         overlay_pos = self.width - self.height * .05 - overlay_size[0], self.height * .05
@@ -373,26 +374,25 @@ class CharacterAttributeScreen(Screen):
         self.overlay.size = overlay_size
         self.overlay.pos = overlay_pos
 
-        flag_size = overlay_size[0] * 110 / 620, overlay_size[1] * 35 / 610
-        flag_pos = overlay_pos[0] - 2, overlay_pos[1] + overlay_size[1] - flag_size[1] + 2
+        flag_size = overlay_size[0] * 0.25, overlay_size[0] * 0.25 * 150 / 619
+        gap = 10 * overlay_size[0] / overlay_size[1]
+        flag_pos = overlay_pos[0] + gap, overlay_pos[1] + overlay_size[1] - flag_size[1] - gap
 
         self.flag.size = flag_size
         self.flag.pos = flag_pos
 
         self.flag_label.font_size = flag_size[1] * 0.7
-        self.flag_label.texture_update()
-        self.flag_label.size = self.flag_label.texture_size
-        self.flag_label.pos = flag_pos[0] + flag_size[0] - (flag_size[0] * 0.9 - self.flag_label.width) / 2 - self.flag_label.width, flag_pos[1]
+        self.flag_label.size = flag_size[0] * 0.83, flag_size[1] * 0.85
+        self.flag_label.pos = flag_pos[0], flag_pos[1] + flag_size[1] * 0.15
 
-        type_size = flag_size[0] * 1.25, flag_size[1] * 1.25
-        type_pos = overlay_pos[0] + overlay_size[0] - type_size[0], overlay_pos[1] + overlay_size[1] - type_size[1] + 8
+        type_size = overlay_size[0] * 0.25, overlay_size[0] * 0.25 * 150 / 575
+        type_pos = overlay_pos[0] + overlay_size[0] - type_size[0] - gap, overlay_pos[1] + overlay_size[1] - type_size[1] - gap
         self.type.size = type_size
         self.type.pos = type_pos
 
-        self.type_label.font_size = type_size[1] * 0.5
-        self.type_label.texture_update()
-        self.type_label.size = self.type_label.texture_size
-        self.type_label.pos = type_pos[0] + (type_size[0] * 0.9375 - self.type_label.width) / 2, type_pos[1] + 8
+        self.type_label.font_size = type_size[1] * 0.65
+        self.type_label.size = flag_size[0] * 0.83, flag_size[1] * 0.85
+        self.type_label.pos = type_pos[0] + type_size[0] * 0.17, type_pos[1] + type_size[1] * 0.15
 
         add_x = False
         count = 0
@@ -689,7 +689,7 @@ class CharacterAttributeScreen(Screen):
 
         self.weapon.size = equipment_size
         self.necklace.size = equipment_size
-        self.bracelet.size = equipment_size
+        self.ring.size = equipment_size
         self.helmet.size = equipment_size
         self.vambraces.size = equipment_size
         self.gloves.size = equipment_size
@@ -813,7 +813,7 @@ class EquipmentSlot(Widget):
         self._size = (0, 0)
         self._pos = (-1, -1)
 
-        self.background = Image(source="../res/screens/stats/equipment.png", size_hint=(None, None), allow_stretch=True)
+        self.background = Image(source="../res/screens/attribute/equipment.png", size_hint=(None, None), allow_stretch=True)
         self.label = Label(text=self.slot_name.capitalize(), size_hint=(None, None), color=self.color, font_name=self.font)
 
         if self.item is not None:

@@ -456,15 +456,15 @@ class Rank(WidgetBase):
 class Equipment(WidgetBase):
     weapon = ObjectProperty(None, allownone=True)
     necklace = ObjectProperty(None, allownone=True)
-    bracelet = ObjectProperty(None, allownone=True)
+    ring = ObjectProperty(None, allownone=True)
     helmet = ObjectProperty(None, allownone=True)
     vambraces = ObjectProperty(None, allownone=True)
     gloves = ObjectProperty(None, allownone=True)
     chest = ObjectProperty(None, allownone=True)
     leggings = ObjectProperty(None, allownone=True)
     boots = ObjectProperty(None, allownone=True)
-    items = ReferenceListProperty(weapon, necklace, bracelet, helmet, vambraces, gloves, chest, leggings, boots)
-    types = ListProperty(['weapon', 'necklace', 'bracelet', 'helmet', 'vambraces', 'gloves', 'chest', 'leggings', 'boots'])
+    items = ReferenceListProperty(weapon, necklace, ring, helmet, vambraces, gloves, chest, leggings, boots)
+    types = ListProperty(['weapon', 'necklace', 'ring', 'helmet', 'vambraces', 'gloves', 'chest', 'leggings', 'boots'])
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
