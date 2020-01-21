@@ -2,6 +2,7 @@ from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
+from kivy.graphics import Color, Rectangle
 from kivy.uix.image import Image
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
@@ -151,63 +152,98 @@ class FilledCharacterPreview(Widget):
 
         text_color = (.796, .773, .678, 1)
 
-        self.phyatk_image = Image(source='../res/screens/stats/PhysicalAttack.png')
-        self.magatk_image = Image(source='../res/screens/stats/MagicalAttack.png')
-        self.hp_image = Image(source='../res/screens/stats/Health.png')
-        self.mp_image = Image(source='../res/screens/stats/Mana.png')
-        self.def_image = Image(source='../res/screens/stats/Defense.png')
+        self.phyatk_image = Image(source='../res/screens/stats/PhysicalAttack.png', allow_stretch=True, size_hint=(None, None))
+        self.magatk_image = Image(source='../res/screens/stats/MagicalAttack.png', allow_stretch=True, size_hint=(None, None))
+        self.health_image = Image(source='../res/screens/stats/Health.png', allow_stretch=True, size_hint=(None, None))
+        self.mana_image = Image(source='../res/screens/stats/Mana.png', allow_stretch=True, size_hint=(None, None))
+        self.defense_image = Image(source='../res/screens/stats/Defense.png', allow_stretch=True, size_hint=(None, None))
 
-        self.str_image = Image(source='../res/screens/stats/Str.png')
-        self.mag_image = Image(source='../res/screens/stats/Mag.png')
-        self.end_image = Image(source='../res/screens/stats/End.png')
-        self.dex_image = Image(source='../res/screens/stats/Dex.png')
-        self.agi_image = Image(source='../res/screens/stats/Agi.png')
+        self.strength_image = Image(source='../res/screens/stats/Str.png', allow_stretch=True, size_hint=(None, None))
+        self.magic_image = Image(source='../res/screens/stats/Mag.png', allow_stretch=True, size_hint=(None, None))
+        self.endurance_image = Image(source='../res/screens/stats/End.png', allow_stretch=True, size_hint=(None, None))
+        self.dexterity_image = Image(source='../res/screens/stats/Dex.png', allow_stretch=True, size_hint=(None, None))
+        self.agility_image = Image(source='../res/screens/stats/Agi.png', allow_stretch=True, size_hint=(None, None))
 
-        self.label_words = Label(text='Strength\nMagic\nHealth\nMana\nDefense', halign="left", color=text_color)
-        self.label_words2 = Label(text='trength\nagic\nndurance\nexterity\ngility', halign="left", color=text_color)
+        number_phyatk = self.character.get_phyatk()
+        number_magatk = self.character.get_magatk()
+        number_health = self.character.get_health()
+        number_mana = self.character.get_mana()
+        number_defense = self.character.get_defense()
+        number_strength = self.character.get_strength()
+        number_magic = self.character.get_magic()
+        number_endurance = self.character.get_endurance()
+        number_dexterity = self.character.get_dexterity()
+        number_agility = self.character.get_agility()
+        if self.support is not None:
+            number_phyatk += self.support.get_phyatk()
+            number_magatk += self.support.get_magatk()
+            number_health += self.support.get_health()
+            number_mana += self.support.get_mana()
+            number_defense += self.support.get_defense()
+            number_strength += self.support.get_strength()
+            number_magic += self.support.get_magic()
+            number_endurance += self.support.get_endurance()
+            number_dexterity += self.support.get_dexterity()
+            number_agility += self.support.get_agility()
 
-        if self.support is None:
-            text = str(self.character.get_phyatk())    + "\n" + \
-                   str(self.character.get_magatk())    + "\n" + \
-                   str(self.character.get_health())    + "\n" + \
-                   str(self.character.get_mana())      + "\n" + \
-                   str(self.character.get_defense())   + "\n" + \
-                   str(self.character.get_strength())  + "\n" + \
-                   str(self.character.get_magic())     + "\n" + \
-                   str(self.character.get_endurance()) + "\n" + \
-                   str(self.character.get_dexterity()) + "\n" + \
-                   str(self.character.get_agility())
-        else:
-            text = str(self.character.get_phyatk()    + self.support.get_phyatk())    + "\n" + \
-                   str(self.character.get_magatk()    + self.support.get_magatk())    + "\n" + \
-                   str(self.character.get_health()    + self.support.get_health())    + "\n" + \
-                   str(self.character.get_mana()      + self.support.get_mana())      + "\n" + \
-                   str(self.character.get_defense()   + self.support.get_defense())   + "\n" + \
-                   str(self.character.get_strength()  + self.support.get_strength())  + "\n" + \
-                   str(self.character.get_magic()     + self.support.get_magic())     + "\n" + \
-                   str(self.character.get_endurance() + self.support.get_endurance()) + "\n" + \
-                   str(self.character.get_dexterity() + self.support.get_dexterity()) + "\n" + \
-                   str(self.character.get_agility()   + self.support.get_agility())
+        self.phyatk_label_word = Label(text='Phy. Atk', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.phyatk_label_number = Label(text=str(number_phyatk), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.magatk_label_word = Label(text='Mag. Atk', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.magatk_label_number = Label(text=str(number_magatk), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.health_label_word = Label(text='Health', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.health_label_number = Label(text=str(number_health), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.mana_label_word = Label(text='Mana', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.mana_label_number = Label(text=str(number_mana), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.defense_label_word = Label(text='Defense', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.defense_label_number = Label(text=str(number_defense), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
 
-        self.label_numbers = Label(text=text, halign="right", color=text_color)
+        self.strength_label_word = Label(text='trength', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.strength_label_number = Label(text=str(number_strength), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.magic_label_word = Label(text='agic', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.magic_label_number = Label(text=str(number_magic), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.endurance_label_word = Label(text='ndurance', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.endurance_label_number = Label(text=str(number_endurance), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.dexterity_label_word = Label(text='exterity', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.dexterity_label_number = Label(text=str(number_dexterity), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.agility_label_word = Label(text='gility', color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
+        self.agility_label_number = Label(text=str(number_agility), color=text_color, font_name="../res/fnt/Gabriola.ttf", size_hint=(None, None))
 
         self.lock = Image(source="../res/screens/stats/lock.png", allow_stretch=True, size_hint=(None, None), opacity=0)
 
         self.add_widget(self.phyatk_image)
         self.add_widget(self.magatk_image)
-        self.add_widget(self.hp_image)
-        self.add_widget(self.mp_image)
-        self.add_widget(self.def_image)
+        self.add_widget(self.health_image)
+        self.add_widget(self.mana_image)
+        self.add_widget(self.defense_image)
 
-        self.add_widget(self.str_image)
-        self.add_widget(self.mag_image)
-        self.add_widget(self.end_image)
-        self.add_widget(self.agi_image)
-        self.add_widget(self.dex_image)
+        self.add_widget(self.strength_image)
+        self.add_widget(self.magic_image)
+        self.add_widget(self.endurance_image)
+        self.add_widget(self.agility_image)
+        self.add_widget(self.dexterity_image)
 
-        self.add_widget(self.label_words)
-        self.add_widget(self.label_words2)
-        self.add_widget(self.label_numbers)
+        self.add_widget(self.phyatk_label_word)
+        self.add_widget(self.phyatk_label_number)
+        self.add_widget(self.magatk_label_word)
+        self.add_widget(self.magatk_label_number)
+        self.add_widget(self.health_label_word)
+        self.add_widget(self.health_label_number)
+        self.add_widget(self.mana_label_word)
+        self.add_widget(self.mana_label_number)
+        self.add_widget(self.defense_label_word)
+        self.add_widget(self.defense_label_number)
+
+        self.add_widget(self.strength_label_word)
+        self.add_widget(self.strength_label_number)
+        self.add_widget(self.magic_label_word)
+        self.add_widget(self.magic_label_number)
+        self.add_widget(self.endurance_label_word)
+        self.add_widget(self.endurance_label_number)
+        self.add_widget(self.dexterity_label_word)
+        self.add_widget(self.dexterity_label_number)
+        self.add_widget(self.agility_label_word)
+        self.add_widget(self.agility_label_number)
+
         self.add_widget(self.lock)
         self.initialized = True
 
@@ -257,7 +293,7 @@ class FilledCharacterPreview(Widget):
 
         self.type_flag.size = self.width * 0.75, self.width * 0.75 * 150 / 619
         self.type_flag_label.size = self.type_flag.width * 0.83, self.type_flag.height * 0.85
-        self.type_flag_label.font_size = self.type_flag.size[1] * 0.7
+        self.type_flag_label.font_size = self.type_flag.size[1] * 0.75
 
         star_size_large = (size[1] * 62 / 935) / 1.5, (size[1] * 62 / 935) / 1.5
         star_size_small = (size[1] * 120 / 935) / 4, (size[1] * 120 / 935) / 4
@@ -267,28 +303,86 @@ class FilledCharacterPreview(Widget):
             else:
                 star.size = star_size_small
 
-        label_height = (size[1] * 120 / 935) / 4
-        image_width = label_height
-        image_height = image_width
-        label_width = (size[0] - self.preview_wgap * 2 - image_width * 1.75) / 2
+        box_height = self.height * 303 / 935
+        row_height = box_height / 10
+        image_size = row_height, row_height
+        print(box_height)
+        print(self.width - self.preview_wgap * 2)
 
-        self.phyatk_image.size = \
-            self.magatk_image.size = \
-            self.hp_image.size = \
-            self.mp_image.size = \
-            self.def_image.size = \
-            self.str_image.size = \
-            self.mag_image.size = \
-            self.end_image.size = \
-            self.dex_image.size = \
-            self.agi_image.size = (image_width, image_height)
+        self.phyatk_image.size    = image_size
+        self.magatk_image.size    = image_size
+        self.health_image.size    = image_size
+        self.mana_image.size      = image_size
+        self.defense_image.size   = image_size
+        self.strength_image.size  = image_size
+        self.magic_image.size     = image_size
+        self.endurance_image.size = image_size
+        self.dexterity_image.size = image_size
+        self.agility_image.size   = image_size
 
-        self.label_words.font_size = label_height * 0.85
-        self.label_words.size = (label_width, label_height * 5)
-        self.label_words2.font_size = label_height * 0.85
-        self.label_words2.size = (label_width, label_height * 5)
-        self.label_numbers.font_size = label_height * 0.85
-        self.label_numbers.size = (label_width, label_height * 10)
+        self.phyatk_label_word.font_size  = row_height
+        self.magatk_label_word.font_size  = row_height
+        self.health_label_word.font_size  = row_height
+        self.mana_label_word.font_size    = row_height
+        self.defense_label_word.font_size = row_height
+        self.phyatk_label_word.texture_update()
+        self.magatk_label_word.texture_update()
+        self.health_label_word.texture_update()
+        self.mana_label_word.texture_update()
+        self.defense_label_word.texture_update()
+        self.phyatk_label_word.size  = self.phyatk_label_word.texture_size[0], row_height
+        self.magatk_label_word.size  = self.magatk_label_word.texture_size[0], row_height
+        self.health_label_word.size  = self.health_label_word.texture_size[0], row_height
+        self.mana_label_word.size    = self.mana_label_word.texture_size[0], row_height
+        self.defense_label_word.size = self.defense_label_word.texture_size[0], row_height
+
+        self.phyatk_label_number.font_size  = row_height
+        self.magatk_label_number.font_size  = row_height
+        self.health_label_number.font_size  = row_height
+        self.mana_label_number.font_size    = row_height
+        self.defense_label_number.font_size = row_height
+        self.phyatk_label_number.texture_update()
+        self.magatk_label_number.texture_update()
+        self.health_label_number.texture_update()
+        self.mana_label_number.texture_update()
+        self.defense_label_number.texture_update()
+        self.phyatk_label_number.size  = self.phyatk_label_number.texture_size[0], row_height
+        self.magatk_label_number.size  = self.magatk_label_number.texture_size[0], row_height
+        self.health_label_number.size  = self.health_label_number.texture_size[0], row_height
+        self.mana_label_number.size    = self.mana_label_number.texture_size[0], row_height
+        self.defense_label_number.size = self.defense_label_number.texture_size[0], row_height
+
+        self.strength_label_word.font_size  = row_height
+        self.magic_label_word.font_size     = row_height
+        self.endurance_label_word.font_size = row_height
+        self.dexterity_label_word.font_size = row_height
+        self.agility_label_word.font_size   = row_height
+        self.strength_label_word.texture_update()
+        self.magic_label_word.texture_update()
+        self.endurance_label_word.texture_update()
+        self.dexterity_label_word.texture_update()
+        self.agility_label_word.texture_update()
+        self.strength_label_word.size  = self.strength_label_word.texture_size[0], row_height
+        self.magic_label_word.size     = self.magic_label_word.texture_size[0], row_height
+        self.endurance_label_word.size = self.endurance_label_word.texture_size[0], row_height
+        self.dexterity_label_word.size = self.dexterity_label_word.texture_size[0], row_height
+        self.agility_label_word.size   = self.agility_label_word.texture_size[0], row_height
+
+        self.strength_label_number.font_size  = row_height
+        self.magic_label_number.font_size     = row_height
+        self.endurance_label_number.font_size = row_height
+        self.dexterity_label_number.font_size = row_height
+        self.agility_label_number.font_size   = row_height
+        self.strength_label_number.texture_update()
+        self.magic_label_number.texture_update()
+        self.endurance_label_number.texture_update()
+        self.dexterity_label_number.texture_update()
+        self.agility_label_number.texture_update()
+        self.strength_label_number.size  = self.strength_label_number.texture_size[0], row_height
+        self.magic_label_number.size     = self.magic_label_number.texture_size[0], row_height
+        self.endurance_label_number.size = self.endurance_label_number.texture_size[0], row_height
+        self.dexterity_label_number.size = self.dexterity_label_number.texture_size[0], row_height
+        self.agility_label_number.size   = self.agility_label_number.texture_size[0], row_height
 
         self.lock.size = self.width * 0.3, self.width * 0.3
         self.lock.pos = self.x + self.width - self.width * 0.3, self.y + self.height - self.width * 0.3
@@ -308,9 +402,9 @@ class FilledCharacterPreview(Widget):
             self.support_image.pos = pos
 
         self.type_flag.pos = self.x + self.preview_wgap * 0.6, self.y + self.height - self.preview_hgap - (600 * self.height / 935)
-        self.type_flag_label.pos = self.x + self.preview_wgap * 0.6, self.y + self.height - self.preview_hgap - (600 * self.height / 935)
+        self.type_flag_label.pos = self.x + self.preview_wgap * 0.6, self.y + self.height - self.preview_hgap - (600 * self.height / 935) + self.type_flag.height * 0.15
 
-        star_size = (self.size[1] * 62 / 935) / 1.5, (self.size[1] * 62 / 935) / 1.5
+        star_size = (self.height * 62 / 935) / 1.5, (self.height * 62 / 935) / 1.5
         star_columns = 5
         star_width_overlap = .75
         star_height_overlap = .5
@@ -318,12 +412,12 @@ class FilledCharacterPreview(Widget):
         star_start = self.width / 2 - stars_width / 2, self.height - self.preview_hgap - star_size[1]
 
         if self.support is not None:
-            diamond_top = 545 * self.size[1] / 935
-            diamond_center = 426.5 * self.size[1] / 935
-            diamond_bottom = 309 * self.size[1] / 935
+            diamond_top = 545 * self.height / 935
+            diamond_center = 426.5 * self.height / 935
+            diamond_bottom = 309 * self.height / 935
 
-            diamond_left = 7 * self.size[0] / 250
-            diamond_middle = self.size[0] / 2
+            diamond_left = 7 * self.width / 250
+            diamond_middle = self.width / 2
             space = (diamond_middle - diamond_left) / 5, (diamond_center - diamond_bottom) / 5
 
         count = 0
@@ -353,32 +447,49 @@ class FilledCharacterPreview(Widget):
                 self.stars[count].pos = star_pos
             count += 1
 
-        label_height = (self.size[1] * 120 / 935) / 4
-        image_width = label_height
-        label_width = (self.size[0] - self.preview_wgap * 2 - image_width * 1.75) / 2
-        # image_height = image_width
-        # text_color = (.796, .773, .678, 1)
+        box_height = self.height * 303 / 935
+        box_width = self.width - self.preview_wgap * 2
+        row_height = box_height / 10
+        image_size = row_height, row_height
+        image_x = self.x + image_size[0] * 0.5 + self.preview_wgap
+        image_y = self.y + self.preview_hgap
+        label_xs = self.x + image_x + image_size[0] * 1.5
+        label_xl = self.x + image_x + image_size[0]
+        label_xr = self.x + box_width - self.preview_wgap
+        label_y = image_y
 
-        image_wstart = pos[0] + self.preview_wgap + image_width / 2
-        image_hstart = pos[1] + (self.size[1] * 310 / 935)
+        self.phyatk_image.pos    = image_x, image_y + row_height * 9
+        self.magatk_image.pos    = image_x, image_y + row_height * 8
+        self.health_image.pos    = image_x, image_y + row_height * 7
+        self.mana_image.pos      = image_x, image_y + row_height * 6
+        self.defense_image.pos   = image_x, image_y + row_height * 5
+        self.strength_image.pos  = image_x, image_y + row_height * 4
+        self.magic_image.pos     = image_x, image_y + row_height * 3
+        self.endurance_image.pos = image_x, image_y + row_height * 2
+        self.dexterity_image.pos = image_x, image_y + row_height
+        self.agility_image.pos   = image_x, image_y
 
-        label_wstart = image_wstart + image_width
-        label_hstart = pos[1] + (self.size[1] * 310 / 935)
+        self.phyatk_label_word.pos    = label_xs, label_y + row_height * 9
+        self.magatk_label_word.pos    = label_xs, label_y + row_height * 8
+        self.health_label_word.pos    = label_xs, label_y + row_height * 7
+        self.mana_label_word.pos      = label_xs, label_y + row_height * 6
+        self.defense_label_word.pos   = label_xs, label_y + row_height * 5
+        self.strength_label_word.pos  = label_xl, label_y + row_height * 4
+        self.magic_label_word.pos     = label_xl, label_y + row_height * 3
+        self.endurance_label_word.pos = label_xl, label_y + row_height * 2
+        self.dexterity_label_word.pos = label_xl, label_y + row_height
+        self.agility_label_word.pos   = label_xl, label_y
 
-        self.phyatk_image.pos = image_wstart, image_hstart - image_width
-        self.magatk_image.pos = image_wstart, image_hstart - image_width * 2
-        self.hp_image.pos = image_wstart, image_hstart - image_width * 3
-        self.mp_image.pos = image_wstart, image_hstart - image_width * 4
-        self.def_image.pos = image_wstart, image_hstart - image_width * 5
-        self.str_image.pos = image_wstart, image_hstart - image_width * 6
-        self.mag_image.pos = image_wstart, image_hstart - image_width * 7
-        self.end_image.pos = image_wstart, image_hstart - image_width * 8
-        self.dex_image.pos = image_wstart, image_hstart - image_width * 9
-        self.agi_image.pos = image_wstart, image_hstart - image_width * 10
-
-        self.label_words.pos = (label_wstart + image_width * .25, label_hstart - label_height * 5)
-        self.label_words2.pos = (label_wstart + self.preview_wgap, label_hstart - label_height * 10)
-        self.label_numbers.pos = (label_wstart + label_width, label_hstart - label_height * 10)
+        self.phyatk_label_number.pos    = label_xr - self.phyatk_label_number.width, label_y + row_height * 9
+        self.magatk_label_number.pos    = label_xr - self.magatk_label_number.width, label_y + row_height * 8
+        self.health_label_number.pos    = label_xr - self.health_label_number.width, label_y + row_height * 7
+        self.mana_label_number.pos      = label_xr - self.mana_label_number.width, label_y + row_height * 6
+        self.defense_label_number.pos   = label_xr - self.defense_label_number.width, label_y + row_height * 5
+        self.strength_label_number.pos  = label_xr - self.strength_label_number.width, label_y + row_height * 4
+        self.magic_label_number.pos     = label_xr - self.magic_label_number.width, label_y + row_height * 3
+        self.endurance_label_number.pos = label_xr - self.endurance_label_number.width, label_y + row_height * 2
+        self.dexterity_label_number.pos = label_xr - self.dexterity_label_number.width, label_y + row_height
+        self.agility_label_number.pos   = label_xr - self.agility_label_number.width, label_y
 
         self.lock.pos = self.x + self.width - self.width * 0.3, self.y + self.height - self.width * 0.3
 
