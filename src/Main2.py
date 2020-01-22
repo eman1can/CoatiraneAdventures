@@ -138,7 +138,7 @@ class GameApp(App):
 
     def __init__(self, *args, **kwargs):
         Window.bind(on_resize=self.on_resize)
-        Window.bind(on_request_close=self.close_app)
+        Window.bind(on_request_close=self.close_window)
         self.initalized = False
         super().__init__(**kwargs)
         self.program_type = "test"
@@ -178,6 +178,22 @@ class GameApp(App):
         self.background.add_widget(self.root)
         self.initalized = True
 
+    def close_window(self, *args):
+        if platform == 'win':
+            Window.close()
+
+
+    def on_stop(self):
+        # On IOS and Android, DO NOT programmically close; Let OS handle
+        #Save game stuff
+        print("Stop the App!")
+        if platform == 'win':
+            quit()
+
+    def on_pause(self):
+        pass  # Do Save game stuff
+
+
     def on_resize(self, *args):
         Clock.unschedule(self.fix_size)
         Clock.schedule_once(self.fix_size, .25)
@@ -192,9 +208,6 @@ class GameApp(App):
 
         self.root.size = self.background.norm_image_size
         self.root.pos = offset
-
-    def close_app(self, *args):
-        print("Close Me")
 
     def build_moves(self):
         print("Loading Moves")
