@@ -52,6 +52,7 @@ class CharacterSelector(Screen):
         self.grid = GridPreview(main_screen=self.main_screen, preview=self.preview, characters=characters, is_support=self.is_support, size_hint=(None, None))
 
         self.sort = SortWidget()
+        self.sort.back_button.bind(on_release=lambda instance: self.close_sort())
         self.sort.ascending.bind(on_release=lambda instance: self.do_sort(instance, 'Ascending'))
         self.sort.descending.bind(on_release=lambda instance: self.do_sort(instance, 'Descending'))
         self.sort.strength.bind(on_release=lambda instance: self.do_sort(instance, 'Strength'))
@@ -72,6 +73,7 @@ class CharacterSelector(Screen):
 
         self.filter = FilterWidget()
         self.filter.filter_button.bind(on_release=self.do_filter)
+        self.filter.back_button.bind(on_release=lambda instance: self.close_filter())
         self.filter.magical.bind(on_release=lambda instance: self.modify_filter(instance, 'type_magical'))
         self.filter.physical.bind(on_release=lambda instance: self.modify_filter(instance, 'type_physical'))
         self.filter.balanced.bind(on_release=lambda instance: self.modify_filter(instance, 'type_balanced'))
@@ -195,13 +197,7 @@ class CharacterSelector(Screen):
             self.sort_button.text = type
             self.grid.sort_type = type
             self.scroll.sort_type = type
-        self.toggle_button.disabled = False
-        self.toggle_button.do_hover = True
-        for preview in self.grid.previews_sort:
-            preview.char_button.do_hover = True
-        for preview in self.scroll.previews_sort:
-            preview.char_button.do_hover = True
-        self.remove_widget(self.sort)
+        self.close_sort()
 
     def on_filter(self, instance):
         self.toggle_button.state = 'normal'
@@ -224,13 +220,7 @@ class CharacterSelector(Screen):
     def do_filter(self, instance):
         self.grid.filter()
         self.scroll.filter()
-        self.toggle_button.disabled = False
-        self.toggle_button.do_hover = True
-        for preview in self.grid.previews_sort:
-            preview.char_button.do_hover = True
-        for preview in self.scroll.previews_sort:
-            preview.char_button.do_hover = True
-        self.remove_widget(self.filter)
+        self.close_filter()
 
     def update_number(self, number):
         self.number_label.text = str(number)
@@ -238,3 +228,21 @@ class CharacterSelector(Screen):
     def on_back_press(self, instance):
         if not instance.disabled:
             self.main_screen.display_screen(None, False, False)
+
+    def close_sort(self):
+        self.toggle_button.disabled = False
+        self.toggle_button.do_hover = True
+        for preview in self.grid.previews_sort:
+            preview.char_button.do_hover = True
+        for preview in self.scroll.previews_sort:
+            preview.char_button.do_hover = True
+        self.remove_widget(self.sort)
+
+    def close_filter(self):
+        self.toggle_button.disabled = False
+        self.toggle_button.do_hover = True
+        for preview in self.grid.previews_sort:
+            preview.char_button.do_hover = True
+        for preview in self.scroll.previews_sort:
+            preview.char_button.do_hover = True
+        self.remove_widget(self.filter)

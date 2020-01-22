@@ -790,13 +790,13 @@ class CharacterAttributeScreen(Screen):
             self.char_image.size = self.size
             self.char_image.pos = self.pos
 
-    def on_preview(self, instance, touch):
+    def on_preview(self, instance):
         pass
 
-    def on_status_board(self, instance, touch):
+    def on_status_board(self, instance):
         pass
 
-    def on_change_equip(self, instance, touch):
+    def on_change_equip(self, instance):
         pass
 
     def update_stars(self):

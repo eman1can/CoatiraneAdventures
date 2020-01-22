@@ -109,6 +109,8 @@ class FilterWidget(Widget):
 
         self.background = Image(source="../res/screens/stats/sort_background.png", allow_stretch=True)
 
+        self.back_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/back')
+
         self.title = Label(text="Filter", font_name="../res/fnt/Precious.ttf", color=(0, 0, 0, 1), size_hint=(None, None))
 
         self.filter_button = HTButton(size_hint=(None, None), text="Apply Filter", path="../res/screens/buttons/long_stat")
@@ -156,6 +158,7 @@ class FilterWidget(Widget):
 
         self.add_widget(self.shadow)
         self.add_widget(self.background)
+        self.add_widget(self.back_button)
         self.add_widget(self.title)
         self.add_widget(self.filter_button)
         self.add_widget(self.layout_main)
@@ -207,6 +210,9 @@ class FilterWidget(Widget):
 
         width, height = self.height * 0.9 * 750 / 600, self.height * 0.9
         x, y = (self.width - width) / 2, (self.height - height) / 2
+
+        self.back_button.size = width * .05, width * .05
+        self.back_button.pos = x, y + height - self.back_button.height
 
         self.background.size = width, height
         self.background.pos = x, y

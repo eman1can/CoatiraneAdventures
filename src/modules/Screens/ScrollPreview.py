@@ -125,3 +125,6 @@ class ScrollPreview(Filterable, Sortable, Widget):
         print(self.filters_applied)
         print(self.previews_sort)
         self.force_update_values()
+
+    def on_back_press(self, instance):
+        self.parent.remove_widget(self)
