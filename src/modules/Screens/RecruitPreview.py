@@ -5,6 +5,7 @@ from kivy.uix.label import Label
 from kivy.core.audio import SoundLoader
 
 from src.modules.HTButton import HTButton
+from src.modules.NoRecruit import NoRecruitWidget
 
 import random
 
@@ -45,6 +46,8 @@ class RecruitPreview(Screen):
         self.cancel = HTButton(path='../res/screens/buttons/recruit_button_cancel', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", text="Cancel", font_name='../res/fnt/Precious.ttf', label_color=(1, 1, 1, 1), on_release=self.on_cancel)
         self.character_attribute = HTButton(path='../res/screens/buttons/character_attribute', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", text="Attributes", font_name='../res/fnt/Precious.ttf', label_color=(1, 1, 1, 1), on_release=self.on_char_attribute)
 
+        self.no_recruits = NoRecruitWidget()
+
         self.sound = SoundLoader.load('../res/snd/recruit.wav')
 
         self.add_widget(self.background)
@@ -72,6 +75,7 @@ class RecruitPreview(Screen):
         ratio = 150 / 575
 
         self.background.size = self.size
+        self.no_recruits.size = self.size
 
         self.full_name.font_size = self.height * 0.125
         self.full_name.texture_update()
@@ -131,7 +135,7 @@ class RecruitPreview(Screen):
 
     def on_roll_again(self, instance):
         if len(self.main_screen.characters) == len(self.main_screen.obtained_characters) + len(self.viewed_characters):
-            print("No more characters")
+            self.add_widget(self.no_recruits)
         else:
             unobtained_characters = [char for char in self.main_screen.characters if char.index not in self.main_screen.obtained_characters and char not in self.viewed_characters]
             print("unobtained chars", unobtained_characters)

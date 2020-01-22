@@ -8,7 +8,7 @@ from kivy.core.audio import SoundLoader
 import random
 
 from src.modules.HTButton import HTButton
-
+from src.modules.NoRecruit import NoRecruitWidget
 
 class TavernMain(Screen):
     initialized = BooleanProperty(False)
@@ -26,6 +26,8 @@ class TavernMain(Screen):
         self.recruit_button = HTButton(path='../res/screens/buttons/recruit_button', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", text="Recruit", font_name='../res/fnt/Precious.ttf', label_color=(1, 1, 1, 1), on_release=self.on_recruit)
         self.back_button = HTButton(path='../res/screens/buttons/back', size_hint=(None, None), on_release=self.on_back_press)
 
+        self.no_recruits = NoRecruitWidget()
+
         self.sound = SoundLoader.load('../res/snd/recruit.wav')
 
         self.add_widget(self.background)
@@ -40,6 +42,7 @@ class TavernMain(Screen):
         self._size = size.copy()
 
         self.background.size = self.size
+        self.no_recruits.size = self.size
 
         self.title.font_size = self.width * 0.0725
         self.title.texture_update()
@@ -58,8 +61,8 @@ class TavernMain(Screen):
         pass
 
     def on_recruit(self, instance):
-        if self.main_screen.obtained_characters == len(self.main_screen.characters):
-            print("Obtained All Characters")
+        if len(self.main_screen.obtained_characters) == len(self.main_screen.characters):
+            self.add_widget(self.no_recruits)
         else:
             unobtained_characters = [char for char in self.main_screen.characters if char.index not in self.main_screen.obtained_characters]
             index = random.randint(0, len(unobtained_characters) - 1)

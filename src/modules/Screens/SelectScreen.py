@@ -37,9 +37,9 @@ class SelectScreen(Screen):
 
     def choose_character(self, instance, choice):
         # print('Chosen Character: %s, adding to char Array.' % choice)
-        testing = False
+        testing = True
         if (testing):
-            for x in self.main_screen.characters:
+            for x in self.main_screen.characters[2:]:
                 self.main_screen.obtained_characters.append(x.get_index())
                 if x.is_support():
                     self.main_screen.obtained_characters_s.append(x.get_index())
