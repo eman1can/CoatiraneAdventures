@@ -298,19 +298,19 @@ class GameApp(App):
                     #   15 Move 4
                     #   16 Move Special
                     rank = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    res_path = '../res/characters/' + self.program_type + "/" + values[11] + "/" + values[11]
+                    res_path = '../res/characters/' + self.program_type + "/" + values[12] + "/" + values[12]
                     move = None
                     if values[0] == 'A':
-                        move = Move.getmove(moves, values[12]), Move.getmove(moves, values[13]), Move.getmove(moves, values[14]), Move.getmove(moves, values[15]), Move.getmove(moves, values[16])
-                    char = Character(rank, int(values[1]), move, familias, index=count, _is_support=values[0] == 'S', name=values[9], display_name=values[10], id=values[11],
+                        move = Move.getmove(moves, values[13]), Move.getmove(moves, values[14]), Move.getmove(moves, values[15]), Move.getmove(moves, values[16]), Move.getmove(moves, values[17])
+                    char = Character(rank, int(values[1]), int(values[2]), move, familias, index=count, _is_support=values[0] == 'S', name=values[10], display_name=values[11], id=values[12],
                                      slide_image_source=res_path + '_slide.png', slide_support_image_source=res_path + '_slide_support.png', preview_image_source=res_path + '_preview.png', full_image_source=res_path + '_full.png', program_type=self.program_type,
-                                     health_base=int(values[2]),
-                                     mana_base=int(values[3]),
-                                     strength_base=int(values[4]),
-                                     magic_base=int(values[5]),
-                                     endurance_base=int(values[6]),
-                                     dexterity_base=int(values[7]),
-                                     agility_base=int(values[8]))
+                                     health_base=int(values[3]),
+                                     mana_base=int(values[4]),
+                                     strength_base=int(values[5]),
+                                     magic_base=int(values[6]),
+                                     endurance_base=int(values[7]),
+                                     dexterity_base=int(values[8]),
+                                     agility_base=int(values[9]))
                     char.load_elements()
                     characterArray.append(char)
                     count += 1

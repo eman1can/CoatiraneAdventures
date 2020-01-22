@@ -32,7 +32,10 @@ class Character(WidgetBase):
     current_rank = NumericProperty(1)
     current_health = NumericProperty(0)
 
-    def __init__(self, rank, type, moves, familias, **kwargs):
+    element = StringProperty('')
+    type = StringProperty('')
+
+    def __init__(self, rank, type, element, moves, familias, **kwargs):
         super().__init__(**kwargs)
 
         # Experimental
@@ -49,7 +52,6 @@ class Character(WidgetBase):
         self.floor_depth = 0
         self.monsters_slain = 0
         self.people_slain = 0
-        self.element = 'light'
 
         self.equipment = Equipment()
 
@@ -66,6 +68,21 @@ class Character(WidgetBase):
             self.type = 'Defensive'
         else:
             self.type = 'Healer'
+
+        if element == 0:
+            self.element = 'Light'
+        elif element == 1:
+            self.element = 'Dark'
+        elif element == 2:
+            self.element = 'Earth'
+        elif element == 3:
+            self.element = 'Wind'
+        elif element == 4:
+            self.element = 'Thunder'
+        elif element == 5:
+            self.element = 'Fire'
+        else:
+            self.element = 'Water'
 
         try:
             self.ranks = Rank.load_weights("../save/char_load_data/" + self.program_type + '/ranks/' + self.id + '.txt', self.id, rank, self.program_type)
@@ -552,7 +569,7 @@ class Rank(WidgetBase):
                 self.strength += strength_change
 
     @staticmethod
-    def load_weights(filename, id, ranknums, program_type):
+    def load_weights(filename, id, rank_nums, program_type):
         file = open(filename)
         try:
             grids = Grid.loadgrids("../save/char_load_data/" + program_type + "/grids/" + id + ".txt")
@@ -561,9 +578,9 @@ class Rank(WidgetBase):
         ranks = []
         count = 1
         # print("Loading Weights & girds")
-        for level in range(0, 10):
-            unlocked = True
-            broken = True
+        for level in range(0, len(rank_nums)):
+            unlocked = rank_nums[level] > 0
+            broken = rank_nums[level] == 2
             ranks.append(Rank(count, grids[count - 1], unlocked, broken))
         # for x in file:
         #     values = x[:-1].split(' ', -1)

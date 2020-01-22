@@ -31,31 +31,31 @@ class Filterable(object):
     def apply_filter(self):
         stage1 = []
         for preview in self.previews_filter:
-            if 'type_light' in self.filters_applied and preview.char.get_element() == 'light':
+            if 'type_light' in self.filters_applied and preview.char.get_element().lower() == 'light':
                 stage1.append(preview)
-            elif 'type_dark' in self.filters_applied and preview.char.get_element() == 'dark':
+            elif 'type_dark' in self.filters_applied and preview.char.get_element().lower() == 'dark':
                 stage1.append(preview)
-            elif 'type_earth' in self.filters_applied and preview.char.get_element() == 'earth':
+            elif 'type_earth' in self.filters_applied and preview.char.get_element().lower() == 'earth':
                 stage1.append(preview)
-            elif 'type_wind' in self.filters_applied and preview.char.get_element() == 'wind':
+            elif 'type_wind' in self.filters_applied and preview.char.get_element().lower() == 'wind':
                 stage1.append(preview)
-            elif 'type_thunder' in self.filters_applied and preview.char.get_element() == 'thunder':
+            elif 'type_thunder' in self.filters_applied and preview.char.get_element().lower() == 'thunder':
                 stage1.append(preview)
-            elif 'type_fire' in self.filters_applied and preview.char.get_element() == 'fire':
+            elif 'type_fire' in self.filters_applied and preview.char.get_element().lower() == 'fire':
                 stage1.append(preview)
-            elif 'type_water' in self.filters_applied and preview.char.get_element() == 'water':
+            elif 'type_water' in self.filters_applied and preview.char.get_element().lower() == 'water':
                 stage1.append(preview)
         stage2 = []
         for preview in stage1:
-            if 'type_magical' in self.filters_applied and preview.char.get_type() == 'Magical':
+            if 'type_magical' in self.filters_applied and preview.char.get_type().lower() == 'magical':
                 stage2.append(preview)
-            elif 'type_physical' in self.filters_applied and preview.char.get_type() == 'Physical':
+            elif 'type_physical' in self.filters_applied and preview.char.get_type().lower() == 'physical':
                 stage2.append(preview)
-            elif 'type_balance' in self.filters_applied and preview.char.get_type() == 'Balance':
+            elif 'type_balance' in self.filters_applied and preview.char.get_type().lower() == 'balance':
                 stage2.append(preview)
-            elif 'type_defensive' in self.filters_applied and preview.char.get_type() == 'Defensive':
+            elif 'type_defensive' in self.filters_applied and preview.char.get_type().lower() == 'defensive':
                 stage2.append(preview)
-            elif 'type_healer' in self.filters_applied and preview.char.get_type() == 'Healer':
+            elif 'type_healer' in self.filters_applied and preview.char.get_type().lower() == 'healer':
                 stage2.append(preview)
         output = []
         for preview in stage2:

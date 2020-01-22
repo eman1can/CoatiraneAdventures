@@ -453,8 +453,8 @@ class FilledCharacterPreview(Widget):
         image_size = row_height, row_height
         image_x = self.x + image_size[0] * 0.5 + self.preview_wgap
         image_y = self.y + self.preview_hgap
-        label_xs = self.x + image_x + image_size[0] * 1.5
-        label_xl = self.x + image_x + image_size[0]
+        label_xs = image_x + image_size[0] * 1.5
+        label_xl = image_x + image_size[0]
         label_xr = self.x + box_width - self.preview_wgap
         label_y = image_y
 
