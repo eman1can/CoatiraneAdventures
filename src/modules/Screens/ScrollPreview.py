@@ -106,6 +106,52 @@ class ScrollPreview(Filterable, Sortable, Widget):
             preview.char_button._static_hover = True
             preview.char_button.hover_rect = [self.root.x, self.root.y, self.root.width, self.root.height]
 
+    def update_scroll(self, preview, is_support, characters):
+        self.preview = preview
+        self.is_support = is_support
+        self.characters = characters
+
+        index = 0
+        previews = []
+        values = []
+        for character in self.characters:
+            if character != self.preview.char and not self.is_support or self.is_support and character != self.preview.support:
+                widget = character.get_select_widget()
+                widget.main_screen = self.main_screen
+                widget.preview = self.preview
+                widget.reload()
+                party_index = self.main_screen.parties[0]
+                if party_index >= 0:
+                    party_index += 1
+                if character in self.main_screen.parties[party_index]:
+                    if not widget.has_tag:
+                        tag = Label(text="selected", color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf', outline_color=(0, 0, 0, 1), outline_width=1)
+                        widget.tag = tag
+                        widget.has_tag = True
+                        widget.add_widget(tag)
+                elif widget.has_tag:
+                    widget.has_tag = False
+                    widget.remove_widget(widget.tag)
+
+                previews.append(widget)
+                values.append(character.get_strength())
+                widget.char = character
+
+                self.layout.add_widget(widget)
+                index += 1
+
+        self.no_filter = True
+        vgap = self.height * 0.025
+        gap = self.height * 0.05
+        slot_size = (self.height - gap * 2) * 250 / 935, self.height - gap * 2
+        self.previews_filter = previews
+        for preview in self.previews_filter:
+            preview.size = slot_size
+            preview.char_button._static_hover = True
+            preview.char_button.hover_rect = [self.root.x, self.root.y, self.root.width, self.root.height]
+        self.no_filter = False
+        self.filter()
+
     def on_after_sort(self):
         if self.non_label_added:
             self.non_label_added = False
@@ -121,9 +167,6 @@ class ScrollPreview(Filterable, Sortable, Widget):
         if self.parent is not None:
             self.parent.update_number(len(self.output))
         self.previews_sort = self.output
-        print(self.previews_filter)
-        print(self.filters_applied)
-        print(self.previews_sort)
         self.force_update_values()
 
     def on_back_press(self, instance):

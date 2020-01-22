@@ -1,24 +1,5 @@
 #:import FadeTransition kivy.uix.screenmanager.FadeTransition
 #:import random random
-<scrollcharacterpreview>:
-    id: selection
-    size_hint: None, None
-    size: 250, 650
-    ScrollView:
-        id: scrollPane
-        do_scroll_y: False
-        size: self.parent.size
-        size_hint: None, None
-        canvas.before:
-            Color:
-                rgba: 1,1,1,1
-            Rectangle:
-                size: self.size
-                pos: self.pos
-        FloatLayout:
-            id: charPane
-            size: self.parent.size
-            size_hint: None, None
 
 <Dungeonbattle>
     name: 'dungeon_battle'

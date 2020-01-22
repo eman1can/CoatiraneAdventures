@@ -11,6 +11,7 @@ from src.modules.HTButton import HTButton
 from src.modules.Sortable import SortWidget
 from src.modules.Filterable import FilterWidget
 
+
 class CharacterSelector(Screen):
     initialized = BooleanProperty(False)
     main_screen = ObjectProperty(None)
@@ -38,7 +39,10 @@ class CharacterSelector(Screen):
         for x in range(len(characters)):
             characters[x] = self.main_screen.characters[characters[x]]
 
-        self.has_left = self.preview.char is not None and not self.is_support or self.is_support and self.preview.support is not None
+        if self.preview is None:
+            self.has_left = False
+        else:
+            self.has_left = self.preview.char is not None and not self.is_support or self.is_support and self.preview.support is not None
         if self.has_left:
             if self.is_support:
                 char = self.preview.support
@@ -50,6 +54,7 @@ class CharacterSelector(Screen):
 
         self.scroll = ScrollPreview(main_screen=self.main_screen, preview=self.preview, characters=characters, is_support=self.is_support, size_hint=(None, None))
         self.grid = GridPreview(main_screen=self.main_screen, preview=self.preview, characters=characters, is_support=self.is_support, size_hint=(None, None))
+        self.initialized = True
 
         self.sort = SortWidget()
         self.sort.back_button.bind(on_release=lambda instance: self.close_sort())
@@ -122,6 +127,30 @@ class CharacterSelector(Screen):
         self.add_widget(self.number_label)
         self.add_widget(self.back_button)
         self.initialized = True
+
+    def update_screen(self, preview, is_support):
+        self.preview, self.is_support = preview, is_support
+
+        if not self.is_support:
+            characters = self.main_screen.obtained_characters_a.copy()
+        else:
+            characters = self.main_screen.obtained_characters_s.copy()
+
+        for x in range(len(characters)):
+            characters[x] = self.main_screen.characters[characters[x]]
+
+        self.has_left = self.preview.char is not None and not self.is_support or self.is_support and self.preview.support is not None
+        if self.has_left:
+            if self.is_support:
+                char = self.preview.support
+            else:
+                char = self.preview.char
+            self.single = SinglePreview(main_screen=self.main_screen, preview=self.preview, character=char, is_support=self.is_support, size_hint=(None, None))
+        else:
+            self.single = None
+
+        self.scroll.update_scroll(self.preview, self.is_support, characters)
+        self.grid.update_grid(self.preview, self.is_support, characters)
 
     def on_pre_enter(self, *args):
         self.update_number(len(self.grid.previews_sort))

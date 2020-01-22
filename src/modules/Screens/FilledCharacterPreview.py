@@ -15,7 +15,6 @@ class FilledCharacterPreviewScreen(Screen):
     initialized = BooleanProperty(False)
 
     def __init__(self, main_screen, preview, is_support, character, support, **kwargs):
-        print("Filled Screen: ", self.pos)
         pos = (0, 0)  # Posistion gets reset
         super().__init__(size_hint=(None, None), **kwargs)
         self.name = character.get_id()
@@ -306,8 +305,6 @@ class FilledCharacterPreview(Widget):
         box_height = self.height * 303 / 935
         row_height = box_height / 10
         image_size = row_height, row_height
-        print(box_height)
-        print(self.width - self.preview_wgap * 2)
 
         self.phyatk_image.size    = image_size
         self.magatk_image.size    = image_size

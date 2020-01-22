@@ -45,7 +45,7 @@ class Root(ScreenManager):
         self.obtained_characters_s = []
         self.tavern_locked = False
         self.crafting_locked = True
-        self.whitelist = ['dungeon_main', 'tavern_main', 'town_screen']
+        self.whitelist = ['dungeon_main', 'tavern_main', 'town_screen', 'select_char']
         self.children = []
         self.parties = [0]
         self.list = []
@@ -90,7 +90,7 @@ class Root(ScreenManager):
         screen = None
         for screen_current in self.screens:
             if screen_current.name == screen_name:
-                return
+                return screen_current, False
         if screen_name == 'select_screen':
             screen = SelectScreen(main_screen=self)
         elif screen_name == 'new_game':
@@ -102,31 +102,19 @@ class Root(ScreenManager):
         elif screen_name == 'tavern_main':
             screen = TavernMain(main_screen=self)
         elif screen_name == 'select_char':
-            screen = CharacterSelector(main_screen=self, preview=args[0], is_support=args[1])
+            screen = CharacterSelector(main_screen=self)
         elif screen_name == 'recruit':
             screen = RecruitPreview(character=args[0], viewed_characters=args[1], main_screen=self)
         else:
             raise Exception("Unsupported Screen type", screen_name)
-        print("Make ", screen_name, " w/ ", self.size)
         screen.size = self.size
         self.add_widget(screen)
-
-
-    def display_attribute_screen(self, character):
-        attr_screen = character.get_attr_screen()
-        attr_screen.size = self.size
-        #Remove from old parent
-        if attr_screen.parent is not None:
-            print(attr_screen.parent.children)
-
-
-    # def select(self, screen):
+        return screen, True
 
     def on_size(self, instance, size):
         if not self.initalized or self._size == size:
             return
         self._size = size
-        print(size)
 
         for child in self.screens:
             print(child, self.size)

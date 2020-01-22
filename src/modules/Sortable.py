@@ -159,15 +159,11 @@ class Sortable(object):
 
     def calculate_party_index(self, char):
         index = 0
-        print("Finding ", char)
         for party in self.main_screen.parties[1:]:
-            print(party)
             for character in party:
                 if character == char:
-                    print(index)
                     return index
                 index += 1
-        print(index)
         return index
 
     def on_after_sort(self):

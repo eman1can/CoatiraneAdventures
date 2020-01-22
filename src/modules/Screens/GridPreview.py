@@ -20,7 +20,6 @@ class GridPreview(Filterable, Sortable, Widget):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        print("Init Grid Preview w/ ", self.size)
 
         self.non_label_added = False
         self._size = (0, 0)
@@ -71,8 +70,6 @@ class GridPreview(Filterable, Sortable, Widget):
             return
         self._size = size.copy()
 
-        print("Grid preview. Size: ", self.size)
-
         vgap = self.height * 0.025
         slot_size = (self.height - vgap * 2) * 250 / 935
         count = math.floor((self.width - slot_size) / (slot_size * 1.25))
@@ -107,6 +104,48 @@ class GridPreview(Filterable, Sortable, Widget):
         for preview in self.previews_filter:
             preview.char_button._static_hover = True
             preview.char_button.hover_rect = [self.root.x, self.root.y, self.root.width, self.root.height]
+
+    def update_grid(self, preview, is_support, characters):
+        self.preview = preview
+        self.is_support = is_support
+        self.characters = characters
+
+        index = 0
+        previews = []
+        for character in self.characters:
+            if character != self.preview.char and not self.is_support or self.is_support and character != self.preview.support:
+                widget = character.get_select_square_widget()
+                widget.main_screen = self.main_screen
+                widget.preview = self.preview
+                widget.reload()
+
+                party_index = self.main_screen.parties[0]
+                if party_index >= 0:
+                    party_index += 1
+                if character in self.main_screen.parties[party_index]:
+                    if not widget.has_tag:
+                        tag = Label(text="selected", color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf', outline_color=(0, 0, 0, 1), outline_width=1)
+                        widget.tag = tag
+                        widget.has_tag = True
+                        widget.add_widget(tag)
+                elif widget.has_tag:
+                    widget.has_tag = False
+                    widget.remove_widget(widget.tag)
+                previews.append(widget)
+                widget.char = character
+                self.layout.add_widget(widget)
+                index += 1
+
+        self.no_filter = True
+        vgap = self.height * 0.025
+        slot_size = (self.height - vgap * 2) * 250 / 935
+        self.previews_filter = previews
+        for preview in self.previews_filter:
+            preview.size = slot_size, slot_size
+            preview.char_button._static_hover = True
+            preview.char_button.hover_rect = [self.root.x, self.root.y, self.root.width, self.root.height]
+        self.no_filter = False
+        self.filter()
 
     def on_after_sort(self):
         if self.non_label_added:

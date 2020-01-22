@@ -193,7 +193,7 @@ class CharacterAttributeScreen(Screen):
 
         self.status_board = HTButton(path='../res/screens/buttons/long_stat', size_hint=(None, None), label_color=(0, 0, 0, 1), text="Status Board", font_name='../res/fnt/Gabriola.ttf', on_release=self.on_status_board)
         self.change_equip = HTButton(path='../res/screens/buttons/long_stat', size_hint=(None, None), label_color=(0, 0, 0, 1), text="Change Equip", font_name='../res/fnt/Gabriola.ttf', on_release=self.on_change_equip)
-        self.image_preview = HTButton(path='../res/screens/buttons/preview', size_hint=(None, None), on_release=self.on_preview)
+        self.image_preview = HTButton(path='../res/screens/buttons/preview', size_hint=(None, None), on_release=self.on_image_preview)
 
         # ###### DEV BUTTONS ######
         # self.maxStats = Button(text="Max Stats", font_size=40, pos=(500, 1000), size=(200, 200),
@@ -790,7 +790,7 @@ class CharacterAttributeScreen(Screen):
             self.char_image.size = self.size
             self.char_image.pos = self.pos
 
-    def on_preview(self, instance):
+    def on_image_preview(self, instance):
         pass
 
     def on_status_board(self, instance):

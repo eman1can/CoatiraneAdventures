@@ -112,7 +112,9 @@ class CharacterPreview(ScreenManager):
                 self.remove_widget(old_screen)
 
     def show_select_screen(self, return_screen, is_support):
-        self.main_screen.create_screen('select_char', self, is_support)
+        screen, made = self.main_screen.create_screen('select_char', self, is_support)
+        if not made:
+            screen.update_screen(self, is_support)
         self.main_screen.display_screen('select_char', True, True)
 
     def reload(self):

@@ -138,10 +138,7 @@ class RecruitPreview(Screen):
             self.add_widget(self.no_recruits)
         else:
             unobtained_characters = [char for char in self.main_screen.characters if char.index not in self.main_screen.obtained_characters and char not in self.viewed_characters]
-            print("unobtained chars", unobtained_characters)
             index = random.randint(0, len(unobtained_characters) - 1)
-            print(index)
-            print(unobtained_characters[index].get_display_name())
             self.viewed_characters.append(unobtained_characters[index])
             self.main_screen.create_screen('recruit', unobtained_characters[index], self.viewed_characters)
             self.sound.play()
