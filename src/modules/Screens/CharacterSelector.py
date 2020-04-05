@@ -181,6 +181,10 @@ class CharacterSelector(Screen):
         elif type == 'Descending':
             self.multi.ascending = True
         else:
+            if type in ['Party', 'Name']:
+                self.multi.ascending = False
+            else:
+                self.multi.ascending = True
             self.ids.sort.text = type
             self.multi.sort_type = type
         self.close_sort()
