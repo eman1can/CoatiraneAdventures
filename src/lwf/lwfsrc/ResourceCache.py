@@ -1,17 +1,15 @@
 # Internal Imports
-from .utils.CustomImage import CustomImage
-from .utils.CustomCanvas import CustomCanvas
-from .utils.Utility import Utility
-from .utils.Type import Matrix
-
-from .objects.Loader import CanvasLoader
-
-from .RenderFactory import BaseRendererFactory
-from .Format import Format
-from .LWF import LWF
-
 # External Imports
 import re
+
+from .Format import Format
+from .LWF import LWF
+from .RenderFactory import BaseRendererFactory
+from .objects.Loader import CanvasLoader
+from .utils.CustomCanvas import CustomCanvas
+from .utils.CustomImage import CustomImage
+from .utils.Type import Matrix
+from .utils.Utility import Utility
 
 
 class BaseResourceCache:

@@ -1,9 +1,9 @@
 # Internal Imports
-from ..utils.Type import Matrix, SortedDictionary
-from .Bitmap import Bitmap
-
 # External Imports
 import math
+
+from .Bitmap import Bitmap
+from ..utils.Type import Matrix, SortedDictionary
 
 
 class BitmapClip(Bitmap):

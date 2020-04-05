@@ -1,8 +1,8 @@
 # Internal Imports
-from .utils.Type import Action, Dictionary
-
 # External Imports
 from typing import List
+
+from .utils.Type import Action, Dictionary
 
 
 class DetachHandler(Action):

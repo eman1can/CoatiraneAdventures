@@ -1,12 +1,12 @@
-import random
 import math
+import random
+
 from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty, StringProperty, BooleanProperty, ListProperty
-from kivy.uix.image import Image
-from kivy.uix.widget import WidgetBase, Widget
-from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreview
-from src.modules.Screens.SquareCharacterPreview import SquareCharacterPreview
-from src.modules.Screens.CharacterAttributeScreens.CharacterAttributeScreen import CharacterAttributeScreen
+from kivy.uix.widget import WidgetBase
+
 from src.entitites.Character.Scale import Scale
+from src.modules.Screens.CharacterAttributeScreens.CharacterAttributeScreen import CharacterAttributeScreen
+
 
 class Character(WidgetBase):
     health_base = NumericProperty(0)
@@ -63,11 +63,11 @@ class Character(WidgetBase):
         elif type == 1:
             self.type = 'Physical'
         elif type == 2:
-            self.type = 'Balance'
+            self.type = 'Balanced'
         elif type == 3:
             self.type = 'Defensive'
         else:
-            self.type = 'Healer'
+            self.type = 'Healing'
 
         if element == 0:
             self.element = 'Light'
@@ -89,20 +89,17 @@ class Character(WidgetBase):
         except FileNotFoundError:
             self.ranks = Rank.load_weights("../save/char_load_data/" + self.program_type + '/ranks/base.txt', self.id, rank, self.program_type)
 
-        self.slide_image = Image(source=self.slide_image_source, allow_stretch=True, size_hint=(None, None))
-        if self._is_support:
-            self.slide_support_image = Image(source=self.slide_support_image_source, allow_stretch=True, size_hint=(None, None))
-        self.preview_image = Image(source=self.preview_image_source, allow_stretch=True, size_hint=(None, None))
-        self.full_image = Image(source=self.full_image_source, allow_stretch=True, size_hint=(None, None))
-        self.select_widget = None
-        self.select_square_widget = None
         self.attr_screen = None
         self.update_score()
 
-    def load_elements(self):
-        self.select_widget = FilledCharacterPreview(is_select=True, is_support=self._is_support, character=self, size_hint_x=None)
-        self.select_square_widget = SquareCharacterPreview(is_select=True, character=self, is_support=self._is_support)
+    def load_elements(self, size):
+    #     self.select_widget = FilledCharacterPreview(is_select=True, is_support=self._is_support, character=self, size_hint_x=None)
+    #     self.select_square_widget = SquareCharacterPreview(is_select=True, character=self, is_support=self._is_support)
         self.attr_screen = CharacterAttributeScreen(char=self) #char preview name size pos
+        self.attr_screen.size = size
+
+    def get_attr_screen(self):
+        return self.attr_screen
 
     def update_score(self):
         score = 0
@@ -118,7 +115,7 @@ class Character(WidgetBase):
             score += self.get_endurance() / 10
             score += self.get_dexterity() / 9
             score += self.get_agility() / 9
-        elif self.type == 'Balance':
+        elif self.type == 'Balanced':
             score += self.get_strength() / 8.5
             score += self.get_magic() / 8.5
             score += self.get_endurance() / 9.5
@@ -130,7 +127,7 @@ class Character(WidgetBase):
             score += self.get_endurance() / 7.5
             score += self.get_dexterity() / 9
             score += self.get_agility() / 9
-        elif self.type == 'Healer':
+        elif self.type == 'Healing':
             score += self.get_strength() / 10
             score += self.get_magic() / 8.5
             score += self.get_endurance() / 10
@@ -180,8 +177,8 @@ class Character(WidgetBase):
     def get_current_rank(self):
         return self.current_rank
 
-    def get_rank(self, rankNum):
-        return self.ranks[rankNum - 1]
+    def get_rank(self, index):
+        return self.ranks[index - 1]
 
     def rank_up(self):
         if self.current_rank < 10:
@@ -196,107 +193,6 @@ class Character(WidgetBase):
             self.update_score()
         else:
             raise Exception("Character already rank broken")
-
-    def get_full_image(self, new_image_instance):
-        if new_image_instance:
-            return Image(source=self.full_image_source, allow_stretch=True, keep_ratio=True)
-        if self.full_image.parent is not None:
-            self.full_image.parent.slide_image_loaded = False
-            index = 0
-            for child in self.full_image.parent.children:
-                if child == self.full_image:
-                    self.full_image.parent.children[index] = Widget()
-                    self.full_image.parent.children[index].id = 'image_standin_full'
-                index += 1
-            self.full_image.parent = None
-            # self.slide_image.parent.remove_widget(self.slide_image)
-        return self.full_image
-
-    def get_slide_image(self, new_image_instance):
-        if new_image_instance:
-            return Image(source=self.slide_image_source, allow_stretch=True, keep_ratio=True)
-        if self.slide_image.parent is not None:
-            self.slide_image.parent.slide_image_loaded = False
-            index = 0
-            for child in self.slide_image.parent.children:
-                if child == self.slide_image:
-                    self.slide_image.parent.children[index] = Widget()
-                    self.slide_image.parent.children[index].id = 'image_standin_slide'
-                index += 1
-            self.slide_image.parent = None
-        return self.slide_image
-
-    def get_slide_support_image(self, new_image_instance):
-        if new_image_instance:
-            return Image(source=self.slide_support_image_source, allow_stretch=True, keep_ratio=True)
-        if self.slide_support_image.parent is not None:
-            self.slide_support_image.parent.slide_support_image_loaded = False
-            index = 0
-            for child in self.slide_support_image.parent.children:
-                if child == self.slide_support_image:
-                    self.slide_support_image.parent.children[index] = Widget()
-                    self.slide_support_image.parent.children[index].id = 'image_standin_slide'
-                index += 1
-            self.slide_support_image.parent = None
-        return self.slide_support_image
-
-    def get_preview_image(self, new_image_instance):
-        if new_image_instance:
-            return Image(source=self.preview_image_source, allow_stretch=True, keep_ratio=True)
-        if self.preview_image.parent is not None:
-            self.preview_image.parent.preview_image_loaded = False
-            index = 0
-            for child in self.preview_image.parent.children:
-                if child == self.preview_image:
-                    self.preview_image.parent.children[index] = Widget()
-                    self.preview_image.parent.children[index].id = 'image_standin_preview'
-                index += 1
-            self.preview_image.parent = None
-        return self.preview_image
-
-    def get_select_widget(self):
-        if self.select_widget is None:
-            raise Exception("Character was not fully loaded!")
-
-        if self.select_widget.parent is not None:
-            # self.select_widget.parent.select_widget_loaded = False
-            index = 0
-            for child in self.select_widget.parent.children:
-                if child == self.select_widget:
-                    self.select_widget.parent.children[index] = Widget()
-                    self.select_widget.parent.children[index].id = 'widget_standin'
-                index += 1
-            self.select_widget.parent = None
-        return self.select_widget
-
-    def get_select_square_widget(self):
-        if self.select_square_widget is None:
-            raise Exception("Character was not fully loaded!")
-
-        if self.select_square_widget.parent is not None:
-            # self.select_widget.parent.select_widget_loaded = False
-            index = 0
-            for child in self.select_square_widget.parent.children:
-                if child == self.select_square_widget:
-                    self.select_square_widget.parent.children[index] = Widget()
-                    self.select_square_widget.parent.children[index].id = 'widget_standin'
-                index += 1
-            self.select_square_widget.parent = None
-        return self.select_square_widget
-
-    def get_attr_screen(self):
-        if self.attr_screen is None:
-            raise Exception("Character was not fully loaded!")
-
-        if self.attr_screen.parent is not None:
-            index = 0
-            for child in self.attr_screen.parent.children:
-                if child == self.attr_screen:
-                    self.attr_screen.parent.children[index] = Widget()
-                    self.attr_screen.parent.children[index].id = 'widget_standin'
-                index += 1
-            self.attr_screen.parent = None
-        return self.attr_screen
 
     def get_sprite(self):
         return self.sprite
@@ -447,6 +343,9 @@ class Character(WidgetBase):
     def update_equipment(self, slot, stat):
         self.equipment.update_type(slot, stat)
 
+    def get_grids(self):
+        return self.ranks
+
 
 class Rank(WidgetBase):
     ability_max = NumericProperty(999)
@@ -474,11 +373,11 @@ class Rank(WidgetBase):
         super().__init__(**kwargs)
         self.unlocked = unlocked
         self.broken = broken
-        self.rankNum = rank
+        self.index = rank
         self.grid = grid
         self.brkinc = 1.13
 
-        self.grid.count()
+        # self.grid.count()
 
     def get_health(self):
         return math.floor(self.health)
@@ -564,17 +463,46 @@ class Rank(WidgetBase):
     def update_strength(self, strength_change, board=False):
         if board:
             self.strength_board += strength_change
+            # print(self.strength_board)
         else:
             if self.strength < self.ability_max:
                 self.strength += strength_change
+
+    def update_magic(self, magic_change, board=False):
+        if board:
+            self.magic_board += magic_change
+        else:
+            if self.magic < self.ability_max:
+                self.magic += magic_change
+
+    def update_endurance(self, endurance_change, board=False):
+        if board:
+            self.endurance_board += endurance_change
+        else:
+            if self.endurance < self.ability_max:
+                self.endurance += endurance_change
+
+    def update_dexterity(self, dexterity_change, board=False):
+        if board:
+            self.dexterity_board += dexterity_change
+        else:
+            if self.dexterity < self.ability_max:
+                self.dexterity += dexterity_change
+
+    def update_agility(self, agility_change, board=False):
+        if board:
+            self.agility_board += agility_change
+        else:
+            if self.agility < self.ability_max:
+                self.agility += agility_change
 
     @staticmethod
     def load_weights(filename, id, rank_nums, program_type):
         file = open(filename)
         try:
-            grids = Grid.loadgrids("../save/char_load_data/" + program_type + "/grids/" + id + ".txt")
+            grids = Grid.load_grids("../save/char_load_data/" + program_type + "/grids/" + id + ".txt")
         except FileNotFoundError:
-            grids = Grid.loadgrids("../save/char_load_data/" + program_type + "/grids/base.txt")
+            grids = Grid.load_grids("../save/char_load_data/" + program_type + "/grids/base.txt")
         ranks = []
         count = 1
         # print("Loading Weights & girds")
@@ -582,6 +510,7 @@ class Rank(WidgetBase):
             unlocked = rank_nums[level] > 0
             broken = rank_nums[level] == 2
             ranks.append(Rank(count, grids[count - 1], unlocked, broken))
+            count += 1
         # for x in file:
         #     values = x[:-1].split(' ', -1)
         #     print("Loaded: " + str(values))
@@ -699,7 +628,7 @@ class Equipment(WidgetBase):
         item = self.items[self.types.index(type)]
 
 
-class Equipment_Item:
+class EquipmentItem:
     def __init__(self, name, id, type, values):
         self.name = name
         self.id = id
@@ -753,58 +682,49 @@ class Equipment_Item:
 
 
 class Grid:
-    def __init__(self, grid, weights):
+    def __init__(self, rank_num, grid, unlocked, amounts):
+        self.index = rank_num
         self.grid = grid
-        self.S = 0
-        self.M = 0
-        self.A = 0
-        self.D = 0
-        self.E = 0
-        self.SW = weights[0]
-        self.MW = weights[1]
-        self.AW = weights[2]
-        self.DW = weights[3]
-        self.EW = weights[4]
+        self.unlocked = unlocked
+        self.amounts = amounts
 
-    def getGrid(self):
-        return self.grid
+    def get_grid(self):
+        return self.grid, self.unlocked
 
-    def count(self):
-        for r in range(len(self.grid)):
-            for c in range(len(self.grid[r])):
-                if self.grid[r][c] == 'S':
-                    self.S += 1
-                elif self.grid[r][c] == 'A':
-                    self.A += 1
-                elif self.grid[r][c] == 'D':
-                    self.D += 1
-                elif self.grid[r][c] == 'E':
-                    self.E += 1
+    def unlock(self, index):
+        if self.unlocked[index] == 1:
+            print("already unlocked")
+        else:
+            self.unlocked[index] = 1
 
     @staticmethod
-    def loadgrids(filename):
+    def load_grids(filename):
         file = open(filename)
         grids = []
         for x in file:
             grid = []
-            values = x[:-2].split(" ", -1)
-            rankNum = int(values[0])
+            ugrid = []
+            values = x[:-1].split(" ", -1)
+            rank_num = int(values[0])
             length = int(values[1])
-            strengthw = int(values[2])
-            magicw = int(values[3])
-            agilityw = int(values[4])
-            dexterityw = int(values[5])
-            endurancew = int(values[6])
-            weights = [strengthw, magicw, agilityw, dexterityw, endurancew]
+            strength = int(values[2])
+            magic = int(values[3])
+            agility = int(values[4])
+            dexterity = int(values[5])
+            endurance = int(values[6])
+            amounts = [strength, magic, agility, dexterity, endurance]
             values = values[7:]
-            rowNum = 0
+            row_index = 0
             for y in range(length):
                 row = []
+                urow = []
                 for x in range(length):
-                    row.append( str( values[ rowNum * int( length ) + x ] ) )
+                    row.append(str(values[row_index * int(length) + x]))
+                    urow.append(0)
                 grid.append(list(row))
-                rowNum += 1
-            grids.append(Grid(grid, weights))
+                ugrid.append(urow)
+                row_index += 1
+            grids.append(Grid(rank_num, grid, ugrid, amounts))
         return grids
     #update grids to be loaded at the same time as characters, and for base weights to be loaded into the first star. Add label updates to the preview screen. finish configuring the rank updates on the rank label
     #add the experience counter, cost function, cost preview, and stat experience window and stats. centralize characterstrength updates into the character class and by rank. with an update function
@@ -843,20 +763,17 @@ class Move:
         damage = random.randint(int(attack * self.powerMin), int(attack*self.powerMax))
         return damage
 
-    def getname(self):
-        # print(str(self.cover))
+    def get_name(self):
         if self.cover:
             return self.truename
         else:
             return self.name
+
     @staticmethod
-    def getmove(moveArray, moveName):
-        # print("Finding move " + moveName)
-        for x in moveArray:
-            # print(str(x.getname()))
-            if x.getname() == moveName:
-                # print("Found Move")
-                return x
+    def getmove(move_array, move_name):
+        for move in move_array:
+            if move.get_name() == move_name:
+                return move
         return None
 
 

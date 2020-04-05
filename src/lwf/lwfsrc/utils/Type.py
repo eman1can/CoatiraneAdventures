@@ -1,8 +1,8 @@
 # Internal Imports
-from .BinaryFile import BinaryReader
-
 # External Imports
 from sortedcontainers import SortedDict
+
+from .BinaryFile import BinaryReader
 
 
 class Dictionary:

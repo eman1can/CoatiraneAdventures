@@ -1,7 +1,6 @@
 # Internal Imports
-from ..objects.Object import Object
-
 from ..Format import Format
+from ..objects.Object import Object
 
 
 class Particle(Object):

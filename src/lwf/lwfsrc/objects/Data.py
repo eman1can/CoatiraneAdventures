@@ -1,8 +1,8 @@
 # Internal Imports
-from ..utils.Type import Matrix, Translate, Color, ColorTransform, AlphaTransform, Dict
-from ..utils.BinaryFile import BinaryReader
-from ..utils.Animation import *
 from ..Format import Format
+from ..utils.Animation import *
+from ..utils.BinaryFile import BinaryReader
+from ..utils.Type import Matrix, Translate, Color, ColorTransform, AlphaTransform, Dict
 
 
 class Data:

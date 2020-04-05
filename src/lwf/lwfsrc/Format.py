@@ -1,8 +1,8 @@
 # Internal Imports
-from .utils.BinaryFile import BinaryReader
-
 # External Imports
 import re
+
+from .utils.BinaryFile import BinaryReader
 
 
 class Format:

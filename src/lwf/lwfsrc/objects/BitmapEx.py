@@ -1,6 +1,6 @@
 # Internal Imports
-from ..Format import Format
 from .Object import Object
+from ..Format import Format
 
 
 class BitmapEx(Object):

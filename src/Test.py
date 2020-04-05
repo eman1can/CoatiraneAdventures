@@ -1,42 +1,27 @@
-from kivy.uix.label import Label
-from kivy.app import App
-from kivy.clock import Clock
+from timeit import Timer
+
+from kivy.core.image import Image
+from kivy.graphics import Rectangle
 from kivy.uix.widget import Widget
-from kivy.uix.button import Button
-from kivy.properties import NumericProperty
-from kivy.uix.behaviors import DragBehavior
-from kivy.lang import Builder
 
-# # You could also put the following in your kv file...
-# kv = '''
-# <DragLabel>:
-#     # Define the properties for the DragLabel
-#     drag_rectangle: self.x, self.y, self.width, self.height
-#     drag_timeout: 10000000
-#     drag_distance: 0
-#
-# FloatLayout:
-#     # Define the root widget
-#     DragLabel:
-#         size_hint: 0.25, 0.2
-#         text: 'Drag me'
-# '''
-#
-#
-# class DragLabel(DragBehavior, Label):
-#     pass
-class Wid:
-    a = NumericProperty(0)
-    def __init__(self, **kwargs):
-        super().__init__()
-        # self.add_widget(Button(on_touch_down=self.on_down))
-        Clock.schedule_once(self.on_down, 3)
 
-    def on_down(self, dt):
-        print(self.a)
+# from kivy.uix.image import Image
 
-class TestApp(App):
-    def build(self):
-        return Wid(a=100)
+class Base(Widget):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        list = ['actresses_alexis_and_emilia', 'amatuer_model_calyse', 'architect_lexi', 'athlethic_sofi']
+        options = ['_slide.png', '_preview.png', '_full.png']
+        for res in list:
+            for option in options:
+                path = "../res/characters/test/" + res + "/" + res + option
+                image = Image(path)
+                with self.canvas:
+                    Rectangle(size=(300, 300), pos=(0, 0), texture=image.texture)
+                del image
+        return
 
-TestApp().run()
+
+if __name__ == '__main__':
+    t = Timer(lambda: Base())
+    print(t.timeit(number=20000))

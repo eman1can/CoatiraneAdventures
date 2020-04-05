@@ -1,9 +1,7 @@
 # Internal Imports
-from ..utils.Type import Dictionary
-
-from ..objects.Object import Object
-
 from ..Format import Format
+from ..objects.Object import Object
+from ..utils.Type import Dictionary
 
 
 class Texts(Dictionary):

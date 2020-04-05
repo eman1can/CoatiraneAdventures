@@ -1,173 +1,233 @@
-from kivy.properties import ObjectProperty, BooleanProperty, ListProperty
-from kivy.uix.widget import Widget
-from kivy.uix.label import Label
-from kivy.uix.gridlayout import GridLayout
+from kivy.clock import Clock
+from kivy.properties import ObjectProperty, BooleanProperty, ListProperty, StringProperty
+from kivy.uix.recyclegridlayout import RecycleGridLayout
+from kivy.uix.recycleview import RecycleView
 
-from src.modules.ScrollPanel import ScrollPanel
-from src.modules.Sortable import Sortable
 from src.modules.Filterable import Filterable
+from src.modules.Sortable import Sortable
+
+#Needed to avoid packaging errors
+
+from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreview
+from src.modules.Screens.SquareCharacterPreview import SquareCharacterPreview
 
 
-class ScrollPreview(Filterable, Sortable, Widget):
-    initialized = BooleanProperty(False)
-    main_screen = ObjectProperty(None)
+class RecyclePreview(RecycleView, Filterable, Sortable):
     preview = ObjectProperty(None)
+    selector = ObjectProperty(None, allownon=True)
 
     characters = ListProperty([])
     is_support = BooleanProperty(False)
 
+    mode = StringProperty('scroll')
+    scroll = ObjectProperty(None)
+    grid = ObjectProperty(None)
+
     def __init__(self, **kwargs):
+        self.register_event_type('on_mouse_pos')
         super().__init__(**kwargs)
 
-        self._size = (0, 0)
-        self._pos = (-1, -1)
-        self.non_label_added = False
+        self.scroll = ScrollPreview()
+        self.grid = GridPreview()
 
-        self.root = ScrollPanel(size_hint=(None, 1), do_scroll_y=False)
-        self.non_label = Label(text="No results", font_name='../res/fnt/Gabriola.ttf', color=(0,0,0,1))
-        self.layout = GridLayout(rows=1, size_hint_x=None)
-        self.layout.bind(minimum_width=self.layout.setter('width'))
+        self.add_widget(self.scroll)
+        self.viewclass = 'FilledCharacterPreview'
+        self.child = self.scroll
 
-        index = 0
-        previews = []
-        values = []
-        for character in self.characters:
-            if character != self.preview.char and not self.is_support or self.is_support and character != self.preview.support:
-                widget = character.get_select_widget()
-                widget.main_screen = self.main_screen
-                widget.preview = self.preview
-                widget.reload()
-                party_index = self.main_screen.parties[0]
-                if party_index >= 0:
-                   party_index += 1
-                if character in self.main_screen.parties[party_index]:
-                    if not widget.has_tag:
-                        tag = Label(text="selected", color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf', outline_color=(0, 0, 0, 1), outline_width=1)
-                        widget.tag = tag
-                        widget.has_tag = True
-                        widget.add_widget(tag)
-                elif widget.has_tag:
-                    widget.has_tag = False
-                    widget.remove_widget(widget.tag)
+        for char in self.characters:
+            self.data.append({'id': char.get_id(), 'character': char, 'support': None})
+        self.previews_sort = self.data
+        self.force_update_values()
 
-                previews.append(widget)
-                values.append(character.get_strength())
-                widget.char = character
+    def on_mouse_pos(self, hover):
+        if not self.collide_point(*hover.pos):
+            return False
+        if self.child.dispatch('on_mouse_pos', hover):
+            return True
+        return False
 
-                self.layout.add_widget(widget)
-                index += 1
-
-        self.no_sort = True
-        self.no_filter = True
-        self.previews_filter = previews
-        self.previews_sort = previews
-        self.values_sort = values
-        self.no_sort = False
-        self.no_filter = False
-        self.filter()
-
-        self.root.add_widget(self.layout)
-        self.add_widget(self.root)
-        self.initialized = True
-
-    def on_size(self, instance, size):
-        if not self.initialized or self._size == size:
-            return
-        self._size = size.copy()
-
-        gap = self.height * 0.05
-        slot_size = (self.height - gap * 2) * 250 / 935, self.height - gap * 2
-
-        self.non_label.font_size = (self.width - gap * 2) * 0.125
-        self.non_label.size = self.size
-
-        self.root.size = self.width - gap * 2, slot_size[1]
-        self.root.pos = self.x + gap, self.y + gap
-
-        for preview in self.previews_filter:
-            preview.size = slot_size
-            preview.char_button._static_hover = True
-            preview.char_button.hover_rect = [self.root.x, self.root.y, self.root.width, self.root.height]
-
-        self.layout.height = slot_size[1]
-        self.layout.padding = [0, 0, 0, 0]
-        self.layout.spacing = gap, 0
-
-    def on_pos(self, instance, pos):
-        if not self.initialized or self._pos == pos:
-            return
-        self._pos = pos.copy()
-
-        gap = self.height * 0.05
-        self.root.pos = self.x + gap, self.y + gap
-        self.non_label.pos = pos
-
-        for preview in self.previews_filter:
-            preview.char_button._static_hover = True
-            preview.char_button.hover_rect = [self.root.x, self.root.y, self.root.width, self.root.height]
-
-    def update_scroll(self, preview, is_support, characters):
+    def update(self, single, preview, is_support, characters, party):
         self.preview = preview
         self.is_support = is_support
         self.characters = characters
 
-        index = 0
-        previews = []
-        values = []
-        for character in self.characters:
-            if character != self.preview.char and not self.is_support or self.is_support and character != self.preview.support:
-                widget = character.get_select_widget()
-                widget.main_screen = self.main_screen
-                widget.preview = self.preview
-                widget.reload()
-                party_index = self.main_screen.parties[0]
-                if party_index >= 0:
-                    party_index += 1
-                if character in self.main_screen.parties[party_index]:
-                    if not widget.has_tag:
-                        tag = Label(text="selected", color=(1, 1, 1, 1), font_name='../res/fnt/Gabriola.ttf', outline_color=(0, 0, 0, 1), outline_width=1)
-                        widget.tag = tag
-                        widget.has_tag = True
-                        widget.add_widget(tag)
-                elif widget.has_tag:
-                    widget.has_tag = False
-                    widget.remove_widget(widget.tag)
-
-                previews.append(widget)
-                values.append(character.get_strength())
-                widget.char = character
-
-                self.layout.add_widget(widget)
-                index += 1
-
-        self.no_filter = True
-        vgap = self.height * 0.025
-        gap = self.height * 0.05
-        slot_size = (self.height - gap * 2) * 250 / 935, self.height - gap * 2
-        self.previews_filter = previews
-        for preview in self.previews_filter:
-            preview.size = slot_size
-            preview.char_button._static_hover = True
-            preview.char_button.hover_rect = [self.root.x, self.root.y, self.root.width, self.root.height]
-        self.no_filter = False
-        self.filter()
-
-    def on_after_sort(self):
-        if self.non_label_added:
-            self.non_label_added = False
-            self.remove_widget(self.non_label)
-        self.layout.clear_widgets()
-        for preview in self.previews_sort:
-            self.layout.add_widget(preview)
-        if len(self.previews_sort) == 0:
-            self.non_label_added = True
-            self.add_widget(self.non_label)
-
-    def on_after_filter(self):
-        if self.parent is not None:
-            self.parent.update_number(len(self.output))
-        self.previews_sort = self.output
+        self.data.clear()
+        self.refresh_from_data()
+        for char in self.characters:
+            if single is not None and single == char:
+                continue
+            self.data.append({'id': char.get_id(), 'character': char, 'support': None, 'is_select': True, 'preview': self.preview, 'is_support': char.is_support(), 'has_tag': char in party})
+        self.previews_sort = self.data
         self.force_update_values()
 
-    def on_back_press(self, instance):
-        self.parent.remove_widget(self)
+    def change_hover(self, new_hover):
+        self.child.change_hover(new_hover)
+
+    def do_scroll(self):
+        if self.mode == 'scroll':
+            return
+        self.remove_widget(self.grid)
+        self.add_widget(self.scroll)
+        self.viewclass = 'FilledCharacterPreview'
+        self.mode = 'scroll'
+        self.child = self.scroll
+        self.refresh_from_layout()
+
+    def do_grid(self):
+        if self.mode == 'grid':
+            return
+        self.remove_widget(self.scroll)
+        self.add_widget(self.grid)
+        self.viewclass = 'SquareCharacterPreview'
+        self.mode = 'grid'
+        self.child = self.grid
+        self.refresh_from_layout()
+
+    def on_after_sort(self, *args):
+        self.previews_filter = self.previews_sort
+        self.filter()
+
+    def on_after_filter(self):
+        self.data = self.output
+        self.refresh_from_data()
+        self.selector.update_number(len(self.data))
+
+    def on_scroll_start(self, touch, check_children=True):
+        if check_children:
+            touch.push()
+            touch.apply_transform_2d(self.to_local)
+            if self.dispatch_children('on_scroll_start', touch):
+                touch.pop()
+                return True
+            touch.pop()
+
+        if not self.collide_point(*touch.pos):
+            touch.ud[self._get_uid('svavoid')] = True
+            return
+        if self.disabled:
+            return True
+        if self._touch or (not (self.do_scroll_x or self.do_scroll_y)):
+            return self.simulate_touch_down(touch)
+
+        # handle mouse scrolling, only if the viewport size is bigger than the
+        # scrollview size, and if the user allowed to do it
+        vp = self._viewport
+        if not vp:
+            return True
+        scroll_type = self.scroll_type
+        ud = touch.ud
+        scroll_bar = 'bars' in scroll_type
+
+        # check if touch is in bar_x(horizontal) or bar_y(vertical)
+        width_scrollable = vp.width > self.width
+        height_scrollable = vp.height > self.height
+
+        d = {'bottom': touch.y - self.y - self.bar_margin,
+             'top': self.top - touch.y - self.bar_margin,
+             'left': touch.x - self.x - self.bar_margin,
+             'right': self.right - touch.x - self.bar_margin}
+
+        ud['in_bar_x'] = (scroll_bar and width_scrollable and
+                          (0 <= d[self.bar_pos_x] <= self.bar_width))
+        ud['in_bar_y'] = (scroll_bar and height_scrollable and
+                          (0 <= d[self.bar_pos_y] <= self.bar_width))
+
+        if vp and 'button' in touch.profile and \
+                touch.button.startswith('scroll'):
+            btn = touch.button
+            m = self.scroll_wheel_distance
+            e = None
+
+            if ((btn == 'scrolldown' and self.scroll_x >= 1) or (btn == 'scrollup' and self.scroll_x <= 0) or (btn == 'scrollleft' and self.scroll_x >= 1) or (btn == 'scrollright' and self.scroll_x <= 0)):
+                return False
+
+            if (self.effect_x and self.do_scroll_y and height_scrollable and
+                    btn in ('scrolldown', 'scrollup')):
+                e = self.effect_x if ud['in_bar_x'] else self.effect_y
+
+            elif (self.effect_y and self.do_scroll_x and width_scrollable and
+                  btn in ('scrollleft', 'scrollright', 'scrollup', 'scrolldown')):
+                e = self.effect_y if ud['in_bar_y'] else self.effect_x
+
+            if e:
+                if btn in ('scrolldown', 'scrollleft'):
+                    if self.smooth_scroll_end:
+                        e.velocity -= m * self.smooth_scroll_end
+                    else:
+                        e.value = max(e.value - m, e.min)
+                        e.velocity = 0
+                elif btn in ('scrollup', 'scrollright'):
+                    if self.smooth_scroll_end:
+                        e.velocity += m * self.smooth_scroll_end
+                    else:
+                        e.value = min(e.value + m, e.max)
+                        e.velocity = 0
+                touch.ud[self._get_uid('svavoid')] = True
+                e.trigger_velocity_update()
+            return True
+
+        in_bar = ud['in_bar_x'] or ud['in_bar_y']
+        if scroll_type == ['bars'] and not in_bar:
+            return self.simulate_touch_down(touch)
+
+        if in_bar:
+            if (ud['in_bar_y'] and not
+            self._touch_in_handle(
+                self._handle_y_pos, self._handle_y_size, touch)):
+                self.scroll_y = (touch.y - self.y) / self.height
+            elif (ud['in_bar_x'] and not
+            self._touch_in_handle(
+                self._handle_x_pos, self._handle_x_size, touch)):
+                self.scroll_x = (touch.x - self.x) / self.width
+
+        # no mouse scrolling, so the user is going to drag the scrollview with
+        # this touch.
+        self._touch = touch
+        uid = self._get_uid()
+
+        ud[uid] = {
+            'mode': 'unknown',
+            'dx': 0,
+            'dy': 0,
+            'user_stopped': in_bar,
+            'frames': Clock.frames,
+            'time': touch.time_start}
+
+        if self.do_scroll_x and self.effect_x and not ud['in_bar_x']:
+            self._effect_x_start_width = self.width
+            self.effect_x.start(touch.x)
+            self._scroll_x_mouse = self.scroll_x
+        if self.do_scroll_y and self.effect_y and not ud['in_bar_y']:
+            self._effect_y_start_height = self.height
+            self.effect_y.start(touch.y)
+            self._scroll_y_mouse = self.scroll_y
+
+        if not in_bar:
+            Clock.schedule_once(self._change_touch_mode,
+                                self.scroll_timeout / 1000.)
+        return True
+
+class Preview(RecycleGridLayout):
+    def __init__(self, **kwargs):
+        self.register_event_type('on_mouse_pos')
+        super().__init__(**kwargs)
+
+    def change_hover(self, new_hover):
+        for preview in self.children:
+            preview.do_hover = new_hover
+
+    def on_mouse_pos(self, hover):
+        if not self.collide_point(*hover.pos):
+            return False
+        for child in self.children:
+            if child.dispatch('on_mouse_pos', hover):
+                return True
+        return False
+
+
+class ScrollPreview(Preview):
+    pass
+
+
+class GridPreview(Preview):
+    pass

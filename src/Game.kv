@@ -1,7 +1,2357 @@
-#:import FadeTransition kivy.uix.screenmanager.FadeTransition
-#:import random random
+#:kivy 2.0.0
+#: import Image kivy.core.image
+<NewGameScreen>:
+    name: 'new_game'
+    canvas:
+        Rectangle:
+            id: background
+            size: self.size
+            pos: self.pos
+            texture: self.background_texture
+        Rectangle:
+            id: title
+            size: app.get_dkey('ng.t s', self.width, self.height)
+            pos: app.get_dkey('ng.t p', self.width, self.height)
+            texture: self.title_texture
+    HTButton:
+        id: new_game
+        size_hint: app.get_dkey('ng.ngb s_h')
+        pos_hint: app.get_dkey('ng.ngb p_h')
+        path: '../res/screens/buttons/newgame'
+        on_release: root.on_new_game()
+    HTButton:
+        id: load_game
+        size_hint: app.get_dkey('ng.lgb s_h')
+        pos_hint: app.get_dkey('ng.lgb p_h')
+        path: '../res/screens/buttons/loadgame'
+        on_release: root.on_load_game()
 
-<Dungeonbattle>
+<SelectScreen>:
+    name: 'select_screen'
+    canvas:
+        Rectangle:
+            id: background
+            size: self.size
+            pos: self.pos
+            texture: self.background_texture
+    LabelH:
+        id: title
+        size_hint: (None, None)
+        text: 'Select a Character!'
+        font_name: '../res/fnt/Precious.ttf'
+        size: self.texture_size
+        color: app.get_dkey('ss.t c')
+        font_size: app.get_dkey('ss.t fs', root.width)
+        pos_hint: app.get_dkey('ss.t p_h')
+        outline_width: app.get_dkey('ss.t ow')
+        outline_color: app.get_dkey('ss.t oc')
+    HTButton:
+        id: new_game_ais
+        path: '../res/screens/buttons/newgame.ais'
+        size_hint: app.get_dkey('ss.nga s_h')
+        pos_hint: app.get_dkey('ss.nga p_h')
+        on_release: root.choose_character('badass_ais')
+    LabelH:
+        id: new_game_ais_label
+        size_hint: (None, None)
+        text: 'Battle Princess'
+        font_name: '../res/fnt/Precious.ttf'
+        size: self.texture_size
+        color: app.get_dkey('ss.ngal c')
+        font_size: app.get_dkey('ss.ngal fs', root.width)
+        pos_hint: app.get_dkey('ss.ngal p_h')
+        outline_width: app.get_dkey('ss.ngal ow')
+        outline_color: app.get_dkey('ss.ngal oc')
+    HTButton:
+        id: new_game_bell
+        path: '../res/screens/buttons/newgame.bell'
+        size_hint: app.get_dkey('ss.ngb s_h')
+        pos_hint: app.get_dkey('ss.ngb p_h')
+        on_release: root.choose_character('hero_bell')
+    LabelH:
+        id: new_game_bell_label
+        size_hint: (None, None)
+        text: 'Rabbit Foot'
+        font_name: '../res/fnt/Precious.ttf'
+        size: self.texture_size
+        color: app.get_dkey('ss.ngbl c')
+        font_size: app.get_dkey('ss.ngbl fs', root.width)
+        pos_hint: app.get_dkey('ss.ngbl p_h')
+        outline_width: app.get_dkey('ss.ngbl ow')
+        outline_color: app.get_dkey('ss.ngbl oc')
+
+<SmallTownButton@HTButton>:
+    collide_image: '../res/screens/buttons/smallbutton.collision.png'
+    font_name: '../res/fnt/Precious.ttf'
+
+<TownScreen>:
+    name: 'town_screen'
+    canvas:
+        Rectangle:
+            id: background
+            size: self.size
+            pos: self.pos
+            texture: self.background_texture
+    SmallTownButton:
+        id: tavern
+        text: "Tavern"
+        path: '../res/screens/buttons/tavern_button'
+        label_padding: app.get_dkey('ts.tb lp', root.width)
+        pos_hint: app.get_dkey('ts.tb p_h', root.width, root.height)
+        font_size: app.get_dkey('ts.sb fs', root.width)
+        label_color: app.get_dkey('ts lc')
+        size_hint: app.get_dkey('ts.sb s_h', root.width)
+        on_release: root.on_tavern()
+        canvas:
+            Color:
+                rgba: 1, 1, 1, root.tavern_lock_opacity
+            Rectangle:
+                id: tavern_lock
+                size: self.size
+                pos: self.pos
+                texture: root.small_lock_texture
+            Color:
+                rgba: 1, 1, 1, 1
+    SmallTownButton:
+        id: shop
+        text: "Shop"
+        path: '../res/screens/buttons/shop_button'
+        label_padding: app.get_dkey('ts.shb lp', root.width)
+        pos_hint: app.get_dkey('ts.shb p_h', root.width, root.height)
+        font_size: app.get_dkey('ts.sb fs', root.width)
+        label_color: app.get_dkey('ts lc')
+        size_hint: app.get_dkey('ts.sb s_h', root.width)
+    SmallTownButton:
+        id: crafting
+        text: "Crafting"
+        path: '../res/screens/buttons/crafting_button'
+        label_padding: app.get_dkey('ts.cb lp', root.width)
+        pos_hint: app.get_dkey('ts.cb p_h', root.width, root.height)
+        font_size: app.get_dkey('ts.sb fs', root.width)
+        label_color: app.get_dkey('ts lc')
+        size_hint: app.get_dkey('ts.sb s_h', root.width)
+        canvas:
+            Color:
+                rgba: 1, 1, 1, root.crafting_lock_opacity
+            Rectangle:
+                id: crafting_lock
+                size: self.size
+                pos: self.pos
+                texture: root.small_lock_texture
+            Color:
+                rgba: 1, 1, 1, 1
+    SmallTownButton:
+        id: inventory
+        text: "Inventory"
+        path: '../res/screens/buttons/inventory_button'
+        label_padding: app.get_dkey('ts.ib lp', root.width)
+        pos_hint: app.get_dkey('ts.ib p_h', root.width, root.height)
+        font_size: app.get_dkey('ts.sb fs', root.width)
+        label_color: app.get_dkey('ts lc')
+        size_hint: app.get_dkey('ts.sb s_h', root.width)
+    SmallTownButton:
+        id: quest
+        text: "Quest"
+        path: '../res/screens/buttons/quest_button'
+        label_padding: app.get_dkey('ts.qb lp', root.width)
+        pos_hint: app.get_dkey('ts.qb p_h', root.width, root.height)
+        font_size: app.get_dkey('ts.sb fs', root.width)
+        label_color: app.get_dkey('ts lc')
+        size_hint: app.get_dkey('ts.sb s_h', root.width)
+    HTButton:
+        id: dungeon
+        text: "Dungeon"
+        collide_image: '../res/screens/buttons/largebutton.collision.png'
+        path: '../res/screens/buttons/dungeon_button'
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('ts.lb fs', root.width)
+        label_color: app.get_dkey('ts lc')
+        size_hint: app.get_dkey('ts.lb s_h', root.width)
+        label_padding: app.get_dkey('ts.db lp', root.width)
+        pos_hint: app.get_dkey('ts.db p_h', root.width, root.height)
+        on_release: root.on_dungeon()
+
+<TavernMain>
+    name: 'tavern_main'
+    canvas:
+        Rectangle:
+            id: background
+            size: self.size
+            pos: self.pos
+            texture: self.background_texture
+    LabelH:
+        id: title
+        size_hint: (None, None)
+        markup: True
+        text: '[b]Recruitment[/b]'
+        font_name: '../res/fnt/Precious.ttf'
+        size: self.texture_size
+        color: app.get_dkey('tas.t c')
+        outline_width: app.get_dkey('tas.t ow')
+        outline_color: app.get_dkey('tas.t oc')
+        font_size: app.get_dkey('tas.t fs', root.width)
+        pos_hint: app.get_dkey('tas.t p_h')
+    HTButton:
+        id: recruit_button
+        collide_image: '../res/screens/buttons/largebutton.collision.png'
+        path: '../res/screens/buttons/recruit_button'
+        font_name: '../res/fnt/Precious.ttf'
+        text: 'Recruit'
+        on_release: root.on_recruit()
+        label_color: app.get_dkey('tas.rb lc')
+        label_padding: app.get_dkey('tas.rb lp', root.width)
+        font_size: app.get_dkey('tas.rb fs', root.width)
+        size_hint: app.get_dkey('tas.rb s_h', root.width)
+        pos_hint: app.get_dkey('tas.rb p_h', root.width, root.height)
+    HTButton:
+        id: back_button
+        path: '../res/screens/buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+
+<RecruitPreview>:
+    name: 'recruit_' + self.character.get_id()
+    canvas:
+        #Background Image
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            texture: self.background_texture
+        #Char Type Flag
+        Rectangle:
+            size: app.get_dkey('rs.ctf s_h', self.width)
+            pos: app.get_dkey('rs.ctf pos', self.width, self.height)
+            texture: self.char_type_flag_texture
+        #Type Flag
+        Rectangle:
+            size: app.get_dkey('rs.ctf s_h', self.width)
+            pos: app.get_dkey('rs.ctf pos', self.width, self.height)
+            texture: self.type_flag_texture
+        #Element Flag Background
+        Rectangle:
+            size: app.get_dkey('rs.ctf s_h', self.width)
+            pos: app.get_dkey('rs.ctf pos', self.width, self.height)
+            texture: self.element_flag_background_texture
+        #Element Flag Symbol
+        Rectangle:
+            size: app.get_dkey('rs.ctf s_h', self.width)
+            pos: app.get_dkey('rs.ctf pos', self.width, self.height)
+            texture: self.element_flag_symbol_texture
+    AsyncImageH:
+        id: char_image
+        size_hint: 0.8, 0.7
+        pos_hint: {'x': 0, 'y': 0}
+        allow_stretch: True
+        source: root.character_image_source
+    #Full Name
+    LabelH:
+        id: full_name
+        size_hint: (None, None)
+        size: self.texture_size
+        text: '[b]' + root.character.get_name() + '[/b]'
+        markup: True
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('rs.fnl fs', root.height)
+        pos_hint: app.get_dkey('rs.fnl p_h')
+        color: app.get_dkey('rs.fnl c')
+        outline_width: app.get_dkey('rs.fnl ow')
+        outline_color: app.get_dkey('rs.fnl oc')
+    #Display Name
+    LabelH:
+        id: display_name
+        size_hint: (None, None)
+        size: self.texture_size
+        text: '[b]' + root.character.get_display_name() + '[/b]'
+        markup: True
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('rs.dnl fs', root.height)
+        pos_hint: app.get_dkey('rs.dnl p_h')
+        color: app.get_dkey('rs.dnl c')
+        outline_width: app.get_dkey('rs.dnl ow')
+        outline_color: app.get_dkey('rs.dnl oc')
+    #Char Type Flag Label
+    LabelH:
+        id: char_type_flag_label
+        text: 'Supporter' if root.character.is_support() else 'Adventurer'
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('rs.ctfl fs', root.width)
+        size_hint: app.get_dkey('rs.ctfl s_h')
+        pos_hint: app.get_dkey('rs.ctfl p_h')
+        color: app.get_dkey('rs.ctfl c')
+    #Type Flag Label
+    LabelH:
+        id: type_flag_label
+        text: root.character.get_type().capitalize() + ' Type'
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('rs.tfl fs', root.width)
+        size_hint: app.get_dkey('rs.tfl s_h')
+        pos_hint: app.get_dkey('rs.tfl p_h')
+        color: app.get_dkey('rs.tfl c')
+    #Element Flag Label
+    LabelH:
+        id: element_flag_label
+        text: root.character.get_element().capitalize()
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('rs.efl fs', root.width)
+        size_hint: app.get_dkey('rs.efl s_h')
+        pos_hint: app.get_dkey('rs.efl p_h')
+        color: app.get_dkey('rs.efl c')
+    #Roll Again
+    HTButton:
+        id: roll_again
+        path: '../res/screens/buttons/recruit_button'
+        collide_image: '../res/screens/buttons/largebutton.collision.png'
+        text: 'Roll Again'
+        font_name: '../res/fnt/Precious.ttf'
+        label_color: app.get_dkey('rs.ra lc')
+        label_padding: app.get_dkey('rs.ra lp', self.height)
+        pos_hint: app.get_dkey('rs.ra p_h')
+        font_size: app.get_dkey('rs.ra fs', root.height)
+        size_hint: app.get_dkey('rs s_h')
+        on_release: root.on_roll_again()
+    #Confirm
+    HTButton:
+        id: confirm
+        path: '../res/screens/buttons/recruit_button_confirm'
+        collide_image: '../res/screens/buttons/largebutton.collision.png'
+        text: 'Confirm'
+        font_name: '../res/fnt/Precious.ttf'
+        label_color: app.get_dkey('rs.c lc')
+        label_padding: app.get_dkey('rs.c lp', self.height)
+        pos_hint: app.get_dkey('rs.c p_h')
+        font_size: app.get_dkey('rs.c fs', root.height)
+        size_hint: app.get_dkey('rs s_h')
+        on_release: root.on_confirm()
+    #Cancel
+    HTButton:
+        id: cancel
+        path: '../res/screens/buttons/recruit_button_cancel'
+        collide_image: '../res/screens/buttons/largebutton.collision.png'
+        text: 'Cancel'
+        font_name: '../res/fnt/Precious.ttf'
+        label_color: app.get_dkey('rs.ca lc')
+        label_padding: app.get_dkey('rs.ca lp', self.height)
+        pos_hint: app.get_dkey('rs.ca p_h')
+        font_size: app.get_dkey('rs.ca fs', root.height)
+        size_hint: app.get_dkey('rs s_h')
+        on_release: root.on_cancel()
+    #Character Attribute Screen
+    HTButton:
+        id: character_attribute
+        path: '../res/screens/buttons/character_attribute'
+        collide_image: '../res/screens/buttons/largebutton.collision.png'
+        text: 'Attributes'
+        font_name: '../res/fnt/Precious.ttf'
+        label_color: app.get_dkey('rs.cas lc')
+        label_padding: app.get_dkey('rs.cas lp', self.height)
+        pos_hint: app.get_dkey('rs.cas p_h')
+        font_size: app.get_dkey('rs.cas fs', root.height)
+        size_hint: app.get_dkey('rs s_h')
+        on_release: root.on_char_attribute()
+
+<NoRecruitWidget>
+    auto_dismiss: False
+    background: '../res/screens/stats/sort_background.png'
+    size_hint: app.get_dkey('nrw s_h')
+    pos_hint: app.get_dkey('nrw p_h')
+    border: app.get_dkey('nrw b')
+    RelativeLayoutH:
+        LabelH:
+            id: label_large
+            color: app.get_dkey('nrw.ll c')
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'All Characters Recruited'
+            font_size: app.get_dkey('nrw.ll fs', root.height)
+            size_hint: app.get_dkey('nrw.ll s_h')
+            pos_hint: app.get_dkey('nrw.ll p_h')
+    #        height: self.texture_size[1]
+        LabelH:
+            id: label_small
+            color: app.get_dkey('nrw.ls c')
+            font_name: '../res/fnt/Gabriola.ttf'
+            halign: 'center'
+            text: 'More characters will be added\nin future updates'
+            font_size: app.get_dkey('nrw.ls fs', root.height)
+            size_hint: app.get_dkey('nrw.ls s_h')
+            pos_hint: app.get_dkey('nrw.ls p_h')
+    #        height: self.texture_size[1]
+        HTButton:
+            id: ok
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Ok'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: app.get_dkey('nrw.ok fs', root.height)
+            size_hint: app.get_dkey('nrw.ok s_h')
+            pos_hint: app.get_dkey('nrw.ok p_h')
+
+<DungeonMain>:
+    name: 'dungeon_main'
+    animate_distance: app.get_dkey('dm.a ad', self.width)
+    animate_start_left: app.get_dkey('dm.a a_s_l', self.width)
+    animate_start_right: app.get_dkey('dm.a a_s_r', self.width)
+    canvas:
+        Rectangle:
+            id: background
+            size: self.size
+            pos: self.pos
+            texture: self.background_texture
+    LabelH:
+        id: level_label
+        text: 'Level - Surface' if root.level == 0 else 'Level - ' + str(root.level) + " - [color=ff0000][b]BOSS[/b][/color]" if root.boss else 'Level - ' + str(root.level)
+        font_name: '../res/fnt/Precious.ttf'
+        markup: True
+        size: self.texture_size
+        color: app.get_dkey('dm.ll c')
+        font_size: app.get_dkey('dm.ll fs', root.height)
+        size_hint: app.get_dkey('dm.ll s_h')
+        pos_hint: app.get_dkey('dm.ll p_h')
+    LabelH:
+        id: party_score_label
+        text: 'Party Score - ' + str(root.party_score)
+        font_name: '../res/fnt/Precious.ttf'
+        size: self.texture_size
+        color: app.get_dkey('dm.psl c')
+        font_size: app.get_dkey('dm.psl fs', root.height)
+        size_hint: app.get_dkey('dm.psl s_h')
+        pos_hint: app.get_dkey('dm.psl p_h')
+    HTButton:
+        id: back_button
+        path: '../res/screens/buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    HTButton:
+        id: inventory_button
+        path: '../res/screens/buttons/InventoryButton'
+        text: 'Inventory'
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('dm.ib fs', root.height)
+        size_hint: app.get_dkey('dm.ib s_h')
+        pos_hint: app.get_dkey('dm.ib p_h')
+#        on_release: root.inventory()
+    HTButton:
+        id: gear_button
+        path: '../res/screens/buttons/GearButton'
+        text: 'Gear'
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('dm.gb fs', root.height)
+        size_hint: app.get_dkey('dm.gb s_h')
+        pos_hint: app.get_dkey('dm.gb p_h')
+#        on_release: root.gear()
+    HTButton:
+        id: ascend_button
+        path: '../res/screens/buttons/AscendButton'
+        text: 'Ascend'
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('dm.ab fs', root.height)
+        size_hint: app.get_dkey('dm.ab s_h')
+        pos_hint: app.get_dkey('dm.ab p_h')
+        on_release: root.ascend()
+    ImageH:
+        id: ascend_lock
+        size_hint: app.get_dkey('dm.ab s_h')
+        pos_hint: app.get_dkey('dm.ab p_h')
+        source: '../res/screens/buttons/dungeon_button_lock.png'
+    HTButton:
+        id: descend_button
+        path: '../res/screens/buttons/AscendButton'
+        text: 'Descend'
+        font_name: '../res/fnt/Precious.ttf'
+        font_size: app.get_dkey('dm.db fs', root.height)
+        size_hint: app.get_dkey('dm.db s_h')
+        pos_hint: app.get_dkey('dm.db p_h')
+        on_release: root.descend()
+    DragSnapWidget:
+        id: portfolio
+        size_hint: app.get_dkey('dm.cp s_h')
+        pos_hint: app.get_dkey('dm.cp p_h')
+    HTButton:
+        id: left_arrow
+        path: '../res/screens/buttons/ArrowLeft'
+        background_hover: '../res/screens/buttons/ArrowLeft.normal.png'
+        size_hint: app.get_dkey('dm.la s_h')
+        pos_hint: app.get_dkey('dm.la p_h')
+        x: root.animate_start_left
+        on_release: root.on_arrow_touch(True)
+    HTButton:
+        id: right_arrow
+        path: '../res/screens/buttons/ArrowRight'
+        background_hover: '../res/screens/buttons/ArrowLeft.normal.png'
+        size_hint: app.get_dkey('dm.ra s_h')
+        pos_hint: app.get_dkey('dm.ra p_h')
+        x: root.animate_start_right
+        on_release: root.on_arrow_touch(False)
+
+<DragSnapWidget>:
+    loop: True
+    min_move: 0.3
+
+<CharacterPortfolio>:
+    LabelH:
+        id: title
+        text: 'Party ' + str(root.party_index)
+        font_name: '../res/fnt/Precious.ttf'
+        size: self.texture_size
+        color: app.get_dkey('cpo.t c')
+        font_size: app.get_dkey('cpo.t fs', root.height)
+        size_hint: app.get_dkey('cpo.t s_h')
+        pos_hint: app.get_dkey('cpo.t p_h')
+    ImageH:
+        id: lock
+        source: '../res/screens/stats/lock.png'
+        allow_stretch: True
+        opacity : 1 if root.locked else 0
+        size_hint: app.get_dkey('cpo.l s_h')
+        pos_hint: app.get_dkey('cpo.l p_h')
+
+<HTButton>:
+    hover_rect: [self.x, self.y, self.width, self.height]
+    canvas:
+        Rectangle:
+            id: background
+            size: self.size
+            pos: self.pos
+            texture: self.texture
+    LabelH:
+        id: label
+        text: root.text
+        font_size: root.font_size
+        font_name: root.font_name
+        color: root.label_color
+        size_hint: (None, None)
+        size: root.width - root.label_padding[0] - root.label_padding[2], root.height - root.label_padding[1] - root.label_padding[3]
+        pos: root.x + root.label_padding[0], root.y + root.label_padding[3]
+
+<EmptyCharacterPreviewScreen>:
+    name: 'empty'
+    HTButton:
+        id: button
+        path: '../res/screens/buttons/empty_overlay'
+        size_hint: app.get_dkey('ecp.b s_h')
+        pos_hint: app.get_dkey('ecp.b p_h')
+        on_touch_down: root.on_button_touch_down(*args)
+        on_touch_up: root.on_button_touch_up(*args)
+    ImageH:
+        id: lock
+        source: '../res/screens/stats/lock.png'
+        allow_stretch: True
+        opacity: 1 if root.locked else 0
+        size_hint: app.get_dkey('ecp.l s_h')
+        pos_hint: app.get_dkey('ecp.l p_h')
+
+<FilledCharacterPreviewScreen>:
+    FilledCharacterPreview:
+        id: filledPreview
+        preview: root.preview
+        is_support: root.is_support
+        is_select: False
+        character: root.character
+        support: root.support
+
+<FilledCharacterPreview>:
+    RelativeLayoutH:
+        size: root.size
+        pos: root.pos
+        AsyncImageH:
+            id: background
+            source: root.background_source
+        AsyncImageH:
+            id: char_image
+            source: root.char_image_source
+        AsyncImageH:
+            id: support_image
+            opacity: 0 if root.support is None else 1
+            source: root.support_image_source
+        AsyncImageH:
+            id: overlay
+            source: root.overlay_source
+        HTButton:
+            id: char_button
+            path: root.char_button_source
+            collide_image: root.char_button_collide_image
+            on_touch_down: root.on_char_touch_down(*args)
+            on_touch_up: root.on_char_touch_up(*args)
+        HTButton:
+            id: support_button
+            path: root.support_button_source
+            collide_image: root.support_button_collide_image
+            on_touch_down: root.on_support_touch_down(*args)
+            on_touch_up: root.on_support_touch_up(*args)
+        #Flags
+        AsyncImageH:
+            id: type_flag
+            source: '' if root.character is None else '../res/screens/stats/' + str(root.character.get_type()).lower() + '_flag.png'
+            allow_stretch: True
+            opacity: 1 if root.is_select else 0
+            size_hint: app.get_dkey('fcp.tf s_h')
+            pos_hint: app.get_dkey('fcp.tf p_h')
+        LabelH:
+            id: type_flag_label
+            text: '' if root.character is None else str(root.character.get_type()) + ' Type'
+            font_name: root.font_name
+            opacity: 1 if root.is_select else 0
+            color: app.get_dkey('fcp.tfl c')
+            size_hint: app.get_dkey('fcp.tfl s_h')
+            font_size: app.get_dkey('fcp.tfl fs', root.height)
+            pos_hint: app.get_dkey('fcp.tfl p_h')
+        # STATS
+        AsyncImageH:
+            id: phy_atk_image
+            source: '../res/screens/stats/PhysicalAttack.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.phy_atk p_h')
+        AsyncImageH:
+            id: mag_atk_image
+            source: '../res/screens/stats/MagicalAttack.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.mag_atk p_h')
+        AsyncImageH:
+            id: health_image
+            source: '../res/screens/stats/Health.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.health p_h')
+        AsyncImageH:
+            id: mana_image
+            source: '../res/screens/stats/Mana.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.mana p_h')
+        AsyncImageH:
+            id: defense_image
+            source: '../res/screens/stats/Defense.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.defense p_h')
+        AsyncImageH:
+            id: strength_image
+            source: '../res/screens/stats/Str.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.strength p_h')
+        AsyncImageH:
+            id: magic_image
+            source: '../res/screens/stats/Mag.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.magic p_h')
+        AsyncImageH:
+            id: endurance_image
+            source: '../res/screens/stats/End.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.endurance p_h')
+        AsyncImageH:
+            id: dexterity_image
+            source: '../res/screens/stats/Dex.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.dexterity p_h')
+        AsyncImageH:
+            id: agility_image
+            source: '../res/screens/stats/Agi.png'
+            allow_stretch: True
+            size_hint: app.get_dkey('fcp.img s_h')
+            pos_hint: app.get_dkey('fcp.img.agility p_h')
+        LabelH:
+            id: phyatk_label_word
+            text: 'Phy. Atk'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.phy_atk_word p_h')
+        LabelH:
+            id: phyatk_label_number
+            text: str(0) if root.character is None else str(root.character.get_phyatk()) if root.support is None else str(root.character.get_phyatk() + root.support.get_phyatk())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.phy_atk_number p_h')
+        LabelH:
+            id: magatk_label_word
+            text: 'Mag. Atk'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.mag_atk_word p_h')
+        LabelH:
+            id: magatk_label_number
+            text: str(0) if root.character is None else str(root.character.get_magatk()) if root.support is None else str(root.character.get_magatk() + root.support.get_magatk())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.mag_atk_number p_h')
+        LabelH:
+            id: health_label_word
+            text: 'Health'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.health_word p_h')
+        LabelH:
+            id: health_label_number
+            text: str(0) if root.character is None else str(root.character.get_health()) if root.support is None else str(root.character.get_health() + root.support.get_health())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.health_number p_h')
+        LabelH:
+            id: mana_label_word
+            text: 'Mana'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.mana_word p_h')
+        LabelH:
+            id: mana_label_number
+            text: str(0) if root.character is None else str(root.character.get_mana()) if root.support is None else str(root.character.get_mana() + root.support.get_mana())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.mana_number p_h')
+        LabelH:
+            id: defense_label_word
+            text: 'Defense'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.defense_word p_h')
+        LabelH:
+            id: defense_label_number
+            text: str(0) if root.character is None else str(root.character.get_defense()) if root.support is None else str(root.character.get_defense() + root.support.get_defense())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.defense_number p_h')
+        LabelH:
+            id: strength_label_word
+            text: 'trength'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.strength_word p_h')
+        LabelH:
+            id: strength_label_number
+            text: str(0) if root.character is None else str(root.character.get_strength()) if root.support is None else str(root.character.get_strength() + root.support.get_strength())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.strength_number p_h')
+        LabelH:
+            id: magic_label_word
+            text: 'agic'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.magic_word p_h')
+        LabelH:
+            id: magic_label_number
+            text: str(0) if root.character is None else str(root.character.get_magic()) if root.support is None else str(root.character.get_magic() + root.support.get_magic())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.magic_number p_h')
+        LabelH:
+            id: endurance_label_word
+            text: 'ndurance'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.endurance_word p_h')
+        LabelH:
+            id: endurance_label_number
+            text: str(0) if root.character is None else str(root.character.get_endurance()) if root.support is None else str(root.character.get_endurance() + root.support.get_endurance())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.endurance_number p_h')
+        LabelH:
+            id: dexterity_label_word
+            text: 'exterity'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.dexterity_word p_h')
+        LabelH:
+            id: dexterity_label_number
+            text: str(0) if root.character is None else str(root.character.get_dexterity()) if root.support is None else str(root.character.get_dexterity() + root.support.get_dexterity())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.dexterity_number p_h')
+        LabelH:
+            id: agility_label_word
+            text: 'gility'
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.agility_word p_h')
+        LabelH:
+            id: agility_label_number
+            text: str(0) if root.character is None else str(root.character.get_agility()) if root.support is None else str(root.character.get_agility() + root.support.get_agility())
+            color: root.text_color
+            font_name: root.font_name
+            width: self.texture_size[0]
+            font_size: app.get_dkey('fcp.lbl fs', root.height)
+            size_hint: app.get_dkey('fcp.lbl s_h')
+            pos_hint: app.get_dkey('fcp.lbl.agility_number p_h')
+        # Lock
+        ImageH:
+            id: lock
+            source: '../res/screens/stats/lock.png'
+            allow_stretch: True
+            opacity: 1 if root.locked else 0
+            size_hint: app.get_dkey('fcp.lck s_h')
+            pos_hint: app.get_dkey('fcp.lck p_h')
+        LabelH:
+            id: tag
+            text: '[b]Selected[/b]' if root.has_tag else ''
+            markup: True
+            color: app.get_dkey('fcp.tag c')
+            outline_color: app.get_dkey('fcp.tag oc')
+            outline_width: app.get_dkey('fcp.tag ow')
+            font_size: app.get_dkey('fcp.tag fs', root.height)
+            size_hint: app.get_dkey('fcp.tag s_h')
+            pos_hint: app.get_dkey('fcp.tag p_h')
+        AsyncImageH:
+            id: star_1
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(1).broken else '../res/screens/stats/star.png' if root.character.get_rank(1).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.character is None else 1 if root.character.get_rank(1).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_1 s_h')
+            pos_hint: app.get_dkey('fcp.star_1 p_h')
+        AsyncImageH:
+            id: star_2
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(2).broken else '../res/screens/stats/star.png' if root.character.get_rank(2).unlocked else ''
+            allow_stretch: True
+            opacity:  0 if root.character is None else 1 if root.character.get_rank(2).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_2 s_h')
+            pos_hint: app.get_dkey('fcp.star_2 p_h')
+        AsyncImageH:
+            id: star_3
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(3).broken else '../res/screens/stats/star.png' if root.character.get_rank(3).unlocked else ''
+            allow_stretch: True
+            opacity:  0 if root.character is None else 1 if root.character.get_rank(3).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_3 s_h')
+            pos_hint: app.get_dkey('fcp.star_3 p_h')
+        AsyncImageH:
+            id: star_4
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(4).broken else '../res/screens/stats/star.png' if root.character.get_rank(4).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.character is None else 1 if root.character.get_rank(4).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_4 s_h')
+            pos_hint: app.get_dkey('fcp.star_4 p_h')
+        AsyncImageH:
+            id: star_5
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(5).broken else '../res/screens/stats/star.png' if root.character.get_rank(5).unlocked else ''
+            allow_stretch: True
+            opacity:  0 if root.character is None else 1 if root.character.get_rank(5).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_5 s_h')
+            pos_hint: app.get_dkey('fcp.star_5 p_h')
+        AsyncImageH:
+            id: star_6
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(6).broken else '../res/screens/stats/star.png' if root.character.get_rank(6).unlocked else ''
+            allow_stretch: True
+            opacity:  0 if root.character is None else 1 if root.character.get_rank(6).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_6 s_h')
+            pos_hint: app.get_dkey('fcp.star_6 p_h')
+        AsyncImageH:
+            id: star_7
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(7).broken else '../res/screens/stats/star.png' if root.character.get_rank(7).unlocked else ''
+            allow_stretch: True
+            opacity:  0 if root.character is None else 1 if root.character.get_rank(7).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_7 s_h')
+            pos_hint: app.get_dkey('fcp.star_7 p_h')
+        AsyncImageH:
+            id: star_8
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(8).broken else '../res/screens/stats/star.png' if root.character.get_rank(8).unlocked else ''
+            allow_stretch: True
+            opacity:  0 if root.character is None else 1 if root.character.get_rank(8).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_8 s_h')
+            pos_hint: app.get_dkey('fcp.star_8 p_h')
+        AsyncImageH:
+            id: star_9
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(9).broken else '../res/screens/stats/star.png' if root.character.get_rank(9).unlocked else ''
+            allow_stretch: True
+            opacity:  0 if root.character is None else 1 if root.character.get_rank(9).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_9 s_h')
+            pos_hint: app.get_dkey('fcp.star_9 p_h')
+        AsyncImageH:
+            id: star_10
+            source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(10).broken else '../res/screens/stats/star.png' if root.character.get_rank(10).unlocked else ''
+            allow_stretch: True
+            opacity:  0 if root.character is None else 1 if root.character.get_rank(10).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_10 s_h')
+            pos_hint: app.get_dkey('fcp.star_10 p_h')
+        AsyncImageH:
+            id: star_11
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(1).broken else '../res/screens/stats/star.png' if root.support.get_rank(1).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(1).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_11 s_h')
+            pos_hint: app.get_dkey('fcp.star_11 p_h')
+        AsyncImageH:
+            id: star_12
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(2).broken else '../res/screens/stats/star.png' if root.support.get_rank(2).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(2).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_12 s_h')
+            pos_hint: app.get_dkey('fcp.star_12 p_h')
+        AsyncImageH:
+            id: star_13
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(3).broken else '../res/screens/stats/star.png' if root.support.get_rank(3).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(3).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_13 s_h')
+            pos_hint: app.get_dkey('fcp.star_13 p_h')
+        AsyncImageH:
+            id: star_14
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(4).broken else '../res/screens/stats/star.png' if root.support.get_rank(4).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(4).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_14 s_h')
+            pos_hint: app.get_dkey('fcp.star_14 p_h')
+        AsyncImageH:
+            id: star_15
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(5).broken else '../res/screens/stats/star.png' if root.support.get_rank(5).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(5).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_15 s_h')
+            pos_hint: app.get_dkey('fcp.star_15 p_h')
+        AsyncImageH:
+            id: star_16
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(6).broken else '../res/screens/stats/star.png' if root.support.get_rank(6).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(6).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_16 s_h')
+            pos_hint: app.get_dkey('fcp.star_16 p_h')
+        AsyncImageH:
+            id: star_17
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(7).broken else '../res/screens/stats/star.png' if root.support.get_rank(7).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(7).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_17 s_h')
+            pos_hint: app.get_dkey('fcp.star_17 p_h')
+        AsyncImageH:
+            id: star_18
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(8).broken else '../res/screens/stats/star.png' if root.support.get_rank(8).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(8).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_18 s_h')
+            pos_hint: app.get_dkey('fcp.star_18 p_h')
+        AsyncImageH:
+            id: star_19
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(9).broken else '../res/screens/stats/star.png' if root.support.get_rank(9).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(9).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_19 s_h')
+            pos_hint: app.get_dkey('fcp.star_19 p_h')
+        AsyncImageH:
+            id: star_20
+            source: '' if root.support is None else '../res/screens/stats/rankbrk.png' if root.support.get_rank(10).broken else '../res/screens/stats/star.png' if root.support.get_rank(10).unlocked else ''
+            allow_stretch: True
+            opacity: 0 if root.support is None else 1 if root.support.get_rank(10).unlocked else 0
+            size_hint: app.get_dkey('fcp.star_20 s_h')
+            pos_hint: app.get_dkey('fcp.star_20 p_h')
+
+<SquareCharacterPreview>:
+    AsyncImageH:
+        id: background
+        source: root.background_source
+    AsyncImageH:
+        id: char_image
+        source: root.char_image_source
+    AsyncImageH:
+        id: overlay
+        source: root.overlay_source
+    HTButton:
+        id: char_button
+        path: root.char_button_source
+        collide_image: root.char_button_collide_image
+        on_touch_down: root.on_char_touch_down(*args)
+        on_touch_up: root.on_char_touch_up(*args)
+    LabelH:
+        id: tag
+        text: '[b]Selected[/b]' if root.has_tag else ''
+        markup: True
+        color: app.get_dkey('scp.tag c')
+        outline_color: app.get_dkey('scp.tag oc')
+        outline_width: app.get_dkey('scp.tag ow')
+        font_size: app.get_dkey('scp.tag fs', root.height)
+        size_hint: app.get_dkey('scp.tag s_h')
+        pos_hint: app.get_dkey('scp.tag p_h')
+    AsyncImageH:
+        id: star_1
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(1).broken else '../res/screens/stats/star.png' if root.character.get_rank(1).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.character is None else 1 if root.character.get_rank(1).unlocked else 0
+        size_hint: app.get_dkey('scp.star_1 s_h')
+        pos_hint: app.get_dkey('scp.star_1 p_h')
+    AsyncImageH:
+        id: star_2
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(2).broken else '../res/screens/stats/star.png' if root.character.get_rank(2).unlocked else ''
+        allow_stretch: True
+        opacity:  0 if root.character is None else 1 if root.character.get_rank(2).unlocked else 0
+        size_hint: app.get_dkey('scp.star_2 s_h')
+        pos_hint: app.get_dkey('scp.star_2 p_h')
+    AsyncImageH:
+        id: star_3
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(3).broken else '../res/screens/stats/star.png' if root.character.get_rank(3).unlocked else ''
+        allow_stretch: True
+        opacity:  0 if root.character is None else 1 if root.character.get_rank(3).unlocked else 0
+        size_hint: app.get_dkey('scp.star_3 s_h')
+        pos_hint: app.get_dkey('scp.star_3 p_h')
+    AsyncImageH:
+        id: star_4
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(4).broken else '../res/screens/stats/star.png' if root.character.get_rank(4).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.character is None else 1 if root.character.get_rank(4).unlocked else 0
+        size_hint: app.get_dkey('scp.star_4 s_h')
+        pos_hint: app.get_dkey('scp.star_4 p_h')
+    AsyncImageH:
+        id: star_5
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(5).broken else '../res/screens/stats/star.png' if root.character.get_rank(5).unlocked else ''
+        allow_stretch: True
+        opacity:  0 if root.character is None else 1 if root.character.get_rank(5).unlocked else 0
+        size_hint: app.get_dkey('scp.star_5 s_h')
+        pos_hint: app.get_dkey('scp.star_5 p_h')
+    AsyncImageH:
+        id: star_6
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(6).broken else '../res/screens/stats/star.png' if root.character.get_rank(6).unlocked else ''
+        allow_stretch: True
+        opacity:  0 if root.character is None else 1 if root.character.get_rank(6).unlocked else 0
+        size_hint: app.get_dkey('scp.star_6 s_h')
+        pos_hint: app.get_dkey('scp.star_6 p_h')
+    AsyncImageH:
+        id: star_7
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(7).broken else '../res/screens/stats/star.png' if root.character.get_rank(7).unlocked else ''
+        allow_stretch: True
+        opacity:  0 if root.character is None else 1 if root.character.get_rank(7).unlocked else 0
+        size_hint: app.get_dkey('scp.star_7 s_h')
+        pos_hint: app.get_dkey('scp.star_7 p_h')
+    AsyncImageH:
+        id: star_8
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(8).broken else '../res/screens/stats/star.png' if root.character.get_rank(8).unlocked else ''
+        allow_stretch: True
+        opacity:  0 if root.character is None else 1 if root.character.get_rank(8).unlocked else 0
+        size_hint: app.get_dkey('scp.star_8 s_h')
+        pos_hint: app.get_dkey('scp.star_8 p_h')
+    AsyncImageH:
+        id: star_9
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(9).broken else '../res/screens/stats/star.png' if root.character.get_rank(9).unlocked else ''
+        allow_stretch: True
+        opacity:  0 if root.character is None else 1 if root.character.get_rank(9).unlocked else 0
+        size_hint: app.get_dkey('scp.star_9 s_h')
+        pos_hint: app.get_dkey('scp.star_9 p_h')
+    AsyncImageH:
+        id: star_10
+        source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(10).broken else '../res/screens/stats/star.png' if root.character.get_rank(10).unlocked else ''
+        allow_stretch: True
+        opacity:  0 if root.character is None else 1 if root.character.get_rank(10).unlocked else 0
+        size_hint: app.get_dkey('scp.star_10 s_h')
+        pos_hint: app.get_dkey('scp.star_10 p_h')
+
+<CharacterSelector>:
+    name: 'select_char'
+    canvas:
+        Rectangle:
+            id: background
+            size: self.size
+            pos: self.pos
+            texture: self.background_texture
+        Rectangle:
+            id: overlay
+            size: self.size
+            pos: self.pos
+            texture: self.overlay_texture
+        Rectangle:
+            id: number_icon
+            size: app.get_dkey('cs.ni s_h', root.width, root.height)
+            pos: app.get_dkey('cs.ni pos', root.width, root.height)
+            texture: self.number_icon_texture
+    HTButton:
+        id: back
+        path: '../res/screens/buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    HTButton:
+        id: sort
+        path: '../res/screens/buttons/long_stat'
+        font_size: app.get_dkey('cs.bs fs', root.height)
+        size_hint: app.get_dkey('cs.bs s_h')
+        pos_hint: app.get_dkey('cs.bs.s p_h')
+        on_release: root.on_sort()
+    HTButton:
+        id: filter
+        path: '../res/screens/buttons/long_stat'
+        text: 'Filter'
+        font_size: app.get_dkey('cs.bs fs', root.height)
+        size_hint: app.get_dkey('cs.bs s_h')
+        pos_hint: app.get_dkey('cs.bs.f p_h')
+        on_release: root.on_filter()
+    HTButton:
+        id: switch_display
+        path: '../res/screens/buttons/long_stat'
+        text: 'Switch Display'
+        font_size: app.get_dkey('cs.bs fs', root.height)
+        size_hint: app.get_dkey('cs.bs s_h')
+        pos_hint: app.get_dkey('cs.bs.sd p_h')
+        toggle_enabled: True
+        on_toggle_up: root.on_scroll()
+        on_toggle_down: root.on_grid()
+    LabelH:
+        id: number
+        font_name: '../res/fnt/Precious.ttf'
+        color: app.get_dkey('cs.nl c')
+        font_size: app.get_dkey('cs.nl fs', root.height)
+        size_hint: app.get_dkey('cs.nl s_h')
+        pos_hint: app.get_dkey('cs.nl p_h')
+
+<ScrollPreview>:
+    id: layout
+    rows: 1
+    default_size: app.get_dkey('scrp ds', app.width)
+    default_size_hint: app.get_dkey('scrp ds_h')
+    size_hint_x: None
+    width: self.minimum_width
+    orientation: 'horizontal'
+    spacing: app.get_dkey('scrp spa')
+    padding: app.get_dkey('scrp pad')
+
+<GridPreview>:
+    id: layout
+    cols: 8
+    default_size: app.get_dkey('grdp ds', app.width)
+    default_size_hint: app.get_dkey('grdp ds_h')
+    size_hint_y: None
+    height: self.minimum_height
+    orientation: 'vertical'
+    spacing: app.get_dkey('grdp spa')
+    padding: app.get_dkey('grdp pad')
+
+<SinglePreview>:
+    FilledCharacterPreview:
+        id: root_preview
+        preview: root.preview
+        is_support: root.is_support
+        is_select: True
+        character: root.character
+        support: root.support
+        size_hint: app.get_dkey('sinp s_h')
+        pos_hint: app.get_dkey('sinp p_h')
+
+<SortWidget>:
+    id: sort
+    auto_dismiss: False
+    background: '../res/screens/stats/sort_background.png'
+    size_hint: app.get_dkey('sw s_h')
+    pos_hint: app.get_dkey('sw p_h')
+    border: app.get_dkey('sw b')
+    RelativeLayoutH:
+        HTButton:
+            id: back
+            path: '../res/screens/buttons/back'
+            size_hint: app.get_dkey('sw.bb s_h')
+            pos_hint: app.get_dkey('sw.bb p_h')
+        GridLayoutH:
+            id: main
+            cols: 1
+            rows: 5
+            padding: app.get_dkey('sw.lm pad', root.width, root.height)
+            spacing: app.get_dkey('sw.lm spa', root.width, root.height)
+            size_hint: app.get_dkey('sw.lm s_h')
+            pos_hint: app.get_dkey('sw.lm p_h')
+            LabelH:
+                id: title
+                text: 'Sort'
+                font_name: '../res/fnt/Precious.ttf'
+                color: app.get_dkey('sw.t c')
+                font_size: app.get_dkey('sw.t fs', root.height)
+                size_hint: app.get_dkey('sw.t s_h')
+            ImageH:
+                source: '../res/screens/stats/overlay_bar.png'
+                size_hint: app.get_dkey('sw.ob s_h')
+            GridLayoutH:
+                id: direction
+                cols: 2
+                rows: 1
+                padding: app.get_dkey('sw.l1 pad', root.width, root.height)
+                spacing: app.get_dkey('sw.l1 spa', root.width, root.height)
+                size_hint: app.get_dkey('sw.l1 s_h')
+                HTButton:
+                    id: ascending
+                    text: 'Ascending'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: descending
+                    text: 'Descending'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+            ImageH:
+                source: '../res/screens/stats/overlay_bar.png'
+                size_hint: app.get_dkey('sw.ob s_h')
+            GridLayoutH:
+                id: query
+                cols: 3
+                rows: 5
+                padding: app.get_dkey('sw.l2 pad', root.width, root.height)
+                spacing: app.get_dkey('sw.l2 spa', root.width, root.height)
+                size_hint: app.get_dkey('sw.l2 s_h')
+                HTButton:
+                    id: strength
+                    text: 'Strength'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: magic
+                    text: 'Magic'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: endurance
+                    text: 'Endurance'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: dexterity
+                    text: 'Dexterity'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: agility
+                    text: 'Agility'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: health
+                    text: 'Health'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: mana
+                    text: 'Mana'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: phyatk
+                    text: 'Phy. Atk'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: magatk
+                    text: 'Mag. Atk'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: defense
+                    text: 'Defense'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: party
+                    text: 'Party'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: rank
+                    text: 'Rank'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: name
+                    text: 'Name'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: score
+                    text: 'Score'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+                HTButton:
+                    id: worth
+                    text: 'Worth'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('sw.bu s_h')
+                    font_size: app.get_dkey('sw.bu fs', root.height)
+
+<FilterWidget>:
+    id: filter
+    auto_dismiss: False
+    background: '../res/screens/stats/sort_background.png'
+    size_hint: app.get_dkey('fw s_h')
+    pos_hint: app.get_dkey('fw p_h')
+    border: app.get_dkey('fw b')
+    RelativeLayoutH:
+        HTButton:
+            id: back
+            path: '../res/screens/buttons/back'
+            size_hint: app.get_dkey('fw.bb s_h')
+            pos_hint: app.get_dkey('fw.bb p_h')
+        GridLayoutH:
+            cols: 1
+            rows: 11
+            size_hint: app.get_dkey("fw.ml s_h")
+            pos_hint: app.get_dkey("fw.ml p_h")
+            padding: app.get_dkey("fw.ml pad", root.width, root.height)
+            LabelH:
+                id: title
+                text: 'Filter'
+                font_name: '../res/fnt/Precious.ttf'
+                color: app.get_dkey('fw.t c')
+                font_size: app.get_dkey('fw.t fs', root.height)
+                size_hint: app.get_dkey('fw.t s_h')
+                height: self.texture_size[1]
+            RelativeLayoutH:
+                id: space
+                size_hint: 1, 0.1
+                HTButton:
+                    id: apply_filter
+                    text: 'Apply Filter'
+                    path: '../res/screens/buttons/long_stat'
+                    size_hint: app.get_dkey('fw.fb s_h')
+                    font_size: app.get_dkey('fw.fb fs', root.height)
+                    pos_hint: app.get_dkey('fw.fb p_h', root.height)
+            ImageH:
+                id: type_overlay_bar
+                allow_stretch: True
+                source: '../res/screens/stats/overlay_bar.png'
+                size_hint: app.get_dkey('fw.ob s_h')
+            LabelH:
+                id: type_label
+                text: 'By Type'
+                font_name: '../res/fnt/Precious.ttf'
+                color: app.get_dkey('fw.ot c')
+                size_hint: app.get_dkey('fw.ot s_h')
+                size: self.texture_size
+                font_size: app.get_dkey('fw.ot fs', root.height)
+            GridLayoutH:
+                id: layout_type
+                cols: 5
+                rows: 1
+                size_hint: app.get_dkey("fw.ols s_h")
+                HTButton:
+                    id: magical
+                    text: 'Magical'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: physical
+                    text: 'Physical'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: balanced
+                    text: 'Balanced'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: defensive
+                    text: 'Defensive'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: healing
+                    text: 'Healing'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+            ImageH:
+                id: element_overlay_bar
+                allow_stretch: True
+                source: '../res/screens/stats/overlay_bar.png'
+                size_hint: app.get_dkey('fw.ob s_h')
+            LabelH:
+                id: element_label
+                text: 'By Element'
+                font_name: '../res/fnt/Precious.ttf'
+                color: app.get_dkey('fw.ot c')
+                size_hint: app.get_dkey('fw.ot s_h')
+                size: self.texture_size
+                font_size: app.get_dkey('fw.ot fs', root.height)
+            GridLayoutH:
+                id: layout_element
+                cols: 5
+                rows: 2
+                size_hint: app.get_dkey("fw.oll s_h")
+                HTButton:
+                    id: light
+                    text: 'Light'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: dark
+                    text: 'Dark'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: earth
+                    text: 'Earth'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: wind
+                    text: 'Wind'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: thunder
+                    text: 'Thunder'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: fire
+                    text: 'Fire'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: water
+                    text: 'Water'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+            ImageH:
+                id: rank_overlay_bar
+                allow_stretch: True
+                source: '../res/screens/stats/overlay_bar.png'
+                size_hint: app.get_dkey('fw.ob s_h')
+            LabelH:
+                id: rank_label
+                text: 'By Rank'
+                font_name: '../res/fnt/Precious.ttf'
+                color: app.get_dkey('fw.ot c')
+                size_hint: app.get_dkey('fw.ot s_h')
+                size: self.texture_size
+                font_size: app.get_dkey('fw.ot fs', root.height)
+            GridLayoutH:
+                id: rank_element
+                cols: 5
+                rows: 2
+                size_hint: app.get_dkey("fw.oll s_h")
+                HTButton:
+                    id: rank_1
+                    text: 'Rank 1'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: rank_2
+                    text: 'Rank 2'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: rank_3
+                    text: 'Rank 3'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: rank_4
+                    text: 'Rank 4'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: rank_5
+                    text: 'Rank 5'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: rank_6
+                    text: 'Rank 6'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: rank_7
+                    text: 'Rank 7'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: rank_8
+                    text: 'Rank 8'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: rank_9
+                    text: 'Rank 9'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                HTButton:
+                    id: rank_10
+                    text: 'Rank 10'
+                    path: '../res/screens/buttons/long_toggle'
+                    toggle_enabled: True
+                    toggle_state: True
+                    font_size: app.get_dkey('fw.bu fs', root.height)
+                    label_padding: app.get_dkey('fw.bu lp', self.height)
+
+<CharacterAttributeScreen>:
+    name: self.char.get_name()
+    canvas:
+        Rectangle:
+            id: background
+            size: self.size
+            pos: self.pos
+            texture: self.background_texture
+    ImageH:
+        id: char_image
+        source: root.char_image_source
+        allow_stretch: True
+        size_hint: app.get_dkey('cas.ci s_h')
+        width: self.height * self.image_ratio
+        pos_hint: app.get_dkey('cas.ci p_h')
+    HTButton:
+        id: back_button
+        path: '../res/screens/buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    ImageH:
+        id: overlay_background
+        source: root.overlay_background_source
+        allow_stretch: True
+        size_hint: app.get_dkey('cas.os.ob s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
+    ImageH:
+        id: overlay
+        source: root.overlay_source
+        allow_stretch: True
+        size_hint: app.get_dkey('cas.os.o s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
+    RelativeLayoutH:
+        size_hint: app.get_dkey('cas.os.o s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
+        ImageH:
+            id: flag
+            source: root.flag_source
+            allow_stretch: True
+            size_hint: app.get_dkey("cas.flg s_h")
+            pos_hint: app.get_dkey("cas.flg p_h")
+        LabelH:
+            id: flag_label
+            text: '' if root.char is None else 'Supporter' if root.char.is_support() else 'Adventurer'
+            font_name: '../res/fnt/Gabriola.ttf'
+            height: self.texture_size[1]
+            color: app.get_dkey("cas.flgl c")
+            font_size: app.get_dkey("cas.flgl fs", flag.height)
+            size_hint: app.get_dkey("cas.flgl s_h")
+            pos_hint: app.get_dkey("cas.flgl p_h")
+        ImageH:
+            id: type_flag
+            source: root.type_flag_source
+            allow_stretch: True
+            size_hint: app.get_dkey("cas.tflg s_h")
+            pos_hint: app.get_dkey("cas.tflg p_h")
+        LabelH:
+            id: type_label
+            text: '' if root.char is None else str(root.char.get_type()) + " Type"
+            font_name: '../res/fnt/Gabriola.ttf'
+            height: self.texture_size[1]
+            color: app.get_dkey("cas.tflgl c")
+            font_size: app.get_dkey("cas.tflgl fs", type_flag.height)
+            size_hint: app.get_dkey("cas.tflgl s_h")
+            pos_hint: app.get_dkey("cas.tflgl p_h")
+        ImageH:
+            id: element_flag
+            source: root.element_flag_source
+            allow_stretch: True
+            size_hint: app.get_dkey("cas.eflg s_h")
+            pos_hint: app.get_dkey("cas.eflg p_h")
+        LabelH:
+            id: element_flag_label
+            text: '' if root.char is None else str(root.char.get_element()).capitalize()
+            font_name: '../res/fnt/Gabriola.ttf'
+            size: self.texture_size
+            color: app.get_dkey("cas.eflgl c")
+            font_size: app.get_dkey("cas.eflgl fs", element_flag.width)
+            pos_hint: app.get_dkey("cas.eflgl p_h")
+            canvas.before:
+                PushMatrix
+                Rotate:
+                    angle: app.get_dkey("cas.eflgl ang")
+                    origin: self.center
+            canvas.after:
+                PopMatrix
+        ImageH:
+            id: element_flag_image
+            source: root.element_flag_image_source
+            allow_stretch: True
+            size_hint: app.get_dkey("cas.eflgi s_h")
+            pos_hint: app.get_dkey("cas.eflgi p_h")
+        LabelH:
+            id: display_name_label
+            text: '' if root.char is None else str(root.char.get_display_name())
+            font_name: '../res/fnt/Precious.ttf'
+            size: self.texture_size
+            color: app.get_dkey("cas.dnl c")
+            font_size: app.get_dkey("cas.dnl fs", overlay.width)
+            size_hint: app.get_dkey("cas.dnl s_h")
+            pos_hint: app.get_dkey("cas.dnl p_h")
+        LabelH:
+            id: name_label
+            text: '' if root.char is None else str(root.char.get_name())
+            font_name: '../res/fnt/Precious.ttf'
+            size: self.texture_size
+            color: app.get_dkey("cas.nl c")
+            font_size: app.get_dkey("cas.nl fs", overlay.width)
+            size_hint: app.get_dkey("cas.nl s_h")
+            pos_hint: app.get_dkey("cas.nl p_h")
+        ImageH:
+            id: overlay_bar
+            source: root.overlay_bar_source
+            allow_stretch: True
+            size_hint: app.get_dkey("cas.ob s_h")
+            pos_hint: app.get_dkey("cas.ob p_h")
+        LabelH:
+            id: total_label
+            text: 'Total Stats'
+            font_name: '../res/fnt/Precious.ttf'
+            height: self.texture_size[1]
+            color: app.get_dkey('cas.tl c')
+            font_size: app.get_dkey('cas.tl fs', root.width)
+            size_hint: app.get_dkey('cas.tl s_h')
+            pos_hint: app.get_dkey('cas.tl p_h')
+        StatBox:
+            id: stats
+            font: '../res/fnt/Gabriola.ttf'
+            health: 0 if root.char is None else root.char.get_health()
+            mana: 0 if root.char is None else root.char.get_mana()
+            phy_attack:  0 if root.char is None else root.char.get_phyatk()
+            mag_attack: 0 if root.char is None else root.char.get_magatk()
+            defense: 0 if root.char is None else root.char.get_defense()
+            color: app.get_dkey('cas.sts c')
+            number_color: app.get_dkey('cas.sts nc')
+            size_hint: app.get_dkey('cas.sts s_h')
+            pos_hint: app.get_dkey('cas.sts p_h')
+        LabelH:
+            id: total_abilities
+            text: 'Total Abilities'
+            font_name: '../res/fnt/Precious.ttf'
+            height: self.texture_size[1]
+            color: app.get_dkey('cas.ta c')
+            font_size: app.get_dkey('cas.ta fs', root.width)
+            size_hint: app.get_dkey('cas.ta s_h')
+            pos_hint: app.get_dkey('cas.ta p_h')
+        AbilityStatBox:
+            id: total_abilities_box
+            font: '../res/fnt/Gabriola.ttf'
+            strength: 0 if root.char is None else root.char.get_strength()
+            strength_path: '' if root.char is None else root.char.get_strength_rank()
+            magic: 0 if root.char is None else root.char.get_magic()
+            magic_path: '' if root.char is None else root.char.get_magic_rank()
+            endurance: 0 if root.char is None else root.char.get_endurance()
+            endurance_path: '' if root.char is None else root.char.get_endurance_rank()
+            dexterity: 0 if root.char is None else root.char.get_dexterity()
+            dexterity_path: '' if root.char is None else root.char.get_dexterity_rank()
+            agility: 0 if root.char is None else root.char.get_agility()
+            agility_path: '' if root.char is None else root.char.get_agility_rank()
+            color: app.get_dkey('cas.tab c')
+            size_hint: app.get_dkey('cas.tab s_h')
+            pos_hint: app.get_dkey('cas.tab p_h')
+        LabelH:
+            id: rank_abilities
+            text: 'Rank Abilities'
+            font_name: '../res/fnt/Precious.ttf'
+            height: self.texture_size[1]
+            color: app.get_dkey('cas.ra c')
+            font_size: app.get_dkey('cas.ra fs', root.width)
+            size_hint: app.get_dkey('cas.ra s_h')
+            pos_hint: app.get_dkey('cas.ra p_h')
+        AbilityStatBox:
+            id: rank_abilities_box
+            font: '../res/fnt/Gabriola.ttf'
+            strength: 0 if root.char is None else root.char.get_strength(root.char.get_current_rank())
+            strength_path: '' if root.char is None else root.char.get_strength_rank(root.char.get_current_rank())
+            magic: 0 if root.char is None else root.char.get_magic(root.char.get_current_rank())
+            magic_path: '' if root.char is None else root.char.get_magic_rank(root.char.get_current_rank())
+            endurance: 0 if root.char is None else root.char.get_endurance(root.char.get_current_rank())
+            endurance_path: '' if root.char is None else root.char.get_endurance_rank(root.char.get_current_rank())
+            dexterity: 0 if root.char is None else root.char.get_dexterity(root.char.get_current_rank())
+            dexterity_path: '' if root.char is None else root.char.get_dexterity_rank(root.char.get_current_rank())
+            agility: 0 if root.char is None else root.char.get_agility(root.char.get_current_rank())
+            agility_path: '' if root.char is None else root.char.get_agility_rank(root.char.get_current_rank())
+            color: app.get_dkey('cas.rab c')
+            size_hint: app.get_dkey('cas.rab s_h')
+            pos_hint: app.get_dkey('cas.rab p_h')
+        ImageH:
+            id: neat_stat_overlay
+            source: root.neat_stat_overlay_source
+            size_hint: app.get_dkey('cas.nsl s_h')
+            pos_hint: app.get_dkey('cas.nsl p_h')
+        GridLayoutH:
+            id: neat_stat_layout
+            rows: 3
+            cols: 3
+            size_hint: app.get_dkey('cas.nsl s_h')
+            pos_hint: app.get_dkey('cas.nsl p_h')
+            LabelH:
+                id: familia_label
+                text: 'No Familia' if root.char is None else str(root.char.get_familia().get_name()) + " Familia"
+                font_name: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            LabelH:
+                id: score_label
+                text: 'Score: 0' if root.char is None else "Score: " + str(root.char.get_score())
+                font_name: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            LabelH:
+                id: floor_depth_label
+                text: 'Floor Depth: 0' if root.char is None else "Floor Depth: " + str(root.char.get_floor_depth())
+                font_name: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            LabelH:
+                id: race_label
+                text: 'Race: None' if root.char is None else "Race: " + str(root.char.get_race())
+                font_name: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            LabelH:
+                id: worth_label
+                text: 'Worth: 0' if root.char is None else "Worth: " + str(root.char.get_worth())
+                font_name: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            LabelH:
+                id: monsters_slain_label
+                text: 'Monsters Slain: 0' if root.char is None else "Monsters Slain: " + str(root.char.get_monsters_killed())
+                font_name: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            LabelH:
+                id: gender_label
+                text: 'Gender: None' if root.char is None else "Gender: " + str(root.char.get_gender())
+                font_name: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            LabelH:
+                id: high_dmg_label
+                text: 'High Dmg.: 0' if root.char is None else "High Dmg.: " + str(root.char.get_high_dmg())
+                font_name: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            LabelH:
+                id: people_slain_label
+                text: 'People Slain: 0' if root.char is None else "People Slain: " + str(root.char.get_people_killed())
+                font_name: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+        GridLayoutH:
+            id: equipment_layout
+            rows: 3
+            cols: 3
+            size_hint: app.get_dkey('cas.el s_h')
+            padding: app.get_dkey('cas.el pad', overlay.width, overlay.height)
+            spacing: app.get_dkey('cas.el spa', overlay.width, overlay.height)
+            default_size_hint: app.get_dkey('cas.el ds_h')
+            EquipmentSlot:
+                id: weapon
+                slot_name: "weapon"
+                item: None if root.char is None else root.char.get_equipment().weapon
+                font: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.el c')
+            EquipmentSlot:
+                id: necklace
+                item: None if root.char is None else root.char.get_equipment().necklace
+                slot_name: 'necklace'
+                font: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.el c')
+            EquipmentSlot:
+                id: ring
+                item: None if root.char is None else root.char.get_equipment().ring
+                slot_name: 'ring'
+                font: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.el c')
+            EquipmentSlot:
+                id: helmet
+                item: None if root.char is None else root.char.get_equipment().helmet
+                slot_name: 'helmet'
+                font: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.el c')
+            EquipmentSlot:
+                id: vambraces
+                item: None if root.char is None else root.char.get_equipment().vambraces
+                slot_name: 'vambraces'
+                font: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.el c')
+            EquipmentSlot:
+                id: gloves
+                item: None if root.char is None else root.char.get_equipment().gloves
+                slot_name: 'gloves'
+                font: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.el c')
+            EquipmentSlot:
+                id: chest
+                item: None if root.char is None else root.char.get_equipment().chest
+                slot_name: 'chest'
+                font: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.el c')
+            EquipmentSlot:
+                id: leggings
+                item: None if root.char is None else root.char.get_equipment().leggings
+                slot_name: 'leggings'
+                font: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.el c')
+            EquipmentSlot:
+                id: boots
+                item: None if root.char is None else root.char.get_equipment().boots
+                slot_name: 'boots'
+                font: '../res/fnt/Gabriola.ttf'
+                color: app.get_dkey('cas.el c')
+    HTButton:
+        id: status_board
+        path: '../res/screens/buttons/long_stat'
+        text: 'Status Board'
+        font_name: '../res/fnt/Gabriola.ttf'
+        label_color: app.get_dkey('cas.sbb lc')
+        font_size: app.get_dkey('cas.sbb fs', root.height)
+        size_hint: app.get_dkey('cas.sbb s_h')
+        pos_hint: app.get_dkey('cas.sbb p_h')
+        on_release: root.on_status_board()
+    HTButton:
+        id: change_equip
+        path: '../res/screens/buttons/long_stat'
+        text: 'Change Equip'
+        font_name: '../res/fnt/Gabriola.ttf'
+        label_color: app.get_dkey('cas.ceb lc')
+        font_size: app.get_dkey('cas.ceb fs', root.height)
+        size_hint: app.get_dkey('cas.ceb s_h')
+        pos_hint: app.get_dkey('cas.ceb p_h')
+        on_release: root.on_change_equip()
+    HTButton:
+        id: image_preview
+        path: '../res/screens/buttons/preview'
+        size_hint: app.get_dkey('cas.ipb s_h')
+        pos_hint: app.get_dkey('cas.ipb p_h')
+        on_release: root.on_image_preview()
+#    StatusBoardManager:
+#        id: status_board_screen
+#        size_hint: app.get_dkey('cas.sbm s_h')
+#        character: root.char
+    ImageH:
+        id: star_1
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(1).broken else '../res/screens/stats/star.png' if root.char.get_rank(1).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(1).unlocked else 0
+        size_hint: app.get_dkey('cas.star_1 s_h')
+        pos_hint: app.get_dkey('cas.star_1 p_h')
+    ImageH:
+        id: star_2
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(2).broken else '../res/screens/stats/star.png' if root.char.get_rank(2).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(2).unlocked else 0
+        size_hint: app.get_dkey('cas.star_2 s_h')
+        pos_hint: app.get_dkey('cas.star_2 p_h')
+    ImageH:
+        id: star_3
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(3).broken else '../res/screens/stats/star.png' if root.char.get_rank(3).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(3).unlocked else 0
+        size_hint: app.get_dkey('cas.star_3 s_h')
+        pos_hint: app.get_dkey('cas.star_3 p_h')
+    ImageH:
+        id: star_4
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(4).broken else '../res/screens/stats/star.png' if root.char.get_rank(4).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(4).unlocked else 0
+        size_hint: app.get_dkey('cas.star_4 s_h')
+        pos_hint: app.get_dkey('cas.star_4 p_h')
+    ImageH:
+        id: star_5
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(5).broken else '../res/screens/stats/star.png' if root.char.get_rank(5).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(5).unlocked else 0
+        size_hint: app.get_dkey('cas.star_5 s_h')
+        pos_hint: app.get_dkey('cas.star_5 p_h')
+    ImageH:
+        id: star_6
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(6).broken else '../res/screens/stats/star.png' if root.char.get_rank(6).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(6).unlocked else 0
+        size_hint: app.get_dkey('cas.star_6 s_h')
+        pos_hint: app.get_dkey('cas.star_6 p_h')
+    ImageH:
+        id: star_7
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(7).broken else '../res/screens/stats/star.png' if root.char.get_rank(7).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(7).unlocked else 0
+        size_hint: app.get_dkey('cas.star_7 s_h')
+        pos_hint: app.get_dkey('cas.star_7 p_h')
+    ImageH:
+        id: star_8
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(8).broken else '../res/screens/stats/star.png' if root.char.get_rank(8).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(8).unlocked else 0
+        size_hint: app.get_dkey('cas.star_8 s_h')
+        pos_hint: app.get_dkey('cas.star_8 p_h')
+    ImageH:
+        id: star_9
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(9).broken else '../res/screens/stats/star.png' if root.char.get_rank(9).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(9).unlocked else 0
+        size_hint: app.get_dkey('cas.star_9 s_h')
+        pos_hint: app.get_dkey('cas.star_9 p_h')
+    ImageH:
+        id: star_10
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(10).broken else '../res/screens/stats/star.png' if root.char.get_rank(10).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(10).unlocked else 0
+        size_hint: app.get_dkey('cas.star_10 s_h')
+        pos_hint: app.get_dkey('cas.star_10 p_h')
+
+<StatBox>:
+    #Health
+    ImageH:
+        id: bar_health
+        source: root.stat_bar_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.hea.bar p_h')
+    ImageH:
+        id: image_health
+        source: root.health_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.hea.img p_h')
+    LabelH:
+        id: label_health
+        text: 'Health'
+        color: root.color
+        font_name: root.font
+        font_size: image_health.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.hea.lbl p_h')
+    LabelH:
+        id: label_health_number
+        text: str(root.health)
+        color: root.number_color
+        font_name: root.font
+        font_size: image_health.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.hea.num p_h')
+    #Mana
+    ImageH:
+        id: bar_mana
+        source: root.stat_bar_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.man.bar p_h')
+    ImageH:
+        id: image_mana
+        source: root.mana_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.man.img p_h')
+    LabelH:
+        id: label_mana
+        text: 'Mana'
+        color: root.color
+        font_name: root.font
+        font_size: image_mana.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.man.lbl p_h')
+    LabelH:
+        id: label_mana_number
+        text: str(root.mana)
+        color: root.number_color
+        font_name: root.font
+        font_size: image_mana.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.man.num p_h')
+    #Phy. Attack
+    ImageH:
+        id: bar_phy_attack
+        source: root.stat_bar_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.phy.bar p_h')
+    ImageH:
+        id: image_phy_attack
+        source: root.phy_attack_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.phy.img p_h')
+    LabelH:
+        id: label_phy_attack
+        text: 'P.Attack'
+        color: root.color
+        font_name: root.font
+        font_size: image_phy_attack.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.phy.lbl p_h')
+    LabelH:
+        id: label_phy_attack_number
+        text: str(root.phy_attack)
+        color: root.number_color
+        font_name: root.font
+        font_size: image_phy_attack.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.phy.num p_h')
+    #Mag. Attack
+    ImageH:
+        id: bar_mag_attack
+        source: root.stat_bar_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.mag.bar p_h')
+    ImageH:
+        id: image_mag_attack
+        source: root.mag_attack_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.mag.img p_h')
+    LabelH:
+        id: label_mag_attack
+        text: 'M.Attack'
+        color: root.color
+        font_name: root.font
+        font_size: image_mag_attack.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.mag.lbl p_h')
+    LabelH:
+        id: label_mag_attack_number
+        text: str(root.mag_attack)
+        color: root.number_color
+        font_name: root.font
+        font_size: image_mag_attack.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.mag.num p_h')
+    #Defense
+    ImageH:
+        id: bar_defense
+        source: root.stat_bar_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.def.bar p_h')
+    ImageH:
+        id: image_defense
+        source: root.defense_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.def.img p_h')
+    LabelH:
+        id: label_defense
+        text: 'Defense'
+        color: root.color
+        font_name: root.font
+        font_size: image_defense.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.def.lbl p_h')
+    LabelH:
+        id: label_defense_number
+        text: str(root.defense)
+        color: root.number_color
+        font_name: root.font
+        font_size: image_defense.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.def.num p_h')
+
+<AbilityStatBox>:
+    ImageH:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+    LabelH:
+        id: strength_label
+        text: 'Strength'
+        color: root.color
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.str.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    ImageH:
+        id: strength_image
+        source: root.strength_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.str.img p_h')
+    LabelH:
+        id: strength_label_number
+        text: str(root.strength)
+        color: root.color
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.str.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)
+    LabelH:
+        id: magic_label
+        text: 'Magic'
+        color: root.color
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.mag.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    ImageH:
+        id: magic_image
+        source: root.magic_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.mag.img p_h')
+    LabelH:
+        id: magic_label_number
+        text: str(root.magic)
+        color: root.color
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.mag.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)
+    LabelH:
+        id: endurance_label
+        text: 'Endurance'
+        color: root.color
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.end.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    ImageH:
+        id: endurance_image
+        source: root.endurance_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.end.img p_h')
+    LabelH:
+        id: endurance_label_number
+        text: str(root.endurance)
+        color: root.color
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.end.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)
+    LabelH:
+        id: dexterity_label
+        text: 'Dexterity'
+        color: root.color
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.dex.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    ImageH:
+        id: dexterity_image
+        source: root.dexterity_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.dex.img p_h')
+    LabelH:
+        id: dexterity_label_number
+        text: str(root.dexterity)
+        color: root.color
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.dex.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)
+    LabelH:
+        id: agility_label
+        text: 'Agility'
+        color: root.color
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.agi.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    ImageH:
+        id: agility_image
+        source: root.agility_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.agi.img p_h')
+    LabelH:
+        id: agility_label_number
+        text: str(root.agility)
+        color: root.color
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.agi.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)
+
+<EquipmentSlot>:
+    ImageH:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+    LabelH:
+        id: label
+        text: str(root.slot_name).capitalize()
+        color: root.color
+        font_name: root.font
+        size: self.texture_size
+        size_hint: app.get_dkey('eqs.lbl s_h')
+        font_size: app.get_dkey('eqs.lbl fs', root.height)
+        pos_hint: app.get_dkey('eqs.lbl p_h')
+    LabelH:
+        id: label_equip
+        text: 'Not equipped' if root.item is None else root.item.get_name().capitalize()
+        color: root.color
+        font_name: root.font
+        size: self.texture_size
+        size_hint: app.get_dkey('eqs.lble s_h')
+        font_size: app.get_dkey('eqs.lble fs', root.height)
+        pos_hint: app.get_dkey('eqs.lble.one p_h') if root.item is None else app.get_dkey('eqs.lble.two p_h')
+    ImageH:
+        id: image_equip
+        source: '../res/items/equipment/empty.png' if root.item is None else '../res/items/equipment/' + self.item.get_id() + '.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('eqs.imge s_h')
+        pos_hint: app.get_dkey('eqs.imge p_h')
+    DurabilityBar:
+        max: 100 if root.item is None else root.item.get_durability()
+        value: 0 if root.item is None else root.item.get_current_durability()
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('eqs.dbb s_h')
+        pos_hint: app.get_dkey('eqs.dbb p_h')
+
+<DurabilityBar>:
+    ImageH:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+        keep_ratio: False
+        opacity: root.opacity
+    StencilView:
+        id: clip
+        size_hint: root.value / float(root.max), 1
+        ImageH:
+            id: foreground
+            source: root.foreground_source
+            allow_stretch: True
+            size_hint: None, None
+            size: root.size
+            keep_ratio: False
+            opacity: root.opacity
+
+<Dungeonbattle>:
     name: 'dungeon_battle'
     id: dungeonscreen
     level_label: lvllabel

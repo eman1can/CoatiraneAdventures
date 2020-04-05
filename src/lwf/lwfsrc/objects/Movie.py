@@ -1,29 +1,29 @@
 # Internal Imports
-from ..utils.Type import Action, Dictionary, SortedDictionary, Matrix, Point, DetachDict, Bounds, ColorTransform
-from ..utils.Constants import INT32_MINVALUE, FLOAT_MINVALUE, FLOAT_MAXVALUE
-from ..utils.Utility import Utility
-
-from ..objects.Event import EventHandlerDictionary, EventHandlers, CalculateBoundsCallbacks
-from ..objects.Label import LabelData, CurrentLabels, CurrentLabelCache
-from ..objects.BitmapClip import BitmapClip, BitmapClips
-from ..objects.ProgramObject import ProgramObject
-from ..objects.Object import Object
-from ..objects.IObject import IObject
-from ..objects.Particle import Particle
-from ..objects.Property import Property
-from ..objects.BitmapEx import BitmapEx
-from ..objects.Graphic import Graphic
-from ..objects.Bitmap import Bitmap
-from ..objects.Button import Button
-from ..objects.Text import Text, Texts
-
-from ..LWFContainer import LWFContainer
-from ..Format import Format
-# from ..LWF import LWF
-
+import math
 # External Imports
 from typing import List
-import math
+
+from ..Format import Format
+from ..LWFContainer import LWFContainer
+from ..objects.Bitmap import Bitmap
+from ..objects.BitmapClip import BitmapClip, BitmapClips
+from ..objects.BitmapEx import BitmapEx
+from ..objects.Button import Button
+from ..objects.Event import EventHandlerDictionary, EventHandlers, CalculateBoundsCallbacks
+from ..objects.Graphic import Graphic
+from ..objects.IObject import IObject
+from ..objects.Label import LabelData, CurrentLabels, CurrentLabelCache
+from ..objects.Object import Object
+from ..objects.Particle import Particle
+from ..objects.ProgramObject import ProgramObject
+from ..objects.Property import Property
+from ..objects.Text import Text, Texts
+from ..utils.Constants import INT32_MINVALUE, FLOAT_MINVALUE, FLOAT_MAXVALUE
+from ..utils.Type import Action, Dictionary, SortedDictionary, Matrix, Point, DetachDict, Bounds, ColorTransform
+from ..utils.Utility import Utility
+
+
+# from ..LWF import LWF
 
 
 class MovieCommand(Action):

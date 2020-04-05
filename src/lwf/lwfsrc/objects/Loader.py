@@ -1,9 +1,9 @@
 # Internal Imports
-from ..Format import Format
-from ..objects.Data import Data
-
 # External Imports
 from lzma import LZMADecompressor
+
+from ..Format import Format
+from ..objects.Data import Data
 
 
 class Loader:

@@ -1,13 +1,12 @@
 from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.uix.floatlayout import FloatLayout
+from kivy.core.window import Window
 from kivy.graphics import *
 from kivy.graphics.opengl import *
-from kivy.graphics.shader import *
-from kivy.core.window import Window
 from kivy.graphics.transformation import Matrix
-
 from kivy.logger import Logger
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.widget import Widget
+
 
 class World(Widget) :
     def __init__(self, **kwargs):

@@ -1,14 +1,14 @@
+from kivy.app import App
 from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty
-from kivy.uix.screenmanager import ScreenManager
 
+from src.modules.KivyBase.Hoverable import ScreenManagerH as ScreenManager
 from src.modules.Screens.EmptyCharacterPreview import EmptyCharacterPreviewScreen
 from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreviewScreen
 
 
 class CharacterPreview(ScreenManager):
-    initialized = BooleanProperty(False)
-    main_screen = ObjectProperty(None)
     dungeon = ObjectProperty(None)
+    portfolio = ObjectProperty(None)
     is_select = BooleanProperty(False)
     is_disabled = BooleanProperty(False)
     index = NumericProperty(-1)
@@ -19,21 +19,17 @@ class CharacterPreview(ScreenManager):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self._size = (0, 0)
-
         if self.char is None:
             self.set_empty()
         else:
             self.set_char_screen(False, self.char, self.support)
-        self.initialized = True
 
-    def on_size(self, instance, size):
-        if not self.initialized or self._size == size:
-            return
-        self._size = size.copy()
-
-        for screen in self.screens:
-            screen.size = self.size
+    def on_mouse_pos(self, hover):
+        if not self.collide_point(*hover.pos):
+            return False
+        if len(self.children) > 0:
+            if self.children[0].dispatch('on_mouse_pos', hover):
+                return True
 
     def get_score(self):
         if self.char is None:
@@ -63,11 +59,11 @@ class CharacterPreview(ScreenManager):
         self.char = None
         self.support = None
 
-        if not self.is_select and self.initialized:
-            self.parent.party_change(self, self.char, self.support)
+        if not self.is_select:
+            self.portfolio.party_change(self, self.char, self.support)
 
         if not emptied:
-            preview = EmptyCharacterPreviewScreen(main_screen=self.main_screen, preview=self)
+            preview = EmptyCharacterPreviewScreen(preview=self)
             preview.size = self.size
             self.add_widget(preview)
             self.current = preview.name
@@ -98,10 +94,10 @@ class CharacterPreview(ScreenManager):
                     if old_screen.name != 'empty':
                         self.remove_widget(old_screen)
                 return True
-        if not self.is_select and self.initialized:
+        if not self.is_select:
             self.parent.party_change(self, self.char, self.support)
             self.dungeon.update_party_score()
-        preview = FilledCharacterPreviewScreen(self.main_screen, self, False, character, support)
+        preview = FilledCharacterPreviewScreen(preview=self, is_support=False, character=character, support=support, size_hint=(None, None))
         preview.size = self.size
         preview.preview.pos = (0, 0)# Force update pos, since the screen will never update pos after initialization. Only needed for new screens.
         self.add_widget(preview)
@@ -112,10 +108,10 @@ class CharacterPreview(ScreenManager):
                 self.remove_widget(old_screen)
 
     def show_select_screen(self, return_screen, is_support):
-        screen, made = self.main_screen.create_screen('select_char', self, is_support)
+        screen, made = App.get_running_app().main.create_screen('select_char', self, is_support)
         if not made:
             screen.update_screen(self, is_support)
-        self.main_screen.display_screen('select_char', True, True)
+        App.get_running_app().main.display_screen('select_char', True, True)
 
     def reload(self):
         if not isinstance(self.children[0], EmptyCharacterPreviewScreen):

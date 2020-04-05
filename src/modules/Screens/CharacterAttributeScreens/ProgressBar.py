@@ -1,7 +1,8 @@
-from kivy.uix.widget import Widget
-from kivy.uix.label import Label
-from kivy.uix.image import Image
 from kivy.properties import NumericProperty
+from kivy.uix.image import Image
+from kivy.uix.label import Label
+from kivy.uix.widget import Widget
+
 
 class ProgressBar(Widget):
     value = NumericProperty(0)

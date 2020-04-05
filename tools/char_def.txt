@@ -1,180 +1,180 @@
-A, 0, 5, 113, 37, 16, 15, 15, 15, 3 , Alexis & Emilia   , Actresses             , actresses_alexis_and_emilia          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 0, 84 , 24, 16, 11, 12, 2 , 1 , Calyse Lang       , Amatuer Model         , amatuer_model_calyse                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 5, 136, 49, 18, 4 , 8 , 12, 7 , Lexi Buhr         , Architect             , architect_lexi                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 6, 123, 49, 12, 6 , 1 , 15, 3 , Sofi              , Athlethic             , athlethic_sofi                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 0, 125, 39, 20, 17, 4 , 15, 11, Andrea Garcia     , Aye Aye               , aye_aye_andrea                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 3, 94 , 37, 4 , 17, 14, 2 , 13, Abigail Cash      , Backyard              , backyard_abigail                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 4, 127, 35, 5 , 13, 14, 6 , 2 , Ais Wallenstein   , Badass                , badass_ais                           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 0, 93 , 28, 18, 12, 11, 10, 4 , Sofi              , Beach Celebrity       , beach_celebrity_sofi                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 2, 114, 57, 13, 14, 4 , 7 , 3 , Carlie Morgan     , Beach Connoisseur     , beach_connoisseur_carlie             , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 1, 96 , 38, 8 , 2 , 13, 5 , 2 , Carlie Morgan     , Beach Goddess         , beach_goddess_carlie                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 2, 109, 22, 20, 8 , 14, 11, 15, Sofi & Zoe        , Beach Seekers         , beach_seekers_sofi_and_zoe           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 6, 83 , 22, 6 , 8 , 10, 13, 2 , Claire            , Bitch Next Door       , bitch_next_door_claire               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 4, 81 , 29, 9 , 12, 6 , 2 , 3 , Zabrina Thien     , Bombshell             , bombshell_zabrina                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 4, 91 , 57, 16, 15, 9 , 10, 14, Cassidy Christy   , Boy Band Fan          , boy_band_fan_cassidy                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 0, 96 , 46, 17, 13, 4 , 9 , 10, Catherine Roman   , Brideswoman           , brideswoman_catherine                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 2, 102, 40, 20, 5 , 14, 5 , 1 , Karen             , Caged Princess        , caged_princess_karen                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 4, 106, 52, 8 , 2 , 2 , 5 , 2 , Alysse            , Candy Cane            , candy_cane_alysse                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 1, 145, 39, 11, 15, 11, 10, 11, Sofi & Claire     , Cave Dwellers         , cave_dwellers_sofi_and_claire        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 5, 129, 39, 19, 10, 2 , 5 , 2 , Zabrina Thien     , Celebretaunt          , celebretaunt_zabrina                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 0, 135, 48, 4 , 8 , 5 , 10, 5 , Jordan            , Certified Organic     , certified_organic_jordan             , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 5, 138, 23, 15, 17, 13, 5 , 7 , Elena Campos      , Charming              , charming_elena                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 2, 98 , 49, 9 , 19, 4 , 8 , 8 , Catherine Roman   , Cheetah               , cheetah_catherine                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 0, 136, 51, 8 , 11, 4 , 2 , 4 , Zabrina Thien     , Christmas Bitch       , christmas_bitch_zabrina              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 4, 100, 52, 8 , 5 , 13, 15, 9 , Emilia Cordova    , Circ De Fair          , circ_de_fair_emilia                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 0, 135, 58, 14, 4 , 8 , 15, 8 , Carlie & Maya     , City Girls            , city_girls_carlie_and_maya           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 4, 95 , 26, 9 , 12, 2 , 3 , 10, Hannah Pierini    , Coffeeshop            , coffeeshop_hannah                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 4, 113, 57, 16, 18, 12, 6 , 12, Maya Lurch        , Cowgirl               , cowgirl_maya                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 6, 105, 44, 17, 13, 15, 11, 4 , Emilia Cordova    , Dashing               , dashing_emilia                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 6, 131, 46, 2 , 7 , 7 , 3 , 12, Sofi              , Diva                  , diva_sofi                            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 2, 127, 52, 11, 19, 15, 11, 2 , Camille           , Dreamy                , dreamy_camille                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 2, 90 , 20, 3 , 3 , 12, 7 , 3 , Carlie Morgan     , Dusky Gem             , dusky_gem_carlie                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 1, 101, 32, 14, 15, 13, 11, 14, Claire            , Dusk Sparkles         , dusk_sparkles_claire                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 3, 98 , 32, 14, 2 , 4 , 1 , 4 , Catherine Roman   , Egpytion              , egpytion_catherine                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 6, 137, 32, 2 , 12, 6 , 3 , 10, Carlie & Kate     , Enchanting Glamour    , enchanting_glamour_carlie_and_kate   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 1, 88 , 25, 14, 8 , 11, 1 , 8 , Alexis & Catherine, Entrancing            , entrancing_alexis_and_catherine      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 2, 138, 55, 20, 9 , 1 , 10, 9 , Jordan            , Eternal Challenger    , eternal_challenger_jordan            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 5, 96 , 59, 20, 2 , 2 , 6 , 12, Bianca Hernandez  , Eternal Graduation    , eternal_graduation_bianca            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 1, 128, 35, 19, 4 , 14, 2 , 11, Alexis Cordova    , Fanatic               , fanatic_alexis                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 2, 97 , 30, 4 , 3 , 5 , 1 , 14, Alexis Cordova    , Fanatic Princess      , fanatic_princess_alexis              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 3, 88 , 52, 12, 5 , 2 , 4 , 11, Abigail Cash      , Fancy                 , fancy_abigail                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 6, 148, 20, 17, 18, 6 , 8 , 3 , Sofi & Claire     , Faries                , faries_sofi_and_claire               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 3, 116, 27, 16, 9 , 14, 1 , 14, Nicole Lowe       , Fashionista           , fashionista_nicole                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 1, 100, 29, 3 , 2 , 2 , 10, 4 , Shayna Brog       , Fashion Mom           , fashion_mom_shayna                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 0, 145, 23, 4 , 9 , 8 , 6 , 2 , Kimberly Mariscal , Flanel Princess       , flanel_princess_kimberly             , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 3, 127, 29, 18, 5 , 4 , 4 , 6 , Shayna Brog       , Flexible              , flexible_shayna                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 0, 143, 51, 17, 14, 13, 3 , 5 , Carlie Morgan     , Flowery Girl          , flowery_girl_carlie                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 6, 108, 22, 6 , 6 , 10, 14, 9 , Claire            , Formal Amber          , formal_amber_claire                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 4, 109, 58, 9 , 6 , 4 , 2 , 15, Claire            , Frenchy               , frenchy_claire                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 5, 134, 40, 14, 10, 15, 3 , 8 , Calyse Lang       , Garage Model          , garage_model_calyse                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 2, 140, 32, 7 , 15, 14, 10, 7 , Karina Roman      , Girl Next Door        , girl_next_door_karina                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 1, 81 , 42, 2 , 16, 13, 13, 4 , Karen             , Glamourous            , glamourous_karen                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 0, 142, 58, 5 , 12, 13, 15, 3 , Alexis Cordova    , Glum Doll             , glum_doll_alexis                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 3, 138, 49, 7 , 10, 7 , 12, 4 , Lexi & Nicole     , Harmony               , harmony_lexi_and_nicole              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 0, 139, 54, 19, 8 , 9 , 5 , 10, Jordan            , Hawaiian              , hawaiian_jordan                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 4, 132, 22, 12, 4 , 13, 2 , 4 , Bell Cranell      , Hero                  , hero_bell                            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 6, 138, 22, 6 , 6 , 14, 3 , 1 , Shayna Brog       , High Society          , high_society_shayna                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 4, 80 , 27, 14, 6 , 1 , 9 , 12, Karina Roman      , Hiker                 , hiker_karina                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 1, 141, 25, 6 , 14, 12, 13, 5 , Catherine Roman   , Hoe Next Door         , hoe_next_door_catherine              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 4, 128, 46, 10, 10, 10, 4 , 1 , Shayna Brog       , Hot Tub Cowgirl       , hot_tub_cowgirl_shayna               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 4, 143, 22, 7 , 12, 7 , 4 , 7 , Carlie & Jenna    , Hot Tub Rodeo         , hot_tub_rodeo_carlie_and_jenna       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 1, 138, 30, 18, 2 , 2 , 1 , 11, Carlie & Maya     , Intergalactic         , intergalactic_carlie_and_maya        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 0, 85 , 20, 2 , 2 , 5 , 9 , 13, Sofi              , In The Closet         , in_the_closet_sofi                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 0, 106, 58, 2 , 5 , 3 , 1 , 10, Hannah & Maya     , Labryinth             , labryinth_hannah_and_maya            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 4, 108, 53, 16, 3 , 9 , 12, 7 , Kelsy & Kate      , Lesbians              , lesbians_kelsy_and_kate              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 0, 97 , 45, 8 , 9 , 10, 8 , 9 , Claire            , Lifeguard             , lifeguard_claire                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 2, 98 , 26, 18, 9 , 7 , 14, 14, Catherine Roman   , Lilo                  , lilo_catherine                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 1, 145, 55, 19, 11, 13, 3 , 11, Jordan            , Malibu Princess       , malibu_princess_jordan               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 2, 124, 27, 17, 20, 7 , 2 , 3 , Jenna Primbasch   , Marshy                , marshy_jenna                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 5, 114, 20, 3 , 2 , 7 , 10, 12, Sofi & Claire     , Mermaids              , mermaids_sofi_and_claire             , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 4, 143, 24, 16, 20, 7 , 6 , 3 , Alexis & Catherine, Models                , models_alexis_and_catherine          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 5, 96 , 25, 20, 7 , 15, 14, 5 , Alexis Cordova    , Model                 , model_alexis                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 3, 121, 36, 3 , 13, 3 , 5 , 2 , Jordan            , Narnian               , narnian_jordan                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 6, 138, 38, 5 , 17, 13, 8 , 3 , Laura Ann Kesling , New Arrival           , new_arrival_laura                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 5, 108, 21, 3 , 17, 2 , 4 , 5 , Karina Roman      , New Yorker            , new_yorker_karina                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 5, 105, 22, 14, 14, 9 , 7 , 14, Abigail Cash      , Nextdoor              , nextdoor_abigail                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 3, 129, 39, 20, 17, 10, 2 , 5 , Kimberly Mariscal , Nightlife             , nightlife_kimberly                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 0, 150, 35, 20, 6 , 3 , 15, 5 , Bianca & Calyse   , Night Walkers         , night_walkers_bianca_and_calyse      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 1, 84 , 55, 4 , 9 , 9 , 9 , 10, Zabrina Thien     , No Bullshit           , no_bullshit_zabrina                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 3, 95 , 41, 13, 9 , 5 , 15, 5 , Carlie & Marine   , Orange And Surfer     , orange_and_surfer_carlie_and_marine  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 4, 136, 32, 16, 14, 14, 2 , 15, Karina Roman      , Party Goer            , party_goer_karina                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 4, 136, 42, 18, 7 , 4 , 3 , 1 , Carlie & Jenna    , Patriotic             , patriotic_carlie_and_jenna           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 3, 131, 48, 15, 18, 15, 9 , 2 , Carlie Morgan     , Picnic                , picnic_carlie                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 6, 126, 53, 10, 10, 4 , 3 , 4 , Jordan & Tess     , Pool Skaters          , pool_skaters_jordan_and_tess         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 1, 103, 38, 9 , 2 , 12, 10, 13, Calyse Lang       , Prison Hoe            , prison_hoe_calyse                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 5, 141, 28, 16, 6 , 12, 11, 8 , Lexi Buhr         , Pumpkin Patch         , pumpkin_patch_lexi                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 3, 92 , 55, 7 , 11, 5 , 14, 2 , Alexis Cordova    , Quantum Break         , quantum_break_alexis                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 1, 137, 31, 9 , 11, 6 , 5 , 7 , Jordan            , Quantum Ripple        , quantum_ripple_jordan                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 2, 102, 47, 18, 14, 11, 3 , 9 , Alexis Cordova    , Ranch                 , ranch_alexis                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 4, 149, 26, 20, 19, 9 , 7 , 7 , Aysia Johnson     , Romantic              , romantic_aysia                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 2, 95 , 49, 18, 15, 5 , 7 , 4 , Nicole Lowe       , Rosy                  , rosy_nicole                          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 5, 94 , 51, 4 , 4 , 13, 13, 8 , Claire            , Rural Runner          , rural_runner_claire                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 6, 144, 47, 13, 10, 13, 10, 6 , Jordan            , Sante Ynez            , sante_ynez_jordan                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 2, 134, 50, 12, 12, 7 , 12, 6 , Zabrina & Erin    , School Girls          , school_girls_zabrina_and_erin        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 1, 141, 28, 20, 10, 2 , 8 , 11, Karen             , School Tripper        , school_tripper_karen                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 0, 93 , 58, 15, 4 , 12, 8 , 8 , Maya Lurch        , Scouter               , scouter_maya                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 4, 111, 48, 8 , 2 , 2 , 9 , 5 , Alexis & Emilia   , Sexy Wanderers        , sexy_wanderers_alexis_and_emilia     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 1, 100, 58, 2 , 6 , 9 , 7 , 14, Kelsy             , Shopper               , shopper_kelsy                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 0, 120, 40, 4 , 7 , 9 , 13, 13, Sofi & Claire     , Sightseers            , sightseers_sofi_and_claire           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 4, 147, 47, 20, 7 , 14, 4 , 11, Tess Scott        , Star Gazer            , star_gazer_tess                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 5, 140, 21, 20, 14, 3 , 9 , 9 , Claire            , Sterling              , sterling_claire                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 4, 133, 32, 9 , 12, 3 , 5 , 1 , Camille           , Stoner                , stoner_camille                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 4, 109, 35, 4 , 19, 2 , 14, 11, Sofi              , Stormchaser           , stormchaser_sofi                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 6, 123, 22, 14, 3 , 1 , 7 , 14, Carlie Morgan     , Suburban              , suburban_carlie                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 4, 109, 57, 18, 19, 11, 13, 1 , Carlie Morgan     , Sunny Day             , sunny_day_carlie                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 3, 87 , 20, 20, 18, 8 , 4 , 15, Kelsy             , Sunset                , sunset_kelsy                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 0, 135, 39, 12, 16, 6 , 13, 4 , Abigail Cash      , Sunshine              , sunshine_abigail                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 4, 144, 38, 14, 11, 7 , 15, 5 , Karen             , Surfer Girl           , surfer_girl_karen                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 0, 143, 26, 10, 12, 8 , 7 , 14, Emilia Cordova    , Swimmers              , swimmers_emilia                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 4, 84 , 27, 5 , 11, 8 , 2 , 9 , Alexis Cordova    , Swimsuit              , swimsuit_alexis                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 4, 103, 45, 17, 15, 8 , 7 , 13, Alexis & Olivia   , Tourists              , tourists_alexis_and_olivia           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 2, 98 , 43, 14, 6 , 13, 2 , 7 , Morgan Hess       , Traveller             , traveller_morgan                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 1, 131, 32, 9 , 18, 7 , 6 , 5 , Zabrina Thien     , Triwiz Champion       , triwiz_champion_zabrina              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 6, 84 , 45, 6 , 12, 2 , 6 , 9 , Sofi & Zoe        , Vacationeers          , vacationeers_sofi_and_zoe            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 0, 140, 45, 20, 18, 10, 4 , 4 , Lexi Buhr         , Vacation              , vacation_lexi                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 2, 123, 43, 5 , 18, 3 , 9 , 12, Maya Lurch        , Valentine             , valentine_maya                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 2, 148, 48, 16, 15, 4 , 3 , 6 , Sofi & Claire     , Volleyball Girls      , volleyball_girls_sofi_and_claire     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 3, 145, 43, 2 , 7 , 9 , 15, 7 , Alexis Cordova    , Wallflower            , wallflower_alexis                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 0, 90 , 41, 2 , 12, 8 , 8 , 12, Carlie Morgan     , Wall Art              , wall_art_carlie                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 1, 116, 27, 5 , 15, 8 , 4 , 10, Zabrina Thien     , Wedding Crasher       , wedding_crasher_zabrina              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 1, 113, 28, 12, 3 , 10, 14, 7 , Nicole Lowe       , Wedding Guest         , wedding_guest_nicole                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 6, 111, 37, 14, 8 , 10, 12, 2 , Alysse            , Weekend Athlete       , weekend_athlete_alysse               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 1, 131, 48, 20, 6 , 8 , 2 , 2 , Leanna Newman     , Wilderness            , wilderness_leanna                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 3, 135, 26, 2 , 2 , 11, 4 , 14, Claire & Marissa  , Wildflowers           , wildflowers_claire_and_marissa       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 6, 94 , 41, 13, 5 , 14, 2 , 5 , Lexi Buhr         , Wildflower            , wildflower_lexi                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 5, 102, 31, 3 , 10, 10, 5 , 3 , Claire            , Wild Peony            , wild_peony_claire                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 0, 120, 27, 15, 10, 7 , 7 , 4 , Karina Roman      , Wishful               , wishful_karina                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 2, 103, 46, 4 , 14, 7 , 4 , 11, Karina Roman      , Wish Upon A Star      , wish_upon_a_star_karina              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 5, 149, 45, 8 , 18, 14, 15, 10, Morgan Hess       , Witchy                , witchy_morgan                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 2, 114, 49, 13, 4 , 1 , 10, 7 , Laura Ann Kesling , Wonderland            , wonderland_laura                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 2, 82 , 38, 18, 15, 9 , 4 , 13, Nicole Lowe       , Woods                 , woods_nicole                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 2, 102, 56, 7 , 10, 15, 3 , 7 , Claire            , Woody Assassin        , woody_assassin_claire                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 6, 112, 43, 16, 3 , 6 , 9 , 13, Alexis Cordova    , World Traveller       , world_traveller_alexis               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 6, 87 , 22, 7 , 13, 1 , 12, 11, Jenna Primbasch   , Wrong Place Wrong Time, wrong_place_wrong_time_jenna         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 2, 133, 49, 14, 5 , 15, 13, 9 , Carlie Morgan     , Yaht                  , yaht_carlie                          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 4, 5, 130, 21, 7 , 5 , 13, 5 , 11, Ester Cash        , Yogalicious           , yogalicious_ester                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-S, 0, 4, 114, 44, 12, 20, 11, 8 , 11, Jenna & Aussie    , After Beach Specials  , after_beach_specials_jenna_and_aussie
-S, 4, 6, 102, 21, 2 , 5 , 8 , 9 , 9 , Sophie Nicholson  , Beachfront            , beachfront_sophie                    
-S, 4, 2, 142, 42, 3 , 9 , 5 , 1 , 7 , Maya Lurch        , Caffine Girl          , caffine_girl_maya                    
-S, 3, 1, 115, 56, 2 , 7 , 6 , 1 , 4 , Sophie Nicholson  , Changing Model        , changing_model_sophie                
-S, 1, 3, 131, 52, 19, 8 , 11, 11, 5 , Sofi              , Cutie Princess        , cutie_princess_sofi                  
-S, 3, 5, 130, 27, 20, 14, 14, 4 , 11, Tess Scott        , Diner                 , diner_tess                           
-S, 3, 1, 103, 43, 9 , 18, 1 , 7 , 7 , Carlie Morgan     , Dive                  , dive_carlie                          
-S, 0, 0, 143, 35, 8 , 5 , 1 , 2 , 12, Sophie Nicholson  , Emerald Wave Girl     , emerald_wave_girl_sophie             
-S, 1, 6, 124, 40, 19, 12, 10, 4 , 3 , Misha Frot        , Enticing              , enticing_misha                       
-S, 4, 2, 132, 53, 17, 13, 13, 1 , 4 , Alexis Cordova    , Entrancing            , entrancing_alexis                    
-S, 3, 4, 84 , 55, 7 , 4 , 2 , 5 , 2 , Zabrina Thien     , Fanatic Supporter     , fanatic_supporter_zabrina            
-S, 3, 4, 129, 35, 10, 4 , 5 , 8 , 4 , Carlie Morgan     , First Class           , first_class_carlie                   
-S, 3, 5, 84 , 21, 13, 10, 8 , 6 , 2 , Sydney Rodriguez  , Flanel Beauty         , flanel_beauty_sydney                 
-S, 4, 5, 141, 44, 10, 11, 11, 11, 9 , Carlie Morgan     , Flower Garden         , flower_garden_carlie                 
-S, 0, 0, 84 , 36, 4 , 17, 6 , 10, 8 , Sydney Rodriguez  , Hide And Bop          , hide_and_bop_sydney                  
-S, 1, 3, 129, 49, 9 , 7 , 2 , 9 , 14, Alexis Cordova    , High Flyer            , high_flyer_alexis                    
-S, 1, 0, 137, 22, 4 , 4 , 5 , 15, 1 , Zabrina Thien     , Honolulu              , honolulu_zabrina                     
-S, 1, 5, 122, 36, 17, 7 , 15, 3 , 3 , Alexis Cordova    , It                    , it_alexis                            
-S, 2, 1, 104, 29, 6 , 10, 15, 6 , 12, Carlie Morgan     , I Like Trains         , I_like_trains_carlie                 
-S, 3, 4, 108, 23, 9 , 10, 6 , 15, 8 , Alexis Cordova    , Maid Girl             , maid_girl_alexis                     
-S, 4, 5, 116, 55, 8 , 20, 10, 3 , 14, Sophie Nicholson  , Malibu Queen          , malibu_queen_sophie                  
-S, 1, 4, 113, 55, 15, 6 , 3 , 12, 7 , Jenna & Shayna    , Marine Girls          , marine_girls_jenna_and_shayna        
-S, 4, 5, 94 , 25, 5 , 13, 7 , 14, 11, Alexis Cordova    , Meadow                , meadow_alexis                        
-S, 4, 3, 123, 43, 15, 2 , 3 , 8 , 7 , Alexis Cordova    , Perfection            , perfection_alexis                    
-S, 0, 1, 127, 31, 10, 2 , 9 , 11, 8 , Jenna Primbasch   , Picnic Princess       , picnic_princess_jenna                
-S, 2, 5, 130, 41, 12, 9 , 1 , 13, 15, Ester Cash        , Plains                , plains_ester                         
-S, 4, 2, 85 , 32, 8 , 17, 9 , 11, 15, Tess Scott        , Pool Extravagance     , pool_extravagance_tess               
-S, 0, 4, 135, 42, 16, 9 , 2 , 9 , 13, Tess Scott        , Rich Wife             , rich_wife_tess                       
-S, 1, 3, 126, 42, 14, 3 , 13, 5 , 12, Nicole Lowe       , Ring Princess         , ring_princess_nicole                 
-S, 0, 2, 135, 27, 19, 15, 8 , 11, 8 , Carlie Morgan     , Rose Princess         , rose_princess_carlie                 
-S, 4, 1, 142, 43, 11, 19, 3 , 3 , 9 , Sofi              , Ruby Wave Girl        , ruby_wave_girl_sofi                  
-S, 1, 1, 80 , 20, 15, 8 , 9 , 4 , 8 , Carlie Morgan     , Sapphire Princess     , sapphire_princess_carlie             
-S, 1, 3, 88 , 30, 10, 3 , 1 , 14, 1 , Sofi              , Sapphire Wave Girl    , sapphire_wave_girl_sofi              
-S, 2, 5, 98 , 23, 8 , 8 , 15, 12, 4 , Zabrina Thien     , Shrubby               , shrubby_zabrina                      
-S, 3, 3, 137, 53, 7 , 2 , 4 , 11, 13, Carlie Morgan     , Sk8t3r Gurl           , sk8t3r_gurl_carlie                   
-S, 2, 5, 107, 44, 8 , 19, 3 , 4 , 3 , Sophie Nicholson  , Skinny Dipper         , skinny_dipper_sophie                 
-S, 4, 0, 136, 45, 7 , 4 , 7 , 3 , 6 , Alexis Cordova    , Snow Princess         , snow_princess_alexis                 
-S, 4, 6, 137, 39, 17, 19, 11, 6 , 2 , Carlie Morgan     , Summer Camp           , summer_camp_carlie                   
-S, 3, 5, 123, 57, 7 , 6 , 8 , 9 , 15, Arcie Galvan      , Throwback             , throwback_arcie                      
-S, 4, 2, 109, 31, 8 , 18, 1 , 1 , 9 , Tess Scott        , Triangal              , triangal_tess                        
-S, 1, 0, 138, 45, 6 , 6 , 9 , 2 , 4 , Catherine Roman   , Upper Class           , upper_class_catherine                
-S, 2, 1, 82 , 29, 16, 6 , 8 , 4 , 7 , Sophie Nicholson  , Vacationess           , vacationess_sophie                   
-S, 1, 3, 101, 25, 14, 5 , 6 , 7 , 10, Sophie Nicholson  , Wallphant             , wallphant_sophie                     
-S, 1, 5, 117, 23, 20, 5 , 13, 4 , 10, Zabrina Thien     , Water Park            , water_park_zabrina                   
-S, 0, 6, 90 , 44, 19, 8 , 15, 5 , 14, Tess Scott        , Wine Girl             , wine_girl_tess                       
+A, 0, 6, 98 , 60, 20, 13, 13, 4 , 11, Alexis & Emilia   , Actresses             , actresses_alexis_and_emilia          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 0, 138, 37, 14, 17, 15, 11, 8 , Calyse Lang       , Amatuer Model         , amatuer_model_calyse                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 1, 128, 52, 5 , 14, 14, 2 , 2 , Lexi Buhr         , Architect             , architect_lexi                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 3, 137, 51, 9 , 14, 7 , 11, 14, Sofi              , Athlethic             , athlethic_sofi                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 0, 109, 34, 4 , 4 , 15, 13, 1 , Andrea Garcia     , Aye Aye               , aye_aye_andrea                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 2, 120, 55, 16, 7 , 4 , 5 , 14, Abigail Cash      , Backyard              , backyard_abigail                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 4, 99 , 32, 19, 7 , 15, 11, 13, Ais Wallenstein   , Badass                , badass_ais                           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 2, 89 , 49, 16, 15, 11, 3 , 4 , Sofi              , Beach Celebrity       , beach_celebrity_sofi                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 1, 96 , 29, 8 , 18, 12, 11, 4 , Carlie Morgan     , Beach Connoisseur     , beach_connoisseur_carlie             , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 5, 93 , 26, 5 , 9 , 14, 2 , 10, Carlie Morgan     , Beach Goddess         , beach_goddess_carlie                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 3, 145, 56, 2 , 3 , 2 , 10, 13, Sofi & Zoe        , Beach Seekers         , beach_seekers_sofi_and_zoe           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 3, 137, 31, 18, 6 , 15, 14, 3 , Claire            , Bitch Next Door       , bitch_next_door_claire               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 6, 105, 30, 9 , 13, 4 , 7 , 2 , Zabrina Thien     , Bombshell             , bombshell_zabrina                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 6, 111, 32, 20, 19, 12, 2 , 10, Cassidy Christy   , Boy Band Fan          , boy_band_fan_cassidy                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 6, 147, 28, 15, 3 , 11, 13, 14, Catherine Roman   , Brideswoman           , brideswoman_catherine                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 2, 139, 34, 7 , 2 , 8 , 10, 6 , Karen             , Caged Princess        , caged_princess_karen                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 5, 134, 25, 19, 13, 8 , 3 , 14, Alysse            , Candy Cane            , candy_cane_alysse                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 0, 87 , 39, 18, 8 , 1 , 13, 1 , Sofi & Claire     , Cave Dwellers         , cave_dwellers_sofi_and_claire        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 3, 145, 55, 5 , 8 , 10, 11, 14, Zabrina Thien     , Celebretaunt          , celebretaunt_zabrina                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 1, 87 , 37, 13, 5 , 2 , 4 , 9 , Jordan            , Certified Organic     , certified_organic_jordan             , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 1, 97 , 26, 19, 18, 1 , 13, 2 , Elena Campos      , Charming              , charming_elena                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 0, 104, 43, 13, 8 , 14, 8 , 12, Catherine Roman   , Cheetah               , cheetah_catherine                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 2, 106, 37, 4 , 13, 14, 12, 3 , Zabrina Thien     , Christmas Bitch       , christmas_bitch_zabrina              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 2, 133, 56, 4 , 6 , 12, 8 , 3 , Emilia Cordova    , Circ De Fair          , circ_de_fair_emilia                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 6, 108, 32, 16, 6 , 14, 15, 5 , Carlie & Maya     , City Girls            , city_girls_carlie_and_maya           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 1, 88 , 59, 6 , 6 , 1 , 10, 1 , Hannah Pierini    , Coffeeshop            , coffeeshop_hannah                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 1, 82 , 43, 7 , 11, 1 , 6 , 6 , Maya Lurch        , Cowgirl               , cowgirl_maya                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 4, 128, 25, 15, 4 , 11, 5 , 5 , Emilia Cordova    , Dashing               , dashing_emilia                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 2, 108, 32, 11, 6 , 14, 2 , 4 , Sofi              , Diva                  , diva_sofi                            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 2, 92 , 40, 7 , 6 , 11, 11, 2 , Camille           , Dreamy                , dreamy_camille                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 4, 102, 33, 19, 10, 5 , 5 , 13, Carlie Morgan     , Dusky Gem             , dusky_gem_carlie                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 1, 84 , 58, 4 , 9 , 4 , 4 , 4 , Claire            , Dusk Sparkles         , dusk_sparkles_claire                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 4, 80 , 56, 16, 2 , 9 , 11, 2 , Catherine Roman   , Egpytion              , egpytion_catherine                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 0, 89 , 34, 9 , 13, 14, 1 , 1 , Carlie & Kate     , Enchanting Glamour    , enchanting_glamour_carlie_and_kate   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 5, 109, 24, 7 , 17, 3 , 7 , 14, Alexis & Catherine, Entrancing            , entrancing_alexis_and_catherine      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 5, 132, 45, 4 , 20, 5 , 10, 9 , Jordan            , Eternal Challenger    , eternal_challenger_jordan            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 6, 117, 49, 20, 19, 11, 8 , 15, Bianca Hernandez  , Eternal Graduation    , eternal_graduation_bianca            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 5, 92 , 33, 12, 12, 7 , 4 , 8 , Alexis Cordova    , Fanatic               , fanatic_alexis                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 6, 80 , 59, 2 , 7 , 7 , 1 , 11, Alexis Cordova    , Fanatic Princess      , fanatic_princess_alexis              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 1, 101, 22, 18, 2 , 15, 13, 4 , Abigail Cash      , Fancy                 , fancy_abigail                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 0, 147, 33, 12, 11, 14, 8 , 1 , Sofi & Claire     , Faries                , faries_sofi_and_claire               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 6, 115, 49, 8 , 11, 9 , 9 , 8 , Nicole Lowe       , Fashionista           , fashionista_nicole                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 3, 100, 22, 17, 4 , 12, 11, 2 , Shayna Brog       , Fashion Mom           , fashion_mom_shayna                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 1, 128, 52, 5 , 7 , 11, 7 , 4 , Kimberly Mariscal , Flanel Princess       , flanel_princess_kimberly             , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 1, 94 , 35, 10, 13, 15, 6 , 12, Shayna Brog       , Flexible              , flexible_shayna                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 3, 124, 36, 5 , 7 , 8 , 15, 14, Carlie Morgan     , Flowery Girl          , flowery_girl_carlie                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 5, 83 , 31, 19, 9 , 8 , 11, 2 , Claire            , Formal Amber          , formal_amber_claire                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 6, 118, 38, 16, 6 , 13, 5 , 11, Claire            , Frenchy               , frenchy_claire                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 3, 116, 47, 20, 2 , 2 , 3 , 15, Calyse Lang       , Garage Model          , garage_model_calyse                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 1, 88 , 43, 5 , 9 , 12, 8 , 11, Karina Roman      , Girl Next Door        , girl_next_door_karina                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 2, 81 , 36, 8 , 4 , 1 , 14, 11, Karen             , Glamourous            , glamourous_karen                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 1, 85 , 52, 3 , 17, 3 , 15, 1 , Alexis Cordova    , Glum Doll             , glum_doll_alexis                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 0, 127, 24, 17, 7 , 4 , 3 , 15, Lexi & Nicole     , Harmony               , harmony_lexi_and_nicole              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 3, 99 , 28, 16, 16, 11, 9 , 14, Jordan            , Hawaiian              , hawaiian_jordan                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 5, 85 , 22, 8 , 6 , 7 , 9 , 9 , Bell Cranell      , Hero                  , hero_bell                            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 3, 143, 56, 19, 16, 4 , 14, 13, Shayna Brog       , High Society          , high_society_shayna                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 5, 146, 39, 12, 8 , 14, 4 , 7 , Karina Roman      , Hiker                 , hiker_karina                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 3, 88 , 38, 4 , 4 , 5 , 10, 11, Catherine Roman   , Hoe Next Door         , hoe_next_door_catherine              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 1, 92 , 31, 13, 17, 10, 4 , 11, Shayna Brog       , Hot Tub Cowgirl       , hot_tub_cowgirl_shayna               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 2, 122, 37, 14, 11, 3 , 8 , 5 , Carlie & Jenna    , Hot Tub Rodeo         , hot_tub_rodeo_carlie_and_jenna       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 5, 85 , 42, 9 , 13, 1 , 6 , 11, Carlie & Maya     , Intergalactic         , intergalactic_carlie_and_maya        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 1, 118, 25, 20, 11, 1 , 6 , 8 , Sofi              , In The Closet         , in_the_closet_sofi                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 3, 130, 21, 18, 9 , 4 , 12, 10, Hannah & Maya     , Labryinth             , labryinth_hannah_and_maya            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 4, 130, 33, 9 , 7 , 5 , 1 , 1 , Kelsy & Kate      , Lesbians              , lesbians_kelsy_and_kate              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 4, 140, 20, 2 , 18, 10, 15, 11, Claire            , Lifeguard             , lifeguard_claire                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 1, 100, 51, 2 , 20, 10, 1 , 9 , Catherine Roman   , Lilo                  , lilo_catherine                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 6, 101, 30, 9 , 13, 7 , 11, 2 , Jordan            , Malibu Princess       , malibu_princess_jordan               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 3, 147, 47, 5 , 2 , 4 , 8 , 1 , Jenna Primbasch   , Marshy                , marshy_jenna                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 6, 147, 43, 5 , 17, 4 , 8 , 12, Sofi & Claire     , Mermaids              , mermaids_sofi_and_claire             , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 1, 129, 59, 4 , 8 , 9 , 3 , 5 , Alexis & Catherine, Models                , models_alexis_and_catherine          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 3, 90 , 60, 4 , 14, 7 , 12, 5 , Alexis Cordova    , Model                 , model_alexis                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 2, 96 , 53, 12, 19, 3 , 12, 14, Jordan            , Narnian               , narnian_jordan                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 6, 92 , 24, 10, 3 , 4 , 15, 4 , Laura Ann Kesling , New Arrival           , new_arrival_laura                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 2, 127, 25, 3 , 8 , 13, 8 , 8 , Karina Roman      , New Yorker            , new_yorker_karina                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 3, 112, 39, 18, 6 , 11, 2 , 2 , Abigail Cash      , Nextdoor              , nextdoor_abigail                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 5, 83 , 53, 16, 16, 3 , 11, 10, Kimberly Mariscal , Nightlife             , nightlife_kimberly                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 2, 80 , 52, 18, 14, 10, 8 , 5 , Bianca & Calyse   , Night Walkers         , night_walkers_bianca_and_calyse      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 1, 145, 35, 5 , 5 , 7 , 15, 5 , Zabrina Thien     , No Bullshit           , no_bullshit_zabrina                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 5, 86 , 45, 6 , 18, 9 , 4 , 11, Carlie & Marine   , Orange And Surfer     , orange_and_surfer_carlie_and_marine  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 1, 80 , 21, 8 , 19, 10, 10, 1 , Karina Roman      , Party Goer            , party_goer_karina                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 5, 108, 22, 20, 18, 9 , 1 , 15, Carlie & Jenna    , Patriotic             , patriotic_carlie_and_jenna           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 4, 143, 57, 5 , 4 , 15, 13, 9 , Carlie Morgan     , Picnic                , picnic_carlie                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 2, 90 , 33, 20, 4 , 13, 13, 1 , Jordan & Tess     , Pool Skaters          , pool_skaters_jordan_and_tess         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 2, 114, 51, 20, 12, 12, 10, 7 , Calyse Lang       , Prison Hoe            , prison_hoe_calyse                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 1, 126, 56, 3 , 4 , 15, 14, 2 , Lexi Buhr         , Pumpkin Patch         , pumpkin_patch_lexi                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 4, 110, 21, 5 , 12, 8 , 5 , 6 , Alexis Cordova    , Quantum Break         , quantum_break_alexis                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 4, 114, 25, 2 , 19, 13, 13, 11, Jordan            , Quantum Ripple        , quantum_ripple_jordan                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 6, 86 , 54, 4 , 11, 6 , 9 , 11, Alexis Cordova    , Ranch                 , ranch_alexis                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 0, 143, 45, 4 , 18, 3 , 12, 9 , Aysia Johnson     , Romantic              , romantic_aysia                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 6, 83 , 51, 15, 20, 5 , 11, 12, Nicole Lowe       , Rosy                  , rosy_nicole                          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 1, 144, 54, 19, 11, 11, 9 , 10, Claire            , Rural Runner          , rural_runner_claire                  , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 2, 94 , 34, 17, 9 , 6 , 3 , 12, Jordan            , Sante Ynez            , sante_ynez_jordan                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 4, 100, 30, 3 , 8 , 9 , 15, 11, Zabrina & Erin    , School Girls          , school_girls_zabrina_and_erin        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 4, 128, 37, 8 , 7 , 9 , 12, 1 , Karen             , School Tripper        , school_tripper_karen                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 5, 112, 51, 11, 2 , 14, 14, 7 , Maya Lurch        , Scouter               , scouter_maya                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 5, 127, 33, 9 , 2 , 6 , 3 , 3 , Alexis & Emilia   , Sexy Wanderers        , sexy_wanderers_alexis_and_emilia     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 0, 117, 29, 3 , 8 , 6 , 2 , 15, Kelsy             , Shopper               , shopper_kelsy                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 4, 129, 42, 8 , 4 , 2 , 14, 12, Sofi & Claire     , Sightseers            , sightseers_sofi_and_claire           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 1, 108, 60, 18, 12, 4 , 9 , 2 , Tess Scott        , Star Gazer            , star_gazer_tess                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 6, 149, 37, 16, 17, 1 , 9 , 15, Claire            , Sterling              , sterling_claire                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 3, 93 , 37, 6 , 4 , 8 , 9 , 4 , Camille           , Stoner                , stoner_camille                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 1, 145, 39, 2 , 17, 13, 14, 2 , Sofi              , Stormchaser           , stormchaser_sofi                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 4, 114, 21, 3 , 12, 13, 2 , 2 , Carlie Morgan     , Suburban              , suburban_carlie                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 1, 84 , 26, 19, 8 , 1 , 2 , 11, Carlie Morgan     , Sunny Day             , sunny_day_carlie                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 4, 97 , 59, 8 , 4 , 13, 4 , 10, Kelsy             , Sunset                , sunset_kelsy                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 6, 145, 42, 10, 15, 10, 14, 10, Abigail Cash      , Sunshine              , sunshine_abigail                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 0, 114, 41, 9 , 15, 2 , 11, 14, Karen             , Surfer Girl           , surfer_girl_karen                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 6, 113, 32, 18, 17, 1 , 7 , 4 , Emilia Cordova    , Swimmers              , swimmers_emilia                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 5, 122, 51, 12, 7 , 13, 9 , 8 , Alexis Cordova    , Swimsuit              , swimsuit_alexis                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 4, 123, 51, 20, 17, 5 , 7 , 6 , Alexis & Olivia   , Tourists              , tourists_alexis_and_olivia           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 6, 113, 56, 13, 4 , 4 , 10, 11, Morgan Hess       , Traveller             , traveller_morgan                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 6, 81 , 47, 7 , 14, 13, 7 , 12, Zabrina Thien     , Triwiz Champion       , triwiz_champion_zabrina              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 3, 132, 43, 11, 17, 12, 9 , 7 , Sofi & Zoe        , Vacationeers          , vacationeers_sofi_and_zoe            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 4, 89 , 49, 10, 16, 7 , 6 , 8 , Lexi Buhr         , Vacation              , vacation_lexi                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 2, 111, 54, 12, 20, 12, 10, 3 , Maya Lurch        , Valentine             , valentine_maya                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 4, 80 , 41, 16, 7 , 12, 15, 5 , Sofi & Claire     , Volleyball Girls      , volleyball_girls_sofi_and_claire     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 6, 109, 26, 13, 8 , 15, 9 , 4 , Alexis Cordova    , Wallflower            , wallflower_alexis                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 6, 144, 25, 15, 6 , 6 , 5 , 13, Carlie Morgan     , Wall Art              , wall_art_carlie                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 1, 141, 53, 8 , 3 , 8 , 6 , 2 , Zabrina Thien     , Wedding Crasher       , wedding_crasher_zabrina              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 3, 81 , 36, 18, 4 , 14, 14, 3 , Nicole Lowe       , Wedding Guest         , wedding_guest_nicole                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 2, 110, 25, 14, 10, 4 , 2 , 8 , Alysse            , Weekend Athlete       , weekend_athlete_alysse               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 5, 108, 33, 6 , 20, 8 , 9 , 1 , Leanna Newman     , Wilderness            , wilderness_leanna                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 2, 92 , 58, 18, 6 , 10, 10, 10, Claire & Marissa  , Wildflowers           , wildflowers_claire_and_marissa       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 1, 83 , 48, 18, 13, 4 , 7 , 6 , Lexi Buhr         , Wildflower            , wildflower_lexi                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 1, 82 , 36, 13, 12, 15, 6 , 15, Claire            , Wild Peony            , wild_peony_claire                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 4, 122, 26, 8 , 8 , 12, 15, 15, Karina Roman      , Wishful               , wishful_karina                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 1, 106, 47, 4 , 7 , 12, 8 , 15, Karina Roman      , Wish Upon A Star      , wish_upon_a_star_karina              , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 1, 82 , 30, 12, 4 , 12, 2 , 3 , Morgan Hess       , Witchy                , witchy_morgan                        , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 4, 142, 27, 11, 12, 5 , 15, 15, Laura Ann Kesling , Wonderland            , wonderland_laura                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 5, 86 , 46, 15, 8 , 2 , 4 , 8 , Nicole Lowe       , Woods                 , woods_nicole                         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 4, 110, 34, 16, 18, 3 , 6 , 11, Claire            , Woody Assassin        , woody_assassin_claire                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 5, 139, 48, 19, 16, 12, 6 , 1 , Alexis Cordova    , World Traveller       , world_traveller_alexis               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 4, 137, 59, 18, 7 , 9 , 3 , 12, Jenna Primbasch   , Wrong Place Wrong Time, wrong_place_wrong_time_jenna         , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 6, 144, 44, 9 , 15, 11, 12, 15, Carlie Morgan     , Yaht                  , yaht_carlie                          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 5, 118, 46, 4 , 19, 7 , 8 , 6 , Ester Cash        , Yogalicious           , yogalicious_ester                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+S, 3, 2, 121, 30, 12, 11, 15, 2 , 1 , Jenna & Aussie    , After Beach Specials  , after_beach_specials_jenna_and_aussie
+S, 3, 6, 97 , 51, 8 , 4 , 11, 15, 8 , Sophie Nicholson  , Beachfront            , beachfront_sophie                    
+S, 1, 3, 145, 33, 8 , 8 , 15, 6 , 12, Maya Lurch        , Caffine Girl          , caffine_girl_maya                    
+S, 2, 6, 114, 35, 16, 17, 6 , 4 , 4 , Sophie Nicholson  , Changing Model        , changing_model_sophie                
+S, 1, 3, 101, 43, 16, 18, 5 , 6 , 6 , Sofi              , Cutie Princess        , cutie_princess_sofi                  
+S, 2, 4, 142, 27, 15, 12, 15, 12, 1 , Tess Scott        , Diner                 , diner_tess                           
+S, 2, 4, 110, 20, 11, 14, 3 , 15, 6 , Carlie Morgan     , Dive                  , dive_carlie                          
+S, 4, 3, 89 , 33, 17, 14, 12, 8 , 10, Sophie Nicholson  , Emerald Wave Girl     , emerald_wave_girl_sophie             
+S, 4, 1, 87 , 31, 6 , 2 , 1 , 13, 10, Misha Frot        , Enticing              , enticing_misha                       
+S, 1, 4, 134, 43, 14, 20, 6 , 6 , 15, Alexis Cordova    , Entrancing            , entrancing_alexis                    
+S, 4, 3, 147, 56, 10, 3 , 11, 15, 2 , Zabrina Thien     , Fanatic Supporter     , fanatic_supporter_zabrina            
+S, 3, 2, 96 , 24, 4 , 3 , 7 , 12, 11, Carlie Morgan     , First Class           , first_class_carlie                   
+S, 0, 2, 85 , 28, 10, 5 , 9 , 2 , 11, Sydney Rodriguez  , Flanel Beauty         , flanel_beauty_sydney                 
+S, 2, 5, 128, 60, 16, 12, 12, 3 , 6 , Carlie Morgan     , Flower Garden         , flower_garden_carlie                 
+S, 1, 0, 120, 21, 17, 4 , 7 , 8 , 15, Sydney Rodriguez  , Hide And Bop          , hide_and_bop_sydney                  
+S, 1, 6, 119, 50, 18, 20, 12, 1 , 1 , Alexis Cordova    , High Flyer            , high_flyer_alexis                    
+S, 2, 4, 96 , 21, 3 , 13, 1 , 4 , 9 , Zabrina Thien     , Honolulu              , honolulu_zabrina                     
+S, 0, 2, 138, 35, 9 , 16, 1 , 15, 14, Alexis Cordova    , It                    , it_alexis                            
+S, 3, 6, 98 , 43, 18, 11, 7 , 13, 9 , Carlie Morgan     , I Like Trains         , I_like_trains_carlie                 
+S, 3, 5, 82 , 44, 10, 17, 7 , 14, 11, Alexis Cordova    , Maid Girl             , maid_girl_alexis                     
+S, 3, 4, 143, 28, 15, 15, 8 , 9 , 9 , Sophie Nicholson  , Malibu Queen          , malibu_queen_sophie                  
+S, 1, 6, 106, 49, 20, 9 , 12, 14, 15, Jenna & Shayna    , Marine Girls          , marine_girls_jenna_and_shayna        
+S, 0, 4, 98 , 50, 6 , 11, 14, 2 , 14, Alexis Cordova    , Meadow                , meadow_alexis                        
+S, 2, 2, 139, 37, 7 , 4 , 3 , 10, 5 , Alexis Cordova    , Perfection            , perfection_alexis                    
+S, 4, 6, 101, 60, 16, 20, 11, 4 , 3 , Jenna Primbasch   , Picnic Princess       , picnic_princess_jenna                
+S, 3, 6, 141, 35, 17, 19, 8 , 4 , 3 , Ester Cash        , Plains                , plains_ester                         
+S, 1, 3, 107, 39, 20, 6 , 6 , 5 , 15, Tess Scott        , Pool Extravagance     , pool_extravagance_tess               
+S, 4, 0, 149, 50, 10, 10, 5 , 14, 1 , Tess Scott        , Rich Wife             , rich_wife_tess                       
+S, 1, 2, 128, 29, 18, 16, 1 , 1 , 3 , Nicole Lowe       , Ring Princess         , ring_princess_nicole                 
+S, 0, 3, 127, 20, 19, 13, 10, 12, 1 , Carlie Morgan     , Rose Princess         , rose_princess_carlie                 
+S, 0, 6, 92 , 53, 13, 14, 4 , 1 , 1 , Sofi              , Ruby Wave Girl        , ruby_wave_girl_sofi                  
+S, 3, 2, 92 , 27, 3 , 2 , 5 , 5 , 6 , Carlie Morgan     , Sapphire Princess     , sapphire_princess_carlie             
+S, 2, 4, 116, 24, 10, 7 , 11, 11, 5 , Sofi              , Sapphire Wave Girl    , sapphire_wave_girl_sofi              
+S, 4, 1, 101, 45, 6 , 20, 10, 10, 13, Zabrina Thien     , Shrubby               , shrubby_zabrina                      
+S, 2, 6, 118, 24, 3 , 13, 11, 1 , 4 , Carlie Morgan     , Sk8t3r Gurl           , sk8t3r_gurl_carlie                   
+S, 1, 2, 88 , 40, 8 , 8 , 6 , 14, 10, Sophie Nicholson  , Skinny Dipper         , skinny_dipper_sophie                 
+S, 0, 5, 140, 32, 9 , 15, 1 , 3 , 15, Alexis Cordova    , Snow Princess         , snow_princess_alexis                 
+S, 3, 5, 117, 22, 10, 10, 9 , 6 , 12, Carlie Morgan     , Summer Camp           , summer_camp_carlie                   
+S, 4, 3, 145, 59, 14, 4 , 14, 2 , 8 , Arcie Galvan      , Throwback             , throwback_arcie                      
+S, 4, 2, 150, 38, 15, 20, 3 , 14, 4 , Tess Scott        , Triangal              , triangal_tess                        
+S, 1, 3, 119, 46, 4 , 20, 7 , 6 , 1 , Catherine Roman   , Upper Class           , upper_class_catherine                
+S, 3, 2, 92 , 58, 19, 5 , 11, 7 , 7 , Sophie Nicholson  , Vacationess           , vacationess_sophie                   
+S, 2, 5, 134, 48, 4 , 7 , 11, 6 , 8 , Sophie Nicholson  , Wallphant             , wallphant_sophie                     
+S, 4, 4, 121, 45, 6 , 6 , 13, 12, 9 , Zabrina Thien     , Water Park            , water_park_zabrina                   
+S, 4, 2, 95 , 50, 20, 6 , 2 , 11, 3 , Tess Scott        , Wine Girl             , wine_girl_tess                       

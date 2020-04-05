@@ -1,12 +1,12 @@
 # Internal Imports
+# External Imports
+import re
+
+from .Format import Format
+from .ResourceCache import BaseResourceCache
 from .utils.Type import Matrix
 from .utils.Utility import Utility
 
-from .ResourceCache import BaseResourceCache
-from .Format import Format
-
-# External Imports
-import re
 
 # Lots of code below is still experimental and may/will need to be changed
 # Most code below is a direct port and doesn't port the logic, meaning it will break immediately

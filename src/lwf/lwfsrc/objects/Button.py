@@ -1,9 +1,9 @@
 # Internal Imports
+from .IObject import IObject
+from ..Format import Format
+from ..utils.Constants import INT32_MINVALUE
 from ..utils.Type import Matrix, Action, Dictionary
 from ..utils.Utility import Utility
-from ..utils.Constants import INT32_MINVALUE
-from ..Format import Format
-from .IObject import IObject
 
 
 class ButtonEventHandler(Action):

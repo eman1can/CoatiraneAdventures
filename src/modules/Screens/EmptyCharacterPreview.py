@@ -1,52 +1,35 @@
-from kivy.properties import ObjectProperty, BooleanProperty
-from kivy.uix.screenmanager import Screen
-from kivy.uix.image import Image
-from src.modules.HTButton import HTButton
 from kivy.input.providers.wm_touch import WM_MotionEvent
+from kivy.properties import ObjectProperty, BooleanProperty
+
+from src.modules.KivyBase.Hoverable import ScreenH as Screen
+
 
 class EmptyCharacterPreviewScreen(Screen):
-    initialized = BooleanProperty(False)
-    main_screen = ObjectProperty(None)
     preview = ObjectProperty(None)
-
     locked = BooleanProperty(False)
+    do_hover = BooleanProperty(True)
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.name = 'empty'
-
         self._touch = None
-        self._size = (0, 0)
+        super().__init__(**kwargs)
 
-        self.button = HTButton(size_hint=(None, None), path='../res/screens/buttons/empty_overlay', on_touch_down=self.on_button_touch_down, on_touch_up=self.on_button_touch_up)
+    def is_valid_touch(self):
+        return self.preview.portfolio.is_current()
 
-        self.lock = Image(source="../res/screens/stats/lock.png", allow_stretch=True, size_hint=(None, None), opacity=0)
-
-        self.add_widget(self.button)
-        self.add_widget(self.lock)
-        self.initialized = True
-
-    def on_size(self, instance, size):
-        if not self.initialized or self._size == size:
-            return
-        self._size = size.copy()
-        self.button.size = size
-
-        self.lock.size = self.width * 0.3, self.width * 0.3
-        self.lock.pos = self.width - self.width * 0.3, self.height - self.width * 0.3
-
-    def is_valid_touch(self, instance, touch):
-        current = self.preview.parent.parent._parent.slots[self.preview.parent.parent._parent.index]
-        if current == self.preview.parent.parent:
+    def on_mouse_pos(self, hover):
+        if not self.collide_point(*hover.pos):
+            return False
+        if not self.do_hover:
+            return False
+        if self.ids.button.dispatch('on_mouse_pos', hover):
             return True
-        return False
 
     def update_lock(self, locked):
         self.locked = locked
         if self.locked:
-            self.lock.opacity = 1
+            self.ids.lock.opacity = 1
         else:
-            self.lock.opacity = 0
+            self.ids.lock.opacity = 0
 
     def on_button_touch_down(self, instance, touch):
         if instance.collide_point(*touch.pos):
@@ -56,7 +39,7 @@ class EmptyCharacterPreviewScreen(Screen):
     def on_button_touch_up(self, instance, touch):
         if touch.grab_current == self and not self.locked:
             touch.ungrab(self)
-            if self.is_valid_touch(instance, touch):
+            if self.is_valid_touch():
                 if isinstance(touch, WM_MotionEvent):
                     touch.button = 'left'
                 if touch.button != 'left' or self.preview.is_disabled:

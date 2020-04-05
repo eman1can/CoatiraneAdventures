@@ -1,18 +1,31 @@
-from kivy.config import Config
-Config.set('input', 'mouse', 'mouse, multitouch_on_demand')
-Config.set('kivy', 'exit_on_escape', 0)
-Config.set('kivy', 'window_icon', '../res/screens/icon.png')
-Config.set('graphics', 'fbo', 'hardware')
-Config.set('graphics', 'default_font', '../res/fnt/Gabriola.ttf')
+import os
+os.environ['KIVY_HOME'] = '../save/'
+
+from kivy.loader import Loader
+Loader.max_upload_per_frame = 3
+Loader.num_workers = 8
+
+from kivy.logger import Logger
+Logger.info('Loader: using a thread pool of {} workers'.format(Loader.num_workers))
+Logger.info('Loader: set max upload per fram to {}'.format(Loader.max_upload_per_frame))
+# from kivy.config import Config
+# Config.set('input', 'mouse', 'mouse, multitouch_on_demand')
+# Config.set('kivy', 'exit_on_escape', 0)
+# Config.set('kivy', 'window_icon', '../res/screens/icon.png')
+# Config.set('graphics', 'fbo', 'hardware')
+# Config.set('graphics', 'default_font', '../res/fnt/Gabriola.ttf')
 from kivy.utils import platform
 if platform == 'win':
-    Config.set('kivy', 'pause_on_minimize', 1)
-
+    Logger.info('CoatiraneAdventures: running on windows')
+#     Config.set('kivy', 'pause_on_minimize', 1)
+# Config.write()
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.uix.image import Image
-from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
+from src.modules.KivyBase.Hoverable import ScreenManagerH as ScreenManager, ScreenH as Screen, HoverEvent
+from src.modules.KivyBase.Hoverable import ImageH as Image
+from kivy.uix.screenmanager import FadeTransition
+from kivy.storage.jsonstore import JsonStore
 
 from src.entitites.Character.Character import Character, Move
 from src.entitites.Character.Familia import Familia
@@ -26,6 +39,7 @@ from src.modules.Screens.TavernMain import TavernMain
 from src.modules.Screens.RecruitPreview import RecruitPreview
 from src.modules.Screens.CharacterSelector import CharacterSelector
 import math
+
 
 class Root(ScreenManager):
     def __init__(self, moves, enemies, floors, familias, chars, **kwargs):
@@ -55,11 +69,13 @@ class Root(ScreenManager):
             self.parties.append([None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None])
 
         self.create_screen('new_game')
+        self.current = 'new_game'
+        self.initalized = True
+
+    def make_screens(self):
         self.create_screen('select_screen')
         for screen in self.whitelist:
             self.create_screen(screen)
-        self.current = 'new_game'
-        self.initalized = True
 
     def display_screen(self, next_screen, direction, track):
         old_screen = None
@@ -92,19 +108,19 @@ class Root(ScreenManager):
             if screen_current.name == screen_name:
                 return screen_current, False
         if screen_name == 'select_screen':
-            screen = SelectScreen(main_screen=self)
+            screen = SelectScreen()
         elif screen_name == 'new_game':
-            screen = NewGameScreen(main_screen=self)
+            screen = NewGameScreen()
         elif screen_name == 'town_screen':
-            screen = TownScreen(main_screen=self)
+            screen = TownScreen()
         elif screen_name == 'dungeon_main':
-            screen = DungeonMain(main_screen=self)
+            screen = DungeonMain()
         elif screen_name == 'tavern_main':
-            screen = TavernMain(main_screen=self)
+            screen = TavernMain()
         elif screen_name == 'select_char':
-            screen = CharacterSelector(main_screen=self)
+            screen = CharacterSelector()
         elif screen_name == 'recruit':
-            screen = RecruitPreview(character=args[0], viewed_characters=args[1], main_screen=self)
+            screen = RecruitPreview(character=args[0], viewed_characters=args[1])
         else:
             raise Exception("Unsupported Screen type", screen_name)
         screen.size = self.size
@@ -117,7 +133,7 @@ class Root(ScreenManager):
         self._size = size
 
         for child in self.screens:
-            print(child, self.size)
+            # print(child, self.size)
             child.size = self.size
 
 
@@ -127,10 +143,11 @@ class GameApp(App):
     def __init__(self, *args, **kwargs):
         Window.bind(on_resize=self.on_resize)
         Window.bind(on_request_close=self.close_window)
-        self.initalized = False
-        super().__init__(**kwargs)
         self.program_type = "test"
         self._size = (0, 0)
+        self._current = None
+        super().__init__(**kwargs)
+        self.initalized = False
 
     def build(self):
         if platform == 'win':
@@ -138,32 +155,41 @@ class GameApp(App):
             user32 = ctypes.windll.user32
             width = math.floor(user32.GetSystemMetrics(0) * 2 / 3)
             height = math.floor(user32.GetSystemMetrics(1) * 2 / 3)
+            App.get_running_app().width = width
+            App.get_running_app().heught = height
             Window.size = width, height
             Window.left = math.floor((user32.GetSystemMetrics(0) - width) / 2)
             Window.top = math.floor((user32.GetSystemMetrics(1) - height) / 2)
             Window.borderless = 0
+            Window.bind(mouse_pos=self.on_mouse_pos)
         elif platform == 'android' or platform == 'ios':
             width, height = Window.size
         else:
             raise Exception("Running on unsupported Platform!")
         self._size = (width, height)
         self.background = Image(source="../res/screens/game_bounds.png", allow_stretch=True, size=(width, height))
-        self.loading_screen = Image(source="../res/screens/splash.bmp", allow_stretch=True, keep_ratio=True, size=(width, height))
+        self.loading_screen = Image(source="../save/splash/splash.bmp", allow_stretch=True, keep_ratio=True, size=(width, height))
         self.background.add_widget(self.loading_screen)
         return self.background
 
     def load_game(self, dt):
+        print("Loading Ratios")
+        self.ratios = JsonStore('ratios.json')
+        print("Finished Loading Ratios")
+
         moves = self.build_moves()
         enemies = self.build_enemies(moves)
         familias = self.build_familias()
         chars = self.build_chars(moves, familias)
         floors = self.build_floors(enemies)
 
-        self.root = Root(moves, enemies, floors, familias, chars)
-        self.root.size = Window.size
+
+        self.main = Root(moves, enemies, floors, familias, chars)
+        self.main.make_screens()
+        self.main.size = Window.size
 
         self.background.remove_widget(self.loading_screen)
-        self.background.add_widget(self.root)
+        self.background.add_widget(self.main)
         self.initalized = True
 
     def close_window(self, *args):
@@ -179,12 +205,28 @@ class GameApp(App):
             quit()
 
     def on_pause(self):
-        pass  # Do Save game stuff
-
+        if platform == 'win':
+            return True
+        else:
+            #Save Game
+            return True
 
     def on_resize(self, *args):
         Clock.unschedule(self.fix_size)
         Clock.schedule_once(self.fix_size, .25)
+
+    def on_mouse_pos(self, instance, pos):
+        if not self.initalized:
+            return
+        # print("Window Pos ", pos)
+        hover = HoverEvent(*pos, self._current)
+        if self._current is not None:
+            if self._current.dispatch('on_mouse_pos', hover):
+                return
+            self._current = None
+        for child in Window.children:
+            if child.dispatch('on_mouse_pos', hover):
+                self._current = hover.grab_current
 
     def fix_size(self, *args):
         if not self.initalized or self._size == Window.size:
@@ -196,6 +238,23 @@ class GameApp(App):
 
         self.root.size = self.background.norm_image_size
         self.root.pos = offset
+
+    def get_dkey(self, key, x=None, y=None, z=None, w=None, t=None, u=None):
+        dict_key, v = key.split(' ')
+        d = self.ratios
+        for k in dict_key.split('.'):
+            d = d.get(k)
+        if v == 'p_h':
+            # print(d['p_h'])
+            values = d['p_h']
+            for key in values.keys():
+                if not isinstance(values[key], float) and not isinstance(values[key], int):
+                    values[key] = eval(values[key].format(x=x, y=y, z=z, w=w, t=t, u=u))
+            return values
+        elif v == 's' or v == 'p':
+            return eval(d[v + '_x'].format(x=x, y=y, z=z, w=w, t=t, u=u)), eval(d[v + '_y'].format(x=x, y=y, z=z, w=w, t=t, u=u))
+        else:
+            return eval(d[v].format(x=x, y=y, z=z, w=w, t=t, u=u))
 
     def build_moves(self):
         print("Loading Moves")
@@ -312,7 +371,7 @@ class GameApp(App):
                                      endurance_base=int(values[7]),
                                      dexterity_base=int(values[8]),
                                      agility_base=int(values[9]))
-                    char.load_elements()
+                    char.load_elements(self.background.norm_image_size)
                     characterArray.append(char)
                     count += 1
             file.close()
@@ -358,5 +417,5 @@ class GameApp(App):
 if __name__ == "__main__":
     game = GameApp()
     #The main game loop must be running before loading can take place, but running main loop will cancel game load id placed after
-    Clock.schedule_once(game.load_game, 2.5)
+    Clock.schedule_once(game.load_game, 5)
     game.run()

@@ -1,11 +1,12 @@
 # Internal Imports
-from .Type import ColorTransform, Matrix
-
-from ..Format import Format
-# from ..LWF import LWF
-
 # External Imports
 import math
+
+from .Type import ColorTransform, Matrix
+from ..Format import Format
+
+
+# from ..LWF import LWF
 
 
 class Utility:

@@ -1,16 +1,16 @@
+from kivy.app import App
 from kivy.properties import ObjectProperty, ListProperty, NumericProperty, BooleanProperty
-from kivy.uix.widget import Widget
 
+from src.modules.KivyBase.Hoverable import RelativeLayoutH as RelativeLayout
 from src.modules.Screens.CharacterPreview import CharacterPreview
 
 
-class CharacterPortfolio(Widget):
-    initialized = BooleanProperty(False)
-    main_screen = ObjectProperty(None)
+class CharacterPortfolio(RelativeLayout):
     dungeon = ObjectProperty(None)
     party = ListProperty(None)
     party_index = NumericProperty(None)
     previews = ListProperty([])
+    locked = BooleanProperty(False)
 
     slot_x = NumericProperty(0)
     slot_size = ListProperty([0, 0])
@@ -19,46 +19,25 @@ class CharacterPortfolio(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self._size = (0, 0)
-        self._pos = (0, 0)
-
         for x in range(0, 8):
             char = self.party[x]
             support = self.party[x + 8]
-            preview = CharacterPreview(main_screen=self.main_screen, dungeon=self.dungeon, is_select=False, char=char, support=support, index=x)
-
+            preview = CharacterPreview(dungeon=self.dungeon, portfolio=self, is_select=False, char=char, support=support,
+                                       index=x, id='char_preview - ' + str(x), size_hint=(0.1069, 0.9), pos_hint=({'y': 0, 'center_x': 0.10625 + 0.1125 * x}))
             self.previews.append(preview)
             self.add_widget(preview)
-        self.initialized = True
-
-    def on_size(self, instance, size):
-        if not self.initialized or self._size == size:
-            return
-        self._size = size.copy()
-
-        self.slot_x = self.height * 250 / 935
-        self.slot_size = self.slot_x, self.height
-        self.spacer_x = (self.width - self.slot_x * 8) / (8 + 1)
-
-        current_pos = self.x + self.spacer_x
-        for preview in self.previews:
-            preview.size = self.slot_size
-            preview.pos = current_pos, self.y
-            current_pos += self.spacer_x + self.slot_x
 
     def update_lock(self, locked):
+        self.locked = int(locked)
         for preview in self.previews:
             preview.update_lock(locked)
 
-    def on_pos(self, instance, pos):
-        if not self.initialized or self._pos == pos:
-            return
-        self._pos = pos.copy()
-
-        current_pos = self.x + self.spacer_x
+    def on_mouse_pos(self, hover):
+        if not self.collide_point(*hover.pos):
+            return False
         for preview in self.previews:
-            preview.pos = current_pos, self.y
-            current_pos += self.spacer_x + self.slot_x
+            if preview.dispatch('on_mouse_pos', hover):
+                return True
 
     def get_party_score(self):
         party_score = 0
@@ -69,19 +48,21 @@ class CharacterPortfolio(Widget):
     def party_change(self, preview, char, support):
         self.party[preview.index] = char
         self.party[preview.index + 8] = support
-        self.main_screen.parties[self.party_index + 1] = self.party
+        App.get_running_app().main.parties[self.party_index] = self.party
+
+    def is_current(self):
+        return self.parent.parent.check_current(self)
 
     def resolve(self, dest, character, support):
         # if selecting a support that is already selected
         # -> move support
-        # if selectign a character that ios already selected that has no support
+        # if selecting a character that ios already selected that has no support
         # -> move character
-        # if selectign a character that is already selected and has a support
+        # if selecting a character that is already selected and has a support
         # -> move character and support
         for preview in self.previews:
             if preview != dest:
                 if preview.char == character:
-                    # print("Char: ", character.get_name(), " in a preview. Setting to: ", dest.char.get_name(), dest.support.get_name())
                     if dest.char is not None:
                         support = preview.support
                         preview.set_char_screen(False, dest.char, dest.support)
@@ -90,8 +71,6 @@ class CharacterPortfolio(Widget):
                         preview.set_empty()
                         return None
                 elif support is not None and preview.support == support:
-                    # move support
-                    # print("Support: ", character.get_name(), " in a preview. Setting to: ", dest.support.get_name())
                     preview.set_char_screen(False, preview.char, dest.support)
                     return None
 

@@ -1,76 +1,39 @@
-from kivy.properties import ObjectProperty, BooleanProperty
-from kivy.uix.screenmanager import Screen
-from kivy.uix.image import Image
-from kivy.uix.label import Label
-from kivy.uix.screenmanager import SlideTransition, RiseInTransition, SwapTransition
-from kivy.core.audio import SoundLoader
-
 import random
+from kivy.app import App
+from kivy.core.audio import SoundLoader
+from kivy.core.image import Image
+from kivy.properties import ObjectProperty
+from kivy.uix.screenmanager import SwapTransition
 
-from src.modules.HTButton import HTButton
+from src.modules.KivyBase.Hoverable import ScreenH as Screen
 from src.modules.NoRecruit import NoRecruitWidget
 
+
 class TavernMain(Screen):
-    initialized = BooleanProperty(False)
     main_screen = ObjectProperty(None)
+    background_texture = ObjectProperty(None, allownone=True)
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.name = 'tavern_main'
-
-        self._size = (0, 0)
-
-        self.background = Image(allow_stretch=True, keep_ratio=True, source='../res/screens/backgrounds/collage.png', size_hint=(None, None))
-        self.title = Label(text="[b]Recruitment[/b]", markup=True, color=(1, 1, 1, 1), size_hint=(None, None), font_name='../res/fnt/Precious.ttf', outline_width=2, outline_color=(0, 0, 0, 1))
-
-        self.recruit_button = HTButton(path='../res/screens/buttons/recruit_button', size_hint=(None, None), collide_image="../res/screens/buttons/largebutton.collision.png", text="Recruit", font_name='../res/fnt/Precious.ttf', label_color=(1, 1, 1, 1), on_release=self.on_recruit)
-        self.back_button = HTButton(path='../res/screens/buttons/back', size_hint=(None, None), on_release=self.on_back_press)
-
-        self.no_recruits = NoRecruitWidget()
-
+        self.background_texture = Image('../res/screens/backgrounds/collage.png').texture
         self.sound = SoundLoader.load('../res/snd/recruit.wav')
-
-        self.add_widget(self.background)
-        self.add_widget(self.title)
-        self.add_widget(self.recruit_button)
-        self.add_widget(self.back_button)
-        self.initialized = True
-
-    def on_size(self, instance, size):
-        if not self.initialized or self._size == size:
-            return
-        self._size = size.copy()
-
-        self.background.size = self.size
-        self.no_recruits.size = self.size
-
-        self.title.font_size = self.width * 0.0725
-        self.title.texture_update()
-        self.title.size = self.title.texture_size
-        self.title.pos = self.width * 0.2, self.height * 0.95 - self.title.height
-
-        self.recruit_button.size = self.height * 0.15 * 1016 / 716, self.height * 0.15
-        self.recruit_button.pos = self.width * 0.5 - self.recruit_button.width * 0.5, self.height * 0.1
-        self.recruit_button.font_size = self.recruit_button.height * 0.1875
-        self.recruit_button.label_padding = [0, self.recruit_button.height * 0.4, 0, 0]
-
-        self.back_button.size = self.width * .05, self.width * .05
-        self.back_button.pos = 0, self.height - self.back_button.height
+        self.no_recruits = NoRecruitWidget()
+        super().__init__(**kwargs)
 
     def reload(self):
         pass
 
-    def on_recruit(self, instance):
-        if len(self.main_screen.obtained_characters) == len(self.main_screen.characters):
-            self.add_widget(self.no_recruits)
+    def on_recruit(self):
+        root = App.get_running_app().main
+        if len(root.obtained_characters) == len(root.characters):
+            self.no_recruits.open()
         else:
-            unobtained_characters = [char for char in self.main_screen.characters if char.index not in self.main_screen.obtained_characters]
+            unobtained_characters = [char for char in root.characters if char.index not in root.obtained_characters]
             index = random.randint(0, len(unobtained_characters) - 1)
             viewed_characters = [unobtained_characters[index]]
-            self.main_screen.create_screen('recruit', unobtained_characters[index], viewed_characters)
-            self.main_screen.transition = SwapTransition(duration=2)
+            root.create_screen('recruit', unobtained_characters[index], viewed_characters)
+            root.transition = SwapTransition(duration=2)
             self.sound.play()
-            self.main_screen.display_screen('recruit_' + unobtained_characters[index].get_id(), True, True)
+            root.display_screen('recruit_' + unobtained_characters[index].get_id(), True, True)
 
-    def on_back_press(self, instance):
-        self.main_screen.display_screen(None, False, False)
+    def on_back_press(self):
+        App.get_running_app().main.display_screen(None, False, False)

@@ -1,9 +1,8 @@
 # Internal Imports
-from .Object import Object
 from .Bitmap import Bitmap
 from .BitmapEx import BitmapEx
+from .Object import Object
 from .Text import Text
-
 from ..Format import Format
 
 

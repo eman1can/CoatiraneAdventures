@@ -1,9 +1,9 @@
 # Internal Imports
-from ..utils.Type import Matrix, ColorTransform
-from ..utils.Constants import INT32_MINVALUE
-
 # External imports
 import math
+
+from ..utils.Constants import INT32_MINVALUE
+from ..utils.Type import Matrix, ColorTransform
 
 
 class Property:

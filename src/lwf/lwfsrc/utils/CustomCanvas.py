@@ -1,12 +1,13 @@
 # Internal Imports
-from .Type import Color
+import re
+from itertools import chain
 
 # External Imports
 from kivy.graphics import InstructionGroup, PopMatrix, PushMatrix, Scale, Translate, Rectangle
 from kivy.graphics.texture import Texture
 from kivy.uix.widget import Widget
-from itertools import chain
-import re
+
+from .Type import Color
 
 
 class CustomCanvas(Widget):

@@ -1,25 +1,23 @@
 # Internal Imports
+import math
+from datetime import datetime
+# External Imports
+from typing import List
+
+from .Core import MaskModes, BlendModes, AllowButtonList, DenyButtonList, ExecHandlerList
+from .Format import Format
+from .RenderFactory import NullRendererFactory
+from .objects.Button import Button, ButtonEventHandlers, ButtonEventHandlersDictionary
+from .objects.Event import EventHandlerDictionary, GenericEventHandlerDictionary
+from .objects.IObject import IObject
+from .objects.Movie import MovieCommands, Movie, MovieEventHandlers, MovieEventHandlersDictionary
+from .objects.ProgramObject import ProgramObjectConstructor
+from .objects.Property import Property
+from .objects.Text import TextDictionary, TextDictionaryItem
+from .utils.Animation import *
 from .utils.Constants import SINGLE_MINVALUE, INT32_MINVALUE
 from .utils.Type import Matrix, ColorTransform, HandlerWrapper
 from .utils.Utility import Utility
-from .utils.Animation import *
-
-from .objects.Event import EventHandlerDictionary, GenericEventHandlerDictionary
-from .objects.Property import Property
-from .objects.IObject import IObject
-from .objects.Button import Button, ButtonEventHandlers, ButtonEventHandlersDictionary
-from .objects.Movie import MovieCommands, Movie, MovieEventHandlers, MovieEventHandlersDictionary
-from .objects.ProgramObject import ProgramObjectConstructor
-from .objects.Text import TextDictionary, TextDictionaryItem
-
-from .RenderFactory import NullRendererFactory
-from .Format import Format
-from .Core import MaskModes, BlendModes, AllowButtonList, DenyButtonList, ExecHandlerList
-
-# External Imports
-from typing import List
-from datetime import datetime
-import math
 
 
 class LWF:

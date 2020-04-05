@@ -1,13 +1,11 @@
+from time import time
+
 from kivy.clock import Clock
 from kivy.config import Config
-from kivy.uix.widget import Widget
-from kivy.uix.label import Label
-from kivy.uix.image import Image
-from kivy.core.window import Window
-from kivy.properties import BooleanProperty, NumericProperty, ReferenceListProperty, StringProperty, ListProperty, OptionProperty, ObjectProperty
-from kivy.graphics import PushMatrix, PopMatrix, Rotate
+from kivy.core.image import Image
+from kivy.properties import BooleanProperty, NumericProperty, StringProperty, ListProperty, OptionProperty, ObjectProperty
 
-from time import time
+from src.modules.KivyBase.Hoverable import WidgetH as Widget
 
 
 class HTButton(Widget):
@@ -31,14 +29,13 @@ class HTButton(Widget):
     toggle_state = BooleanProperty(False)
 
     # Button Properties
-    angle = NumericProperty(0.0)
-    allow_stretch = BooleanProperty(True)
-
+    texture = ObjectProperty(None, allownone=True)
     state = OptionProperty('normal', options=('normal', 'down', 'hover_normal', 'hover_down'))
     last_touch = ObjectProperty(None)
     min_state_time = NumericProperty(0)
     always_release = BooleanProperty(False)
 
+    path_set = BooleanProperty(False)
     path = StringProperty('')
     collide_image = StringProperty('')
     background_normal = StringProperty('')
@@ -48,6 +45,13 @@ class HTButton(Widget):
     background_hover = StringProperty('')
     background_hover_down = StringProperty('')
 
+    background_normal_texture = ObjectProperty(None)
+    background_disabled_normal_texture = ObjectProperty(None)
+    background_down_texture = ObjectProperty(None)
+    background_disabled_down_texture = ObjectProperty(None)
+    background_hover_texture = ObjectProperty(None)
+    background_hover_down_texture = ObjectProperty(None)
+
     def __init__(self, **kwargs):
         self.register_event_type('on_press')
         self.register_event_type('on_release')
@@ -56,71 +60,75 @@ class HTButton(Widget):
 
         if 'min_state_time' not in kwargs:
             self.min_state_time = float(Config.get('graphics', 'min_state_time'))
-        Window.bind(mouse_pos=self.on_mouse_pos)
+        self._collide_image = None
         super().__init__(**kwargs)
 
-        self._size = (0, 0)
-        self._pos = (-1, -1)
-
-        self.rotate = Rotate(angle=self.angle)
-
-        if self.hover_rect != [0, 0, 0, 0]:
-            self._static_hover = True
-
-        if self.collide_image == '':
-            self.collide_image = self.path + ".collision.png"
-        if self.background_normal == '':
-            self.background_normal = self.path + ".normal.png"
-        if self.background_down == '':
-            self.background_down = self.path + ".down.png"
-        if self.background_hover == '':
-            self.background_hover = self.path + ".hover.png"
-        if self.background_hover_down == '':
-            self.background_hover_down = self.path + '.hover.down.png'
-        if self.background_disabled_normal == '':
-            self.background_disabled_normal = self.path + '.disabled.normal.png'
-        if self.background_disabled_down == '':
-            self.background_disabled_down = self.path + '.disabled.down.png'
-
-        self.disabled = False
-
-        self._collide_image = Image(source=self.collide_image, keep_data=True)._coreimage
-        self.image = Image(source=self.background_normal, allow_stretch=self.allow_stretch)
-        self.label = Label(text=self.text, font_size=self.font_size, font_name=self.font_name, color=self.label_color, size_hint=(None, None))
-
-        self.add_widget(self.image)
-        self.add_widget(self.label)
-        if self.toggle_enabled and self.toggle_state:
+    def on_toggle_enabled(self, instance, value):
+        if self.toggle_state:
             self.state = 'down'
-        self.initialized = True
 
-    # def update_canvas(self, *args):
-    #     self.rotate.origin = self.center
+    def on_toggle_state(self, instance,  value):
+        if value is not None:
+            if self.state.startswith('hover_'):
+                if self.state == 'hover_normal':
+                    self.state = 'hover_down'
+                else:
+                    self.state = 'hover_normal'
+            elif self.state == 'normal':
+                self.state = 'down'
+            else:
+                self.state = 'normal'
 
-    def on_size(self, instance, size):
-        if not self.initialized or self._size == size:
-            return
-        self._size = size.copy()
+        else:
+            self.state = 'normal'
 
-        self.image.size = self.size
-        if not self._static_hover:
-            self.hover_rect[2] = self.width
-            self.hover_rect[3] = self.height
-        self.label.size = self.width - self.label_padding[0] - self.label_padding[2], self.height - self.label_padding[1] - self.label_padding[3]
-        self.label.pos = self.x + self.label_padding[0], self.y + self.label_padding[3]
+    def on_path(self, instance, path):
+        if not self.path_set:
+            self.path_set = True
+            if self.collide_image == '':
+                self.collide_image = self.path + ".collision.png"
+            if self.background_normal == '':
+                self.background_normal = self.path + ".normal.png"
+            if self.background_down == '':
+                self.background_down = self.path + ".down.png"
+            if self.background_hover == '':
+                self.background_hover = self.path + ".hover.png"
+            if self.background_hover_down == '':
+                self.background_hover_down = self.path + '.hover.down.png'
+            if self.background_disabled_normal == '':
+                self.background_disabled_normal = self.path + '.disabled.normal.png'
+            if self.background_disabled_down == '':
+                self.background_disabled_down = self.path + '.disabled.down.png'
+        else:
+            if self.collide_image != '':
+                self.collide_image = self.path + ".collision.png"
+            if self.background_normal != '':
+                self.background_normal = self.path + ".normal.png"
+            if self.background_down != '':
+                self.background_down = self.path + ".down.png"
+            if self.background_hover != '':
+                self.background_hover = self.path + ".hover.png"
+            if self.background_hover_down != '':
+                self.background_hover_down = self.path + '.hover.down.png'
+            if self.background_disabled_normal != '':
+                self.background_disabled_normal = self.path + '.disabled.normal.png'
+            if self.background_disabled_down != '':
+                self.background_disabled_down = self.path + '.disabled.down.png'
 
-    def on_pos(self, instance, pos):
-        if not self.initialized or self._pos == pos:
-            return
-        self._pos = pos.copy()
+    def on_collide_image(self, instance, collide_image):
+        if self.collide_image != '' and self.collide_image is not None:
+            try:
+                self._collide_image = Image(self.collide_image)
+            except:
+                self._collide_image = None
 
-        self.on_mouse_pos(instance, pos)
+    def on_background_normal(self, instance, value):
+        if self.background_normal != '':
+            self.texture = Image(self.background_normal).texture
 
-        self.image.pos = self.pos
-        if not self._static_hover:
-            self.hover_rect[0] = self.x
-            self.hover_rect[1] = self.y
-        self.label.pos = self.x + self.label_padding[0], self.y + self.label_padding[3]
+    def on_hover_rect(self, instance, value):
+        if self.hover_rect != [self.x, self.y, self.width, self.height]:
+            self._static_hover = True
 
     def collide_point(self, x, y):
         if self.x <= x <= self.right and self.y <= y <= self.top:
@@ -134,57 +142,96 @@ class HTButton(Widget):
         return False
 
     def on_state(self, instance, state):
-        if state == 'normal':
-            if not self.disabled:
-                self.image.source = self.background_normal
-            else:
-                self.image.source = self.background_disabled_normal
-        elif state == 'down':
-            if not self.disabled:
-                self.image.source = self.background_down
-            else:
-                self.image.source = self.background_disabled_normal
-        elif state == 'hover_normal':
-            self.image.source = self.background_hover
-        elif state == 'hover_down':
-            self.image.source = self.background_hover_down
+        try:
+            if state == 'normal':
+                if not self.disabled:
+                    if self.background_normal_texture is None:
+                        self.background_normal_texture = Image(self.background_normal).texture
+                    self.texture = self.background_normal_texture
+                else:
+                    if self.background_disabled_normal_texture is None:
+                        self.background_disabled_normal_texture = Image(self.background_disabled_normal).texture
+                    self.texture = self.background_disabled_normal_texture
+            elif state == 'down':
+                if not self.disabled:
+                    if self.background_down_texture is None:
+                        self.background_down_texture = Image(self.background_down).texture
+                    self.texture = self.background_down_texture
+                else:
+                    if self.background_disabled_down_texture is None:
+                        self.background_disabled_down_texture = Image(self.background_disabled_down).texture
+                    self.texture = self.background_disabled_down_texture
+            elif state == 'hover_normal':
+                if self.background_hover_texture is None:
+                    self.background_hover_texture = Image(self.background_hover).texture
+                self.texture = self.background_hover_texture
+            elif state == 'hover_down':
+                if self.background_hover_down_texture is None:
+                    self.background_hover_down_texture = Image(self.background_hover_down).texture
+                self.texture = self.background_hover_down_texture
+        except:
+            self.texture = None
 
     def on_disabled(self, instance, disabled):
+        if not self.initialized:
+            return
         if self.state == 'hover_normal' or self.state == 'hover_down':
             raise Exception("Change ya timing dude!")
         else:
             if self.state == 'normal':
-                self.image.source = self.background_disabled_normal if self.disabled else self.background_normal
+                self.texture = Image(self.background_disabled_normal).texture if self.disabled else Image(self.background_normal).texture
             else:
-                self.image.source = self.background_disabled_down if self.disabled else self.background_down
+                self.texture = Image(self.background_disabled_down).texture if self.disabled else Image(self.background_down).texture
 
-    def on_mouse_pos(self, instance, pos):
-        if not self.get_root_window() or not self.do_hover:
-            return
-        # do proceed if I'm not displayed <=> If have no parent
-        x, y = pos if self._static_hover else self.to_widget(*pos)
-        inside = self.collide_point(*self.to_widget(*pos))
-        inside &= self.hover_rect[0] <= x <= self.hover_rect[0] + self.hover_rect[2] \
-             and self.hover_rect[1] <= y <= self.hover_rect[1] + self.hover_rect[3]
-        if self.hovered == inside or self.disabled:
-            return
-        self.hovered = inside
+    def on_mouse_pos(self, hover):
+        if hover.grab_current is not None:
+            # print("Hover is not None")
+            if hover.grab_current != self:
+                # print("Not grabbed by self")
+                return False
 
-        if not inside and self.state.startswith('hover'):
-            self.state = self.state[6:]
-        elif inside and not self.state.startswith('hover'):
-            self.state = 'hover_' + self.state
+            x, y = hover.pos if self._static_hover else self.to_widget(*hover.pos)
+            inside = self.collide_point(*self.to_widget(*hover.pos))
+            x2, y2 = self.to_widget(*hover.pos)
+            # print(self.ids.label.text, " -> ", self.x, x2, self.right, self.y, y2, self.top)
+            inside &= self.hover_rect[0] <= x <= self.hover_rect[0] + self.hover_rect[2] and self.hover_rect[1] <= y <= self.hover_rect[1] + self.hover_rect[3]
+            # print(self.ids.label.text, " -> ", self.hover_rect[0], x, self.hover_rect[0] + self.hover_rect[2], self.hover_rect[1], y2, self.hover_rect[1] + self.hover_rect[3])
+
+            if not inside:
+                # print("ungrabbing")
+                if self.state.startswith('hover_'):
+                    self.state = self.state[6:]
+                hover.ungrab(self)
+                return False
+            return True
+        elif not self.get_root_window() or not self.do_hover:
+            return False
+
+        if self.disabled:
+            return False
+
+        x, y = hover.pos if self._static_hover else self.to_widget(*hover.pos)
+        inside = self.collide_point(*self.to_widget(*hover.pos))
+        x2, y2 = self.to_widget(*hover.pos)
+        # print(self.ids.label.text, " -> ", self.x, x2, self.right, self.y, y2, self.top)
+        inside &= self.hover_rect[0] <= x <= self.hover_rect[0] + self.hover_rect[2] and self.hover_rect[1] <= y <= self.hover_rect[1] + self.hover_rect[3]
+        # print(self.ids.label.text, " -> ", self.hover_rect[0], x, self.hover_rect[0] + self.hover_rect[2], self.hover_rect[1], y2, self.hover_rect[1] + self.hover_rect[3])
+
+        if not inside:
+            # print("outside")
+            return False
+        else:
+            # print("grabbing")
+            if not self.state.startswith('hover_'):
+                self.state = 'hover_' + self.state
+            hover.grab(self)
+            return True
 
     def _do_press(self):
-        if self.toggle_enabled:
-            self.toggle_state = not self.toggle_state
-            if not self.state.startswith('hover'):
-                self.state = 'down' if self.toggle_state else 'normal'
-            else:
-                if self.do_hover:
-                    self.state = 'hover_down' if self.toggle_state else 'hover_normal'
+        if not self.toggle_enabled:
+                self.state = 'down'
         else:
-            self.state = 'down'
+            self.toggle_state = not self.toggle_state
 
     def _do_release(self, *args):
         if not self.toggle_enabled:
@@ -196,18 +243,25 @@ class HTButton(Widget):
             self.__state_event = None
 
     def on_touch_down(self, touch):
+        # print("Touch Button")
         if 'button' in touch.profile and touch.button.startswith('scroll'):
             return False
+        # print("No a scroll")
         if super().on_touch_down(touch):
             return True
+        # print("Not inherited")
         if self.disabled:
             return False
+        # print("Not disabled")
         if touch.is_mouse_scrolling:
             return False
+        # print("Not scrolling")
         if not self.collide_point(touch.x, touch.y):
             return False
+        # print("inside")
         if self in touch.ud:
             return False
+        # print("not already consumed")
         touch.grab(self)
         touch.ud[self] = True
         self.last_touch = touch
@@ -280,35 +334,3 @@ class HTButton(Widget):
             trigger_release(0)
         else:
             Clock.schedule_once(trigger_release, duration)
-
-    # Label Events
-    def on_text(self, instance, text):
-        if not self.initialized:
-            return
-
-        self.label.text = self.text
-
-    def on_font_name(self, instance, font_name):
-        if not self.initialized:
-            return
-
-        self.label.font_name = self.font_name
-
-    def on_font_size(self, instance, font_size):
-        if not self.initialized:
-            return
-
-        self.label.font_size = self.font_size
-
-    def on_label_color(self, instance, label_color):
-        if not self.initialized:
-            return
-
-        self.label.color = self.label_color
-
-    def on_label_padding(self, instance, label_padding):
-        if not self.initialized:
-            return
-
-        self.label.size = self.width - self.label_padding[0] - self.label_padding[2], self.height - self.label_padding[1] - self.label_padding[3]
-        self.label.pos = self.x + self.label_padding[0], self.y + self.label_padding[3]

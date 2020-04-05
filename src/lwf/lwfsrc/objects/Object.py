@@ -1,9 +1,8 @@
 # Internal Imports
-from ..utils.Type import Matrix, ColorTransform
-from ..utils.Constants import INT32_MINVALUE
-from ..utils.Utility import Utility
-
 from ..Format import Format
+from ..utils.Constants import INT32_MINVALUE
+from ..utils.Type import Matrix, ColorTransform
+from ..utils.Utility import Utility
 
 
 class Object:
