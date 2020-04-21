@@ -6,11 +6,6 @@ from kivy.uix.recycleview import RecycleView
 from src.modules.Filterable import Filterable
 from src.modules.Sortable import Sortable
 
-#Needed to avoid packaging errors
-
-from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreview
-from src.modules.Screens.SquareCharacterPreview import SquareCharacterPreview
-
 
 class RecyclePreview(RecycleView, Filterable, Sortable):
     preview = ObjectProperty(None)

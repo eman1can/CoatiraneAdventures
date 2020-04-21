@@ -4,8 +4,8 @@ from kivy.properties import BooleanProperty, ObjectProperty
 
 from src.modules.Filterable import FilterWidget
 from src.modules.KivyBase.Hoverable import ScreenH as Screen
-from src.modules.Screens.ScrollPreview import RecyclePreview
-from src.modules.Screens.SinglePreview import SinglePreview
+from src.modules.Screens.CharacterDisplay.ScrollPreview import RecyclePreview
+from src.modules.Screens.CharacterDisplay.SinglePreview import SinglePreview
 from src.modules.Sortable import SortWidget
 
 
@@ -161,11 +161,9 @@ class CharacterSelector(Screen):
         pass
 
     def on_scroll(self):
-        print("Swap")
         self.multi.do_scroll()
 
     def on_grid(self):
-        print("Swap")
         self.multi.do_grid()
 
     def on_sort(self):
@@ -176,6 +174,7 @@ class CharacterSelector(Screen):
         self.sort.open()
 
     def do_sort(self, instance, type):
+        self.reset_scroll()
         if type == 'Ascending':
             self.multi.ascending = False
         elif type == 'Descending':
@@ -203,12 +202,17 @@ class CharacterSelector(Screen):
             self.multi.filters_applied.append(filter)
 
     def do_filter(self):
+        self.reset_scroll()
         self.multi.filter()
         self.close_filter()
         self.update_number(len(self.multi.previews_sort))
 
     def update_number(self, number):
         self.ids.number.text = str(number)
+
+    def reset_scroll(self):
+        self.multi.scroll_x = 0
+        self.multi.scroll_y = 1
 
     def on_back_press(self):
         if not self.ids.back.disabled:
