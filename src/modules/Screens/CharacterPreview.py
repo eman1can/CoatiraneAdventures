@@ -2,8 +2,8 @@ from kivy.app import App
 from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty
 
 from src.modules.KivyBase.Hoverable import ScreenManagerH as ScreenManager
-from src.modules.Screens.EmptyCharacterPreview import EmptyCharacterPreviewScreen
-from src.modules.Screens.FilledCharacterPreview import FilledCharacterPreviewScreen
+from src.modules.Screens.CharacterDisplay.EmptyCharacterPreview import EmptyCharacterPreviewScreen
+from src.modules.Screens.CharacterDisplay.FilledCharacterPreview import FilledCharacterPreviewScreen
 
 
 class CharacterPreview(ScreenManager):

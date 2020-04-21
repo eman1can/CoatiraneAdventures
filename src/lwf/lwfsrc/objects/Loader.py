@@ -11,8 +11,6 @@ class Loader:
     def load(d):
         if not d or not isinstance(d, bytes):
             return
-        print("Loading Data!")
-        print(d)
         return Data(d)
 
     @staticmethod

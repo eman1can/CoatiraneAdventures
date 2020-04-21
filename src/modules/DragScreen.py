@@ -7,11 +7,11 @@ from src.modules.KivyBase.Hoverable import CarouselH as Carousel
 
 
 class DragSnapWidget(Carousel):
-    main_screen = ObjectProperty(None)
     dungeon = ObjectProperty(None)
     locked = BooleanProperty(False)
 
     def __init__(self, **kwargs):
+        self.register_event_type('on_change')
         super().__init__(**kwargs)
 
     def check_current(self, instance):
@@ -41,10 +41,10 @@ class DragSnapWidget(Carousel):
         return self.current_slide.get_party_score()
 
     def on_current_slide(self, *args):
-        if self.dungeon is not None:
-            self.dungeon.on_widget_move()
-        if self.index is not None:
-            App.get_running_app().main.parties[0] = self.index
+        self.dispatch('on_change', self.index)
+
+    def on_change(self, *args):
+        pass
 
     def load_next(self, mode='next'):
         '''Animate to the next slide.
