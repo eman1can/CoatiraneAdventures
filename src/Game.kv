@@ -14,6 +14,7 @@
 #:import FilledCharacterPreview src.modules.Screens.CharacterDisplay.FilledCharacterPreview.FilledCharacterPreview
 #:import SquareCharacterPreview src.modules.Screens.CharacterDisplay.SquareCharacterPreview.SquareCharacterPreview
 #:import DragSnapWidget src.modules.DragScreen.DragSnapWidget
+#:import PartyIndexer src.modules.PartyIndexer.PartyIndexer
 
 <NewGameScreen>:
     name: 'new_game'
@@ -481,9 +482,15 @@
     DragSnapWidget:
         id: portfolio
         loop: True
-        on_change: root.on_widget_move(self.index)
+        on_change:
+            root.on_widget_move(self.index)
+            indexer.update_sources()
         size_hint: app.get_dkey('dm.cp s_h')
         pos_hint: app.get_dkey('dm.cp p_h')
+    PartyIndexer:
+        id: indexer
+        size_hint: app.get_dkey('dm.ind s_h')
+        pos_hint: app.get_dkey('dm.ind p_h')
     HTButton:
         id: left_arrow
         path: '../res/screens/buttons/ArrowLeft'
@@ -503,6 +510,68 @@
 
 <DragSnapWidget>:
     min_move: 0.3
+
+<PartyIndexer>:
+    ImageH:
+        id: point_1
+        source: root.sources[0]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.1 p_h')
+    ImageH:
+        id: point_2
+        source: root.sources[1]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.2 p_h')
+    ImageH:
+        id: point_3
+        source: root.sources[2]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.3 p_h')
+    ImageH:
+        id: point_4
+        source: root.sources[3]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.4 p_h')
+    ImageH:
+        id: point_5
+        source: root.sources[4]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.5 p_h')
+    ImageH:
+        id: point_6
+        source: root.sources[5]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.6 p_h')
+    ImageH:
+        id: point_7
+        source: root.sources[6]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.7 p_h')
+    ImageH:
+        id: point_8
+        source: root.sources[7]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.8 p_h')
+    ImageH:
+        id: point_9
+        source: root.sources[8]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.9 p_h')
+    ImageH:
+        id: point_10
+        source: root.sources[9]
+        allow_stretch: True
+        size_hint: app.get_dkey('dm.ind.p s_h')
+        pos_hint: app.get_dkey('dm.ind.p.10 p_h')
 
 <CharacterPortfolio>:
     LabelH:

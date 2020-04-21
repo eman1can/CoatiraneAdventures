@@ -116,8 +116,10 @@ class Root(ScreenManager):
         elif screen_name == 'recruit':
             screen = RecruitPreview(character=args[0], viewed_characters=args[1])
         elif screen_name.startswith('status_board'):
+            self.whitelist.append(screen_name)
             screen = StatusBoardManager(char=args[0])
         elif screen_name.startswith('image_preview'):
+            self.whitelist.append(screen_name)
             screen = ImagePreview(char=args[0])
         else:
             raise Exception("Unsupported Screen type", screen_name)
