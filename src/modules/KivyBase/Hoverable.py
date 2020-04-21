@@ -12,6 +12,7 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.stencilview import StencilView
 from kivy.uix.widget import Widget
+from kivy.uix.scrollview import ScrollView
 
 
 class HoverEvent(object):
@@ -213,6 +214,19 @@ class RelativeLayoutH(RelativeLayout):
 
 
 class BoxLayoutH(BoxLayout):
+    def __init__(self, **kwargs):
+        self.register_event_type('on_mouse_pos')
+        super().__init__(**kwargs)
+
+    def on_mouse_pos(self, hover):
+        if not self.collide_point(*hover.pos):
+            return False
+        for child in self.children:
+            if child.dispatch('on_mouse_pos', hover):
+                return True
+
+
+class ScrollViewH(ScrollView):
     def __init__(self, **kwargs):
         self.register_event_type('on_mouse_pos')
         super().__init__(**kwargs)

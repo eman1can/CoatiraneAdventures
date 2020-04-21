@@ -1,4 +1,7 @@
 import os
+
+from src.modules.Screens.CharacterAttributeScreens.StatusBoard import StatusBoardManager
+
 os.environ['KIVY_HOME'] = '../save/'
 
 from kivy.loader import Loader
@@ -37,7 +40,7 @@ from src.modules.Screens.Dungeon.DungeonMain import DungeonMain
 from src.modules.Screens.Dungeon.Floor import Floor
 from src.modules.Screens.TavernMain import TavernMain
 from src.modules.Screens.RecruitPreview import RecruitPreview
-from src.modules.Screens.CharacterSelector import CharacterSelector
+from src.modules.Screens.CharacterDisplay.CharacterSelector import CharacterSelector
 import math
 
 
@@ -103,7 +106,6 @@ class Root(ScreenManager):
                 self.list.append(old_screen)
 
     def create_screen(self, screen_name, *args):
-        screen = None
         for screen_current in self.screens:
             if screen_current.name == screen_name:
                 return screen_current, False
@@ -121,6 +123,8 @@ class Root(ScreenManager):
             screen = CharacterSelector()
         elif screen_name == 'recruit':
             screen = RecruitPreview(character=args[0], viewed_characters=args[1])
+        elif screen_name.startswith('status_board'):
+            screen = StatusBoardManager(char=args[0])
         else:
             raise Exception("Unsupported Screen type", screen_name)
         screen.size = self.size

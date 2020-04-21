@@ -1,136 +1,181 @@
-from kivy.properties import BooleanProperty, ObjectProperty, ListProperty
+from kivy.animation import Animation
+from kivy.properties import BooleanProperty, ObjectProperty, ListProperty, StringProperty, NumericProperty
 from kivy.app import App
 
 from src.modules.HTButton import HTButton
-from src.modules.KivyBase.Hoverable import ScreenH as Screen, ImageH as Image, WidgetH as Widget, LabelH as Label
-from src.modules.Screens.CharacterAttributeScreens.AbilityStatBox import AbilityStatBox
+from src.modules.KivyBase.Hoverable import ScreenH as Screen, ImageH as Image, WidgetH as Widget, LabelH as Label, RelativeLayoutH as RelativeLayout
 
 
 class StatusBoardManager(Screen):
-    initialized = BooleanProperty(False)
-    main_screen = ObjectProperty(None)
+    char = ObjectProperty(None)
 
-    character = ObjectProperty(None)
+    background_source = StringProperty("../res/screens/backgrounds/background.png")
+    overlay_background_source = StringProperty("../res/screens/attribute/stat_background.png")
+    overlay_source = StringProperty("../res/screens/attribute/stat_background_overlay.png")
+
+    skills_switch_text = StringProperty('Skills')
+    current_board_name = StringProperty('Rank 1\nStatus Board')
+
+    animation_left = ObjectProperty(None, allownone=True)
+    animation_right = ObjectProperty(None, allownone=True)
+    animate_distance = NumericProperty(100)
+    animate_start_left = NumericProperty(5)
+    animate_start_right = NumericProperty(95)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self._size = (0, 0)
-
-        self.background = Image(source="../res/screens/backgrounds/background.png", allow_stretch=True, keep_ratio=(None, None))
-        self.back_button = HTButton(size_hint=(None, None), path='../res/screens/buttons/back', on_release=self.on_back_press)
-
         # self.root = DragSnapWidgetNew(main_screen=App.get_running_app())
         #
-        # ranks = self.character.get_grids()
-        # for rank in ranks:
-        #     # drag = DragWidgetObject(drag_ratio=(1 / 4))
-        #     # drag.root = GridWidget(self.character.get_current_rank(), grid=rank.grid)
-        #     # drag.root._parent = self
-        #     self.root.add_widget(GridWidget(self.character.get_current_rank(), grid=rank.grid))
+        sb = self.ids.status_board_screen
+        ranks = self.char.get_grids()
+        for rank in ranks:
+            # drag = DragWidgetObject(drag_ratio=(1 / 4))
+            # drag.root = GridWidget(self.character.get_current_rank(), grid=rank.grid)
+            # drag.root._parent = self
+            sb.add_widget(GridWidget(self.char.get_current_rank(), rank.grid, manager=self))
+        sb.load_slide(sb.slides[self.char.get_current_rank() - 1])
 
-        self.overlay_background = Image(source="../res/screens/attribute/stat_background.png", size_hint=(None, None), allow_stretch=True)
-        self.overlay = Image(source="../res/screens/attribute/stat_background_overlay.png", size_hint=(None, None), allow_stretch=True)
-
-        self.total_abilities = Label(text="Total Abilities", size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
-        self.rank_abilities = Label(text="Rank Abilities", size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
-
-        self.total_abilities_box = AbilityStatBox(color=(0, 0, 0, 1), font='../res/fnt/Gabriola.ttf',
-                                                  strength=self.character.get_strength(), strength_path=self.character.get_strength_rank(),
-                                                  magic=self.character.get_magic(), magic_path=self.character.get_magic_rank(),
-                                                  endurance=self.character.get_endurance(), endurance_path=self.character.get_endurance_rank(),
-                                                  dexterity=self.character.get_dexterity(), dexterity_path=self.character.get_dexterity_rank(),
-                                                  agility=self.character.get_agility(), agility_path=self.character.get_agility_rank())
-
-        self.current_abilities_box = AbilityStatBox(color=(0, 0, 0, 1), font='../res/fnt/Gabriola.ttf',
-                                                    strength=self.character.get_strength(self.character.get_current_rank()), strength_path=self.character.get_strength_rank(self.character.get_current_rank()),
-                                                    magic=self.character.get_magic(self.character.get_current_rank()), magic_path=self.character.get_magic_rank(self.character.get_current_rank()),
-                                                    endurance=self.character.get_endurance(self.character.get_current_rank()), endurance_path=self.character.get_endurance_rank(self.character.get_current_rank()),
-                                                    dexterity=self.character.get_dexterity(self.character.get_current_rank()), dexterity_path=self.character.get_dexterity_rank(self.character.get_current_rank()),
-                                                    agility=self.character.get_agility(self.character.get_current_rank()), agility_path=self.character.get_agility_rank(self.character.get_current_rank()))
-
-        self.add_widget(self.background)
-        # self.add_widget(self.root)
-        self.add_widget(self.overlay_background)
-        self.add_widget(self.overlay)
-
-        self.add_widget(self.total_abilities)
-        self.add_widget(self.rank_abilities)
-
-        self.add_widget(self.total_abilities_box)
-        self.add_widget(self.current_abilities_box)
-
-        self.add_widget(self.back_button)
-        self.initialized = True
-
-    def on_size(self, instance, size):
-        if not self.initialized or self._size == size:
-            return
-        self._size = size.copy()
-
-        self.background.size = self.size
-
-        slot_size = self.height / 13
-        spacer = (self.height - slot_size * 11) / 13
-        msize = slot_size * 11 + spacer * 10
-        overlay_size = self.width - msize - spacer * 3, (self.width - msize - spacer * 3) * 610 / 620
-        overlay_pos = spacer, spacer
-
-        self.overlay_background.size = overlay_size
-        self.overlay_background.pos = overlay_pos
-
-        self.overlay.size = overlay_size
-        self.overlay.pos = overlay_pos
-
-        self.total_abilities.font_size = self.width * 0.0175
-        self.total_abilities.texture_update()
-        self.total_abilities.size = self.total_abilities.texture_size
-        self.total_abilities.pos = overlay_pos[0] + (overlay_size[0] - self.total_abilities.width * 2) / 3, overlay_pos[1] + overlay_size[1] - self.total_abilities.height * 1.5
-
-        self.rank_abilities.font_size = self.width * 0.0175
-        self.rank_abilities.texture_update()
-        self.rank_abilities.size = self.rank_abilities.texture_size
-        self.rank_abilities.pos = overlay_pos[0] + (overlay_size[0] - self.rank_abilities.width * 2) * 2 / 3 + self.total_abilities.width, overlay_pos[1] + overlay_size[1] - self.rank_abilities.height * 1.5
-
-        self.total_abilities_box.size = overlay_size[0] * 0.35, overlay_size[0] * 0.35 * 250 / 260
-        spacer = (overlay_size[0] - self.total_abilities_box.width * 2) / 3
-        self.total_abilities_box.pos = overlay_pos[0] + spacer, overlay_pos[1] + overlay_size[1] - self.total_abilities.height * 1.75 - self.total_abilities_box.height
-
-        self.current_abilities_box.size = overlay_size[0] * 0.35, overlay_size[0] * 0.35 * 250 / 260
-        self.current_abilities_box.pos = overlay_pos[0] + spacer * 2 + self.total_abilities_box.width, overlay_pos[1] + overlay_size[1] - self.rank_abilities.height * 1.75 - self.current_abilities_box.height
-
-        self.back_button.size = self.width * .05, self.width * .05
-        self.back_button.pos = 0, self.height - self.back_button.height
+    #     self.overlay_background = Image(source="../res/screens/attribute/stat_background.png", size_hint=(None, None), allow_stretch=True)
+    #     self.overlay = Image(source="../res/screens/attribute/stat_background_overlay.png", size_hint=(None, None), allow_stretch=True)
+    #
+    #     self.total_abilities = Label(text="Total Abilities", size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
+    #     self.rank_abilities = Label(text="Rank Abilities", size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
+    #
+    #     self.total_abilities_box = AbilityStatBox(color=(0, 0, 0, 1), font='../res/fnt/Gabriola.ttf',
+    #                                               strength=self.character.get_strength(), strength_path=self.character.get_strength_rank(),
+    #                                               magic=self.character.get_magic(), magic_path=self.character.get_magic_rank(),
+    #                                               endurance=self.character.get_endurance(), endurance_path=self.character.get_endurance_rank(),
+    #                                               dexterity=self.character.get_dexterity(), dexterity_path=self.character.get_dexterity_rank(),
+    #                                               agility=self.character.get_agility(), agility_path=self.character.get_agility_rank())
+    #
+    #     self.current_abilities_box = AbilityStatBox(color=(0, 0, 0, 1), font='../res/fnt/Gabriola.ttf',
+    #                                                 strength=self.character.get_strength(self.character.get_current_rank()), strength_path=self.character.get_strength_rank(self.character.get_current_rank()),
+    #                                                 magic=self.character.get_magic(self.character.get_current_rank()), magic_path=self.character.get_magic_rank(self.character.get_current_rank()),
+    #                                                 endurance=self.character.get_endurance(self.character.get_current_rank()), endurance_path=self.character.get_endurance_rank(self.character.get_current_rank()),
+    #                                                 dexterity=self.character.get_dexterity(self.character.get_current_rank()), dexterity_path=self.character.get_dexterity_rank(self.character.get_current_rank()),
+    #                                                 agility=self.character.get_agility(self.character.get_current_rank()), agility_path=self.character.get_agility_rank(self.character.get_current_rank()))
+    #
+    #     self.add_widget(self.background)
+    #     # self.add_widget(self.root)
+    #     self.add_widget(self.overlay_background)
+    #     self.add_widget(self.overlay)
+    #
+    #     self.add_widget(self.total_abilities)
+    #     self.add_widget(self.rank_abilities)
+    #
+    #     self.add_widget(self.total_abilities_box)
+    #     self.add_widget(self.current_abilities_box)
+    #
+    #     self.add_widget(self.back_button)
+    #     self.initialized = True
+    #
+    # def on_size(self, instance, size):
+    #     if not self.initialized or self._size == size:
+    #         return
+    #     self._size = size.copy()
+    #
+    #     self.background.size = self.size
+    #
+    #     slot_size = self.height / 13
+    #     spacer = (self.height - slot_size * 11) / 13
+    #     msize = slot_size * 11 + spacer * 10
+    #     overlay_size = self.width - msize - spacer * 3, (self.width - msize - spacer * 3) * 610 / 620
+    #     overlay_pos = spacer, spacer
+    #
+    #     self.overlay_background.size = overlay_size
+    #     self.overlay_background.pos = overlay_pos
+    #
+    #     self.overlay.size = overlay_size
+    #     self.overlay.pos = overlay_pos
+    #
+    #     self.total_abilities.font_size = self.width * 0.0175
+    #     self.total_abilities.texture_update()
+    #     self.total_abilities.size = self.total_abilities.texture_size
+    #     self.total_abilities.pos = overlay_pos[0] + (overlay_size[0] - self.total_abilities.width * 2) / 3, overlay_pos[1] + overlay_size[1] - self.total_abilities.height * 1.5
+    #
+    #     self.rank_abilities.font_size = self.width * 0.0175
+    #     self.rank_abilities.texture_update()
+    #     self.rank_abilities.size = self.rank_abilities.texture_size
+    #     self.rank_abilities.pos = overlay_pos[0] + (overlay_size[0] - self.rank_abilities.width * 2) * 2 / 3 + self.total_abilities.width, overlay_pos[1] + overlay_size[1] - self.rank_abilities.height * 1.5
+    #
+    #     self.total_abilities_box.size = overlay_size[0] * 0.35, overlay_size[0] * 0.35 * 250 / 260
+    #     spacer = (overlay_size[0] - self.total_abilities_box.width * 2) / 3
+    #     self.total_abilities_box.pos = overlay_pos[0] + spacer, overlay_pos[1] + overlay_size[1] - self.total_abilities.height * 1.75 - self.total_abilities_box.height
+    #
+    #     self.current_abilities_box.size = overlay_size[0] * 0.35, overlay_size[0] * 0.35 * 250 / 260
+    #     self.current_abilities_box.pos = overlay_pos[0] + spacer * 2 + self.total_abilities_box.width, overlay_pos[1] + overlay_size[1] - self.rank_abilities.height * 1.75 - self.current_abilities_box.height
+    #
+    #     self.back_button.size = self.width * .05, self.width * .05
+    #     self.back_button.pos = 0, self.height - self.back_button.height
 
         # self.root.size = self.size
 
-    def on_back_press(self, instance):
-        if not instance.disabled:
-            App.get_running_app().display_screen(None, False, False)
+    def on_skills_switch(self):
+        if self.skills_switch_text == 'Skills':
+            self.skills_switch_text = 'Status'
+        else:
+            self.skills_switch_text = 'Skills'
+        self.ids.normal_layout.opacity = int(not bool(int(self.ids.normal_layout.opacity)))
+        self.ids.skill_layout.opacity = int(not bool(int(self.ids.skill_layout.opacity)))
+        self.ids.skillslist.scroll_y = 1
+        self.ids.skillslist.update_from_scroll()
+
+    def on_board_move(self, index):
+        self.current_board_name = f'Rank {index + 1}\nStatus Board'
+
+    def on_arrow_touch(self, direction):
+        if direction:
+            self.ids.status_board_screen.load_previous()
+        else:
+            self.ids.status_board_screen.load_next()
+
+    def animate_arrows(self):
+        if self.animation_left is None or self.animation_right is None:
+            self.animation_left = Animation(x=self.animate_start_left - self.animate_distance, duration=1) + Animation(x=self.animate_start_left, duration=0.25)
+            self.animation_right = Animation(x=self.animate_start_right + self.animate_distance, duration=1) + Animation(x=self.animate_start_right, duration=0.25)
+        self.animation_left.repeat = True
+        self.animation_right.repeat = True
+        self.animation_left.start(self.ids.left_arrow)
+        self.animation_right.start(self.ids.right_arrow)
+
+    def unanimate_arrows(self):
+        self.animation_left.repeat = False
+        self.animation_right.repeat = False
+
+    def on_enter(self, *args):
+        self.animate_arrows()
+
+    def on_leave(self, *args):
+        self.unanimate_arrows()
+
+    def on_back_press(self):
+        if not self.ids.back_button.disabled:
+            App.get_running_app().main.display_screen(None, False, False)
 
     def on_release(self, type, slot_num):
-        rank = self.character.get_rank(slot_num)
+        rank = self.char.get_rank(slot_num)
 
         if type == 'strength':
             rank.update_strength(rank.grid.amounts[0], True)
-            self.total_abilities_box.strength = self.character.get_strength()
-            self.current_abilities_box.strength = self.character.get_strength(self.character.get_current_rank())
+            self.total_abilities_box.strength = self.char.get_strength()
+            self.current_abilities_box.strength = self.char.get_strength(self.char.get_current_rank())
         elif type == 'magic':
             rank.update_magic(rank.grid.amounts[1], True)
-            self.total_abilities_box.magic = self.character.get_magic()
-            self.current_abilities_box.magic = self.character.get_magic(self.character.get_current_rank())
+            self.total_abilities_box.magic = self.char.get_magic()
+            self.current_abilities_box.magic = self.char.get_magic(self.char.get_current_rank())
         elif type == 'endurance':
             rank.update_endurance(rank.grid.amounts[2], True)
-            self.total_abilities_box.endurance = self.character.get_endurance()
-            self.current_abilities_box.endurance = self.character.get_endurance(self.character.get_current_rank())
+            self.total_abilities_box.endurance = self.char.get_endurance()
+            self.current_abilities_box.endurance = self.char.get_endurance(self.char.get_current_rank())
         elif type == 'dexterity':
             rank.update_dexterity(rank.grid.amounts[3], True)
-            self.total_abilities_box.dexterity = self.character.get_dexterity()
-            self.current_abilities_box.dexterity = self.character.get_dexterity(self.character.get_current_rank())
+            self.total_abilities_box.dexterity = self.char.get_dexterity()
+            self.current_abilities_box.dexterity = self.char.get_dexterity(self.char.get_current_rank())
         elif type == 'agility':
             rank.update_agility(rank.grid.amounts[4], True)
-            self.total_abilities_box.agility = self.character.get_agility()
-            self.current_abilities_box.agility = self.character.get_agility(self.character.get_current_rank())
+            self.total_abilities_box.agility = self.char.get_agility()
+            self.current_abilities_box.agility = self.char.get_agility(self.char.get_current_rank())
         else:
             raise Exception("Unknown slot releasing")
         self.total_abilities_box.reload()
@@ -138,105 +183,122 @@ class StatusBoardManager(Screen):
         #Update item count when applicable
 
 
-class GridWidget(Widget):
-    initialized = BooleanProperty(False)
+class GridWidget(RelativeLayout):
+#     initialized = BooleanProperty(False)
     grid = ObjectProperty(None)
+    manager = ObjectProperty(None)
+
     slots = ListProperty([])
     titles = ListProperty([])
     offsets = ListProperty([])
     toffsets = ListProperty([])
 
-    def __init__(self, rank, **kwargs):  # number, managerPass, rank, char, grid
-        super().__init__(size_hint=(None, None), **kwargs)
+    overlay_background_source = StringProperty("../res/screens/attribute/stat_background.png")
+    overlay_source = StringProperty("../res/screens/attribute/stat_background_overlay.png")
+#
+    def __init__(self, rank, grid, **kwargs):  # number, managerPass, rank, char, grid
+        self.grid = grid
+        super().__init__(**kwargs)
 
-        self._size = (0, 0)
-        self._pos = (-1, -1)
-
+        index = 0
+        y_i = len(self.grid.grid) - 1
+        pos_hint_x, pos_hint_y = 0.5, 0.5 + y_i * 0.03125 + y_i * 0.00625
         for r, row in enumerate(self.grid.grid):
             list = []
             offsets = []
             for c, column in enumerate(row):
                 slot_unlocked = self.grid.unlocked[r][c]
-                title = Label(text="Rank " + str(self.grid.index), size_hint=(None, None), color=(0, 0, 0, 1), font_name="../res/fnt/Precious.ttf")
+                #title = Label(text="Rank " + str(self.grid.index), size_hint=(None, None), color=(0, 0, 0, 1), font_name="../res/fnt/Precious.ttf")
                 disabled = self.grid.index > rank
                 if column == 'S':
-                    slot = CustomSlot(path="../res/screens/status/slot_strength", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_strength.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self._parent.on_release('strength', self.grid.index))
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_strength", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_strength.down.png", toggle_state=slot_unlocked)
+                    slot.bind(on_release=lambda instance: self.manager.on_release('strength', self.grid.index))
                 elif column == 'M':
-                    slot = CustomSlot(path="../res/screens/status/slot_magic", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_magic.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self._parent.on_release('magic', self.grid.index))
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_magic", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_magic.down.png", toggle_state=slot_unlocked)
+                    slot.bind(on_release=lambda instance: self.manager.on_release('magic', self.grid.index))
                 elif column == 'E':
-                    slot = CustomSlot(path="../res/screens/status/slot_endurance", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_endurance.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self._parent.on_release('endurance', self.grid.index))
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_endurance", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_endurance.down.png", toggle_state=slot_unlocked)
+                    slot.bind(on_release=lambda instance: self.manager.on_release('endurance', self.grid.index))
                 elif column == 'D':
-                    slot = CustomSlot(path="../res/screens/status/slot_dexterity", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_dexterity.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self._parent.on_release('dexterity', self.grid.index))
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_dexterity", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_dexterity.down.png", toggle_state=slot_unlocked)
+                    slot.bind(on_release=lambda instance: self.manager.on_release('dexterity', self.grid.index))
                 else:
-                    slot = CustomSlot(path="../res/screens/status/slot_agility", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_agility.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self._parent.on_release('agility', self.grid.index))
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_agility", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_agility.down.png", toggle_state=slot_unlocked)
+                    slot.bind(on_release=lambda instance: self.manager.on_release('agility', self.grid.index))
+                # print(index, r, c, column, pos_hint_x, pos_hint_y)
+                pos_hint_x += 0.00625 + 0.03125
+                pos_hint_y -= 0.00625 + 0.03125
+
                 slot.disabled = disabled
                 list.append(slot)
+                index += 1
                 offsets.append((0, 0))
-                self.titles.append(title)
+                #self.titles.append(title)
                 self.toffsets.append((0, 0))
                 self.add_widget(slot)
-                self.add_widget(title)
+                #self.add_widget(title)
+            pos_hint_x -= (0.00625 + 0.03125) * (len(row) + 1)
+            pos_hint_y += (0.00625 + 0.03125) * (len(row) - 1)
             self.slots.append(list)
             self.offsets.append(offsets)
-        self.initialized = True
-
-    def on_size(self, instance, size):
-        if not self.initialized or self._size == size:
-            return
-        self._size = size.copy()
 
 
 
-        length = len(self.grid.grid[0])
-        slot_size = self.height / 13
-        spacer = (self.height - slot_size * 11) / 13
-        msize = slot_size * 11 + spacer * 10
-        tsize = slot_size * length + spacer * (length - 1)
-        x, y = self.width - spacer - msize/2 - slot_size / 2, self.height - (self.height - tsize) / 2 - slot_size - spacer
 
-        for i, title in enumerate(self.titles):
-            title.font_size = self.height * 0.1
-            title.texture_update()
-            title.size = title.texture_size
-            title.pos = self.x + self.width - msize - title.width, self.y + self.height - title.height * 1.25
-            self.toffsets[i] = (self.width - msize, self.height - title.height * 1.25)
-
-        for r, (row, offsets) in enumerate(zip(self.slots, self.offsets)):
-            for c, (column, offset) in enumerate(zip(row, offsets)):
-                column.size = slot_size, slot_size
-                column.pos = self.x + x, self.y + y
-                self.offsets[r][c] = (x, y)
-
-                x += slot_size / 2 + spacer / 2
-                y -= (slot_size / 2 + spacer / 2)
-            x -= (slot_size * float(len(row) + 1) / 2 + float(spacer * (len(row) + 1)) / 2)
-            y += slot_size * float(len(row) - 1) / 2 + spacer * float(len(row) - 1) / 2
-
-    def on_pos(self, instance, pos):
-        if not self.initialized or self._pos == pos:
-            return
-        self._pos = pos.copy()
-
-        for title, offset in zip(self.titles, self.toffsets):
-            title.pos = self.x + offset[0], self.y + offset[1]
-
-        for row, offsets in zip(self.slots, self.offsets):
-            for column, offset in zip(row, offsets):
-                column.pos = self.x + offset[0], self.y + offset[1]
-
-    def on_mouse_pos(self, hover):
-        if not self.collide_point(*hover.pos):
-            return False
-        for slots in self.slots:
-            for slot in slots:
-                if slot.dispatch('on_mouse_pos', hover):
-                    return True
-        return False
+#         self.initialized = True
+#
+#     def on_size(self, instance, size):
+#         if not self.initialized or self._size == size:
+#             return
+#         self._size = size.copy()
+#
+#
+#
+#         length = len(self.grid.grid[0])
+#         slot_size = self.height / 13
+#         spacer = (self.height - slot_size * 11) / 13
+#         msize = slot_size * 11 + spacer * 10
+#         tsize = slot_size * length + spacer * (length - 1)
+#         x, y = self.width - spacer - msize/2 - slot_size / 2, self.height - (self.height - tsize) / 2 - slot_size - spacer
+#
+#         for i, title in enumerate(self.titles):
+#             title.font_size = self.height * 0.1
+#             title.texture_update()
+#             title.size = title.texture_size
+#             title.pos = self.x + self.width - msize - title.width, self.y + self.height - title.height * 1.25
+#             self.toffsets[i] = (self.width - msize, self.height - title.height * 1.25)
+#
+#         for r, (row, offsets) in enumerate(zip(self.slots, self.offsets)):
+#             for c, (column, offset) in enumerate(zip(row, offsets)):
+#                 column.size = slot_size, slot_size
+#                 column.pos = self.x + x, self.y + y
+#                 self.offsets[r][c] = (x, y)
+#
+#                 x += slot_size / 2 + spacer / 2
+#                 y -= (slot_size / 2 + spacer / 2)
+#             x -= (slot_size * float(len(row) + 1) / 2 + float(spacer * (len(row) + 1)) / 2)
+#             y += slot_size * float(len(row) - 1) / 2 + spacer * float(len(row) - 1) / 2
+#
+#     def on_pos(self, instance, pos):
+#         if not self.initialized or self._pos == pos:
+#             return
+#         self._pos = pos.copy()
+#
+#         for title, offset in zip(self.titles, self.toffsets):
+#             title.pos = self.x + offset[0], self.y + offset[1]
+#
+#         for row, offsets in zip(self.slots, self.offsets):
+#             for column, offset in zip(row, offsets):
+#                 column.pos = self.x + offset[0], self.y + offset[1]
+#
+#     def on_mouse_pos(self, hover):
+#         if not self.collide_point(*hover.pos):
+#             return False
+#         for slots in self.slots:
+#             for slot in slots:
+#                 if slot.dispatch('on_mouse_pos', hover):
+#                     return True
+#         return False
 
     # def slotPressed(self, instance, touch):
     #     if instance.collide_point(*touch.pos):
@@ -355,7 +417,7 @@ class GridWidget(Widget):
 class CustomSlot(HTButton):
 
     def __init__(self, **kwargs):
-        super().__init__(size_hint=(None, None), toggle_enabled=True, **kwargs)
+        super().__init__(toggle_enabled=True, **kwargs)
 
     def _do_press(self):
         if self.toggle_enabled:

@@ -1,5 +1,19 @@
 #:kivy 2.0.0
 #: import Image kivy.core.image
+
+#My Class Imports
+#:import EquipmentSlot src.modules.Screens.CharacterAttributeScreens.EquipmentSlot.EquipmentSlot
+#:import AbilityStatBox src.modules.Screens.CharacterAttributeScreens.AbilityStatBox.AbilityStatBox
+#:import StatInfoBox src.modules.Screens.CharacterAttributeScreens.StatInfoBox.StatInfoBox
+#:import StatBox src.modules.Screens.CharacterAttributeScreens.StatBox.StatBox
+#:import StatusBoardManager src.modules.Screens.CharacterAttributeScreens.StatusBoard.StatusBoardManager
+#:import AttackLabel src.modules.Screens.CharacterAttributeScreens.StatusLabel.AttackLabel
+#:import ComboAttackLabel src.modules.Screens.CharacterAttributeScreens.StatusLabel.ComboAttackLabel
+#:import SkillLabel src.modules.Screens.CharacterAttributeScreens.StatusLabel.SkillLabel
+#:import SkillsList src.modules.Screens.CharacterAttributeScreens.SkillsList.SkillsList
+#:import FilledCharacterPreview src.modules.Screens.FilledCharacterPreview.FilledCharacterPreview
+#:import SquareCharacterPreview src.modules.Screens.SquareCharacterPreview.SquareCharacterPreview
+
 <NewGameScreen>:
     name: 'new_game'
     canvas:
@@ -465,6 +479,8 @@
         on_release: root.descend()
     DragSnapWidget:
         id: portfolio
+        loop: True
+        on_change: root.on_widget_move(self.index)
         size_hint: app.get_dkey('dm.cp s_h')
         pos_hint: app.get_dkey('dm.cp p_h')
     HTButton:
@@ -478,14 +494,13 @@
     HTButton:
         id: right_arrow
         path: '../res/screens/buttons/ArrowRight'
-        background_hover: '../res/screens/buttons/ArrowLeft.normal.png'
+        background_hover: '../res/screens/buttons/ArrowRight.normal.png'
         size_hint: app.get_dkey('dm.ra s_h')
         pos_hint: app.get_dkey('dm.ra p_h')
         x: root.animate_start_right
         on_release: root.on_arrow_touch(False)
 
 <DragSnapWidget>:
-    loop: True
     min_move: 0.3
 
 <CharacterPortfolio>:
@@ -509,6 +524,8 @@
 <HTButton>:
     hover_rect: [self.x, self.y, self.width, self.height]
     canvas:
+        Color:
+            rgba: 1, 1, 1, 1
         Rectangle:
             id: background
             size: self.size
@@ -519,6 +536,8 @@
         text: root.text
         font_size: root.font_size
         font_name: root.font_name
+        halign: root.label_halign
+        valign: root.label_valign
         color: root.label_color
         size_hint: (None, None)
         size: root.width - root.label_padding[0] - root.label_padding[2], root.height - root.label_padding[1] - root.label_padding[3]
@@ -1179,7 +1198,7 @@
         is_support: root.is_support
         is_select: True
         character: root.character
-        support: root.support
+        support: None
         size_hint: app.get_dkey('sinp s_h')
         pos_hint: app.get_dkey('sinp p_h')
 
@@ -1611,8 +1630,14 @@
             pos: self.pos
             texture: self.background_texture
     ImageH:
+        id: familia_mark
+        source: '' if root.char is None else '../res/familias/marks/Takemikazuchi.png'
+        size_hint: app.get_dkey('cas.ci s_h')
+        width: self.height * self.image_ratio
+        pos_hint: app.get_dkey('cas.ci p_h')
+    ImageH:
         id: char_image
-        source: root.char_image_source
+        source: '' if root.char is None else root.char.full_image_source
         allow_stretch: True
         size_hint: app.get_dkey('cas.ci s_h')
         width: self.height * self.image_ratio
@@ -1635,90 +1660,24 @@
         allow_stretch: True
         size_hint: app.get_dkey('cas.os.o s_h')
         pos_hint: app.get_dkey('cas.os p_h')
-    RelativeLayoutH:
+    StatInfoBox:
+        id: persistent_layout
+        type_flag_source: '' if root.char is None else "../res/screens/recruit/" + str(root.char.get_type()).lower() + "_flag.png"
+        element_flag_source: '' if root.char is None else "../res/screens/attribute/" + root.char.get_element().lower() + "_flag.png"
+        element_flag_image_source: '' if root.char is None else "../res/screens/attribute/" + root.char.get_element().lower() + ".png"
+        char_type: '' if root.char is None else 'Supporter' if root.char.is_support() else 'Adventurer'
+        char_stype: '' if root.char is None else str(root.char.get_type()) + " Type"
+        char_element: '' if root.char is None else str(root.char.get_element()).capitalize()
+        char_display_name: '' if root.char is None else str(root.char.get_display_name())
+        char_name: '' if root.char is None else str(root.char.get_name())
+        skills_switch_text: root.skills_switch_text
+        on_skills_switch: root.on_skills_switch()
         size_hint: app.get_dkey('cas.os.o s_h')
         pos_hint: app.get_dkey('cas.os p_h')
-        ImageH:
-            id: flag
-            source: root.flag_source
-            allow_stretch: True
-            size_hint: app.get_dkey("cas.flg s_h")
-            pos_hint: app.get_dkey("cas.flg p_h")
-        LabelH:
-            id: flag_label
-            text: '' if root.char is None else 'Supporter' if root.char.is_support() else 'Adventurer'
-            font_name: '../res/fnt/Gabriola.ttf'
-            height: self.texture_size[1]
-            color: app.get_dkey("cas.flgl c")
-            font_size: app.get_dkey("cas.flgl fs", flag.height)
-            size_hint: app.get_dkey("cas.flgl s_h")
-            pos_hint: app.get_dkey("cas.flgl p_h")
-        ImageH:
-            id: type_flag
-            source: root.type_flag_source
-            allow_stretch: True
-            size_hint: app.get_dkey("cas.tflg s_h")
-            pos_hint: app.get_dkey("cas.tflg p_h")
-        LabelH:
-            id: type_label
-            text: '' if root.char is None else str(root.char.get_type()) + " Type"
-            font_name: '../res/fnt/Gabriola.ttf'
-            height: self.texture_size[1]
-            color: app.get_dkey("cas.tflgl c")
-            font_size: app.get_dkey("cas.tflgl fs", type_flag.height)
-            size_hint: app.get_dkey("cas.tflgl s_h")
-            pos_hint: app.get_dkey("cas.tflgl p_h")
-        ImageH:
-            id: element_flag
-            source: root.element_flag_source
-            allow_stretch: True
-            size_hint: app.get_dkey("cas.eflg s_h")
-            pos_hint: app.get_dkey("cas.eflg p_h")
-        LabelH:
-            id: element_flag_label
-            text: '' if root.char is None else str(root.char.get_element()).capitalize()
-            font_name: '../res/fnt/Gabriola.ttf'
-            size: self.texture_size
-            color: app.get_dkey("cas.eflgl c")
-            font_size: app.get_dkey("cas.eflgl fs", element_flag.width)
-            pos_hint: app.get_dkey("cas.eflgl p_h")
-            canvas.before:
-                PushMatrix
-                Rotate:
-                    angle: app.get_dkey("cas.eflgl ang")
-                    origin: self.center
-            canvas.after:
-                PopMatrix
-        ImageH:
-            id: element_flag_image
-            source: root.element_flag_image_source
-            allow_stretch: True
-            size_hint: app.get_dkey("cas.eflgi s_h")
-            pos_hint: app.get_dkey("cas.eflgi p_h")
-        LabelH:
-            id: display_name_label
-            text: '' if root.char is None else str(root.char.get_display_name())
-            font_name: '../res/fnt/Precious.ttf'
-            size: self.texture_size
-            color: app.get_dkey("cas.dnl c")
-            font_size: app.get_dkey("cas.dnl fs", overlay.width)
-            size_hint: app.get_dkey("cas.dnl s_h")
-            pos_hint: app.get_dkey("cas.dnl p_h")
-        LabelH:
-            id: name_label
-            text: '' if root.char is None else str(root.char.get_name())
-            font_name: '../res/fnt/Precious.ttf'
-            size: self.texture_size
-            color: app.get_dkey("cas.nl c")
-            font_size: app.get_dkey("cas.nl fs", overlay.width)
-            size_hint: app.get_dkey("cas.nl s_h")
-            pos_hint: app.get_dkey("cas.nl p_h")
-        ImageH:
-            id: overlay_bar
-            source: root.overlay_bar_source
-            allow_stretch: True
-            size_hint: app.get_dkey("cas.ob s_h")
-            pos_hint: app.get_dkey("cas.ob p_h")
+    RelativeLayoutH:
+        id: normal_layout
+        size_hint: app.get_dkey('cas.os.o s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
         LabelH:
             id: total_label
             text: 'Total Stats'
@@ -1917,6 +1876,27 @@
                 slot_name: 'boots'
                 font: '../res/fnt/Gabriola.ttf'
                 color: app.get_dkey('cas.el c')
+    RelativeLayoutH:
+        id: skill_layout
+        opacity: 0
+        size_hint: app.get_dkey('cas.os.o s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
+        SkillsList:
+            id: skillslist
+            height_unit: skill_layout.height
+            size_hint: app.get_dkey('cas.scrl s_h')
+            pos_hint: app.get_dkey('cas.scrl p_h')
+    HTButton:
+        id: change_equip
+        opacity: 1
+        path: '../res/screens/buttons/long_stat'
+        text: 'Change Equip'
+        font_name: '../res/fnt/Gabriola.ttf'
+        label_color: app.get_dkey('cas.ceb lc')
+        font_size: app.get_dkey('cas.ceb fs', root.height)
+        size_hint: app.get_dkey('cas.ceb s_h')
+        pos_hint: app.get_dkey('cas.ceb p_h')
+        on_release: root.on_change_equip()
     HTButton:
         id: status_board
         path: '../res/screens/buttons/long_stat'
@@ -1927,16 +1907,6 @@
         size_hint: app.get_dkey('cas.sbb s_h')
         pos_hint: app.get_dkey('cas.sbb p_h')
         on_release: root.on_status_board()
-    HTButton:
-        id: change_equip
-        path: '../res/screens/buttons/long_stat'
-        text: 'Change Equip'
-        font_name: '../res/fnt/Gabriola.ttf'
-        label_color: app.get_dkey('cas.ceb lc')
-        font_size: app.get_dkey('cas.ceb fs', root.height)
-        size_hint: app.get_dkey('cas.ceb s_h')
-        pos_hint: app.get_dkey('cas.ceb p_h')
-        on_release: root.on_change_equip()
     HTButton:
         id: image_preview
         path: '../res/screens/buttons/preview'
@@ -2017,6 +1987,173 @@
         opacity: 0 if root.char is None else 1 if root.char.get_rank(10).unlocked else 0
         size_hint: app.get_dkey('cas.star_10 s_h')
         pos_hint: app.get_dkey('cas.star_10 p_h')
+
+<StatInfoBox>:
+    ImageH:
+        id: flag
+        source: root.flag_source
+        allow_stretch: True
+        size_hint: app.get_dkey("cas.flg s_h")
+        pos_hint: app.get_dkey("cas.flg p_h")
+    LabelH:
+        id: flag_label
+        text: root.char_type
+        font_name: '../res/fnt/Gabriola.ttf'
+        height: self.texture_size[1]
+        color: app.get_dkey("cas.flgl c")
+        font_size: app.get_dkey("cas.flgl fs", flag.height)
+        size_hint: app.get_dkey("cas.flgl s_h")
+        pos_hint: app.get_dkey("cas.flgl p_h")
+    ImageH:
+        id: type_flag
+        source: root.type_flag_source
+        allow_stretch: True
+        size_hint: app.get_dkey("cas.tflg s_h")
+        pos_hint: app.get_dkey("cas.tflg p_h")
+    LabelH:
+        id: type_label
+        text: root.char_stype
+        font_name: '../res/fnt/Gabriola.ttf'
+        height: self.texture_size[1]
+        color: app.get_dkey("cas.tflgl c")
+        font_size: app.get_dkey("cas.tflgl fs", type_flag.height)
+        size_hint: app.get_dkey("cas.tflgl s_h")
+        pos_hint: app.get_dkey("cas.tflgl p_h")
+    ImageH:
+        id: element_flag
+        source: root.element_flag_source
+        allow_stretch: True
+        size_hint: app.get_dkey("cas.eflg s_h")
+        pos_hint: app.get_dkey("cas.eflg p_h")
+    LabelH:
+        id: element_flag_label
+        text: root.char_element
+        font_name: '../res/fnt/Gabriola.ttf'
+        size: self.texture_size
+        color: app.get_dkey("cas.eflgl c")
+        font_size: app.get_dkey("cas.eflgl fs", element_flag.width)
+        pos_hint: app.get_dkey("cas.eflgl p_h")
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle: app.get_dkey("cas.eflgl ang")
+                origin: self.center
+        canvas.after:
+            PopMatrix
+    ImageH:
+        id: element_flag_image
+        source: root.element_flag_image_source
+        allow_stretch: True
+        size_hint: app.get_dkey("cas.eflgi s_h")
+        pos_hint: app.get_dkey("cas.eflgi p_h")
+    HTButton:
+        id: skills_switch
+        path: '../res/screens/buttons/skills_button'
+        text: root.skills_switch_text
+        font_name: '../res/fnt/Gabriola.ttf'
+        label_color: app.get_dkey('cas.sk lc')
+        label_padding: app.get_dkey('cas.sk lp', self.width)
+        font_size: app.get_dkey('cas.sk fs', root.height)
+        size_hint: app.get_dkey('cas.sk s_h')
+        pos_hint: app.get_dkey('cas.sk p_h')
+        on_release: root.dispatch('on_skills_switch')
+    LabelH:
+        id: display_name_label
+        text: root.char_display_name
+        font_name: '../res/fnt/Precious.ttf'
+        size: self.texture_size
+        color: app.get_dkey("cas.dnl c")
+        font_size: app.get_dkey("cas.dnl fs", root.width)
+        size_hint: app.get_dkey("cas.dnl s_h")
+        pos_hint: app.get_dkey("cas.dnl p_h")
+    LabelH:
+        id: name_label
+        text: root.char_name
+        font_name: '../res/fnt/Precious.ttf'
+        size: self.texture_size
+        color: app.get_dkey("cas.nl c")
+        font_size: app.get_dkey("cas.nl fs", root.width)
+        size_hint: app.get_dkey("cas.nl s_h")
+        pos_hint: app.get_dkey("cas.nl p_h")
+    ImageH:
+        id: overlay_bar
+        source: root.overlay_bar_source
+        allow_stretch: True
+        size_hint: app.get_dkey("cas.ob s_h")
+        pos_hint: app.get_dkey("cas.ob p_h")
+
+
+<SkillLabel>:
+    ImageH:
+        id: image
+        source: '../res/screens/attribute/attribute_box.png'
+        keep_ratio: False
+        allow_stretch: True
+    LabelH:
+        id: title
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_y': 0.8975, 'x': 0.01}
+        markup: True
+        font_size: root.height * 0.175
+        font_name: '../res/fnt/Gabriola.ttf'
+        color: 0, 0, 0, 1
+        text: '[b]' + root.title + '[/b]'
+    LabelH:
+        id: body
+        valign: 'top'
+        halign: 'left'
+        size_hint: 0.98, 0.73
+        pos_hint: {'x': 0.01, 'y': 0.01}
+        text_size: self.size
+        font_size: root.height * 0.15
+        color: 0, 0, 0, 1
+        font_name: '../res/fnt/Gabriola.ttf'
+        text: root.body
+
+<AttackLabel>:
+    ImageH:
+        id: image
+        source: '../res/screens/attribute/attribute_box.png'
+        keep_ratio: False
+        allow_stretch: True
+    ImageH:
+        id: image
+        size_hint: 0.06, 0.2
+        pos_hint: {'x': 0.01, 'top': 0.98}
+        keep_ratio: True
+        source: root.type_source
+    LabelH:
+        id: title
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_y': 0.8975, 'x': 0.0825}
+        markup: True
+        font_size: root.height * 0.175
+        font_name: '../res/fnt/Gabriola.ttf'
+        color: 0, 0, 0, 1
+        text: '[b]' + root.title + '[/b]'
+    LabelH:
+        id: costs
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_y': 0.8975, 'right': 0.9675}
+        markup: True
+        font_size: root.height * 0.15
+        font_name: '../res/fnt/Gabriola.ttf'
+        color: 0, 0, 0, 1
+        text: '[b]' + root.cost + '[/b]'
+    LabelH:
+        id: body
+        valign: 'top'
+        halign: 'left'
+        size_hint: 0.98, 0.73
+        pos_hint: {'x': 0.01, 'y': 0.01}
+        text_size: self.size
+        font_size: root.height * 0.15
+        color: 0, 0, 0, 1
+        font_name: '../res/fnt/Gabriola.ttf'
+        text: root.body
 
 <StatBox>:
     #Health
@@ -2351,6 +2488,395 @@
             keep_ratio: False
             opacity: root.opacity
 
+<SkillsList>:
+    id: scroll
+    RelativeLayoutH:
+        id: divider
+        height: combat_skills.minimum_height if combat_skills.minimum_height > development_abilities.minimum_height else development_abilities.minimum_height
+        size_hint_y: None
+        GridLayoutH:
+            id: combat_skills
+            height: self.minimum_height
+            pos_hint: {'x': 0, 'top': 1}
+            size_hint: 0.5, None
+            cols: 1
+            spacing: 10
+            padding: 10
+            LabelH:
+                font_name: '../res/fnt/Precious.ttf'
+                text: 'Combat Skills'
+                color: 0, 0, 0, 1
+                font_size: app.get_dkey('cas.cbs.tit1 fs', root.height)
+                size_hint_y: None
+                height: self.texture_size[1]
+            AttackLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                type_source: '../res/screens/attribute/water.png'
+                title: 'Ravage Dance'
+                cost: 'MP 43'
+                body: '[Foes] Super Water M.Attack w/ temp Mag. Boost & Ultra Penetration Rate'
+            AttackLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                type_source: '../res/screens/attribute/water.png'
+                title: 'Kaleidoscopic Dance'
+                cost: 'MP 32'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+        GridLayoutH:
+            id: development_abilities
+            height: self.minimum_height
+            size_hint: 0.5, None
+            pos_hint: {'x': 0.5, 'top': 1}
+            cols: 1
+            spacing: 10
+            padding: 10
+            LabelH:
+                font_name: '../res/fnt/Precious.ttf'
+                text: 'Abilities'
+                color: 0, 0, 0, 1
+                font_size: app.get_dkey('cas.dab.tit1 fs', root.height)
+                size_hint_y: None
+                height: self.texture_size[1]
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Immunity: I'
+                body: '50% Poison Resistance\n'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title_font_size: root.height * 0.0375
+                body_font_size: root.height * 0.0225
+                title: 'Bloom: I'
+                body: '3% HP & Mana Regen per turn\n+10% penetration on counter and +10% critical on successful penetration'
+            SkillLabel:
+                size_hint: 1, None
+                height: 0.150 * root.height_unit
+                title: 'Hunter: I'
+                body: '+15% str. against monsters you have defeated more than 100 times\n'
+
+<StatusBoardManager>:
+    name: 'status_Board_unassigned' if root.char is None else 'status_board_' + str(root.char.get_name())
+    animate_distance: app.get_dkey('sbm.a ad', self.width)
+    animate_start_left: app.get_dkey('sbm.a a_s_l', self.width)
+    animate_start_right: app.get_dkey('sbm.a a_s_r', self.width)
+    ImageH:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+    HTButton:
+        id: back_button
+        path: '../res/screens/buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    ImageH:
+        id: familia_mark
+        source: '' if root.char is None else '../res/familias/marks/Takemikazuchi.png'
+        size_hint: app.get_dkey('sbm.sbs s_h')
+        pos_hint: app.get_dkey('sbm.sbs p_h')
+    DragSnapWidget:
+        id: status_board_screen
+        manager: root
+        on_change: root.on_board_move(self.index)
+        size_hint: app.get_dkey('sbm.sbs s_h')
+        pos_hint: app.get_dkey('sbm.sbs p_h')
+    HTButton:
+        id: left_arrow
+        path: '../res/screens/buttons/ArrowLeft'
+        background_hover: '../res/screens/buttons/ArrowLeft.normal.png'
+        size_hint: app.get_dkey('sbm.la s_h')
+        pos_hint: app.get_dkey('sbm.la p_h')
+        x: root.animate_start_left
+        on_release: root.on_arrow_touch(True)
+    HTButton:
+        id: right_arrow
+        path: '../res/screens/buttons/ArrowRight'
+        background_hover: '../res/screens/buttons/ArrowRight.normal.png'
+        size_hint: app.get_dkey('sbm.ra s_h')
+        pos_hint: app.get_dkey('sbm.ra p_h')
+        x: root.animate_start_right
+        on_release: root.on_arrow_touch(False)
+    LabelH:
+        id: board_name
+        text: root.current_board_name
+        halign: "center"
+        markup: True
+        color: 0, 0, 0, 1
+        font_name: '../res/fnt/Precious.ttf'
+        size_hint: app.get_dkey('sbm.bn s_h')
+        font_size: app.get_dkey('sbm.bn fs', root.height)
+        pos_hint: app.get_dkey('sbm.bn p_h')
+    HTButton:
+        id: available_falna
+        path: '../res/screens/buttons/long_stat'
+        text: 'Available Falna'
+        font_name: '../res/fnt/Gabriola.ttf'
+        label_color: app.get_dkey('sbm.afb lc')
+        font_size: app.get_dkey('sbm.afb fs', root.height)
+        size_hint: app.get_dkey('sbm.afb s_h')
+        pos_hint: app.get_dkey('sbm.afb p_h')
+    HTButton:
+        id: unlock_all
+        path: '../res/screens/buttons/long_stat'
+        text: 'Unlock All'
+        font_name: '../res/fnt/Gabriola.ttf'
+        label_color: app.get_dkey('sbm.uab lc')
+        font_size: app.get_dkey('sbm.uab fs', root.height)
+        size_hint: app.get_dkey('sbm.uab s_h')
+        pos_hint: app.get_dkey('sbm.uab p_h')
+    ImageH:
+        id: overlay_background
+        source: root.overlay_background_source
+        allow_stretch: True
+        size_hint: app.get_dkey('sbm.os.ob s_h')
+        pos_hint: app.get_dkey('sbm.os p_h')
+    ImageH:
+        id: overlay
+        source: root.overlay_source
+        allow_stretch: True
+        size_hint: app.get_dkey('sbm.os.o s_h')
+        pos_hint: app.get_dkey('sbm.os p_h')
+    StatInfoBox:
+        id: persistent_layout
+        type_flag_source: '' if root.char is None else "../res/screens/recruit/" + str(root.char.get_type()).lower() + "_flag.png"
+        element_flag_source: '' if root.char is None else "../res/screens/attribute/" + root.char.get_element().lower() + "_flag.png"
+        element_flag_image_source: '' if root.char is None else "../res/screens/attribute/" + root.char.get_element().lower() + ".png"
+        char_type: '' if root.char is None else 'Supporter' if root.char.is_support() else 'Adventurer'
+        char_stype: '' if root.char is None else str(root.char.get_type()) + " Type"
+        char_element: '' if root.char is None else str(root.char.get_element()).capitalize()
+        char_display_name: '' if root.char is None else str(root.char.get_display_name())
+        char_name: '' if root.char is None else str(root.char.get_name())
+        skills_switch_text: root.skills_switch_text
+        on_skills_switch: root.on_skills_switch()
+        size_hint: app.get_dkey('sbm.os.o s_h')
+        pos_hint: app.get_dkey('sbm.os p_h')
+    RelativeLayoutH:
+        id: normal_layout
+        size_hint: app.get_dkey('sbm.os.o s_h')
+        pos_hint: app.get_dkey('sbm.os p_h')
+        HTButton:
+            id: upgrade_combat_skills
+            path: '../res/screens/buttons/status_board_ability'
+            text: 'Upgrade\nCombat Skills'
+            label_halign: "center"
+            label_valign: "middle"
+            label_color: app.get_dkey('sbm.ucsb lc')
+            font_name: '../res/fnt/Precious.ttf'
+            font_size: app.get_dkey('sbm.ucsb fs', root.height)
+            size_hint: app.get_dkey('sbm.ucsb s_h')
+            pos_hint: app.get_dkey('sbm.ucsb p_h')
+        HTButton:
+            id: view_all_abilities
+            path: '../res/screens/buttons/status_board_ability'
+            text: 'View All\nAbilities'
+            halign: "center"
+            valign: "middle"
+            label_color: app.get_dkey('sbm.vaab lc')
+            font_name: '../res/fnt/Precious.ttf'
+            font_size: app.get_dkey('sbm.vaab fs', root.height)
+            size_hint: app.get_dkey('sbm.vaab s_h')
+            pos_hint: app.get_dkey('sbm.vaab p_h')
+        LabelH:
+            id: total_label
+            text: 'Total Stats'
+            font_name: '../res/fnt/Precious.ttf'
+            height: self.texture_size[1]
+            color: app.get_dkey('sbm.tl c')
+            font_size: app.get_dkey('sbm.tl fs', root.width)
+            size_hint: app.get_dkey('sbm.tl s_h')
+            pos_hint: app.get_dkey('sbm.tl p_h')
+        StatBox:
+            id: stats
+            font: '../res/fnt/Gabriola.ttf'
+            health: 0 if root.char is None else root.char.get_health()
+            mana: 0 if root.char is None else root.char.get_mana()
+            phy_attack:  0 if root.char is None else root.char.get_phyatk()
+            mag_attack: 0 if root.char is None else root.char.get_magatk()
+            defense: 0 if root.char is None else root.char.get_defense()
+            color: app.get_dkey('sbm.sts c')
+            number_color: app.get_dkey('sbm.sts nc')
+            size_hint: app.get_dkey('sbm.sts s_h')
+            pos_hint: app.get_dkey('sbm.sts p_h')
+        LabelH:
+            id: total_abilities
+            text: 'Total Abilities'
+            font_name: '../res/fnt/Precious.ttf'
+            height: self.texture_size[1]
+            color: app.get_dkey('sbm.ta c')
+            font_size: app.get_dkey('sbm.ta fs', root.width)
+            size_hint: app.get_dkey('sbm.ta s_h')
+            pos_hint: app.get_dkey('sbm.ta p_h')
+        AbilityStatBox:
+            id: total_abilities_box
+            font: '../res/fnt/Gabriola.ttf'
+            strength: 0 if root.char is None else root.char.get_strength()
+            strength_path: '' if root.char is None else root.char.get_strength_rank()
+            magic: 0 if root.char is None else root.char.get_magic()
+            magic_path: '' if root.char is None else root.char.get_magic_rank()
+            endurance: 0 if root.char is None else root.char.get_endurance()
+            endurance_path: '' if root.char is None else root.char.get_endurance_rank()
+            dexterity: 0 if root.char is None else root.char.get_dexterity()
+            dexterity_path: '' if root.char is None else root.char.get_dexterity_rank()
+            agility: 0 if root.char is None else root.char.get_agility()
+            agility_path: '' if root.char is None else root.char.get_agility_rank()
+            color: app.get_dkey('sbm.tab c')
+            size_hint: app.get_dkey('sbm.tab s_h')
+            pos_hint: app.get_dkey('sbm.tab p_h')
+    RelativeLayoutH:
+        id: skill_layout
+        opacity: 0
+        size_hint: app.get_dkey('sbm.os.o s_h')
+        pos_hint: app.get_dkey('sbm.os p_h')
+        SkillsList:
+            id: skillslist
+            height_unit: skill_layout.height
+            size_hint: app.get_dkey('sbm.scrl s_h')
+            pos_hint: app.get_dkey('sbm.scrl p_h')
+    ImageH:
+        id: star_1
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(1).broken else '../res/screens/stats/star.png' if root.char.get_rank(1).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(1).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_1 s_h')
+        pos_hint: app.get_dkey('sbm.star_1 p_h')
+    ImageH:
+        id: star_2
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(2).broken else '../res/screens/stats/star.png' if root.char.get_rank(2).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(2).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_2 s_h')
+        pos_hint: app.get_dkey('sbm.star_2 p_h')
+    ImageH:
+        id: star_3
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(3).broken else '../res/screens/stats/star.png' if root.char.get_rank(3).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(3).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_3 s_h')
+        pos_hint: app.get_dkey('sbm.star_3 p_h')
+    ImageH:
+        id: star_4
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(4).broken else '../res/screens/stats/star.png' if root.char.get_rank(4).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(4).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_4 s_h')
+        pos_hint: app.get_dkey('sbm.star_4 p_h')
+    ImageH:
+        id: star_5
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(5).broken else '../res/screens/stats/star.png' if root.char.get_rank(5).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(5).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_5 s_h')
+        pos_hint: app.get_dkey('sbm.star_5 p_h')
+    ImageH:
+        id: star_6
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(6).broken else '../res/screens/stats/star.png' if root.char.get_rank(6).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(6).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_6 s_h')
+        pos_hint: app.get_dkey('sbm.star_6 p_h')
+    ImageH:
+        id: star_7
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(7).broken else '../res/screens/stats/star.png' if root.char.get_rank(7).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(7).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_7 s_h')
+        pos_hint: app.get_dkey('sbm.star_7 p_h')
+    ImageH:
+        id: star_8
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(8).broken else '../res/screens/stats/star.png' if root.char.get_rank(8).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(8).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_8 s_h')
+        pos_hint: app.get_dkey('sbm.star_8 p_h')
+    ImageH:
+        id: star_9
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(9).broken else '../res/screens/stats/star.png' if root.char.get_rank(9).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(9).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_9 s_h')
+        pos_hint: app.get_dkey('sbm.star_9 p_h')
+    ImageH:
+        id: star_10
+        source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(10).broken else '../res/screens/stats/star.png' if root.char.get_rank(10).unlocked else ''
+        allow_stretch: True
+        opacity: 0 if root.char is None else 1 if root.char.get_rank(10).unlocked else 0
+        size_hint: app.get_dkey('sbm.star_10 s_h')
+        pos_hint: app.get_dkey('sbm.star_10 p_h')
+
 <Dungeonbattle>:
     name: 'dungeon_battle'
     id: dungeonscreen
@@ -2379,7 +2905,6 @@
         size_hint: None, None
         pos: 1180, 1240
 <CharPreview>
-
     moveBar: move_bar
     moveBox: move_box
     Button:

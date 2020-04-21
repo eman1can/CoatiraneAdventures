@@ -3,37 +3,23 @@ from kivy.core.image import Image
 from kivy.properties import StringProperty, ObjectProperty
 from src.modules.KivyBase.Hoverable import ScreenH as Screen
 
-# THESE IMPORTS ARE REQUIRED! Otherwise the kivy factory will not recognize them!
-from src.modules.Screens.CharacterAttributeScreens.EquipmentSlot import EquipmentSlot
-from src.modules.Screens.CharacterAttributeScreens.AbilityStatBox import AbilityStatBox
-from src.modules.Screens.CharacterAttributeScreens.StatBox import StatBox
-from src.modules.Screens.CharacterAttributeScreens.StatusBoard import StatusBoardManager
-
 
 class CharacterAttributeScreen(Screen):
     preview = ObjectProperty(None, allownone=True)
     char = ObjectProperty(None, allownone=True)
 
     background_texture = ObjectProperty(None)
-    char_image_source = StringProperty('')
     overlay_background_source = StringProperty("../res/screens/attribute/stat_background.png")
     overlay_source = StringProperty("../res/screens/attribute/stat_background_overlay.png")
     flag_source = StringProperty("../res/screens/attribute/char_type_flag.png")
-    type_flag_source = StringProperty('')
-    element_flag_source = StringProperty('')
-    element_flag_image_source = StringProperty('')
     overlay_bar_source = StringProperty("../res/screens/stats/overlay_bar.png")
     neat_stat_overlay_source = StringProperty("../res/screens/attribute/stat_overlay.png")
+    skills_switch_text = StringProperty('Skills')
 
     def __init__(self, **kwargs):
         #Overlay's and backgrounds
         self.background_texture = Image("../res/screens/backgrounds/background.png").texture
         super().__init__(**kwargs)
-
-        self.char_image_source = self.char.full_image_source
-        self.type_flag_source = "../res/screens/recruit/" + str(self.char.get_type()).lower() + "_flag.png"
-        self.element_flag_source = "../res/screens/attribute/" + self.char.get_element().lower() + "_flag.png"
-        self.element_flag_image_source = "../res/screens/attribute/" + self.char.get_element().lower() + ".png"
 
     def on_mouse_pos(self, hover):
         if self.ids.image_preview.dispatch('on_mouse_pos', hover):
@@ -50,9 +36,23 @@ class CharacterAttributeScreen(Screen):
     def on_image_preview(self):
         pass
 
+    def on_leave(self, *args):
+        if self.skills_switch_text == 'Status':
+            self.on_skills_switch()
+
     def on_status_board(self):
-        self.ids.status_board_screen.size = self.size
-        App.get_running_app().main.display_screen(self.ids.status_board_screen, True, True)
+        screen, made = App.get_running_app().main.create_screen('status_board_' + self.char.get_name(), self.char)
+        App.get_running_app().main.display_screen(screen, True, True)
+
+    def on_skills_switch(self):
+        if self.skills_switch_text == 'Skills':
+            self.skills_switch_text = 'Status'
+        else:
+            self.skills_switch_text = 'Skills'
+        self.ids.normal_layout.opacity = int(not bool(int(self.ids.normal_layout.opacity)))
+        self.ids.skill_layout.opacity = int(not bool(int(self.ids.skill_layout.opacity)))
+        self.ids.skillslist.scroll_y = 1
+        self.ids.skillslist.update_from_scroll()
 
     def on_change_equip(self):
         pass
