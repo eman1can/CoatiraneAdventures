@@ -11,8 +11,9 @@
 #:import ComboAttackLabel src.modules.Screens.CharacterAttributeScreens.StatusLabel.ComboAttackLabel
 #:import SkillLabel src.modules.Screens.CharacterAttributeScreens.StatusLabel.SkillLabel
 #:import SkillsList src.modules.Screens.CharacterAttributeScreens.SkillsList.SkillsList
-#:import FilledCharacterPreview src.modules.Screens.FilledCharacterPreview.FilledCharacterPreview
-#:import SquareCharacterPreview src.modules.Screens.SquareCharacterPreview.SquareCharacterPreview
+#:import FilledCharacterPreview src.modules.Screens.CharacterDisplay.FilledCharacterPreview.FilledCharacterPreview
+#:import SquareCharacterPreview src.modules.Screens.CharacterDisplay.SquareCharacterPreview.SquareCharacterPreview
+#:import DragSnapWidget src.modules.DragScreen.DragSnapWidget
 
 <NewGameScreen>:
     name: 'new_game'
@@ -2876,6 +2877,23 @@
         opacity: 0 if root.char is None else 1 if root.char.get_rank(10).unlocked else 0
         size_hint: app.get_dkey('sbm.star_10 s_h')
         pos_hint: app.get_dkey('sbm.star_10 p_h')
+
+<ImagePreview>:
+    name: 'image_preview_unassigned' if root.char is None else 'image_preview_' + str(root.char.get_name())
+    ImageH:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+    ImageH:
+        id: char_image
+        source: '' if root.char is None else root.char.full_image_source
+        allow_stretch: True
+    HTButton:
+        id: back_button
+        path: '../res/screens/buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
 
 <Dungeonbattle>:
     name: 'dungeon_battle'

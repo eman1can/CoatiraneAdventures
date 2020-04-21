@@ -1,6 +1,5 @@
-from kivy.app import App
-from kivy.clock import Clock
 from kivy.animation import Animation
+from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty
 
 from src.modules.KivyBase.Hoverable import CarouselH as Carousel

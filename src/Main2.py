@@ -1,7 +1,4 @@
 import os
-
-from src.modules.Screens.CharacterAttributeScreens.StatusBoard import StatusBoardManager
-
 os.environ['KIVY_HOME'] = '../save/'
 
 from kivy.loader import Loader
@@ -11,17 +8,10 @@ Loader.num_workers = 8
 from kivy.logger import Logger
 Logger.info('Loader: using a thread pool of {} workers'.format(Loader.num_workers))
 Logger.info('Loader: set max upload per fram to {}'.format(Loader.max_upload_per_frame))
-# from kivy.config import Config
-# Config.set('input', 'mouse', 'mouse, multitouch_on_demand')
-# Config.set('kivy', 'exit_on_escape', 0)
-# Config.set('kivy', 'window_icon', '../res/screens/icon.png')
-# Config.set('graphics', 'fbo', 'hardware')
-# Config.set('graphics', 'default_font', '../res/fnt/Gabriola.ttf')
 from kivy.utils import platform
 if platform == 'win':
     Logger.info('CoatiraneAdventures: running on windows')
-#     Config.set('kivy', 'pause_on_minimize', 1)
-# Config.write()
+
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -41,6 +31,8 @@ from src.modules.Screens.Dungeon.Floor import Floor
 from src.modules.Screens.TavernMain import TavernMain
 from src.modules.Screens.RecruitPreview import RecruitPreview
 from src.modules.Screens.CharacterDisplay.CharacterSelector import CharacterSelector
+from src.modules.Screens.CharacterAttributeScreens.StatusBoard import StatusBoardManager
+from src.modules.Screens.ImagePreview import ImagePreview
 import math
 
 
@@ -125,6 +117,8 @@ class Root(ScreenManager):
             screen = RecruitPreview(character=args[0], viewed_characters=args[1])
         elif screen_name.startswith('status_board'):
             screen = StatusBoardManager(char=args[0])
+        elif screen_name.startswith('image_preview'):
+            screen = ImagePreview(char=args[0])
         else:
             raise Exception("Unsupported Screen type", screen_name)
         screen.size = self.size

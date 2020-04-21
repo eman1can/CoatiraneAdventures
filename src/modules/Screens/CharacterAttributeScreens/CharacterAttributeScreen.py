@@ -34,7 +34,8 @@ class CharacterAttributeScreen(Screen):
         pass
 
     def on_image_preview(self):
-        pass
+        screen, made = App.get_running_app().main.create_screen('image_preview_' + self.char.get_name(), self.char)
+        App.get_running_app().main.display_screen(screen, True, True)
 
     def on_leave(self, *args):
         if self.skills_switch_text == 'Status':
