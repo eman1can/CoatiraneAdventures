@@ -4,8 +4,7 @@ from kivy.animation import Animation
 from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 
 from src.modules.KivyBase.Hoverable import ScreenH as Screen
-from src.modules.Screens.CharacterPortfolio import CharacterPortfolio
-from src.modules.DragScreen import DragSnapWidget
+from src.modules.Screens.CharacterDisplay.CharacterPortfolio import CharacterPortfolio
 
 
 class DungeonMain(Screen):
@@ -81,7 +80,8 @@ class DungeonMain(Screen):
         if self.party_score != party_score:
             self.party_score = party_score
 
-    def on_widget_move(self):
+    def on_widget_move(self, index):
+        App.get_running_app().main.parties[0] = 0 if index is None else index
         self.ids.portfolio.reload()
         self.update_party_score()
 
