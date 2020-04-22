@@ -1,0 +1,47 @@
+#:import CircularProgressBar src.modules.CircularProgressBar.CircularProgressBar
+<CALoader>:
+    id: main
+    size_hint: None, None
+    Image:
+        size: main.size
+        pos: main.pos
+        id: splash
+        source: '../res/splash/splash.bmp'
+        allow_stretch: True
+        RelativeLayout:
+            size: splash.size
+            pos: splash.pos
+            CircularProgressBar:
+                id: outer_progress
+                size_hint: 0.2675, 0.2675
+                pos_hint: {'center_x': 0.5, 'center_y': 0.3375}
+                thickness: self.height * 0.05
+                progress_color: 0, 0, 0, 1
+                rot_angle: 180
+                draw_min: 40
+                draw_max: 320
+                min: 0
+            CircularProgressBar:
+                id: inner_progress
+                size_hint: 0.225, 0.225
+                pos_hint: {'center_x': 0.5, 'center_y': 0.3375}
+                rot_angle: 180
+                draw_min: 40
+                draw_max: 320
+                min: 0
+            Label:
+                id: outer_label
+                text: 'Loading Data'
+                color: 0, 0, 0, 1
+                size_hint: 0.2, 0.2
+                pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+                font_name: '../res/fnt/Gabriola.ttf'
+                font_size: sp(40)
+            Label:
+                id: inner_label
+                text: ''
+                color: 0, 0, 0, 1
+                size_hint: 0.2, 0.2
+                pos_hint: {'center_x': 0.5, 'center_y': 0.05}
+                font_name: '../res/fnt/Gabriola.ttf'
+                font_size: sp(40)

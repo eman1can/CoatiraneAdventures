@@ -3,7 +3,7 @@ import random
 
 from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty, StringProperty, BooleanProperty, ListProperty
 from kivy.uix.widget import WidgetBase
-
+from kivy.clock import mainthread
 from src.entitites.Character.Scale import Scale
 from src.modules.Screens.CharacterAttributeScreens.CharacterAttributeScreen import CharacterAttributeScreen
 
@@ -35,6 +35,7 @@ class Character(WidgetBase):
     element = StringProperty('')
     type = StringProperty('')
 
+    @mainthread
     def __init__(self, rank, type, element, moves, familias, **kwargs):
         super().__init__(**kwargs)
 
@@ -92,6 +93,7 @@ class Character(WidgetBase):
         self.attr_screen = None
         self.update_score()
 
+    @mainthread
     def load_elements(self, size):
     #     self.select_widget = FilledCharacterPreview(is_select=True, is_support=self._is_support, character=self, size_hint_x=None)
     #     self.select_square_widget = SquareCharacterPreview(is_select=True, character=self, is_support=self._is_support)

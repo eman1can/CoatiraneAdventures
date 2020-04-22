@@ -1,0 +1,10 @@
+7
+
+# breaks on this line
+totalnum=7
+numofmoves
+numofenemies
+numoffamilies
+numofchars
+numofchars
+

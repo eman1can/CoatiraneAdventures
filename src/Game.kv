@@ -15,6 +15,31 @@
 #:import SquareCharacterPreview src.modules.Screens.CharacterDisplay.SquareCharacterPreview.SquareCharacterPreview
 #:import DragSnapWidget src.modules.DragScreen.DragSnapWidget
 #:import PartyIndexer src.modules.PartyIndexer.PartyIndexer
+#:import CircularProgressBar src.modules.CircularProgressBar.CircularProgressBar
+
+
+<CircularProgressBar>:
+    normalised_value: self.normalized_min + (self.value - self.min) * (self.normalized_max - self.normalized_min) / (self.max - self.min)
+    canvas:
+        PushMatrix
+        Rotate:
+            angle: self.rot_angle
+            origin: self.center
+        Color:
+            rgba: self.background_color
+        Line:
+            circle: self.x + self.width / 2, self.y + self.height / 2, self.width / 2 - self.thickness, root.draw_min, root.draw_max
+            width: self.thickness
+            cap: self.cap_style
+            cap_precision: self.cap_precision
+        Color:
+            rgba: self.progress_color
+        Line:
+            circle: self.x + self.width / 2, self.y + self.height / 2, self.width / 2 - self.thickness, root.draw_min, root.draw_min + self.normalised_value * (root.draw_max - root.draw_min)
+            width: self.thickness
+            cap: self.cap_style
+            cap_precision: self.cap_precision
+        PopMatrix
 
 <NewGameScreen>:
     name: 'new_game'
