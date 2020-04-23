@@ -56,7 +56,8 @@ class CharacterAttributeScreen(Screen):
         self.ids.skillslist.update_from_scroll()
 
     def on_change_equip(self):
-        pass
+        screen, made = App.get_running_app().main.create_screen('equipment_change_' + self.char.get_name(), self.char)
+        App.get_running_app().main.display_screen(screen, True, True)
 
     def on_back_press(self):
         root = App.get_running_app().main

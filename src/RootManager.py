@@ -1,5 +1,7 @@
 from src.modules.KivyBase.Hoverable import ScreenManagerH as ScreenManager, ScreenH as Screen
 from kivy.uix.screenmanager import FadeTransition
+
+from src.modules.Screens.Equipment.EquipmentChange import EquipmentChange
 from src.modules.Screens.NewGameScreen import NewGameScreen
 from src.modules.Screens.SelectScreen import SelectScreen
 from src.modules.Screens.TownScreen import TownScreen
@@ -95,6 +97,9 @@ class Root(ScreenManager):
         elif screen_name.startswith('image_preview'):
             self.whitelist.append(screen_name)
             screen = ImagePreview(char=args[0])
+        elif screen_name.startswith('equipment_change'):
+            self.whitelist.append(screen_name)
+            screen = EquipmentChange(char=args[0])
         else:
             raise Exception("Unsupported Screen type", screen_name)
         screen.size = self.size

@@ -2,7 +2,8 @@
 #: import Image kivy.core.image
 
 #My Class Imports
-#:import EquipmentSlot src.modules.Screens.CharacterAttributeScreens.EquipmentSlot.EquipmentSlot
+#:import DisplayEquipmentSlot src.modules.Screens.Equipment.EquipmentSlot.DisplayEquipmentSlot
+#:import DetailEquipmentSlot src.modules.Screens.Equipment.EquipmentSlot.DetailEquipmentSlot
 #:import AbilityStatBox src.modules.Screens.CharacterAttributeScreens.AbilityStatBox.AbilityStatBox
 #:import StatInfoBox src.modules.Screens.CharacterAttributeScreens.StatInfoBox.StatInfoBox
 #:import StatBox src.modules.Screens.CharacterAttributeScreens.StatBox.StatBox
@@ -1917,55 +1918,55 @@
             padding: app.get_dkey('cas.el pad', overlay.width, overlay.height)
             spacing: app.get_dkey('cas.el spa', overlay.width, overlay.height)
             default_size_hint: app.get_dkey('cas.el ds_h')
-            EquipmentSlot:
+            DisplayEquipmentSlot:
                 id: weapon
                 slot_name: "weapon"
                 item: None if root.char is None else root.char.get_equipment().weapon
                 font: '../res/fnt/Gabriola.ttf'
                 color: app.get_dkey('cas.el c')
-            EquipmentSlot:
+            DisplayEquipmentSlot:
                 id: necklace
                 item: None if root.char is None else root.char.get_equipment().necklace
                 slot_name: 'necklace'
                 font: '../res/fnt/Gabriola.ttf'
                 color: app.get_dkey('cas.el c')
-            EquipmentSlot:
+            DisplayEquipmentSlot:
                 id: ring
                 item: None if root.char is None else root.char.get_equipment().ring
                 slot_name: 'ring'
                 font: '../res/fnt/Gabriola.ttf'
                 color: app.get_dkey('cas.el c')
-            EquipmentSlot:
+            DisplayEquipmentSlot:
                 id: helmet
                 item: None if root.char is None else root.char.get_equipment().helmet
                 slot_name: 'helmet'
                 font: '../res/fnt/Gabriola.ttf'
                 color: app.get_dkey('cas.el c')
-            EquipmentSlot:
+            DisplayEquipmentSlot:
                 id: vambraces
                 item: None if root.char is None else root.char.get_equipment().vambraces
                 slot_name: 'vambraces'
                 font: '../res/fnt/Gabriola.ttf'
                 color: app.get_dkey('cas.el c')
-            EquipmentSlot:
+            DisplayEquipmentSlot:
                 id: gloves
                 item: None if root.char is None else root.char.get_equipment().gloves
                 slot_name: 'gloves'
                 font: '../res/fnt/Gabriola.ttf'
                 color: app.get_dkey('cas.el c')
-            EquipmentSlot:
+            DisplayEquipmentSlot:
                 id: chest
                 item: None if root.char is None else root.char.get_equipment().chest
                 slot_name: 'chest'
                 font: '../res/fnt/Gabriola.ttf'
                 color: app.get_dkey('cas.el c')
-            EquipmentSlot:
-                id: leggings
-                item: None if root.char is None else root.char.get_equipment().leggings
-                slot_name: 'leggings'
+            DisplayEquipmentSlot:
+                id: grieves
+                item: None if root.char is None else root.char.get_equipment().grieves
+                slot_name: 'grieves'
                 font: '../res/fnt/Gabriola.ttf'
                 color: app.get_dkey('cas.el c')
-            EquipmentSlot:
+            DisplayEquipmentSlot:
                 id: boots
                 item: None if root.char is None else root.char.get_equipment().boots
                 slot_name: 'boots'
@@ -2528,42 +2529,6 @@
         pos_hint: app.get_dkey('asb.agi.num p_h')
         font_size: app.get_dkey('asb.num fs', root.height)
 
-<EquipmentSlot>:
-    ImageH:
-        id: background
-        source: root.background_source
-        allow_stretch: True
-    LabelH:
-        id: label
-        text: str(root.slot_name).capitalize()
-        color: root.color
-        font_name: root.font
-        size: self.texture_size
-        size_hint: app.get_dkey('eqs.lbl s_h')
-        font_size: app.get_dkey('eqs.lbl fs', root.height)
-        pos_hint: app.get_dkey('eqs.lbl p_h')
-    LabelH:
-        id: label_equip
-        text: 'Not equipped' if root.item is None else root.item.get_name().capitalize()
-        color: root.color
-        font_name: root.font
-        size: self.texture_size
-        size_hint: app.get_dkey('eqs.lble s_h')
-        font_size: app.get_dkey('eqs.lble fs', root.height)
-        pos_hint: app.get_dkey('eqs.lble.one p_h') if root.item is None else app.get_dkey('eqs.lble.two p_h')
-    ImageH:
-        id: image_equip
-        source: '../res/items/equipment/empty.png' if root.item is None else '../res/items/equipment/' + self.item.get_id() + '.png'
-        opacity: 0 if root.item is None else 1
-        size_hint: app.get_dkey('eqs.imge s_h')
-        pos_hint: app.get_dkey('eqs.imge p_h')
-    DurabilityBar:
-        max: 100 if root.item is None else root.item.get_durability()
-        value: 0 if root.item is None else root.item.get_current_durability()
-        opacity: 0 if root.item is None else 1
-        size_hint: app.get_dkey('eqs.dbb s_h')
-        pos_hint: app.get_dkey('eqs.dbb p_h')
-
 <DurabilityBar>:
     ImageH:
         id: background
@@ -2988,6 +2953,316 @@
         size_hint: app.get_dkey('bb s_h')
         pos_hint: app.get_dkey('bb p_h')
         on_release: root.on_back_press()
+
+<EquipmentChange>:
+    name: 'equipment_change_unassigned' if root.char is None else 'equipment_change_' + str(root.char.get_name())
+
+    weapon: None if root.char is None else root.char.get_equipment().weapon
+    helmet: None if root.char is None else root.char.get_equipment().helmet
+    chest: None if root.char is None else root.char.get_equipment().chest
+    grieves: None if root.char is None else root.char.get_equipment().grieves
+    boots: None if root.char is None else root.char.get_equipment().boots
+    vambraces: None if root.char is None else root.char.get_equipment().vambraces
+    gloves: None if root.char is None else root.char.get_equipment().gloves
+    necklace: None if root.char is None else root.char.get_equipment().necklace
+    ring: None if root.char is None else root.char.get_equipment().ring
+
+    ImageH:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+    DetailEquipmentSlot:
+        id: chest
+        size_hint: app.get_dkey('ecs.slo s_h')
+        pos_hint: app.get_dkey('ecs.slo.che p_h')
+        slot_name: 'Chest'
+        item: root.chest
+    DetailEquipmentSlot:
+        id: vambraces
+        size_hint: app.get_dkey('ecs.slo s_h')
+        pos_hint: app.get_dkey('ecs.slo.vam p_h')
+        slot_name: 'Vambraces'
+        item: root.vambraces
+    DetailEquipmentSlot:
+        id: grieves
+        size_hint: app.get_dkey('ecs.slo s_h')
+        pos_hint: app.get_dkey('ecs.slo.gre p_h')
+        slot_name: 'Grieves'
+        item: root.grieves
+    DetailEquipmentSlot:
+        id: helmet
+        size_hint: app.get_dkey('ecs.slo s_h')
+        pos_hint: app.get_dkey('ecs.slo.hel p_h')
+        slot_name: 'Helmet'
+        item: root.helmet
+    DetailEquipmentSlot:
+        id: boots
+        size_hint: app.get_dkey('ecs.slo s_h')
+        pos_hint: app.get_dkey('ecs.slo.bot p_h')
+        slot_name: 'Boots'
+        item: root.boots
+    DetailEquipmentSlot:
+        id: weapon
+        size_hint: app.get_dkey('ecs.slo s_h')
+        pos_hint: app.get_dkey('ecs.slo.wep p_h')
+        slot_name: 'Weapon'
+        item: root.weapon
+    DetailEquipmentSlot:
+        id: gloves
+        size_hint: app.get_dkey('ecs.slo s_h')
+        pos_hint: app.get_dkey('ecs.slo.glo p_h')
+        slot_name: 'Gloves'
+        item: root.gloves
+    DetailEquipmentSlot:
+        id: necklace
+        size_hint: app.get_dkey('ecs.slo s_h')
+        pos_hint: app.get_dkey('ecs.slo.nek p_h')
+        slot_name: 'Necklace'
+        item: root.necklace
+    DetailEquipmentSlot:
+        id: ring
+        size_hint: app.get_dkey('ecs.slo s_h')
+        pos_hint: app.get_dkey('ecs.slo.rng p_h')
+        slot_name: 'Ring'
+        item: root.ring
+#    ImageH:
+#        id: shadow
+#        source: '../res/characters/test/badass_ais/portrait_shadow.png'
+#        size_hint: app.get_dkey('ecs.por s_h')
+#        pos_hint: app.get_dkey('ecs.por p_h')
+#        allow_stretch: True
+    ImageH:
+        id: portrait
+        source: '../res/characters/test/badass_ais/portrait.png'
+        size_hint:app.get_dkey('ecs.por s_h')
+        pos_hint: app.get_dkey('ecs.por p_h')
+        allow_stretch: True
+    HTButton:
+        id: back_button
+        path: '../res/screens/buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+
+<DisplayEquipmentSlot>:
+    ImageH:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+#    LabelH:
+#        id: label
+#        text: str(root.slot_name).capitalize()
+#        color: root.color
+#        font_name: root.font
+#        size: self.texture_size
+#        size_hint: app.get_dkey('eqs.lbl s_h')
+#        font_size: app.get_dkey('eqs.lbl fs', root.height)
+#        pos_hint: app.get_dkey('eqs.lbl p_h')
+    HTButton:
+        id: detail_equip
+        opacity: 0
+        collide_image: '../res/screens/buttons/equipment.collision.png'
+        size_hint: app.get_dkey('deqs.butt s_h')
+        pos_hint: app.get_dkey('deqs.butt p_h')
+        on_release: print('touched' + str(root.slot_name))
+    LabelH:
+        id: label_equip
+        text: 'Not equipped' if root.item is None else root.item.get_name().capitalize()
+        color: root.color
+        font_name: root.font
+        size_hint: app.get_dkey('deqs.lble.one s_h') if root.item is None else app.get_dkey('deqs.lble.two s_h')
+        font_size: app.get_dkey('deqs.lble fs', root.height)
+        pos_hint: app.get_dkey('deqs.lble.one p_h') if root.item is None else app.get_dkey('deqs.lble.two p_h')
+    ImageH:
+        id: image_equip
+        source: '../res/items/equipment/empty.png' if root.item is None else '../res/items/equipment/' + root.item.get_id() + '.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deqs.imge s_h')
+        pos_hint: app.get_dkey('deqs.imge p_h')
+    DurabilityBar:
+        max: 100 if root.item is None else root.item.get_durability()
+        value: 0 if root.item is None else root.item.get_durability_current()
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deqs.dbb s_h')
+        pos_hint: app.get_dkey('deqs.dbb p_h')
+
+<DetailEquipmentSlot>:
+    ImageH:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+    LabelH:
+        id: slot_name
+        text: '[b]' + str(root.slot_name).capitalize() + '[/b]'
+        markup: True
+        font_name: '../res/fnt/Gabriola.ttf'
+        font_size: app.get_dkey('deteqs.lbl fs', self.height)
+        color: app.get_dkey('deteqs.lbl c')
+        size_hint: app.get_dkey('deteqs.lbl s_h')
+        width: self.texture_size[0]
+        pos_hint: app.get_dkey('deteqs.lbl p_h')
+    ImageH:
+        id: type
+        source: '' if root.item is None else '../res/screens/equip/' + root.item.get_type() + 'Attack_black.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deteqs.timg s_h')
+        pos_hint: app.get_dkey('deteqs.timg p_h')
+    ImageH:
+        id: element
+        source: '' if root.item is None else '../res/screens/attribute/' + root.item.get_element() + '.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deteqs.eimg s_h')
+        pos_hint: app.get_dkey('deteqs.eimg p_h')
+    ImageH:
+        id: rank
+        source: '' if root.item is None else '../res/screens/stats/' + root.item.get_rank() + '.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deteqs.rimg s_h')
+        pos_hint: app.get_dkey('deteqs.rimg p_h')
+        allow_stretch: True
+    ImageH:
+        id: background_slot
+        source: root.slot_source
+        size_hint: app.get_dkey('deteqs.sltbg s_h')
+        pos_hint: app.get_dkey('deteqs.sltbg p_h')
+        allow_stretch: True
+        keep_ratio: False
+    HTButton:
+        id: detail_equip
+        collide_image: '../res/screens/buttons/equipment.collision.png'
+        size_hint: app.get_dkey('deteqs.butt s_h')
+        pos_hint: app.get_dkey('deteqs.butt p_h')
+        opacity: 0
+        on_release: print('touched' + root.slot_name)
+    LabelH:
+        text: 'Not Equipped' if root.item is None else str(root.item.get_name()).capitalize()
+        font_name: '../res/fnt/Gabriola.ttf'
+        font_size: app.get_dkey('deteqs.lble fs', root.height)
+        color: app.get_dkey('deteqs.lble c')
+        size_hint: app.get_dkey('deteqs.lble.one s_h') if root.item is None else app.get_dkey('deteqs.lble.two s_h')
+        pos_hint: app.get_dkey('deteqs.lble.one p_h') if root.item is None else app.get_dkey('deteqs.lble.two p_h')
+    ImageH:
+        source: '../res/items/equipment/empty.png' if root.item is None else '../res/items/equipment/' + root.item.get_id() + '.png'
+        source: '../res/items/equipment/empty.png' if root.item is None else '../res/items/equipment/' + root.item.get_id() + '.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deteqs.imge s_h')
+        pos_hint: app.get_dkey('deteqs.imge p_h')
+    LabelH:
+        text: 'Durability:  0/0\nScore:           0\nValue:          0' if root.item is None else 'Durability:  ' + str(root.item.get_durability_current()) + '/' + str(root.item.get_durability()) + '\nScore:           ' + str(root.item.get_score()) + '\nValue:          ' + str(root.item.get_value())
+        halign: 'left'
+        valign: 'top'
+        font_name: '../res/fnt/Gabriola.ttf'
+        font_size: app.get_dkey('deteqs.lbls fs', root.height)
+        color: app.get_dkey('deteqs.lbls c')
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('deteqs.lbls p_h')
+    ScrollViewH:
+        do_scroll_x: False
+        do_scroll_y: True
+        size_hint: app.get_dkey('deteqs.lbg s_h')
+        pos_hint: app.get_dkey('deteqs.lbg p_h')
+        GridLayoutH:
+            cols: 2
+            size_hint_y: None
+            orientation: 'vertical'
+            height: self.minimum_height
+            ImageH:
+                id: patk
+                source: '../res/screens/equip/PhysicalAttack_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_phyatk())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+            ImageH:
+                id: matk
+                source: '../res/screens/equip/MagicalAttack_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_magatk())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+            ImageH:
+                id: def
+                source: '../res/screens/equip/Defense_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_defense())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+            ImageH:
+                id: health
+                source: '../res/screens/equip/Health_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_health())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+            ImageH:
+                id: mana
+                source: '../res/screens/equip/Mana_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_mana())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+            ImageH:
+                id: strength
+                source: '../res/screens/equip/Str_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_strength())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+            ImageH:
+                id: magic
+                source: '../res/screens/equip/Mag_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_magic())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+            ImageH:
+                id: endurance
+                source: '../res/screens/equip/End_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_endurance())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+            ImageH:
+                id: dexerity
+                source: '../res/screens/equip/Dex_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_dexterity())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+            ImageH:
+                id: agility
+                source: '../res/screens/equip/Agi_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            LabelH:
+                text: '0' if root.item is None else str(root.item.get_agility())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: '../res/fnt/Gabriola.ttf'
+    ImageH:
+        source: root.list_source
+        size_hint: app.get_dkey('deteqs.lbg s_h')
+        pos_hint: app.get_dkey('deteqs.lbg p_h')
+        allow_stretch: True
+        keep_ratio: False
 
 <Dungeonbattle>:
     name: 'dungeon_battle'

@@ -1,18 +1,24 @@
 from kivy.app import App
+from kivy.core.window import Window
 from kivy.uix.relativelayout import RelativeLayout
+from kivy.lang.builder import Builder
 
-class Constraint:
-    def torOf(self, object, object2, offset):
-        pos_x = object2.pos_hint['x']
-        return pos_x + 0.2
 
-class Canvas(RelativeLayout):
-    pass
+class Main(RelativeLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+
+class EquipmentDisplay(RelativeLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
 
 class MainApp(App):
     def build(self):
-        return Canvas()
+        print(Window.size)
+        Builder.load_file('equip.kv')
+        return Main()
 
 
 if __name__ == '__main__':

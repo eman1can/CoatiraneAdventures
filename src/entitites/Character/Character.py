@@ -55,6 +55,8 @@ class Character(WidgetBase):
         self.people_slain = 0
 
         self.equipment = Equipment()
+        self.equipment.ring = EquipmentItem("Crystal Ring", 'ring_1', 'Magical', 'water', 'G', [0, 10, 0, 15, 5, 0, 20, 0, 15, 20, 900, 545, 100, 1000])
+        self.equipment.necklace = EquipmentItem("Sapphire Necklace", 'necklace_2', 'Magical', 'dark', 'SSS', [15, 100, 0, 25, 5, 0, 150, 75, 15, 20, 900, 880, 600, 10000])
 
         # End Experimental
 
@@ -542,10 +544,10 @@ class Equipment(WidgetBase):
     vambraces = ObjectProperty(None, allownone=True)
     gloves = ObjectProperty(None, allownone=True)
     chest = ObjectProperty(None, allownone=True)
-    leggings = ObjectProperty(None, allownone=True)
+    grieves = ObjectProperty(None, allownone=True)
     boots = ObjectProperty(None, allownone=True)
-    items = ReferenceListProperty(weapon, necklace, ring, helmet, vambraces, gloves, chest, leggings, boots)
-    types = ListProperty(['weapon', 'necklace', 'ring', 'helmet', 'vambraces', 'gloves', 'chest', 'leggings', 'boots'])
+    items = ReferenceListProperty(weapon, necklace, ring, helmet, vambraces, gloves, chest, grieves, boots)
+    types = ListProperty(['weapon', 'necklace', 'ring', 'helmet', 'vambraces', 'gloves', 'chest', 'grieves', 'boots'])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -631,11 +633,13 @@ class Equipment(WidgetBase):
 
 
 class EquipmentItem:
-    def __init__(self, name, id, type, values):
+    def __init__(self, name, id, type, element, rank, values):
         self.name = name
         self.id = id
         self.type = type
         self.values = values
+        self.element = element
+        self.rank = rank
 
     def get_name(self):
         return self.name
@@ -645,6 +649,9 @@ class EquipmentItem:
 
     def get_type(self):
         return self.type
+
+    def get_element(self):
+        return self.element
 
     def get_health(self):
         return self.values[0]
@@ -681,6 +688,15 @@ class EquipmentItem:
 
     def get_durability_current(self):
         return self.values[11]
+
+    def get_score(self):
+        return self.values[12]
+
+    def get_value(self):
+        return self.values[13]
+
+    def get_rank(self):
+        return self.rank
 
 
 class Grid:

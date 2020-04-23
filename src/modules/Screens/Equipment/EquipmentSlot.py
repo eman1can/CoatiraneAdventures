@@ -4,14 +4,27 @@ from src.modules.KivyBase.Hoverable import RelativeLayoutH as RelativeLayout
 
 class EquipmentSlot(RelativeLayout):
     item = ObjectProperty(None, allownone=True)
-    color = ListProperty([0, 0, 0, 0])
-    font = StringProperty('')
+    color = ListProperty([0, 0, 0, 1])
+    font = StringProperty('../res/fnt/Gabriola.ttf')
     slot_name = StringProperty('')
 
-    background_source = StringProperty('')
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+
+class DisplayEquipmentSlot(EquipmentSlot):
+    background_source = StringProperty("../res/screens/attribute/equipment.png")
 
     def __init__(self, **kwargs):
-        self.background_source = "../res/screens/attribute/equipment.png"
+        super().__init__(**kwargs)
+
+
+class DetailEquipmentSlot(EquipmentSlot):
+    background_source = StringProperty("../res/screens/equip/background.png")
+    slot_source = StringProperty("../res/screens/equip/slot.png")
+    list_source = StringProperty("../res/screens/equip/list.png")
+
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
 
