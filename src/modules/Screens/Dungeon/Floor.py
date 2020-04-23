@@ -1,3 +1,5 @@
+import random
+
 class Floor:
     """
     Boss Type:
@@ -8,8 +10,8 @@ class Floor:
     4 - Boss is multiple of normally passed enemies - maxCounts upped by 40% & stats upped by 30%
     """
 
-    def __init__(self, floornum, maxEnemies, minEncounters, maxEncounters, bossType, boss, Enemies, propabilities):
-        self.floornum, self.maxEnemies = floornum, maxEnemies
+    def __init__(self, floorid, maxEnemies, minEncounters, maxEncounters, bossType, boss, Enemies, propabilities):
+        self.floorid, self.maxEnemies = floorid, maxEnemies
         self.minEncounters, self.maxEncounters = minEncounters, maxEncounters
         self.bossType, self.boss = bossType, boss
         self.enemies = Enemies

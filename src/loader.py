@@ -14,6 +14,12 @@ from src.entitites.Character.Familia import Familia
 from src.entitites.EnemyType import EnemyType
 from src.modules.Screens.Dungeon.Floor import Floor
 
+CURRENT_INDEX = 0
+TRANSPARENT = 0
+STARTING_TOTAL_INDEX = 1
+STARTING_CURRENT_INDEX = 0
+
+OPAQUE = 1
 
 class CALoader(Widget):
     max_values = ListProperty([])
@@ -31,46 +37,46 @@ class CALoader(Widget):
         for x in file:
             if index == 0:
                 opt = x[:-1].split(',')
-                self.max_values.append(int(opt[0]))
-                self.curr_values.append(1)
-                for y in range(1, int(opt[0]) + 1):
+                self.max_values.append(int(opt[CURRENT_INDEX]))
+                self.curr_values.append(STARTING_TOTAL_INDEX)
+                for y in range(STARTING_TOTAL_INDEX, int(opt[CURRENT_INDEX]) + STARTING_TOTAL_INDEX):
                     self.messages.append(opt[y])
             else:
                 if x.startswith('#'):
                     break
                 self.max_values.append(int(x))
-                self.curr_values.append(0)
+                self.curr_values.append(STARTING_CURRENT_INDEX)
             index += 1
-        self.ids.outer_progress.opacity = 0
-        self.ids.inner_progress.opacity = 0
-        self.ids.outer_progress.max = self.max_values[0]
-        self.ids.outer_progress.value = self.curr_values[0]
-        self.ids.inner_progress.max = self.max_values[self.curr_values[0]]
-        self.ids.inner_progress.value = self.curr_values[self.curr_values[0]]
+        self.ids.outer_progress.opacity = TRANSPARENT
+        self.ids.inner_progress.opacity = TRANSPARENT
+        self.ids.outer_progress.max = self.max_values[CURRENT_INDEX]
+        self.ids.outer_progress.value = self.curr_values[CURRENT_INDEX]
+        self.ids.inner_progress.max = self.max_values[self.curr_values[CURRENT_INDEX]]
+        self.ids.inner_progress.value = self.curr_values[self.curr_values[CURRENT_INDEX]]
 
     def show_bars(self):
-        self.ids.outer_progress.opacity = 1
-        self.ids.inner_progress.opacity = 1
+        self.ids.outer_progress.opacity = OPAQUE
+        self.ids.inner_progress.opacity = OPAQUE
 
     def updateOuter(self):
-        self.ids.outer_label.text = f'Loading Data {self.curr_values[0]} / {self.max_values[0]}'
-        self.ids.outer_progress.max = self.max_values[0]
-        self.ids.outer_progress.value = self.curr_values[0]
+        self.ids.outer_label.text = f'Loading Data {self.curr_values[CURRENT_INDEX]} / {self.max_values[CURRENT_INDEX]}'
+        self.ids.outer_progress.max = self.max_values[CURRENT_INDEX]
+        self.ids.outer_progress.value = self.curr_values[CURRENT_INDEX]
         self.updateInner()
 
     def updateInner(self):
-        if self.curr_values[0] <= self.max_values[0]:
-            self.ids.inner_label.text = f'{self.messages[self.curr_values[0] - 1]} {self.curr_values[self.curr_values[0]]} / {self.max_values[self.curr_values[0]]}'
-            self.ids.inner_progress.max = self.max_values[self.curr_values[0]]
-            self.ids.inner_progress.value = self.curr_values[self.curr_values[0]]
+        if self.curr_values[CURRENT_INDEX] <= self.max_values[CURRENT_INDEX]:
+            self.ids.inner_label.text = f'{self.messages[self.curr_values[CURRENT_INDEX] - STARTING_TOTAL_INDEX]} {self.curr_values[self.curr_values[CURRENT_INDEX]]} / {self.max_values[self.curr_values[CURRENT_INDEX]]}'
+            self.ids.inner_progress.max = self.max_values[self.curr_values[CURRENT_INDEX]]
+            self.ids.inner_progress.value = self.curr_values[self.curr_values[CURRENT_INDEX]]
 
     def incTot(self, *args):
-        self.curr_values[0] += 1
+        self.curr_values[CURRENT_INDEX] += 1
         self.updateOuter()
         self.updateInner()
 
     def incCurr(self, *args):
-        self.curr_values[self.curr_values[0]] += 1
+        self.curr_values[self.curr_values[CURRENT_INDEX]] += 1
         self.updateInner()
 
     def done_loading(self, loader):
@@ -112,6 +118,18 @@ class CALoader(Widget):
                     callback()
 
         # Move functions
+        MOVE_NAME = 0
+        MOVE_COVER = 1
+        MOVE_COVER_NAME = 2
+        MOVE_TYPE = 3
+        MOVE_POWER = 4
+        EFFECT_NUMBER = 5
+        NUM_NORMAL_VALUES = 5
+        EFFECT_VALUES = 2
+        EFFECT_NAME = 0
+        EFFECT_PROBABLITY = 1
+
+
         def load_move_block(callbacks):
             self.moves = []
             self.move_lines = []
@@ -138,7 +156,7 @@ class CALoader(Widget):
             line = self.move_lines.pop(0)
             if line[0] != '/':
                 values = line[:-1].split(",", -1)
-                # MoveName, MovePower, EffectNum, MoveEffects
+                # moveName, MoveCover, MoveCoverName, MoveType, MovePower, EffectNum, MoveEffects
                 effects = []
                 effects.append(["Stun", 0])
                 effects.append(["Sleep", 0])
@@ -147,15 +165,15 @@ class CALoader(Widget):
                 effects.append(["Charm", 0])
                 effects.append(["Seal", 0])
                 effects.append(["Taunt", 0])
-                for x in range(int(values[3])):
+                for x in range(int(values[EFFECT_NUMBER])):
                     for y in effects:
-                        if values[5 + (x * 2)] == y[0]:
-                            y[1] = float(values[6 + (x * 2)])
+                        if values[NUM_NORMAL_VALUES + (x * EFFECT_VALUES)] == y[EFFECT_NAME]:
+                            y[EFFECT_PROBABLITY] = float(values[NUM_NORMAL_VALUES + 1 + (x * EFFECT_VALUES)])
                 covername = None
-                if bool(values[1] == "True"):
-                    covername = values[2]
+                if bool(values[MOVE_COVER] == "True"):
+                    covername = values[MOVE_COVER_NAME]
                 # MoveName, MoveCover, CoverName, MoveType, MovePower, Stun, Charm, Poision, Burn, Sleep, Seal, Taunt
-                self.moves.append(Move(values[0], bool(values[1] == "True"), covername, int(values[3]), values[4], effects))
+                self.moves.append(Move(values[MOVE_NAME], bool(values[MOVE_COVER] == "True"), covername, int(values[MOVE_TYPE]), values[MOVE_POWER], effects))
             print("\t<< Loaded Move Chunk ")
             for callback in callbacks:
                 if callback is not None:
@@ -235,6 +253,27 @@ class CALoader(Widget):
                     callback()
 
         #Char block functions
+        ATTACK_TYPE = 0
+        TYPE = 1
+        ELEMENT = 2
+        HEALTH_BASE = 3
+        MANA_BASE = 4
+        STRENGTH_BASE = 5
+        MAGIC_BASE = 6
+        ENDURANCE_BASE = 7
+        DEXTERITY_BASE = 8
+        AGILITY_BASE = 9
+        NAME = 10
+        NICK_NAME = 11
+        ID = 12
+        MOVE_1 = 13
+        MOVE_2 = 14
+        MOVE_3 = 15
+        MOVE_4 = 16
+        MOVE_SPECIAL = 17
+        UNLOCKED = 1
+        LOCKED = 0
+
         def load_char_block(callbacks):
             self.chars = []
             self.char_lines = []
@@ -260,40 +299,23 @@ class CALoader(Widget):
             line = self.char_lines.pop(0)
             if line[0] != '/':
                 values = line[:-1].split(",", -1)
-                for index in range(0, len(values)):
+                for index in range(len(values)):
                     values[index] = values[index].strip()
-                # 0 Type (A | S)
-                # 1 Attack Type (0, 1, 2)
-                # 2 Health Base
-                # 3 Mana Base
-                # 4 Strength Base
-                # 5 Magic Base
-                # 6 Endurance Base
-                # 7 Dexterity Base
-                # 8 Agility Base
-                # 9 Name
-                # 10 NickName
-                # 11 id
-                # if 0 A:
-                #   12 Move 1
-                #   13 Move 2
-                #   14 Move 3
-                #   15 Move 4
-                #   16 Move Special
-                rank = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                res_path = '../res/characters/' + self.program_type + "/" + values[12] + "/" + values[12]
+
+                ranks = [UNLOCKED, LOCKED, LOCKED, LOCKED, LOCKED, LOCKED, LOCKED, LOCKED, LOCKED, LOCKED]
+                res_path = '../res/characters/' + self.program_type + "/" + values[ID] + "/" + values[ID]
                 move = None
-                if values[0] == 'A':
-                    move = Move.getmove(self.moves, values[13]), Move.getmove(self.moves, values[14]), Move.getmove(self.moves, values[15]), Move.getmove(self.moves, values[16]), Move.getmove(self.moves, values[17])
-                char = Character(rank, int(values[1]), int(values[2]), move, self.familias, index=self.char_count, _is_support=values[0] == 'S', name=values[10], display_name=values[11], id=values[12],
+                if values[ATTACK_TYPE] == 'A':
+                    move = Move.getmove(self.moves, values[MOVE_1]), Move.getmove(self.moves, values[MOVE_2]), Move.getmove(self.moves, values[MOVE_3]), Move.getmove(self.moves, values[MOVE_4]), Move.getmove(self.moves, values[MOVE_SPECIAL])
+                char = Character(ranks, int(values[TYPE]), int(values[ELEMENT]), move, self.familias, index=self.char_count, _is_support=values[ATTACK_TYPE] == 'S', name=values[NAME], display_name=values[NICK_NAME], id=values[ID],
                                  slide_image_source=res_path + '_slide.png', slide_support_image_source=res_path + '_slide_support.png', preview_image_source=res_path + '_preview.png', full_image_source=res_path + '_full.png', program_type=self.program_type,
-                                 health_base=int(values[3]),
-                                 mana_base=int(values[4]),
-                                 strength_base=int(values[5]),
-                                 magic_base=int(values[6]),
-                                 endurance_base=int(values[7]),
-                                 dexterity_base=int(values[8]),
-                                 agility_base=int(values[9]))
+                                 health_base=int(values[HEALTH_BASE]),
+                                 mana_base=int(values[MANA_BASE]),
+                                 strength_base=int(values[STRENGTH_BASE]),
+                                 magic_base=int(values[MAGIC_BASE]),
+                                 endurance_base=int(values[ENDURANCE_BASE]),
+                                 dexterity_base=int(values[DEXTERITY_BASE]),
+                                 agility_base=int(values[AGILITY_BASE]))
                 char.load_elements(self.size)
                 self.chars.append(char)
                 self.char_count += 1
@@ -303,6 +325,14 @@ class CALoader(Widget):
                     callback()
 
         # Floor functions
+        FLOOR_ID = 0
+        MIN_ENCOUNTERS = 1
+        MAX_ENCOUNTERS = 2
+        BOSS_TYPE = 3
+        ARRAY_NUM = 4
+        END_OF_VALUES = 6
+        NUMBER_OF_VALUES = 2
+
         def load_floor_block(callbacks):
             self.floors = []
             self.floor_lines = []
@@ -333,20 +363,20 @@ class CALoader(Widget):
                 propabilities = []
                 floorEnemies = []
                 boss = None
-                for x in range(int(values[2])):
-                    currStr = values[6 + (x * 2)]
+                for x in range(int(values[NUMBER_OF_VALUES])):
+                    currStr = values[END_OF_VALUES + (x * NUMBER_OF_VALUES)]
                     temp = None
                     for y in self.enemies:
                         if y.name == currStr:
                             floorEnemies.append(y)
                             temp = y
                             break
-                    if values[6 + (x * 2)] == "BOSS":
+                    if values[END_OF_VALUES + (x * NUMBER_OF_VALUES)] == "BOSS":
                         boss = temp
                     else:
-                        propabilities.append(float(values[7 + (x * 2)]))
-                # // FloorNum, MaxEnemies, MinEncounters, MaxEncounters, BossType, ArrayNum, [EnemyName, EnemyProbability]
-                self.floors.append(Floor(int(values[0]), int(values[1]), int(values[2]), int(values[3]), int(values[4]),
+                        propabilities.append(float(values[END_OF_VALUES + 1 + (x * NUMBER_OF_VALUES)]))
+                # // FloorID, MaxEnemies, MinEncounters, MaxEncounters, BossType, ArrayNum, [EnemyName, EnemyProbability]
+                self.floors.append(Floor(values[FLOOR_ID], int(values[MIN_ENCOUNTERS]), int(values[MAX_ENCOUNTERS]), int(values[BOSS_TYPE]), int(values[ARRAY_NUM]),
                                     boss, floorEnemies, propabilities))
             print("\t<< Loaded floor Chunk ")
             for callback in callbacks:
