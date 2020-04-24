@@ -59,8 +59,10 @@ class DungeonMain(Screen):
         self.animation_right.start(self.ids.right_arrow)
 
     def unanimate_arrows(self):
-        self.animation_left.repeat = False
-        self.animation_right.repeat = False
+        if self.animation_right is not None:
+            self.animation_right.repeat = False
+        if self.animation_left is not None:
+            self.animation_left.repeat = False
 
     def on_enter(self, *args):
         self.animate_arrows()
@@ -102,6 +104,10 @@ class DungeonMain(Screen):
     def on_back_press(self):
         if not self.ids.back_button.disabled:
             App.get_running_app().main.display_screen(None, False, False)
+
+    def on_gear(self):
+        screen, made = App.get_running_app().main.create_screen('gear_change')
+        App.get_running_app().main.display_screen(screen, True, True)
 
     def descend(self):
         # print("Delve")

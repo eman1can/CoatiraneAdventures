@@ -472,7 +472,7 @@
         font_size: app.get_dkey('dm.ib fs', root.height)
         size_hint: app.get_dkey('dm.ib s_h')
         pos_hint: app.get_dkey('dm.ib p_h')
-#        on_release: root.inventory()
+#        on_release: root.on_inventory()
     HTButton:
         id: gear_button
         path: '../res/screens/buttons/GearButton'
@@ -481,7 +481,7 @@
         font_size: app.get_dkey('dm.gb fs', root.height)
         size_hint: app.get_dkey('dm.gb s_h')
         pos_hint: app.get_dkey('dm.gb p_h')
-#        on_release: root.gear()
+        on_release: root.on_gear()
     HTButton:
         id: ascend_button
         path: '../res/screens/buttons/AscendButton'
@@ -3263,6 +3263,353 @@
         pos_hint: app.get_dkey('deteqs.lbg p_h')
         allow_stretch: True
         keep_ratio: False
+
+<MultiEquipmentChange>
+    cols: 1
+    rows: 10
+    spacing: [0, ((self.height / 9) - (self.width * 50 / 200)) * 9 / 8]
+    opacity: 0 if self.char is None else 1
+    DisplayEquipmentSlot:
+        id: weapon
+        slot_name: "weapon"
+        item: None if root.char is None else root.char.get_equipment().weapon
+        font: '../res/fnt/Gabriola.ttf'
+        color: app.get_dkey('cas.el c')
+    DisplayEquipmentSlot:
+        id: necklace
+        item: None if root.char is None else root.char.get_equipment().necklace
+        slot_name: 'necklace'
+        font: '../res/fnt/Gabriola.ttf'
+        color: app.get_dkey('cas.el c')
+    DisplayEquipmentSlot:
+        id: ring
+        item: None if root.char is None else root.char.get_equipment().ring
+        slot_name: 'ring'
+        font: '../res/fnt/Gabriola.ttf'
+        color: app.get_dkey('cas.el c')
+    DisplayEquipmentSlot:
+        id: helmet
+        item: None if root.char is None else root.char.get_equipment().helmet
+        slot_name: 'helmet'
+        font: '../res/fnt/Gabriola.ttf'
+        color: app.get_dkey('cas.el c')
+    DisplayEquipmentSlot:
+        id: vambraces
+        item: None if root.char is None else root.char.get_equipment().vambraces
+        slot_name: 'vambraces'
+        font: '../res/fnt/Gabriola.ttf'
+        color: app.get_dkey('cas.el c')
+    DisplayEquipmentSlot:
+        id: gloves
+        item: None if root.char is None else root.char.get_equipment().gloves
+        slot_name: 'gloves'
+        font: '../res/fnt/Gabriola.ttf'
+        color: app.get_dkey('cas.el c')
+    DisplayEquipmentSlot:
+        id: chest
+        item: None if root.char is None else root.char.get_equipment().chest
+        slot_name: 'chest'
+        font: '../res/fnt/Gabriola.ttf'
+        color: app.get_dkey('cas.el c')
+    DisplayEquipmentSlot:
+        id: grieves
+        item: None if root.char is None else root.char.get_equipment().grieves
+        slot_name: 'grieves'
+        font: '../res/fnt/Gabriola.ttf'
+        color: app.get_dkey('cas.el c')
+    DisplayEquipmentSlot:
+        id: boots
+        item: None if root.char is None else root.char.get_equipment().boots
+        slot_name: 'boots'
+        font: '../res/fnt/Gabriola.ttf'
+        color: app.get_dkey('cas.el c')
+
+<GearChange>:
+    name: 'gear_change'
+    animation_start_down: self.height * 0.069
+    animation_start_up: self.height * 0.825
+    animate_distance: self.height * 0.044
+    ImageH:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+    CarouselH:
+        id: carousel
+        direction: 'bottom'
+        RelativeLayoutH:
+            GridLayoutH:
+                cols: 8
+                size_hint: 1, 0.225
+                pos_hint: {'center_x': 0.5, 'top': 1}
+                padding: [root.height * 0.025, root.height * 0.025, root.height * 0.025, 0]
+                spacing: root.height * 0.0125
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][0]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][1]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][2]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][3]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][4]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][5]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][6]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][7]
+            GridLayoutH:
+                cols: 8
+                padding: [root.height * 0.025, root.height * 0.0125, root.height * 0.025, 0]
+                spacing: root.height * 0.0125
+                size_hint: 1, 0.60
+                pos_hint: {'center_x': 0.5, 'top': 0.775}
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][0]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][1]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][2]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][3]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][4]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][5]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][6]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][7]
+            GridLayoutH:
+                cols: 8
+                padding: [root.height * 0.025, root.height * 0.025, root.height * 0.025, 0]
+                spacing: root.height * 0.0125
+                size_hint: 1, 0.8125
+                pos_hint: {'center_x': 0.5, 'top': 1}
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][0] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][1] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][2] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][3] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][4] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][5] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][6] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][7] is None else 0
+            HTButton:
+                id: back_button_1
+                path: '../res/screens/buttons/back_vflipped'
+                size_hint: app.get_dkey('bb s_h')
+                pos_hint: {'x': 0, 'y': 0}
+                on_release: root.on_back_press()
+            HTButton:
+                path: '../res/screens/buttons/long_stat'
+                text: 'Auto Equip'
+                size_hint: 0.15, 0.104
+                font_name: '../res/fnt/Gabriola.ttf'
+                label_color: 0, 0, 0, 1
+                font_size: self.height * 0.45
+                pos_hint: {'center_x': 0.167, 'center_y': 0.0875}
+            HTButton:
+                path: '../res/screens/buttons/long_stat'
+                text: 'Presets'
+                size_hint: 0.15, 0.104
+                font_name: '../res/fnt/Gabriola.ttf'
+                label_color: 0, 0, 0, 1
+                font_size: self.height * 0.45
+                pos_hint: {'center_x': 0.333, 'center_y': 0.0875}
+            HTButton:
+                id: arrow_down
+                path: '../res/screens/buttons/ArrowDown'
+                size_hint: 0.1, 0.106
+                pos_hint: {'center_x': 0.5}
+                y: root.animation_start_down
+                on_release: carousel.load_next()
+            HTButton:
+                path: '../res/screens/buttons/long_stat'
+                text: 'Inventory'
+                size_hint: 0.15, 0.104
+                font_name: '../res/fnt/Gabriola.ttf'
+                label_color: 0, 0, 0, 1
+                font_size: self.height * 0.45
+                pos_hint: {'center_x': 0.667, 'center_y': 0.0875}
+            HTButton:
+                path: '../res/screens/buttons/long_stat'
+                text: 'Crafting'
+                size_hint: 0.15, 0.104
+                font_name: '../res/fnt/Gabriola.ttf'
+                label_color: 0, 0, 0, 1
+                font_size: self.height * 0.45
+                pos_hint: {'center_x': 0.833, 'center_y': 0.0875}
+        RelativeLayoutH:
+            HTButton:
+                id: back_button_2
+                path: '../res/screens/buttons/back'
+                size_hint: app.get_dkey('bb s_h')
+                pos_hint: app.get_dkey('bb p_h')
+                on_release: root.on_back_press()
+            HTButton:
+                path: '../res/screens/buttons/long_stat'
+                text: 'Auto Equip'
+                size_hint: 0.15, 0.104
+                font_name: '../res/fnt/Gabriola.ttf'
+                label_color: 0, 0, 0, 1
+                font_size: self.height * 0.45
+                pos_hint: {'center_x': 0.167, 'center_y': 0.9125}
+            HTButton:
+                path: '../res/screens/buttons/long_stat'
+                text: 'Presets'
+                size_hint: 0.15, 0.104
+                font_name: '../res/fnt/Gabriola.ttf'
+                label_color: 0, 0, 0, 1
+                font_size: self.height * 0.45
+                pos_hint: {'center_x': 0.333, 'center_y': 0.9125}
+            HTButton:
+                id: arrow_up
+                path: '../res/screens/buttons/ArrowUp'
+                size_hint: 0.1, 0.106
+                pos_hint: {'center_x': 0.5}
+                y: root.animation_start_up
+                on_release: carousel.load_previous()
+            HTButton:
+                path: '../res/screens/buttons/long_stat'
+                text: 'Inventory'
+                size_hint: 0.15, 0.104
+                font_name: '../res/fnt/Gabriola.ttf'
+                label_color: 0, 0, 0, 1
+                font_size: self.height * 0.45
+                pos_hint: {'center_x': 0.667, 'center_y': 0.9125}
+            HTButton:
+                path: '../res/screens/buttons/long_stat'
+                text: 'Crafting'
+                size_hint: 0.15, 0.104
+                font_name: '../res/fnt/Gabriola.ttf'
+                label_color: 0, 0, 0, 1
+                font_size: self.height * 0.45
+                pos_hint: {'center_x': 0.833, 'center_y': 0.9125}
+            GridLayoutH:
+                cols: 8
+                size_hint: 1, 0.225
+                pos_hint: {'center_x': 0.5, 'y': 0.6}
+                padding: [root.height * 0.025, 0, root.height * 0.025, root.height * 0.0125]
+                spacing: root.height * 0.0125
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 0]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 1]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 2]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 3]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 4]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 5]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 6]
+                CharEquipButton:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 7]
+            GridLayoutH:
+                cols: 8
+                padding: [root.height * 0.025, 0, root.height * 0.025, root.height * 0.025]
+                spacing: root.height * 0.0125
+                size_hint: 1, 0.6
+                pos_hint: {'center_x': 0.5, 'y': 0}
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 0]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 1]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 2]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 3]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 4]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 5]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 6]
+                MultiEquipmentChange:
+                    char: app.main.parties[app.main.parties[0] + 1][8 + 7]
+            GridLayoutH:
+                cols: 8
+                padding: [root.height * 0.025, 0, root.height * 0.025, root.height * 0.025]
+                spacing: root.height * 0.0125
+                size_hint: 1, 0.8125
+                pos_hint: {'center_x': 0.5, 'y': 0.0125}
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 0] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 1] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 2] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 3] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 4] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 5] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 6] is None else 0
+                MissingEquip:
+                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 7] is None else 0
+
+<MissingEquip>:
+    ImageH:
+        source: '../res/screens/equip/missing.png'
+        allow_stretch: True
+        keep_ratio: False
+    LabelH:
+        text: "No Character Equipped"
+        font_name: '../res/fnt/Gabriola.ttf'
+        color: 0, 0, 0, 1
+        font_size: root.width * 0.25
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle: -90
+                origin: self.center
+        canvas.after:
+            PopMatrix
+
+<CharEquipButton>:
+    opacity: 0 if self.char is None else 1
+    ImageH:
+        id: char_preview
+        source: '' if root.char is None else root.char.preview_image_source
+        size_hint: 0.98, 0.98
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    ImageH:
+        source: '../res/screens/equip/preview_background.png'
+        allow_stretch: True
+        keep_ratio: False
+    ButtonH:
+        on_release: root.on_char_equip()
+        opacity: 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <Dungeonbattle>:
     name: 'dungeon_battle'

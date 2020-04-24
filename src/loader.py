@@ -96,23 +96,23 @@ class CALoader(Widget):
         #Define a finished "Block"
         def finished_block(subloader, callbacks):
             if subloader.triggers_finished == subloader.triggers_total:
-                print("<< Loaded Block")
+                # print("<< Loaded Block")
                 for callback in callbacks:
                     if callback is not None:
                         callback()
 
         #Ratio functions
         def load_ratio_block(callbacks):
-            print(">> Loading 1 ratio file")
+            # print(">> Loading 1 ratio file")
             triggers = [Clock.create_trigger(lambda dt: load_ratio_chunk([self.incCurr, subloader.inc_triggers, lambda: subloader.start(), lambda: finished_block(subloader, callbacks)]))]
             subloader = GameLoader(triggers)
             subloader.triggers_total = len(triggers)
             subloader.start()
 
         def load_ratio_chunk(callbacks):
-            print("\t>> Loading Ratio Chunk")
+            # print("\t>> Loading Ratio Chunk")
             self.ratios = JsonStore('ratios.json')
-            print("\t<< Loaded Ratio Chunk ")
+            # print("\t<< Loaded Ratio Chunk ")
             for callback in callbacks:
                 if callback is not None:
                     callback()
@@ -143,7 +143,7 @@ class CALoader(Widget):
             else:
                 raise Exception("Failed to open Move Definition file!")
 
-            print(f">> Loading {len(self.move_lines)} moves")
+            # print(f">> Loading {len(self.move_lines)} moves")
 
             for x in range(len(self.move_lines)):
                 triggers.append(Clock.create_trigger(lambda dt: load_move_chunk([self.incCurr, subloader.inc_triggers, lambda: subloader.start(), lambda: finished_block(subloader, callbacks)])))
@@ -152,7 +152,7 @@ class CALoader(Widget):
             subloader.start()
 
         def load_move_chunk(callbacks):
-            print("\t>> Loading Move Chunk")
+            # print("\t>> Loading Move Chunk")
             line = self.move_lines.pop(0)
             if line[0] != '/':
                 values = line[:-1].split(",", -1)
@@ -174,7 +174,7 @@ class CALoader(Widget):
                     covername = values[MOVE_COVER_NAME]
                 # MoveName, MoveCover, CoverName, MoveType, MovePower, Stun, Charm, Poision, Burn, Sleep, Seal, Taunt
                 self.moves.append(Move(values[MOVE_NAME], bool(values[MOVE_COVER] == "True"), covername, int(values[MOVE_TYPE]), values[MOVE_POWER], effects))
-            print("\t<< Loaded Move Chunk ")
+            # print("\t<< Loaded Move Chunk ")
             for callback in callbacks:
                 if callback is not None:
                     callback()
@@ -193,7 +193,7 @@ class CALoader(Widget):
             else:
                 raise Exception("Failed to open Enemy Definition file!")
 
-            print(f">> Loading {len(self.enemy_lines)} Enemies")
+            # print(f">> Loading {len(self.enemy_lines)} Enemies")
 
             for x in range(len(self.enemy_lines)):
                 triggers.append(Clock.create_trigger(lambda dt: load_enemy_chunk([self.incCurr, subloader.inc_triggers, lambda: subloader.start(), lambda: finished_block(subloader, callbacks)])))
@@ -203,7 +203,7 @@ class CALoader(Widget):
             subloader.start()
 
         def load_enemy_chunk(callbacks):
-            print("\t>> Loading Enemy Chunk")
+            # print("\t>> Loading Enemy Chunk")
             line = self.enemy_lines.pop(0)
             if line[0] != '/':
                 values = line[:-1].split(",", -1)
@@ -218,7 +218,7 @@ class CALoader(Widget):
                               int(values[10]), int(values[11]), int(values[12]), int(values[13]), EnemyMoves,
                               movePropabilities))
                 # // EnemyName, HealthMin, HealthMax, AttackType, StrMin, StrMax, MagMin, MagMax, AgiMin, AgiMax, DexMin, DexMax, EndMin, EndMax
-            print("\t<< Loaded Enemy Chunk ")
+            # print("\t<< Loaded Enemy Chunk ")
             for callback in callbacks:
                 if callback is not None:
                     callback()
@@ -234,7 +234,7 @@ class CALoader(Widget):
                 for x in file:
                     self.familia_lines.append(x)
             file.close()
-            print(f">> Loading {len(self.familia_lines)} Familias!")
+            # print(f">> Loading {len(self.familia_lines)} Familias!")
 
             for x in range(len(self.familia_lines)):
                 triggers.append(Clock.create_trigger(lambda dt: load_family_chunk([self.incCurr, subloader.inc_triggers, lambda: subloader.start(), lambda: finished_block(subloader, callbacks)])))
@@ -244,10 +244,10 @@ class CALoader(Widget):
             subloader.start()
 
         def load_family_chunk(callbacks):
-            print("\t>> Loading Family Chunk")
+            # print("\t>> Loading Family Chunk")
             line = self.familia_lines.pop(0)
             self.familias.append(Familia(line[:-1]))
-            print("\t<< Loaded Family Chunk ")
+            # print("\t<< Loaded Family Chunk ")
             for callback in callbacks:
                 if callback is not None:
                     callback()
@@ -285,7 +285,7 @@ class CALoader(Widget):
                 for x in file:
                     self.char_lines.append(x)
             file.close()
-            print(f">> Loading {len(self.char_lines)} Characters!")
+            # print(f">> Loading {len(self.char_lines)} Characters!")
 
             for x in range(len(self.char_lines)):
                 triggers.append(Clock.create_trigger(lambda dt: load_char_chunk([self.incCurr, subloader.inc_triggers, lambda: subloader.start(), lambda: finished_block(subloader, callbacks)])))
@@ -295,7 +295,7 @@ class CALoader(Widget):
             subloader.start()
 
         def load_char_chunk(callbacks):
-            print("\t>> Loading Char Chunk")
+            # print("\t>> Loading Char Chunk")
             line = self.char_lines.pop(0)
             if line[0] != '/':
                 values = line[:-1].split(",", -1)
@@ -319,7 +319,7 @@ class CALoader(Widget):
                 char.load_elements(self.size)
                 self.chars.append(char)
                 self.char_count += 1
-            print("\t<< Loaded Char Chunk ")
+            # print("\t<< Loaded Char Chunk ")
             for callback in callbacks:
                 if callback is not None:
                     callback()
@@ -346,7 +346,7 @@ class CALoader(Widget):
             else:
                 raise Exception("Failed to open Floor Definition file!")
 
-            print(f">> Loading {len(self.floor_lines)} Floors!")
+            # print(f">> Loading {len(self.floor_lines)} Floors!")
 
             for x in range(len(self.floor_lines)):
                 triggers.append(Clock.create_trigger(lambda dt: load_floor_chunk([self.incCurr, subloader.inc_triggers, lambda: subloader.start(), lambda: finished_block(subloader, callbacks)])))
@@ -356,7 +356,7 @@ class CALoader(Widget):
             subloader.start()
 
         def load_floor_chunk(callbacks):
-            print("\tLoading floor Chunk")
+            # print("\tLoading floor Chunk")
             line = self.floor_lines.pop(0)
             if line[0] != '/':
                 values = line[:-1].split(",", -1)
@@ -378,14 +378,14 @@ class CALoader(Widget):
                 # // FloorID, MaxEnemies, MinEncounters, MaxEncounters, BossType, ArrayNum, [EnemyName, EnemyProbability]
                 self.floors.append(Floor(values[FLOOR_ID], int(values[MIN_ENCOUNTERS]), int(values[MAX_ENCOUNTERS]), int(values[BOSS_TYPE]), int(values[ARRAY_NUM]),
                                     boss, floorEnemies, propabilities))
-            print("\t<< Loaded floor Chunk ")
+            # print("\t<< Loaded floor Chunk ")
             for callback in callbacks:
                 if callback is not None:
                     callback()
 
         # Screens functions
         def load_screen_block(callbacks):
-            print("Loading 1 screens")
+            # print("Loading 1 screens")
 
             triggers = [Clock.create_trigger(lambda dt: load_screen_chunk([self.incCurr, subloader.inc_triggers, lambda: subloader.start(), lambda: finished_block(subloader, callbacks)]))
                         ]
@@ -395,12 +395,12 @@ class CALoader(Widget):
             subloader.start()
 
         def load_screen_chunk(callbacks):
-            print("\tLoading Screen Chunk")
+            # print("\tLoading Screen Chunk")
             self.main = Root(self.moves, self.enemies, self.floors, self.familias, self.chars)
             App.get_running_app().main = self.main
             self.main.make_screens()
             self.main.size = self.size
-            print("\t<< Loaded Screen Chunk ")
+            # print("\t<< Loaded Screen Chunk ")
             for callback in callbacks:
                 if callback is not None:
                     callback()
