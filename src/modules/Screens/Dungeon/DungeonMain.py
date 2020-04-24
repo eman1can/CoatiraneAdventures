@@ -92,13 +92,17 @@ class DungeonMain(Screen):
             self.ids.back_button.disabled = False
             self.ids.back_button.opacity = 1
             self.ids.ascend_lock.opacity = 1
+            self.ids.gear_lock.opacity = 0
             self.ids.ascend_button.disabled = True
+            self.ids.gear_button.disabled = False
             self.ids.portfolio.update_lock(False)
         else:
             self.ids.back_button.disabled = True
             self.ids.back_button.opacity = 0
             self.ids.ascend_lock.opacity = 0
+            self.ids.gear_lock.opacity = 1
             self.ids.ascend_button.disabled = False
+            self.ids.gear_button.disabled = True
             self.ids.portfolio.update_lock(True)
 
     def on_back_press(self):
@@ -106,10 +110,11 @@ class DungeonMain(Screen):
             App.get_running_app().main.display_screen(None, False, False)
 
     def on_gear(self):
-        screen, made = App.get_running_app().main.create_screen('gear_change')
-        App.get_running_app().main.display_screen(screen, True, True)
+        if not self.ids.gear_button.disabled:
+            screen, made = App.get_running_app().main.create_screen('gear_change')
+            App.get_running_app().main.display_screen(screen, True, True)
 
-    def descend(self):
+    def on_descend(self):
         # print("Delve")
         self.level += 1
         self.update_buttons()
@@ -125,7 +130,7 @@ class DungeonMain(Screen):
         # else:
         #     print("Not enough Characters to explore")
 
-    def ascend(self):
+    def on_ascend(self):
         if not self.ids.ascend_button.disabled:
             self.level -= 1
             self.update_buttons()

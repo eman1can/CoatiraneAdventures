@@ -482,6 +482,11 @@
         size_hint: app.get_dkey('dm.gb s_h')
         pos_hint: app.get_dkey('dm.gb p_h')
         on_release: root.on_gear()
+    ImageH:
+        id: gear_lock
+        size_hint: app.get_dkey('dm.gb s_h')
+        pos_hint: app.get_dkey('dm.gb p_h')
+        source: '../res/screens/buttons/dungeon_button_lock.png'
     HTButton:
         id: ascend_button
         path: '../res/screens/buttons/AscendButton'
@@ -490,7 +495,7 @@
         font_size: app.get_dkey('dm.ab fs', root.height)
         size_hint: app.get_dkey('dm.ab s_h')
         pos_hint: app.get_dkey('dm.ab p_h')
-        on_release: root.ascend()
+        on_release: root.on_ascend()
     ImageH:
         id: ascend_lock
         size_hint: app.get_dkey('dm.ab s_h')
@@ -504,7 +509,7 @@
         font_size: app.get_dkey('dm.db fs', root.height)
         size_hint: app.get_dkey('dm.db s_h')
         pos_hint: app.get_dkey('dm.db p_h')
-        on_release: root.descend()
+        on_release: root.on_descend()
     DragSnapWidget:
         id: portfolio
         loop: True
@@ -1638,84 +1643,304 @@
                 size_hint: app.get_dkey("fw.oll s_h")
                 HTButton:
                     id: rank_1
-                    text: 'Rank 1'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.582, 'center_y': 0.5}
                 HTButton:
                     id: rank_2
-                    text: 'Rank 2'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
                 HTButton:
                     id: rank_3
-                    text: 'Rank 3'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
                 HTButton:
                     id: rank_4
-                    text: 'Rank 4'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
                 HTButton:
                     id: rank_5
-                    text: 'Rank 5'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5025, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6615, 'center_y': 0.5}
                 HTButton:
                     id: rank_6
-                    text: 'Rank 6'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.4936, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6704, 'center_y': 0.5}
                 HTButton:
                     id: rank_7
-                    text: 'Rank 7'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.46275, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5025, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6615, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.70125, 'center_y': 0.5}
                 HTButton:
                     id: rank_8
-                    text: 'Rank 8'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.4583, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.4936, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6704, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.7057, 'center_y': 0.5}
                 HTButton:
                     id: rank_9
-                    text: 'Rank 9'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.423, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.46275, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5025, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6615, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.70125, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.741, 'center_y': 0.5}
                 HTButton:
                     id: rank_10
-                    text: 'Rank 10'
                     path: '../res/screens/buttons/long_toggle'
                     toggle_enabled: True
                     toggle_state: True
-                    font_size: app.get_dkey('fw.bu fs', root.height)
-                    label_padding: app.get_dkey('fw.bu lp', self.height)
+                    RelativeLayoutH:
+                        size: self.parent.size
+                        pos: self.parent.pos
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.423, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.4583, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.4936, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.6704, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.7057, 'center_y': 0.5}
+                        ImageH:
+                            source: '../res/screens/stats/star.png'
+                            size_hint: 0.226, 0.6
+                            pos_hint: {'center_x': 0.741, 'center_y': 0.5}
 
 <CharacterAttributeScreen>:
     name: self.char.get_name()
