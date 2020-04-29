@@ -1,8 +1,5 @@
-from kivy.animation import Animation
-from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty
-
-from src.modules.KivyBase.Hoverable import CarouselH as Carousel
+from src.modules.KivyBase.Hoverable import CarouselBase as Carousel, HoverBehaviour
 
 
 class DragSnapWidget(Carousel):
@@ -18,16 +15,12 @@ class DragSnapWidget(Carousel):
             return True
         return False
 
-    def on_mouse_pos(self, hover):
-        if not self.collide_point(*hover.pos):
-            return False
-        if self.current_slide.dispatch('on_mouse_pos', hover):
-            return True
-        return False
-
     def update_lock(self, locked):
         self.locked = locked
         self.current_slide.update_lock(locked)
+
+    def close_hints(self):
+        self.current_slide.close_hints()
 
     def reload(self):
         if self.current_slide is None:
@@ -63,23 +56,3 @@ class DragSnapWidget(Carousel):
                 _offset = -_offset
 
             self._start_animation(min_move=0, offset=_offset)
-
-    def on_touch_down(self, touch):
-        if not self.collide_point(*touch.pos):
-            touch.ud[self._get_uid('cavoid')] = True
-            return
-        if self.disabled or self.locked:
-            return True
-        if self._touch:
-            return super(Carousel, self).on_touch_down(touch)
-        Animation.cancel_all(self)
-        self._touch = touch
-        uid = self._get_uid()
-        touch.grab(self)
-        touch.ud[uid] = {
-            'mode': 'unknown',
-            'time': touch.time_start}
-        self._change_touch_mode_ev = Clock.schedule_once(
-            self._change_touch_mode, self.scroll_timeout / 1000.)
-        self.touch_mode_change = False
-        return True

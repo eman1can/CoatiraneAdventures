@@ -1,7 +1,7 @@
 from kivy.app import App
 from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty
 
-from src.modules.KivyBase.Hoverable import ScreenManagerH as ScreenManager
+from src.modules.KivyBase.Hoverable import ScreenManagerBase as ScreenManager
 from src.modules.Screens.CharacterDisplay.EmptyCharacterPreview import EmptyCharacterPreviewScreen
 from src.modules.Screens.CharacterDisplay.FilledCharacterPreview import FilledCharacterPreviewScreen
 
@@ -24,13 +24,6 @@ class CharacterPreview(ScreenManager):
         else:
             self.set_char_screen(False, self.char, self.support)
 
-    def on_mouse_pos(self, hover):
-        if not self.collide_point(*hover.pos):
-            return False
-        if len(self.children) > 0:
-            if self.children[0].dispatch('on_mouse_pos', hover):
-                return True
-
     def get_score(self):
         if self.char is None:
             return 0
@@ -43,6 +36,11 @@ class CharacterPreview(ScreenManager):
     def update_lock(self, locked):
         if len(self.children) > 0:
             self.children[0].update_lock(locked)
+
+    def close_hints(self):
+        for child in self.children:
+            if isinstance(child, FilledCharacterPreviewScreen):
+                child.close_hints()
 
     def set_empty(self, *args):
         # Want to make an Empty Character Preview and display it
@@ -71,21 +69,32 @@ class CharacterPreview(ScreenManager):
             self.dungeon.update_party_score()
         if old_screen is not None:
             self.remove_widget(old_screen)
+        if self.parent is not None:
+            self.parent.reload()
 
     def set_char_screen(self, resolve, character, support):
         # Want to set the char screen using the correct overlay
+        # check to make sure that we need to change the screen
         old_screen = None
         if len(self.children) > 0 and (self.char != character or self.support != support):
             old_screen = self.children[0]
+        # do we need to interface with another preview?
         if resolve:
             spt = self.parent.resolve(self, character, support)
             if spt is not None:
                 support = spt
+        # set new char, support and name values
         self.char = character
         self.support = support
         name = self.char.get_name()
         if self.support is not None:
             name += '_' + self.support.get_name()
+        # update information
+        if not self.is_select:
+            self.parent.party_change(self, self.char, self.support)
+            self.dungeon.update_party_score()
+
+        # transition to existing screen if it exists
         for child in self.screens:
             if child.name == name:
                 self.transition.direction = 'left'
@@ -94,9 +103,7 @@ class CharacterPreview(ScreenManager):
                     if old_screen.name != 'empty':
                         self.remove_widget(old_screen)
                 return True
-        if not self.is_select:
-            self.parent.party_change(self, self.char, self.support)
-            self.dungeon.update_party_score()
+        # otherwise make new screen and use it
         preview = FilledCharacterPreviewScreen(preview=self, is_support=False, character=character, support=support, size_hint=(None, None))
         preview.size = self.size
         preview.preview.pos = (0, 0)# Force update pos, since the screen will never update pos after initialization. Only needed for new screens.
@@ -106,6 +113,7 @@ class CharacterPreview(ScreenManager):
         if old_screen is not None:
             if old_screen.name != 'empty':
                 self.remove_widget(old_screen)
+        self.parent.reload()
 
     def show_select_screen(self, return_screen, is_support):
         screen, made = App.get_running_app().main.create_screen('select_char', self, is_support)
@@ -116,3 +124,4 @@ class CharacterPreview(ScreenManager):
     def reload(self):
         if not isinstance(self.children[0], EmptyCharacterPreviewScreen):
             self.children[0].reload()
+

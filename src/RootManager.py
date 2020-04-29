@@ -1,6 +1,6 @@
-from src.modules.KivyBase.Hoverable import ScreenManagerH as ScreenManager, ScreenH as Screen
 from kivy.uix.screenmanager import FadeTransition
 
+from src.modules.KivyBase.Hoverable import ScreenManagerBase as ScreenManager, ScreenBase as Screen
 from src.modules.Screens.Equipment.EquipmentChange import EquipmentChange, GearChange
 from src.modules.Screens.NewGameScreen import NewGameScreen
 from src.modules.Screens.SelectScreen import SelectScreen

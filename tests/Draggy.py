@@ -207,13 +207,57 @@
 #     SampleApp().run()
 
 from kivy.app import App
-from kivy.properties import NumericProperty
+from kivy.properties import NumericProperty, StringProperty
 from kivy.lang import Builder
 from kivy.clock import Clock
+from kivy.uix.relativelayout import RelativeLayout
+
+
+class Kayout(RelativeLayout):
+    words = StringProperty('Sexy Wanderers\nIt\nCave Dwellers\nBombshell\nDusk Sparkles\nStar Gazer\nTriwiz Champion\nSunny Day\nSterling\nSchool Girls\nSante Ynez\nBeach Celebrity\nCandy Cane\nCelebretaunt\nCertified Organic\nEnchanting Glamour')
+    numbers = StringProperty('25.43%\n100.00%\n45.23%\n16.68%\n18.81%\n25.43%\n100.00%\n45.23%\n16.68%\n18.81%\n25.43%\n100.00%\n45.23%\n16.68%\n18.81%\n25.43%')
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
 kv = """
-Widget:
-    B
+<Kayout>:
+    id: hint
+    opacity: 1
+    # size_hint: 0.92, 0.3434
+    # pos_hint: {'center_x': 0.5, 'top': 0.9273}
+    Image:
+        source: '../res/screens/stats/hint_background.png'
+        keep_ratio: False
+        allow_stretch: True
+    ScrollView:
+        do_scroll_y: True
+        do_scroll_x: False
+        GridLayout:
+            cols: 2
+            size_hint_y: None
+            cols_minimum: {0: hint.width * 0.65 - hint.height * 0.05, 1: hint.width * 0.35 - hint.height * 0.05}
+            height: hint_text.height
+            padding: hint.height * 0.05
+            Label:
+                id: hint_text
+                size_hint: None, None
+                color: 0, 0, 0, 1
+                font_size: hint.height * 0.1625
+                font_name: '../res/fnt/Gabriola.ttf'
+                text: root.words
+                text_size: self.width, None
+                halign: 'left'
+                size: self.texture_size
+            Label:
+                id: hint_numbers
+                size_hint: None, None
+                color: 0, 0, 0, 1
+                font_size: hint.height * 0.0625
+                font_name: '../res/fnt/Gabriola.ttf'
+                text: root.numbers
+                halign: 'right'
+                text_size: self.width, None
+                height: self.texture_size[1]
 # BoxLayout:
     # Widget:
     #     Scatter:
@@ -245,9 +289,11 @@ Widget:
 class TextVerticalApp(App):
     # angle = NumericProperty(-90)
 
+
     def build(self):
         # Clock.schedule_interval(self.update_angle, 0)
-        return Builder.load_string(kv)
+        Builder.load_string(kv)
+        return Kayout()
 
     # def update_angle(self, dt, *args):
     #     self.angle += dt * 100

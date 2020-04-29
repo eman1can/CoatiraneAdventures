@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.input.providers.wm_touch import WM_MotionEvent
 from kivy.properties import ObjectProperty, BooleanProperty, StringProperty
 
-from src.modules.KivyBase.Hoverable import RelativeLayoutH as RelativeLayout
+from src.modules.KivyBase.Hoverable import RelativeLayoutBase as RelativeLayout
 
 
 class SquareCharacterPreview(RelativeLayout):
@@ -30,7 +30,6 @@ class SquareCharacterPreview(RelativeLayout):
     overlay_source = StringProperty('')
 
     def __init__(self, **kwargs):
-        self.register_event_type('on_mouse_pos')
         self.update_overlay()
         super().__init__(**kwargs)
 
@@ -47,10 +46,10 @@ class SquareCharacterPreview(RelativeLayout):
     def reload(self):
         pass
 
-    def on_mouse_pos(self, hover):
-        if not self.collide_point(*self.to_widget(*hover.pos)):
+    def on_touch_hover(self, touch):
+        if not self.collide_point(*self.to_widget(*touch.pos)):
             return False
-        if self.ids.char_button.dispatch('on_mouse_pos', hover):
+        if self.ids.char_button.dispatch('on_touch_hover', touch):
             return True
         return False
 

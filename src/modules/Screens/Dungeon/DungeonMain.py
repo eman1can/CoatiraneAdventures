@@ -1,14 +1,13 @@
 from kivy.app import App
-from kivy.core.image import Image
 from kivy.animation import Animation
 from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 
-from src.modules.KivyBase.Hoverable import ScreenH as Screen
+from src.modules.GameMechanics import GameMechanics
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen
 from src.modules.Screens.CharacterDisplay.CharacterPortfolio import CharacterPortfolio
 
 
 class DungeonMain(Screen):
-    main_screen = ObjectProperty(None)
     party_score = NumericProperty(0)
     level = NumericProperty(0)
     boss = BooleanProperty(False)
@@ -19,29 +18,31 @@ class DungeonMain(Screen):
     animate_start_left = NumericProperty(5)
     animate_start_right = NumericProperty(95)
 
-    background_texture = ObjectProperty(None)
-
     def __init__(self, **kwargs):
-        self.name = 'dungeon_main'
-        self.background_texture = Image('../res/screens/backgrounds/background.png').texture
         super().__init__(**kwargs)
         self.ids.portfolio.dungeon = self
 
         for index in range(0, len(App.get_running_app().main.parties) - 1):
             self.ids.portfolio.add_widget(CharacterPortfolio(party=App.get_running_app().main.parties[index + 1], party_index=(index + 1), dungeon=self))
 
-    def on_mouse_pos(self, hover):
-        if self.ids.inventory_button.dispatch('on_mouse_pos', hover):
-            return True
-        if self.ids.gear_button.dispatch('on_mouse_pos', hover):
-            return True
-        if self.ids.ascend_button.dispatch('on_mouse_pos', hover):
-            return True
-        if self.ids.descend_button.dispatch('on_mouse_pos', hover):
-            return True
-        if self.ids.portfolio.dispatch('on_mouse_pos', hover):
-            return True
-        return False
+    # def on_touch_hover(self, touch):
+    #     touch.push()
+    #     touch.apply_transform_2d(self.to_local)
+    #     ret = True
+    #     if self.ids.inventory_button.dispatch('on_touch_hover', touch):
+    #         pass
+    #     elif self.ids.gear_button.dispatch('on_touch_hover', touch):
+    #         pass
+    #     elif self.ids.ascend_button.dispatch('on_touch_hover', touch):
+    #         pass
+    #     elif self.ids.descend_button.dispatch('on_touch_hover', touch):
+    #         pass
+    #     elif self.ids.portfolio.dispatch('on_touch_hover', touch):
+    #         pass
+    #     else:
+    #         ret = False
+    #     touch.pop()
+    #     return ret
 
     def on_arrow_touch(self, direction):
         if direction:
@@ -105,16 +106,25 @@ class DungeonMain(Screen):
             self.ids.gear_button.disabled = True
             self.ids.portfolio.update_lock(True)
 
-    def on_back_press(self):
-        if not self.ids.back_button.disabled:
-            App.get_running_app().main.display_screen(None, False, False)
-
     def on_gear(self):
         if not self.ids.gear_button.disabled:
+            self.close_hints()
             screen, made = App.get_running_app().main.create_screen('gear_change')
             App.get_running_app().main.display_screen(screen, True, True)
 
+    def on_inventory(self):
+        GameMechanics.generateFamiliarityBonuses(App.get_running_app().main.parties[App.get_running_app().main.parties[0] + 1])
+
+    def on_back_press(self):
+        if super().on_back_press():
+            self.close_hints()
+
+    def close_hints(self):
+        self.ids.portfolio.close_hints()
+
+
     def on_descend(self):
+        self.close_hints()
         # print("Delve")
         self.level += 1
         self.update_buttons()
@@ -132,6 +142,7 @@ class DungeonMain(Screen):
 
     def on_ascend(self):
         if not self.ids.ascend_button.disabled:
+            self.close_hints()
             self.level -= 1
             self.update_buttons()
             # # print("Ascend")

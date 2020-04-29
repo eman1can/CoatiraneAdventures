@@ -1,17 +1,16 @@
 from kivy.app import App
-from kivy.core.window import Window
 from kivy.lang.builder import Builder
 from kivy.storage.jsonstore import JsonStore
 from kivy.uix.widget import Widget
 from kivy.properties import ListProperty
 from kivy.clock import Clock
 from kivy.event import EventDispatcher
-import time
 
 from src.RootManager import Root
 from src.entitites.Character.Character import Move, Character
 from src.entitites.Character.Familia import Familia
 from src.entitites.EnemyType import EnemyType
+from src.modules.KivyBase.Hoverable import HoverBehaviour
 from src.modules.Screens.Dungeon.Floor import Floor
 
 CURRENT_INDEX = 0
@@ -21,7 +20,8 @@ STARTING_CURRENT_INDEX = 0
 
 OPAQUE = 1
 
-class CALoader(Widget):
+
+class CALoader(HoverBehaviour, Widget):
     max_values = ListProperty([])
     curr_values = ListProperty([])
     messages = ListProperty([])
@@ -400,6 +400,7 @@ class CALoader(Widget):
             App.get_running_app().main = self.main
             self.main.make_screens()
             self.main.size = self.size
+            App.get_running_app().initialized = True
             # print("\t<< Loaded Screen Chunk ")
             for callback in callbacks:
                 if callback is not None:

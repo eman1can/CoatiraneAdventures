@@ -1,14 +1,12 @@
 from kivy.app import App
-from kivy.core.image import Image
 from kivy.properties import StringProperty, ObjectProperty
-from src.modules.KivyBase.Hoverable import ScreenH as Screen
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen
 
 
 class CharacterAttributeScreen(Screen):
     preview = ObjectProperty(None, allownone=True)
     char = ObjectProperty(None, allownone=True)
 
-    background_texture = ObjectProperty(None)
     overlay_background_source = StringProperty("../res/screens/attribute/stat_background.png")
     overlay_source = StringProperty("../res/screens/attribute/stat_background_overlay.png")
     flag_source = StringProperty("../res/screens/attribute/char_type_flag.png")
@@ -16,22 +14,14 @@ class CharacterAttributeScreen(Screen):
     neat_stat_overlay_source = StringProperty("../res/screens/attribute/stat_overlay.png")
     skills_switch_text = StringProperty('Skills')
 
-    def __init__(self, **kwargs):
-        #Overlay's and backgrounds
-        self.background_texture = Image("../res/screens/backgrounds/background.png").texture
-        super().__init__(**kwargs)
-
-    def on_mouse_pos(self, hover):
-        if self.ids.image_preview.dispatch('on_mouse_pos', hover):
+    def on_touch_hover(self, touch):
+        if self.ids.image_preview.dispatch('on_touch_hover', touch):
             return True
-        if self.ids.change_equip.dispatch('on_mouse_pos', hover):
+        if self.ids.change_equip.dispatch('on_touch_hover', touch):
             return True
-        if self.ids.status_board.dispatch('on_mouse_pos', hover):
+        if self.ids.status_board.dispatch('on_touch_hover', touch):
             return True
         return False
-
-    def reload(self):
-        pass
 
     def on_image_preview(self):
         screen, made = App.get_running_app().main.create_screen('image_preview_' + self.char.get_name(), self.char)
@@ -58,8 +48,3 @@ class CharacterAttributeScreen(Screen):
     def on_change_equip(self):
         screen, made = App.get_running_app().main.create_screen('equipment_change_' + self.char.get_name(), self.char)
         App.get_running_app().main.display_screen(screen, True, True)
-
-    def on_back_press(self):
-        root = App.get_running_app().main
-        if root is not None:
-            root.display_screen(None, False, False)

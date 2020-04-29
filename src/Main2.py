@@ -1,16 +1,16 @@
 import os
-
-from src.loader import CALoader
-
 os.environ['KIVY_HOME'] = '../save/'
 
 from kivy.loader import Loader
 Loader.max_upload_per_frame = 3
 Loader.num_workers = 8
 
+from kivy.cache import Cache
+Cache.register('kv.texture', 5000, 120)
+
 from kivy.logger import Logger
 Logger.info('Loader: using a thread pool of {} workers'.format(Loader.num_workers))
-Logger.info('Loader: set max upload per fram to {}'.format(Loader.max_upload_per_frame))
+Logger.info('Loader: set max upload per frame to {}'.format(Loader.max_upload_per_frame))
 from kivy.utils import platform
 if platform == 'win':
     Logger.info('CoatiraneAdventures: running on windows')
@@ -18,8 +18,8 @@ if platform == 'win':
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
-from src.modules.KivyBase.Hoverable import HoverEvent
-from src.modules.KivyBase.Hoverable import ImageH as Image
+from src.loader import CALoader
+from src.modules.KivyBase.Hoverable import GameBounds as Bounds
 
 import math
 
@@ -32,7 +32,6 @@ class GameApp(App):
         Window.bind(on_request_close=self.close_window)
         self.program_type = "test"
         self._size = (0, 0)
-        self._current = None
         self.ratios = None
         super().__init__(**kwargs)
         self.initialized = False
@@ -49,13 +48,13 @@ class GameApp(App):
             Window.left = math.floor((user32.GetSystemMetrics(0) - width) / 2)
             Window.top = math.floor((user32.GetSystemMetrics(1) - height) / 2)
             Window.borderless = 0
-            Window.bind(mouse_pos=self.on_mouse_pos)
+            # Window.grab_mouse()
         elif platform == 'android' or platform == 'ios':
             width, height = Window.size
         else:
             raise Exception("Running on unsupported Platform!")
         self._size = (width, height)
-        self.background = Image(source="../res/screens/game_bounds.png", allow_stretch=True, size=(width, height))
+        self.background = Bounds(source="../res/screens/game_bounds.png", allow_stretch=True, size=(width, height))
 
         self.loader = CALoader(self.program_type)
 
@@ -89,19 +88,6 @@ class GameApp(App):
     def on_resize(self, *args):
         Clock.unschedule(self.fix_size)
         Clock.schedule_once(self.fix_size, .25)
-
-    def on_mouse_pos(self, instance, pos):
-        if not self.initialized:
-            return
-        # print("Window Pos ", pos)
-        hover = HoverEvent(*pos, self._current)
-        if self._current is not None:
-            if self._current.dispatch('on_mouse_pos', hover):
-                return
-            self._current = None
-        for child in Window.children:
-            if child.dispatch('on_mouse_pos', hover):
-                self._current = hover.grab_current
 
     def fix_size(self, *args):
         if not self.initialized or self._size == Window.size:

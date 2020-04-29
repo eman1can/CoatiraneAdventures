@@ -1,15 +1,14 @@
 from kivy.animation import Animation
-from kivy.properties import BooleanProperty, ObjectProperty, ListProperty, StringProperty, NumericProperty
+from kivy.properties import ObjectProperty, ListProperty, StringProperty, NumericProperty
 from kivy.app import App
 
 from src.modules.HTButton import HTButton
-from src.modules.KivyBase.Hoverable import ScreenH as Screen, ImageH as Image, WidgetH as Widget, LabelH as Label, RelativeLayoutH as RelativeLayout
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen, RelativeLayoutBase as RelativeLayout
 
 
 class StatusBoardManager(Screen):
     char = ObjectProperty(None)
 
-    background_source = StringProperty("../res/screens/backgrounds/background.png")
     overlay_background_source = StringProperty("../res/screens/attribute/stat_background.png")
     overlay_source = StringProperty("../res/screens/attribute/stat_background_overlay.png")
 
@@ -148,10 +147,6 @@ class StatusBoardManager(Screen):
 
     def on_leave(self, *args):
         self.unanimate_arrows()
-
-    def on_back_press(self):
-        if not self.ids.back_button.disabled:
-            App.get_running_app().main.display_screen(None, False, False)
 
     def on_release(self, type, slot_num):
         rank = self.char.get_rank(slot_num)

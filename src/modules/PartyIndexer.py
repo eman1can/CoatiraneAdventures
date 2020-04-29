@@ -1,4 +1,4 @@
-from src.modules.KivyBase.Hoverable import RelativeLayoutH as RelativeLayout
+from src.modules.KivyBase.Hoverable import RelativeLayoutBase as RelativeLayout
 from kivy.properties import ListProperty
 from kivy.app import App
 
@@ -14,6 +14,7 @@ class PartyIndexer(RelativeLayout):
                             '../res/screens/buttons/party_empty.png',
                             '../res/screens/buttons/party_empty.png',
                             '../res/screens/buttons/party_empty.png'])
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.update_sources()

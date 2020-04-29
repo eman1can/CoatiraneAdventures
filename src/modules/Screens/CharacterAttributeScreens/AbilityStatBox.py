@@ -1,5 +1,5 @@
 from kivy.properties import StringProperty, ListProperty, NumericProperty
-from src.modules.KivyBase.Hoverable import RelativeLayoutH as RelativeLayout
+from src.modules.KivyBase.Hoverable import RelativeLayoutBase as RelativeLayout
 
 
 class AbilityStatBox(RelativeLayout):

@@ -1,14 +1,15 @@
+import weakref
 from time import time
-
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.image import Image
+from kivy.uix.widget import Widget
 from kivy.properties import BooleanProperty, NumericProperty, StringProperty, ListProperty, OptionProperty, ObjectProperty
 
-from src.modules.KivyBase.Hoverable import WidgetH as Widget
+from src.modules.KivyBase.Hoverable import HoverBehaviour
 
 
-class HTButton(Widget):
+class HTButton(HoverBehaviour, Widget):
     initialized = BooleanProperty(False)
 
     # Label Properties
@@ -59,10 +60,13 @@ class HTButton(Widget):
         self.register_event_type('on_release')
         self.register_event_type('on_toggle_down')
         self.register_event_type('on_toggle_up')
+        self.register_event_type('on_hover_enter')
+        self.register_event_type('on_hover_exit')
 
         if 'min_state_time' not in kwargs:
             self.min_state_time = float(Config.get('graphics', 'min_state_time'))
         self._collide_image = None
+        self.theoretical_children = None
         super().__init__(**kwargs)
 
     def on_toggle_enabled(self, instance, value):
@@ -144,6 +148,7 @@ class HTButton(Widget):
         return False
 
     def on_state(self, instance, state):
+        old_texture = self.texture
         try:
             if state == 'normal':
                 if not self.disabled:
@@ -172,7 +177,7 @@ class HTButton(Widget):
                     self.background_hover_down_texture = Image(self.background_hover_down).texture
                 self.texture = self.background_hover_down_texture
         except:
-            self.texture = None
+            self.texture = old_texture
 
     def on_disabled(self, instance, disabled):
         if not self.initialized:
@@ -184,50 +189,6 @@ class HTButton(Widget):
                 self.texture = Image(self.background_disabled_normal).texture if self.disabled else Image(self.background_normal).texture
             else:
                 self.texture = Image(self.background_disabled_down).texture if self.disabled else Image(self.background_down).texture
-
-    def on_mouse_pos(self, hover):
-        if hover.grab_current is not None:
-            # print("Hover is not None")
-            if hover.grab_current != self:
-                # print("Not grabbed by self")
-                return False
-
-            x, y = hover.pos if self._static_hover else self.to_widget(*hover.pos)
-            inside = self.collide_point(*self.to_widget(*hover.pos))
-            x2, y2 = self.to_widget(*hover.pos)
-            # print(self.ids.label.text, " -> ", self.x, x2, self.right, self.y, y2, self.top)
-            inside &= self.hover_rect[0] <= x <= self.hover_rect[0] + self.hover_rect[2] and self.hover_rect[1] <= y <= self.hover_rect[1] + self.hover_rect[3]
-            # print(self.ids.label.text, " -> ", self.hover_rect[0], x, self.hover_rect[0] + self.hover_rect[2], self.hover_rect[1], y2, self.hover_rect[1] + self.hover_rect[3])
-
-            if not inside:
-                # print("ungrabbing")
-                if self.state.startswith('hover_'):
-                    self.state = self.state[6:]
-                hover.ungrab(self)
-                return False
-            return True
-        elif not self.get_root_window() or not self.do_hover:
-            return False
-
-        if self.disabled:
-            return False
-
-        x, y = hover.pos if self._static_hover else self.to_widget(*hover.pos)
-        inside = self.collide_point(*self.to_widget(*hover.pos))
-        x2, y2 = self.to_widget(*hover.pos)
-        # print(self.ids.label.text, " -> ", self.x, x2, self.right, self.y, y2, self.top)
-        inside &= self.hover_rect[0] <= x <= self.hover_rect[0] + self.hover_rect[2] and self.hover_rect[1] <= y <= self.hover_rect[1] + self.hover_rect[3]
-        # print(self.ids.label.text, " -> ", self.hover_rect[0], x, self.hover_rect[0] + self.hover_rect[2], self.hover_rect[1], y2, self.hover_rect[1] + self.hover_rect[3])
-
-        if not inside:
-            # print("outside")
-            return False
-        else:
-            # print("grabbing")
-            if not self.state.startswith('hover_'):
-                self.state = 'hover_' + self.state
-            hover.grab(self)
-            return True
 
     def _do_press(self):
         if not self.toggle_enabled:
@@ -245,25 +206,18 @@ class HTButton(Widget):
             self.__state_event = None
 
     def on_touch_down(self, touch):
-        # print("Touch Button")
-        if 'button' in touch.profile and touch.button.startswith('scroll'):
-            return False
-        # print("No a scroll")
         if super().on_touch_down(touch):
             return True
-        # print("Not inherited")
-        if self.disabled:
-            return False
-        # print("Not disabled")
         if touch.is_mouse_scrolling:
             return False
-        # print("Not scrolling")
         if not self.collide_point(touch.x, touch.y):
             return False
-        # print("inside")
         if self in touch.ud:
             return False
-        # print("not already consumed")
+        if self.disabled:
+            return False
+        if 'button' in touch.profile and touch.button.startswith('scroll'):
+            return False
         touch.grab(self)
         touch.ud[self] = True
         self.last_touch = touch
@@ -278,6 +232,35 @@ class HTButton(Widget):
         if super().on_touch_move(touch):
             return True
         return self in touch.ud
+
+    def on_touch_hover(self, touch):
+        if touch.grab_current is not None:
+            if touch.grab_current == self:
+                if self.collide_point(*touch.pos):
+                    if self.hover_rect[0] <= touch.x <= self.hover_rect[0] + self.hover_rect[2] and self.hover_rect[1] <= touch.y <= self.hover_rect[1] + self.hover_rect[3]:
+                        if len(touch.grab_list) == 1:
+                            return True
+                self.dispatch('on_hover_exit')
+                touch.ungrab(self)
+                if self.state.startswith('hover_'):
+                    self.state = self.state[6:]
+        else:
+            if self.disabled:
+                return False
+
+            if not self.do_hover:
+                return False
+
+            if self.collide_point(*touch.pos):
+                if self.hover_rect[0] <= touch.x <= self.hover_rect[0] + self.hover_rect[2] and self.hover_rect[1] <= touch.y <= self.hover_rect[1] + self.hover_rect[3]:
+                    if not self.state.startswith('hover_'):
+                        self.state = 'hover_' + self.state
+                    class_instance = weakref.ref(self.__self__)
+                    if class_instance not in touch.grab_list:
+                        self.dispatch('on_hover_enter')
+                        touch.grab(self)
+                    return True
+        return False
 
     def on_touch_up(self, touch):
         if touch.grab_current is not self:
@@ -307,6 +290,12 @@ class HTButton(Widget):
         pass
 
     def on_release(self):
+        pass
+
+    def on_hover_enter(self):
+        pass
+
+    def on_hover_exit(self):
         pass
 
     def on_toggle_down(self):

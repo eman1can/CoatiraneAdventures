@@ -5,7 +5,7 @@ from kivy.core.image import Image
 from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import SwapTransition
 
-from src.modules.KivyBase.Hoverable import ScreenH as Screen
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen
 from src.modules.NoRecruit import NoRecruitWidget
 
 
@@ -19,9 +19,6 @@ class TavernMain(Screen):
         self.no_recruits = NoRecruitWidget()
         super().__init__(**kwargs)
 
-    def reload(self):
-        pass
-
     def on_recruit(self):
         root = App.get_running_app().main
         if len(root.obtained_characters) == len(root.characters):
@@ -34,6 +31,3 @@ class TavernMain(Screen):
             root.transition = SwapTransition(duration=2)
             self.sound.play()
             root.display_screen('recruit_' + unobtained_characters[index].get_id(), True, True)
-
-    def on_back_press(self):
-        App.get_running_app().main.display_screen(None, False, False)

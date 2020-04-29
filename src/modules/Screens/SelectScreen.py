@@ -1,17 +1,9 @@
 from kivy.app import App
-from kivy.core.image import Image
-from kivy.properties import ObjectProperty
 
-from src.modules.KivyBase.Hoverable import ScreenH as Screen
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen
 
 
 class SelectScreen(Screen):
-    background_texture = ObjectProperty(None)
-
-    def __init__(self, **kwargs):
-        self.background_texture = Image('../res/screens/backgrounds/background.png').texture
-        super(SelectScreen, self).__init__(**kwargs)
-
     def choose_character(self, choice):
         # print('Chosen Character: %s, adding to char Array.' % choice)
         root = App.get_running_app().main

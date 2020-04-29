@@ -1,7 +1,7 @@
 from kivy.app import App
 from kivy.properties import ObjectProperty, ListProperty, NumericProperty, BooleanProperty
 
-from src.modules.KivyBase.Hoverable import RelativeLayoutH as RelativeLayout
+from src.modules.KivyBase.Hoverable import RelativeLayoutBase as RelativeLayout, HoverBehaviour
 from src.modules.Screens.CharacterPreview import CharacterPreview
 
 
@@ -32,12 +32,21 @@ class CharacterPortfolio(RelativeLayout):
         for preview in self.previews:
             preview.update_lock(locked)
 
-    def on_mouse_pos(self, hover):
-        if not self.collide_point(*hover.pos):
-            return False
+    def close_hints(self):
         for preview in self.previews:
-            if preview.dispatch('on_mouse_pos', hover):
+            preview.close_hints()
+
+    def on_touch_hover(self, touch):
+        if not self.collide_point(*touch.pos):
+            return False
+        touch.push()
+        touch.apply_transform_2d(self.to_widget)
+        for child in self.children[:]:
+            if child.dispatch('on_touch_hover', touch):
+                touch.pop()
                 return True
+        touch.pop()
+        return False
 
     def get_party_score(self):
         party_score = 0

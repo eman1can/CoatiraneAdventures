@@ -4,10 +4,11 @@ from kivy.uix.recyclegridlayout import RecycleGridLayout
 from kivy.uix.recycleview import RecycleView
 
 from src.modules.Filterable import Filterable
+from src.modules.KivyBase.Hoverable import HoverBehaviour
 from src.modules.Sortable import Sortable
 
 
-class RecyclePreview(RecycleView, Filterable, Sortable):
+class RecyclePreview(HoverBehaviour, RecycleView, Filterable, Sortable):
     preview = ObjectProperty(None)
     selector = ObjectProperty(None, allownon=True)
 
@@ -19,7 +20,6 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
     grid = ObjectProperty(None)
 
     def __init__(self, **kwargs):
-        self.register_event_type('on_mouse_pos')
         super().__init__(**kwargs)
 
         self.scroll = ScrollPreview()
@@ -30,14 +30,14 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
         self.child = self.scroll
 
         for char in self.characters:
-            self.data.append({'id': char.get_id(), 'character': char, 'support': None})
+            self.data.append({'id': char.get_id(), 'character': char, 'support': None, 'is_select': True})
         self.previews_sort = self.data
         self.force_update_values()
 
-    def on_mouse_pos(self, hover):
-        if not self.collide_point(*hover.pos):
+    def on_touch_hover(self, touch):
+        if not self.collide_point(*touch.pos):
             return False
-        if self.child.dispatch('on_mouse_pos', hover):
+        if self.child.dispatch('on_touch_hover', touch):
             return True
         return False
 
@@ -202,22 +202,16 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
                                 self.scroll_timeout / 1000.)
         return True
 
-class Preview(RecycleGridLayout):
-    def __init__(self, **kwargs):
-        self.register_event_type('on_mouse_pos')
-        super().__init__(**kwargs)
 
+class Preview(HoverBehaviour, RecycleGridLayout):
     def change_hover(self, new_hover):
         for preview in self.children:
             preview.do_hover = new_hover
 
-    def on_mouse_pos(self, hover):
-        if not self.collide_point(*hover.pos):
+    def on_touch_hover(self, touch):
+        if not self.collide_point(*touch.pos):
             return False
-        for child in self.children:
-            if child.dispatch('on_mouse_pos', hover):
-                return True
-        return False
+        return self.dispatch_to_children(touch)
 
 
 class ScrollPreview(Preview):

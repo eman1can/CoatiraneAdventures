@@ -6,12 +6,11 @@ from kivy.core.image import Image
 from kivy.properties import ObjectProperty, ListProperty, StringProperty
 from kivy.uix.screenmanager import FadeTransition
 
-from src.modules.KivyBase.Hoverable import ScreenH as Screen
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen
 from src.modules.NoRecruit import NoRecruitWidget
 
 
 class RecruitPreview(Screen):
-    main_screen = ObjectProperty(None)
 
     character = ObjectProperty(None)
     viewed_characters = ListProperty([])

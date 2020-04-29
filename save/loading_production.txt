@@ -1,5 +1,11 @@
-7
-
+7,Loading Ratios,Loading Moves,Loading Enemies,Loading Families,Loading Chars,Loading Floors,Loading Screens
+1
+11
+3
+2
+159
+1
+1
 # breaks on this line
 totalnum=7
 numofmoves

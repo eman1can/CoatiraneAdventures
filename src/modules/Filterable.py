@@ -1,6 +1,6 @@
 from kivy.properties import BooleanProperty, ListProperty
 
-from src.modules.KivyBase.Hoverable import ModalViewH as ModalView
+from src.modules.KivyBase.Hoverable import ModalViewBase as ModalView
 
 
 class Filterable(object):
@@ -94,6 +94,4 @@ class Filterable(object):
 
 
 class FilterWidget(ModalView):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    pass

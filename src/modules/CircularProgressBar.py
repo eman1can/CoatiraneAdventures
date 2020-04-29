@@ -1,4 +1,4 @@
-from kivy.uix.widget import Widget
+from src.modules.KivyBase.Hoverable import WidgetBase as Widget
 from kivy.properties import NumericProperty, OptionProperty, BoundedNumericProperty, ReferenceListProperty
 
 
@@ -31,10 +31,3 @@ class CircularProgressBar(Widget):
     normalized_min = NumericProperty(0)
     normalized_max = NumericProperty(1)
     normalised_value = BoundedNumericProperty(0)
-
-    def __init__(self, **kwargs):
-        self.register_event_type('on_mouse_pos')
-        super().__init__(**kwargs)
-
-    def on_mouse_pos(self, *args):
-        pass

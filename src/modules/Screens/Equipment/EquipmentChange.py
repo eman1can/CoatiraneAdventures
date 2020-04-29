@@ -1,6 +1,6 @@
 from kivy.animation import Animation
 
-from src.modules.KivyBase.Hoverable import ScreenH as Screen, GridLayoutH as GridLayout, RelativeLayoutH as RelativeLayout
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen, GridLayoutBase as GridLayout, RelativeLayoutBase as RelativeLayout
 from kivy.properties import ObjectProperty, StringProperty, NumericProperty
 from kivy.app import App
 
@@ -18,29 +18,13 @@ class EquipmentChange(Screen):
     necklace = ObjectProperty(None, allownone=True)
     ring = ObjectProperty(None, allownone=True)
 
-    background_source = StringProperty("../res/screens/backgrounds/background.png")
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def on_back_press(self):
-        root = App.get_running_app().main
-        if root is not None:
-            root.display_screen(None, False, False)
-
 
 class MultiEquipmentChange(GridLayout):
     char = ObjectProperty(None, allownone=True)
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
 
 class CharEquipButton(RelativeLayout):
     char = ObjectProperty(None, allownone=True)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
 
     def on_char_equip(self, *args):
         if self.char is not None:
@@ -49,24 +33,15 @@ class CharEquipButton(RelativeLayout):
 
 
 class MissingEquip(RelativeLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    pass
 
 
 class GearChange(Screen):
-    background_source = StringProperty("../res/screens/backgrounds/background.png")
-
     animate_distance = NumericProperty(0.0)
     animation_start_down = NumericProperty(0.0)
     animation_start_up = NumericProperty(0.0)
     animation_down = ObjectProperty(None, allownone=True)
     animation_up = ObjectProperty(None, allownone=True)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def reload(self):
-        pass
 
     def on_enter(self, *args):
         self.animate_arrows()
@@ -91,8 +66,3 @@ class GearChange(Screen):
             self.animation_down.repeat = False
         if self.animation_up is not None:
             self.animation_up.repeat = False
-
-    def on_back_press(self):
-        root = App.get_running_app().main
-        if root is not None:
-            root.display_screen(None, False, False)

@@ -1,5 +1,5 @@
-from src.modules.KivyBase.Hoverable import RelativeLayoutH as RelativeLayout
 from kivy.properties import StringProperty
+from src.modules.KivyBase.Hoverable import RelativeLayoutBase as RelativeLayout
 
 
 class StatInfoBox(RelativeLayout):

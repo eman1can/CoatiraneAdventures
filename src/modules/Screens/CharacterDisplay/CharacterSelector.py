@@ -3,7 +3,7 @@ from kivy.core.image import Image
 from kivy.properties import BooleanProperty, ObjectProperty
 
 from src.modules.Filterable import FilterWidget
-from src.modules.KivyBase.Hoverable import ScreenH as Screen
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen
 from src.modules.Screens.CharacterDisplay.ScrollPreview import RecyclePreview
 from src.modules.Screens.CharacterDisplay.SinglePreview import SinglePreview
 from src.modules.Sortable import SortWidget
@@ -16,12 +16,10 @@ class CharacterSelector(Screen):
     is_support = BooleanProperty(False)
     toggle = BooleanProperty(False)  # When False, Is Slots
 
-    background_texture = ObjectProperty(None)
     overlay_texture = ObjectProperty(None)
     number_icon_texture = ObjectProperty(None)
 
     def __init__(self, **kwargs):
-        self.background_texture = Image('../res/screens/backgrounds/background.png').texture
         self.overlay_texture = Image('../res/screens/backgrounds/select_char_overlay.png').texture
         self.number_icon_texture = Image('../res/screens/stats/icon.png').texture
         self.root = App.get_running_app().main
@@ -157,9 +155,6 @@ class CharacterSelector(Screen):
         self.sort.size = self.size
         self.filter.size = self.size
 
-    def reload(self):
-        pass
-
     def on_scroll(self):
         self.multi.do_scroll()
 
@@ -213,10 +208,6 @@ class CharacterSelector(Screen):
     def reset_scroll(self):
         self.multi.scroll_x = 0
         self.multi.scroll_y = 1
-
-    def on_back_press(self):
-        if not self.ids.back.disabled:
-            self.root.display_screen(None, False, False)
 
     def close_sort(self):
         self.ids.switch_display.disabled = False

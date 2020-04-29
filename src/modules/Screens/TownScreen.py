@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.core.image import Image
 from kivy.properties import ObjectProperty, BooleanProperty, NumericProperty, ReferenceListProperty
 
-from src.modules.KivyBase.Hoverable import ScreenH as Screen
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen
 
 
 class TownScreen(Screen):
@@ -11,7 +11,6 @@ class TownScreen(Screen):
     crafting_locked = BooleanProperty(True)
     crafting_lock_opacity = NumericProperty(1)
 
-    background_texture = ObjectProperty(None)
     small_lock_texture = ObjectProperty(None)
 
     small_button_width = NumericProperty(0.0)
@@ -23,7 +22,6 @@ class TownScreen(Screen):
     large_button_size = ReferenceListProperty(large_button_width, large_button_height)
 
     def __init__(self, **kwargs):
-        self.background_texture = Image('../res/screens/backgrounds/townClip.jpg').texture
         self.small_lock_texture = Image("../res/screens/buttons/small_button_lock.png").texture
         self.root = App.get_running_app()
         super(TownScreen, self).__init__(**kwargs)
@@ -68,6 +66,3 @@ class TownScreen(Screen):
             self.tavern_lock_opacity = 0
         if not self.crafting_locked:
             self.crafting_lock_opacity = 0
-
-    def reload(self):
-        pass

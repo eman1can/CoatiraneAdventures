@@ -1,7 +1,7 @@
 import math
 import random
 
-from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty, StringProperty, BooleanProperty, ListProperty
+from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty, StringProperty, BooleanProperty, ListProperty, DictProperty
 from kivy.uix.widget import WidgetBase
 from kivy.clock import mainthread
 from src.entitites.Character.Scale import Scale
@@ -35,6 +35,9 @@ class Character(WidgetBase):
     element = StringProperty('')
     type = StringProperty('')
 
+    familiarities = DictProperty({})
+    familiarity_bonus = NumericProperty(1.0)
+
     @mainthread
     def __init__(self, rank, type, element, moves, familias, **kwargs):
         super().__init__(**kwargs)
@@ -57,6 +60,71 @@ class Character(WidgetBase):
         self.equipment = Equipment()
         self.equipment.ring = EquipmentItem("Crystal Ring", 'ring_1', 'Magical', 'water', 'G', [0, 10, 0, 15, 5, 0, 20, 0, 15, 20, 900, 545, 100, 1000])
         self.equipment.necklace = EquipmentItem("Sapphire Necklace", 'necklace_2', 'Magical', 'dark', 'SSS', [15, 100, 0, 25, 5, 0, 150, 75, 15, 20, 900, 880, 600, 10000])
+
+        if self.id == 'athlethic_sofi':
+            self.familiarities = {
+                'amatuer_model': 26.7,
+                'architect': 2.02,
+                'actresses_alexis_and_emilia': 19.9,
+                'badass_ais': 13.2,
+                'aye_aye_andrea': 42.3,
+                'backyard_abigail': 100.0
+            }
+        elif self.id == 'amatuer_model_calyse':
+            self.familiarities = {
+                'athlethic_sofi': 26.7,
+                'architect': 13.2,
+                'actresses_alexis_and_emilia': 19.6,
+                'badass_ais': 14.3,
+                'aye_aye_andrea': 42.3,
+                'backyard_abigail': 53.2
+            }
+        elif self.id == 'architect_lexi':
+            self.familiarities = {
+                'amatuer_model_calyse': 13.2,
+                'athlethic_sofi': 2.02,
+                'actresses_alexis_and_emilia': 98.06,
+                'badass_ais': 68.4,
+                'aye_aye_andrea': 100.0,
+                'backyard_abigail': 12.3
+            }
+        elif self.id == 'actresses_alexis_and_emilia':
+            self.familiarities = {
+                'amatuer_model_calyse': 19.6,
+                'architect_lexi': 98.06,
+                'athlethic_sofi': 19.9,
+                'badass_ais': 16.6,
+                'aye_aye_andrea': 54.2,
+                'backyard_abigail': 12.3
+            }
+        elif self.id == 'badass_ais':
+            self.familiarities = {
+                'amatuer_model_calyse': 14.3,
+                'architect_lexi': 68.4,
+                'actresses_alexis_and_emilia': 16.6,
+                'athlethic_sofi': 13.2,
+                'aye_aye_andrea': 15.6,
+                'backyard_abigail': 96.0
+            }
+        elif self.id == 'aye_aye_andrea':
+            self.familiarities = {
+                'amatuer_model_calyse': 42.3,
+                'architect_lexi': 100.0,
+                'actresses_alexis_and_emilia': 54.2,
+                'badass_ais': 15.6,
+                'athlethic_sofi': 42.3,
+                'backyard_abigail': 58.0
+            }
+        elif self.id == 'backyard_abigail':
+            self.familiarities = {
+                'amatuer_model_calyse': 53.2,
+                'architect_lexi': 12.3,
+                'actresses_alexis_and_emilia': 12.3,
+                'badass_ais': 96.2,
+                'aye_aye_andrea': 42.3,
+                'athlethic_sofi': 100.0
+            }
+
 
         # End Experimental
 
@@ -224,78 +292,78 @@ class Character(WidgetBase):
 
     def get_health(self, rank=0):
         if rank > 0:
-            return self.get_rank(rank).get_health()
+            return self.get_rank(rank).get_health() * self.familiarity_bonus
         health = self.health_base + self.equipment.get_health()
         for rank in self.ranks:
             if rank.unlocked:
                 health += rank.get_health()
-        return health
+        return health * self.familiarity_bonus
 
     def get_mana(self, rank=0):
         if rank > 0:
-            return self.get_rank(rank).get_mana()
+            return self.get_rank(rank).get_mana() * self.familiarity_bonus
         mana = self.mana_base + self.equipment.get_mana()
         for rank in self.ranks:
             if rank.unlocked:
                 mana += rank.get_mana()
-        return mana
+        return mana * self.familiarity_bonus
 
     def get_strength(self, rank=0):
         if rank > 0:
-            return self.get_rank(rank).get_strength()
+            return self.get_rank(rank).get_strength() * self.familiarity_bonus
         strength = self.strength_base + self.equipment.get_strength()
         for rank in self.ranks:
             if rank.unlocked:
                 strength += rank.get_strength()
-        return strength
+        return strength * self.familiarity_bonus
 
     def get_strength_rank(self, rank=0):
         return Scale.get_scale_as_image_path(self.get_strength(rank), 999)
 
     def get_magic(self, rank=0):
         if rank > 0:
-            return self.get_rank(rank).get_magic()
+            return self.get_rank(rank).get_magic() * self.familiarity_bonus
         magic = self.magic_base + self.equipment.get_magic()
         for rank in self.ranks:
             if rank.unlocked:
                 magic += rank.get_magic()
-        return magic
+        return magic * self.familiarity_bonus
 
     def get_magic_rank(self, rank=0):
         return Scale.get_scale_as_image_path(self.get_magic(rank), 999)
 
     def get_endurance(self, rank=0):
         if rank > 0:
-            return self.get_rank(rank).get_endurance()
+            return self.get_rank(rank).get_endurance() * self.familiarity_bonus
         endurance = self.endurance_base + self.equipment.get_endurance()
         for rank in self.ranks:
             if rank.unlocked:
                 endurance += rank.get_endurance()
-        return endurance
+        return endurance * self.familiarity_bonus
 
     def get_endurance_rank(self, rank=0):
         return Scale.get_scale_as_image_path(self.get_endurance(rank), 999)
 
     def get_dexterity(self, rank=0):
         if rank > 0:
-            return self.get_rank(rank).get_dexterity()
+            return self.get_rank(rank).get_dexterity() * self.familiarity_bonus
         dexterity = self.dexterity_base + self.equipment.get_dexterity()
         for rank in self.ranks:
             if rank.unlocked:
                 dexterity += rank.get_dexterity()
-        return dexterity
+        return dexterity * self.familiarity_bonus
 
     def get_dexterity_rank(self, rank=0):
         return Scale.get_scale_as_image_path(self.get_dexterity(rank), 999)
 
     def get_agility(self, rank=0):
         if rank > 0:
-            return self.get_rank(rank).get_agility()
+            return self.get_rank(rank).get_agility() * self.familiarity_bonus
         agility = self.agility_base + self.equipment.get_agility()
         for rank in self.ranks:
             if rank.unlocked:
                 agility += rank.get_agility()
-        return agility
+        return agility * self.familiarity_bonus
 
     def get_agility_rank(self, rank=0):
         return Scale.get_scale_as_image_path(self.get_agility(rank), 999)
@@ -349,6 +417,22 @@ class Character(WidgetBase):
 
     def get_grids(self):
         return self.ranks
+
+    def get_familiarity(self, char_id):
+        if char_id in self.familiarities:
+            return self.familiarities[char_id]
+        return 0
+
+    def add_familiarity(self, key, value):
+        if key in self.familiarities:
+            if self.familiarities[key] == 100.00:
+                return
+            if self.familiarities[key] + value > 100.00:
+                self.familiarities[key] = 100.00
+                return
+            self.familiarities[key] += value
+        else:
+            self.familiarities[key] = value
 
 
 class Rank(WidgetBase):

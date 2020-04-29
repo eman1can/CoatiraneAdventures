@@ -1,5 +1,5 @@
 from kivy.properties import StringProperty, ObjectProperty, ListProperty, NumericProperty
-from src.modules.KivyBase.Hoverable import RelativeLayoutH as RelativeLayout
+from src.modules.KivyBase.Hoverable import RelativeLayoutBase as RelativeLayout
 
 
 class EquipmentSlot(RelativeLayout):
