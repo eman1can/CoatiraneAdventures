@@ -1,14 +1,18 @@
-A, 4, 1, 114, 31, 16, 8 , 15, 2 , 13, Alexis & Emilia   , Actresses             , actresses_alexis_and_emilia          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 2, 135, 50, 3 , 5 , 14, 10, 9 , Calyse Lang       , Amatuer Model         , amatuer_model_calyse                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 5, 141, 33, 4 , 3 , 4 , 2 , 2 , Lexi Buhr         , Architect             , architect_lexi                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 6, 141, 49, 18, 8 , 12, 8 , 2 , Sofi              , Athlethic             , athlethic_sofi                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 3, 1, 138, 39, 3 , 7 , 10, 4 , 8 , Andrea Garcia     , Aye Aye               , aye_aye_andrea                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 2, 3, 97 , 49, 7 , 6 , 7 , 14, 4 , Abigail Cash      , Backyard              , backyard_abigail                     , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 1, 6, 110, 54, 15, 12, 11, 1 , 3 , Ais Wallenstein   , Badass                , badass_ais                           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-S, 3, 3, 133, 50, 12, 3 , 15, 12, 1 , Jenna & Aussie    , After Beach Specials  , after_beach_specials_jenna_and_aussie
-S, 0, 2, 147, 42, 14, 10, 7 , 4 , 6 , Sophie Nicholson  , Beachfront            , beachfront_sophie
-S, 3, 5, 104, 26, 11, 6 , 11, 1 , 8 , Maya Lurch        , Caffine Girl          , caffine_girl_maya
-S, 2, 1, 114, 45, 11, 5 , 10, 14, 15, Sophie Nicholson  , Changing Model        , changing_model_sophie
-S, 2, 6, 108, 36, 10, 11, 15, 15, 15, Sofi              , Cutie Princess        , cutie_princess_sofi
-S, 3, 3, 89 , 42, 4 , 12, 6 , 6 , 14, Tess Scott        , Diner                 , diner_tess
-S, 4, 0, 104, 22, 6 , 14, 1 , 5 , 10, Carlie Morgan     , Dive                  , dive_carlie
+A, 1, 6, 140, 30, 15, 16, 2 , 14, 10, Ais Wallenstein   , Badass                , badass_ais                           , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 2, 147, 23, 12, 15, 7 , 12, 2 , Bell Cranell      , Hero                  , hero_bell                            , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 3, 91 , 48, 5 , 17, 5 , 15, 5 , Daphne Lauros     , Striking              , striking_daphne                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 1, 126, 57, 19, 4 , 11, 11, 3 , Lefyia Viridis    , Carefree              , carefree_lefyia                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 6, 96 , 28, 14, 16, 3 , 8 , 9 , Ais Wallenstein   , Blustering Beauty     , blustering_beauty_ais                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 2, 1, 89 , 26, 11, 14, 6 , 3 , 11, Chloe Lolo        , Catty                 , catty_chloe                          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 0, 134, 43, 13, 4 , 14, 9 , 5 , Mikoto Yamato     , Deserted Island       , deserted_island_mikoto               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 4, 1, 97 , 26, 12, 8 , 12, 15, 4 , Riveria Ljos Alf  , Siren Song            , siren_song_riveria                   , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 3, 4, 106, 26, 18, 16, 7 , 12, 6 , Cassandra Ilion   , Washed Out            , washed_out_cassandra                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 1, 1, 92 , 60, 6 , 2 , 2 , 5 , 15, Amid Teasanare    , Sea Saint             , sea_saint_amid                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+S, 3, 6, 143, 25, 3 , 15, 14, 4 , 10, Misha Frot        , Enticing              , enticing_misha                       
+S, 3, 5, 136, 47, 5 , 15, 1 , 11, 15, Demeter           , Colonel               , colonel_demeter                      
+S, 3, 6, 136, 31, 20, 18, 7 , 9 , 12, Naza Ersuisu      , Cyan Bowtie           , cyan_bowtie_naza                     
+S, 0, 5, 148, 55, 14, 14, 8 , 12, 14, Eina Tulle        , Midsummer Maiden      , midsummer_maiden_eina                
+S, 3, 0, 136, 60, 2 , 4 , 4 , 14, 2 , Syr Flover        , Pristine              , pristine_syr                         
+S, 1, 0, 117, 40, 5 , 20, 2 , 11, 1 , Hestia            , Steamy                , steamy_hestia                        
+S, 0, 0, 133, 25, 5 , 5 , 2 , 4 , 6 , Hestia            , Seaweed Tumble        , seaweed_tumble_hestia                
+S, 3, 5, 125, 34, 2 , 8 , 6 , 13, 5 , Artemis           , Bedtime               , bedtime_artemis                      
