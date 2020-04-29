@@ -4,6 +4,7 @@ from kivy.animation import Animation
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import StringProperty, BooleanProperty
+from kivy.uix.button import Button
 from kivy.uix.carousel import Carousel
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import AsyncImage, Image
@@ -50,6 +51,10 @@ class WidgetBase(HoverBehaviour, Widget):
     pass
 
 
+class ButtonBase(HoverBehaviour, Button):
+    pass
+
+
 class ImageBase(HoverBehaviour, Image):
     pass
 
@@ -73,12 +78,10 @@ class CarouselBase(HoverBehaviour, Carousel):
     def on_touch_down(self, touch):
         if not self.collide_point(*touch.pos):
             touch.ud[self._get_uid('cavoid')] = True
-            print("run away!")
             return
         if self.disabled:
             return True
         if self._touch:
-            print("go to children")
             return super(Carousel, self).on_touch_down(touch)
         Animation.cancel_all(self)
         self._touch = touch
@@ -94,22 +97,18 @@ class CarouselBase(HoverBehaviour, Carousel):
 
     def on_touch_up(self, touch):
         if self._get_uid('cavoid') in touch.ud:
-            print("Run Away!!")
             return
         if self in [x() for x in touch.grab_list]:
-            print("Ungrab touch")
             touch.ungrab(self)
             self._touch = None
             ud = touch.ud[self._get_uid()]
             if ud['mode'] == 'unknown':
-                print("mode was not assigned")
                 ev = self._change_touch_mode_ev
                 if ev is not None:
                     ev.cancel()
                 if not super(Carousel, self).on_touch_down(touch):
                     if 'button' in touch.profile:
                         if touch.button.startswith('scroll'):
-                            print('Was a scroll!!')
                             if touch.button == 'scrollright' or touch.button == 'scrolldown':
                                 self.load_previous()
                                 return True
@@ -119,15 +118,11 @@ class CarouselBase(HoverBehaviour, Carousel):
                             return False
                 Clock.schedule_once(partial(self._do_touch_up, touch), .1)
             else:
-                print("Animate back to start")
                 self._start_animation()
 
         else:
-            print("Was not grabbed")
             if self._touch is not touch and self.uid not in touch.ud:
-                print("Propagate")
                 super(Carousel, self).on_touch_up(touch)
-        print("Return uids...")
         return self._get_uid() in touch.ud
 
 

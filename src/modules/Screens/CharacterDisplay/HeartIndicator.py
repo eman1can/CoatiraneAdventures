@@ -47,6 +47,7 @@ class HeartIndicator(RelativeLayout):
 
     def show_hint(self):
         if self.opacity > 0:
+            print(self.how_opened)
             if self.how_opened == 'Closed':
                 self.dispatch('on_hint_open')
                 self.how_opened = 'Hover'
@@ -56,6 +57,9 @@ class HeartIndicator(RelativeLayout):
             if self.how_opened == 'Hover':
                 self.dispatch('on_hint_close')
                 self.how_opened = 'Closed'
+
+    def reset_open(self):
+        self.how_opened = 'Closed'
 
     def on_hint_open(self):
         pass
@@ -89,7 +93,7 @@ class HeartIndicator(RelativeLayout):
                 continue
             if char is not None:
                 percentage = char_checking.get_familiarity(char.get_id())
-                fam[char.get_display_name().capitalize()] = percentage
+                fam[char.get_display_name().capitalize() + ' ' + char.get_name().capitalize()] = percentage
                 if percentage == 100.00: #gold
                     value_gold += 1
                     bonus += 1

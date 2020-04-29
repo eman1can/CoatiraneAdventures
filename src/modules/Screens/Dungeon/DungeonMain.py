@@ -113,7 +113,11 @@ class DungeonMain(Screen):
             App.get_running_app().main.display_screen(screen, True, True)
 
     def on_inventory(self):
-        GameMechanics.generateFamiliarityBonuses(App.get_running_app().main.parties[App.get_running_app().main.parties[0] + 1])
+        pass
+
+    def add_bonus(self):
+        for x in range(200):
+            GameMechanics.generateFamiliarityBonuses(App.get_running_app().main.parties[App.get_running_app().main.parties[0] + 1])
 
     def on_back_press(self):
         if super().on_back_press():

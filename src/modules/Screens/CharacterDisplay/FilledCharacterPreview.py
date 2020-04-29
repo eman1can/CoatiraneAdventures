@@ -1,7 +1,7 @@
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.input.providers.wm_touch import WM_MotionEvent
-from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty, StringProperty, ListProperty
+from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty, StringProperty, ListProperty, DictProperty
 
 from src.modules.KivyBase.Hoverable import ScreenBase as Screen, RelativeLayoutBase as RelativeLayout
 from src.modules.Screens.CharacterDisplay.HeartIndicator import HeartIndicator
@@ -58,12 +58,9 @@ class FilledCharacterPreview(RelativeLayout):
 
     char_hint_showing = BooleanProperty(False)
     support_hint_showing = BooleanProperty(False)
-    hint_text_words = StringProperty('')
-    hint_text_numbers = StringProperty('')
-    char_hint_words = StringProperty('')
-    char_hint_numbers = StringProperty('')
-    support_hint_words = StringProperty('')
-    support_hint_numbers = StringProperty('')
+    hint_text = DictProperty({})
+    char_hint_text = DictProperty({})
+    support_hint_text = DictProperty({})
 
     char_button_source = StringProperty('')
     support_button_source = StringProperty('')
@@ -117,24 +114,11 @@ class FilledCharacterPreview(RelativeLayout):
         else:
             self.overlay_source = "../res/screens/stats/preview_overlay_empty.png"
 
-    def get_hint(self, array):
-        words = ''
-        numbers = ''
-        if len(array) > 0:
-            for k, v in array.items():
-                words += k + '\n'
-                numbers += str(round(v, 2)) + '\n'
-            words = words[:-1]
-            numbers = numbers[:-1]
-        else:
-            return 'Invalid', '0%'
-        return words, numbers
-
     def close_hints(self):
         self.on_char_hint_close()
         self.on_support_hint_close()
-        self.ids.character_heart.how_closed = 'Closed'
-        self.ids.support_heart.how_closed = 'Closed'
+        self.ids.character_heart.reset_open()
+        self.ids.support_heart.reset_open()
 
     def update_labels(self):
         self.phy_atk_text = str(0.0) if self.character is None else str(round(self.character.get_phyatk(), 2)) if self.support is None else str(round(self.character.get_phyatk() + self.support.get_phyatk(), 2))
@@ -164,27 +148,25 @@ class FilledCharacterPreview(RelativeLayout):
                 self.char_button_collide_image = '../res/screens/buttons/char_button.collision.png'
 
     def reload(self):
-        total, gold, bonus, array = HeartIndicator.calculate_familiarity_bonus(self.character)
+        total, gold, bonus, hint_text = HeartIndicator.calculate_familiarity_bonus(self.character)
         self.ids.character_heart.is_visible = total != -1
         if total != -1:
             self.ids.character_heart.familiarity = total
             self.ids.character_heart.familiarity_gold = gold
-            self.char_hint_words, self.char_hint_numbers = self.get_hint(array)
+            self.char_hint_text = hint_text
             if self.char_hint_showing:
-                self.hint_text_words = self.char_hint_words
-                self.hint_text_numbers = self.char_hint_numbers
+                self.hint_text = self.char_hint_text
             self.character.familiarity_bonus = 1 + bonus / 100
         else:
             self.character.familiarity_bonus = 1
         if self.support is not None:
-            total, gold, bonus, array = HeartIndicator.calculate_familiarity_bonus(self.support)
+            total, gold, bonus, hint_text = HeartIndicator.calculate_familiarity_bonus(self.support)
             # support calculation will never return false. Base char will always be there
             self.ids.support_heart.familiarity = total
             self.ids.support_heart.familiarity_gold = gold
-            self.support_hint_words, self.support_hint_numbers = self.get_hint(array)
+            self.support_hint_text = hint_text
             if self.support_hint_showing:
-                self.hint_text_words = self.support_hint_words
-                self.hint_text_numbers = self.support_hint_numbers
+                self.hint_text = self.support_hint_text
             self.support.familiarity_bonus = 1 + bonus / 100
         self.update_labels()
 
@@ -195,8 +177,7 @@ class FilledCharacterPreview(RelativeLayout):
     def on_char_hint_open(self, *args):
         if self.char_hint_showing or self.support_hint_showing:
             return
-        self.hint_text_words = self.char_hint_words
-        self.hint_text_numbers = self.char_hint_numbers
+        self.hint_text = self.char_hint_text
         self.ids.hint.opacity = 1
         self.ids.hint.disabled = False
         self.char_hint_showing = True
@@ -211,8 +192,7 @@ class FilledCharacterPreview(RelativeLayout):
     def on_support_hint_open(self, *args):
         if self.support_hint_showing or self.char_hint_showing:
             return
-        self.hint_text_words = self.support_hint_words
-        self.hint_text_numbers = self.support_hint_numbers
+        self.hint_text = self.support_hint_text
         self.ids.hint.opacity = 1
         self.ids.hint.disabled = False
         self.support_hint_showing = True
