@@ -35,11 +35,11 @@ class RecyclePreview(HoverBehaviour, RecycleView, Filterable, Sortable):
         self.force_update_values()
 
     def on_touch_hover(self, touch):
+        if self.disabled:
+            return False
         if not self.collide_point(*touch.pos):
             return False
-        if self.child.dispatch('on_touch_hover', touch):
-            return True
-        return False
+        return self.dispatch_to_relative_children(touch)
 
     def update(self, single, preview, is_support, characters, party):
         self.preview = preview

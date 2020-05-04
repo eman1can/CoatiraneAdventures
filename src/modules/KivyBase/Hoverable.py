@@ -188,7 +188,7 @@ class ScrollViewBase(HoverBehaviour, ScrollView):
             return False
         if not self.collide_point(*touch.pos):
             return False
-        return self.dispatch_to_children(touch)
+        return self.dispatch_to_relative_children(touch)
 
 
 class ModalViewBase(HoverBehaviour, ModalView):

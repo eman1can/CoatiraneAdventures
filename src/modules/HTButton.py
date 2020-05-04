@@ -210,11 +210,11 @@ class HTButton(HoverBehaviour, Widget):
             return True
         if touch.is_mouse_scrolling:
             return False
+        if self.disabled:
+            return False
         if not self.collide_point(touch.x, touch.y):
             return False
         if self in touch.ud:
-            return False
-        if self.disabled:
             return False
         if 'button' in touch.profile and touch.button.startswith('scroll'):
             return False
