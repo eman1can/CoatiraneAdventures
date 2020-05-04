@@ -2032,6 +2032,7 @@
     ImageBase:
         id: familia_mark
         source: '' if root.char is None else '../res/familias/marks/Takemikazuchi.png'
+        nocache: True
         size_hint: app.get_dkey('cas.ci s_h')
         width: self.height * self.image_ratio
         pos_hint: app.get_dkey('cas.ci p_h')
@@ -2039,6 +2040,7 @@
         id: char_image
         source: '' if root.char is None else root.char.full_image_source
         allow_stretch: True
+        nocache: True
         size_hint: app.get_dkey('cas.ci s_h')
         width: self.height * self.image_ratio
         pos_hint: app.get_dkey('cas.ci p_h')

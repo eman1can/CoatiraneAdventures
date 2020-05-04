@@ -160,18 +160,7 @@ class Character(WidgetBase):
         except FileNotFoundError:
             self.ranks = Rank.load_weights("../save/char_load_data/" + self.program_type + '/ranks/base.txt', self.id, rank, self.program_type)
 
-        self.attr_screen = None
         self.update_score()
-
-    @mainthread
-    def load_elements(self, size):
-    #     self.select_widget = FilledCharacterPreview(is_select=True, is_support=self._is_support, character=self, size_hint_x=None)
-    #     self.select_square_widget = SquareCharacterPreview(is_select=True, character=self, is_support=self._is_support)
-        self.attr_screen = CharacterAttributeScreen(char=self) #char preview name size pos
-        self.attr_screen.size = size
-
-    def get_attr_screen(self):
-        return self.attr_screen
 
     def update_score(self):
         score = 0

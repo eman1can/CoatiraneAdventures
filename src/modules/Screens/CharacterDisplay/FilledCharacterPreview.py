@@ -263,9 +263,7 @@ class FilledCharacterPreview(RelativeLayout):
                     return True
                 elif touch.button == 'right':
                     if self.support is not None:
-                        screen = self.support.get_attr_screen()
-                        screen.preview = self.preview
-                        screen.reload()
+                        screen, made = App.get_running_app().main.create_screen('char_attr', self.character, self.preview)
                         App.get_running_app().main.display_screen(screen, True, True)
                         return True
             return False
@@ -293,9 +291,7 @@ class FilledCharacterPreview(RelativeLayout):
                         self.preview.show_select_screen(self, False)
                     return True
                 elif touch.button == 'right':
-                    screen = self.character.get_attr_screen()
-                    screen.preview = self.preview
-                    screen.reload()
+                    screen, made = App.get_running_app().main.create_screen('char_attr', self.character, self.preview)
                     App.get_running_app().main.display_screen(screen, True, True)
                     return True
             return False

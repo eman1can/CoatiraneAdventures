@@ -1,6 +1,7 @@
 from kivy.uix.screenmanager import FadeTransition
 
 from src.modules.KivyBase.Hoverable import ScreenManagerBase as ScreenManager, ScreenBase as Screen
+from src.modules.Screens.CharacterAttributeScreens.CharacterAttributeScreen import CharacterAttributeScreen
 from src.modules.Screens.Equipment.EquipmentChange import EquipmentChange, GearChange
 from src.modules.Screens.NewGameScreen import NewGameScreen
 from src.modules.Screens.SelectScreen import SelectScreen
@@ -91,6 +92,9 @@ class Root(ScreenManager):
             screen = CharacterSelector()
         elif screen_name == 'recruit':
             screen = RecruitPreview(character=args[0], viewed_characters=args[1])
+        elif screen_name == 'char_attr':
+            self.whitelist.append(screen_name)
+            screen = CharacterAttributeScreen(char=args[0], preview=args[1])
         elif screen_name.startswith('status_board'):
             self.whitelist.append(screen_name)
             screen = StatusBoardManager(char=args[0])

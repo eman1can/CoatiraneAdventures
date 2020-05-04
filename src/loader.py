@@ -316,7 +316,6 @@ class CALoader(HoverBehaviour, Widget):
                                  endurance_base=int(values[ENDURANCE_BASE]),
                                  dexterity_base=int(values[DEXTERITY_BASE]),
                                  agility_base=int(values[AGILITY_BASE]))
-                char.load_elements(self.size)
                 self.chars.append(char)
                 self.char_count += 1
             # print("\t<< Loaded Char Chunk ")
