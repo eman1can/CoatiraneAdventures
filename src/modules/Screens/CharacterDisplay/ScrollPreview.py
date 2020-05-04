@@ -133,11 +133,14 @@ class RecyclePreview(HoverBehaviour, RecycleView, Filterable, Sortable):
             m = self.scroll_wheel_distance
             e = None
 
-            if ((btn == 'scrolldown' and self.scroll_x >= 1) or (btn == 'scrollup' and self.scroll_x <= 0) or (btn == 'scrollleft' and self.scroll_x >= 1) or (btn == 'scrollright' and self.scroll_x <= 0)):
+            if width_scrollable and ((btn == 'scrolldown' and self.scroll_x >= 1) or (btn == 'scrollup' and self.scroll_x <= 0) or (btn == 'scrollleft' and self.scroll_x >= 1) or (btn == 'scrollright' and self.scroll_x <= 0)):
+                return False
+
+            if height_scrollable and ((btn == 'scrolldown' and self.scroll_y >= 1) or (btn == 'scrollup' and self.scroll_y <= 0) or (btn == 'scrollleft' and self.scroll_y >= 1) or (btn == 'scrollright' and self.scroll_y <= 0)):
                 return False
 
             if (self.effect_x and self.do_scroll_y and height_scrollable and
-                    btn in ('scrolldown', 'scrollup')):
+                    btn in ('scrolldown', 'scrollup', 'scrollleft', 'scrollright')):
                 e = self.effect_x if ud['in_bar_x'] else self.effect_y
 
             elif (self.effect_y and self.do_scroll_x and width_scrollable and
