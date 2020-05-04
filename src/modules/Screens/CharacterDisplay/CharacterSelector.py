@@ -1,6 +1,6 @@
 from kivy.app import App
 from kivy.core.image import Image
-from kivy.properties import BooleanProperty, ObjectProperty
+from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty
 
 from src.modules.Filterable import FilterWidget
 from src.modules.KivyBase.Hoverable import ScreenBase as Screen
@@ -18,6 +18,10 @@ class CharacterSelector(Screen):
 
     overlay_texture = ObjectProperty(None)
     number_icon_texture = ObjectProperty(None)
+    character_num = NumericProperty(0.0)
+
+    multi = ObjectProperty(None, allownone=True)
+    single = ObjectProperty(None, allownone=True)
 
     def __init__(self, **kwargs):
         self.overlay_texture = Image('../res/screens/backgrounds/select_char_overlay.png').texture
@@ -138,7 +142,7 @@ class CharacterSelector(Screen):
         self.multi.update(None if self.single is None else self.single.character, self.preview, self.is_support, characters, self.root.parties[self.root.parties[0] + 1])
 
     def on_pre_enter(self, *args):
-        self.update_number(len(self.multi.output))
+        self.update_number()
 
     def on_size(self, instance, size):
         if not self.initialized or self._size == size:
@@ -200,10 +204,13 @@ class CharacterSelector(Screen):
         self.reset_scroll()
         self.multi.filter()
         self.close_filter()
-        self.update_number(len(self.multi.previews_sort))
+        self.update_number()
 
-    def update_number(self, number):
-        self.ids.number.text = str(number)
+    def update_number(self):
+        if self.multi is None:
+            self.character_num = 0
+        else:
+            self.character_num = len(self.multi.output)
 
     def reset_scroll(self):
         self.multi.scroll_x = 0

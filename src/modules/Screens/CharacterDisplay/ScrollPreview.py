@@ -85,7 +85,7 @@ class RecyclePreview(HoverBehaviour, RecycleView, Filterable, Sortable):
     def on_after_filter(self):
         self.data = self.output
         self.refresh_from_data()
-        self.selector.update_number(len(self.data))
+        self.selector.update_number()
 
     def on_scroll_start(self, touch, check_children=True):
         if check_children:

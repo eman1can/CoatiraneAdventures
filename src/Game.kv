@@ -1244,7 +1244,7 @@
         allow_stretch: True
         opacity: 0 if root.character is None else 1 if root.character.get_rank(1).unlocked else 0
         size_hint: app.get_dkey('scp.star_1 s_h')
-        pos_hint: app.get_dkey('scp.star_1 p_h')
+        pos_hint: {'center_x': 0.144, 'center_y': 0.806} #app.get_dkey('scp.star_1 p_h')
     ImageBase:
         id: star_2
         source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(2).broken else '../res/screens/stats/star.png' if root.character.get_rank(2).unlocked else ''
@@ -1356,10 +1356,21 @@
     LabelBase:
         id: number
         font_name: '../res/fnt/Precious.ttf'
+        text: str(root.character_num)
         color: app.get_dkey('cs.nl c')
         font_size: app.get_dkey('cs.nl fs', root.height)
         size_hint: app.get_dkey('cs.nl s_h')
         pos_hint: app.get_dkey('cs.nl p_h')
+    LabelBase:
+        id: no_chars
+        font_name: '../res/fnt/Gabriola.ttf'
+        text: 'No Characters to Display'
+        color: 0, 0, 0, 1
+        font_size: root.height * 0.1
+        opacity: 0 if root.multi is None else 0 if root.character_num > 0 else 1
+        pos_hint: {'y': 0, 'right': 1}
+        size_hint_x: 1 if root.single is None else 0.85
+        size_hint_y: 0.85
 
 <ScrollPreview>:
     id: layout
@@ -1375,6 +1386,7 @@
 <GridPreview>:
     id: layout
     cols: 8
+    col_default_width: (self.width - self.padding[0] * 2 - self.spacing[0] * 7) / 8
     default_size: app.get_dkey('grdp ds', app.width)
     default_size_hint: app.get_dkey('grdp ds_h')
     size_hint_y: None

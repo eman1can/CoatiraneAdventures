@@ -46,13 +46,6 @@ class SquareCharacterPreview(RelativeLayout):
     def reload(self):
         pass
 
-    def on_touch_hover(self, touch):
-        if not self.collide_point(*self.to_widget(*touch.pos)):
-            return False
-        if self.ids.char_button.dispatch('on_touch_hover', touch):
-            return True
-        return False
-
     def on_char_touch_down(self, instance, touch):
         if instance.collide_point(*touch.pos):
             touch.grab(self)
