@@ -691,8 +691,7 @@
         path: '../res/screens/buttons/empty_overlay'
         size_hint: app.get_dkey('ecp.b s_h')
         pos_hint: app.get_dkey('ecp.b p_h')
-        on_touch_down: root.on_button_touch_down(*args)
-        on_touch_up: root.on_button_touch_up(*args)
+        on_release: root.on_button()
     ImageBase:
         id: lock
         source: '../res/screens/stats/lock.png'

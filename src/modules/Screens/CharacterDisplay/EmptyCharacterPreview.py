@@ -18,27 +18,11 @@ class EmptyCharacterPreviewScreen(Screen):
         else:
             self.ids.lock.opacity = 0
 
-    def on_button_touch_down(self, instance, touch):
-        if not instance.collide_point(*touch.pos):
-            return False
+    def on_button(self, *args):
         if self.locked:
-            return False
-        touch.grab(self)
-        return True
-
-    def on_button_touch_up(self, instance, touch):
-        if touch.grab_current is None:
-            return False
-        if touch.grab_current != self:
-            return False
+            return
         if self.preview.is_disabled:
-            return False
-        if self.locked:
-            return False
-        if self.is_valid_touch():
-            if touch.is_touch:
-                touch.button = 'left'
-            if touch.button == 'left':
-                self.preview.show_select_screen(self, False)
-                return True
-        return False
+            return
+        if not self.is_valid_touch():
+            return
+        self.preview.show_select_screen(self, False)
