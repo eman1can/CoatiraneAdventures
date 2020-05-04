@@ -291,7 +291,7 @@
         font_name: '../res/fnt/Precious.ttf'
         font_size: app.get_dkey('rs.fnl fs', root.height)
         pos_hint: app.get_dkey('rs.fnl p_h')
-        color: app.get_dkey('rs.fnl c')
+        color: app.get_dkey('rs.fnl.colrs ' + root.character.get_element().lower())
         outline_width: app.get_dkey('rs.fnl ow')
         outline_color: app.get_dkey('rs.fnl oc')
     #Display Name
@@ -304,7 +304,7 @@
         font_name: '../res/fnt/Precious.ttf'
         font_size: app.get_dkey('rs.dnl fs', root.height)
         pos_hint: app.get_dkey('rs.dnl p_h')
-        color: app.get_dkey('rs.dnl c')
+        color: app.get_dkey('rs.dnl.colrs ' + root.character.get_type().lower())
         outline_width: app.get_dkey('rs.dnl ow')
         outline_color: app.get_dkey('rs.dnl oc')
     #Char Type Flag Label
