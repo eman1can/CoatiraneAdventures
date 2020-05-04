@@ -219,7 +219,7 @@
 
 <TavernMain>
     name: 'tavern_main'
-    background_source: ''
+    background_source: '../res/screens/backgrounds/collage.png'
     LabelBase:
         id: title
         size_hint: (None, None)
@@ -253,33 +253,34 @@
 
 <RecruitPreview>:
     name: 'recruit_' + self.character.get_id()
-    canvas:
-        #Char Type Flag
-        Rectangle:
-            size: app.get_dkey('rs.ctf s_h', self.width)
-            pos: app.get_dkey('rs.ctf pos', self.width, self.height)
-            texture: self.char_type_flag_texture
-        #Type Flag
-        Rectangle:
-            size: app.get_dkey('rs.ctf s_h', self.width)
-            pos: app.get_dkey('rs.ctf pos', self.width, self.height)
-            texture: self.type_flag_texture
-        #Element Flag Background
-        Rectangle:
-            size: app.get_dkey('rs.ctf s_h', self.width)
-            pos: app.get_dkey('rs.ctf pos', self.width, self.height)
-            texture: self.element_flag_background_texture
-        #Element Flag Symbol
-        Rectangle:
-            size: app.get_dkey('rs.ctf s_h', self.width)
-            pos: app.get_dkey('rs.ctf pos', self.width, self.height)
-            texture: self.element_flag_symbol_texture
+    background_source: "../res/screens/backgrounds/background.png"
     AsyncImageBase:
         id: char_image
-        size_hint: 0.8, 0.7
+        size_hint: None, 0.9
+        width: self.height * self.image_ratio
         pos_hint: {'x': 0, 'y': 0}
         allow_stretch: True
         source: root.character_image_source
+    ImageBase:
+        id: char_type_flag
+        source: root.char_type_flag_source
+        size_hint: app.get_dkey('rs.ctf s_h')
+        pos_hint: app.get_dkey('rs.ctf p_h')
+    ImageBase:
+        id: type_flag
+        source: root.type_flag_source
+        size_hint: app.get_dkey('rs.tf s_h')
+        pos_hint: app.get_dkey('rs.tf p_h')
+    ImageBase:
+        id: element_flag_background
+        source: root.element_flag_background_source
+        size_hint: app.get_dkey('rs.efb s_h')
+        pos_hint: app.get_dkey('rs.efb p_h')
+    ImageBase:
+        id: element_flag_symbol
+        source: root.element_flag_symbol_source
+        size_hint: app.get_dkey('rs.efs s_h')
+        pos_hint: app.get_dkey('rs.efs p_h')
     #Full Name
     LabelBase:
         id: full_name
@@ -324,7 +325,6 @@
         size_hint: app.get_dkey('rs.tfl s_h')
         pos_hint: app.get_dkey('rs.tfl p_h')
         color: app.get_dkey('rs.tfl c')
-    #Element Flag Label
     LabelBase:
         id: element_flag_label
         text: root.character.get_element().capitalize()
@@ -333,6 +333,13 @@
         size_hint: app.get_dkey('rs.efl s_h')
         pos_hint: app.get_dkey('rs.efl p_h')
         color: app.get_dkey('rs.efl c')
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle: app.get_dkey("cas.eflgl ang")
+                origin: self.center
+        canvas.after:
+            PopMatrix
     #Roll Again
     HTButton:
         id: roll_again

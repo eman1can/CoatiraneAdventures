@@ -94,7 +94,10 @@ class Root(ScreenManager):
             screen = RecruitPreview(character=args[0], viewed_characters=args[1])
         elif screen_name == 'char_attr':
             self.whitelist.append(screen_name)
-            screen = CharacterAttributeScreen(char=args[0], preview=args[1])
+            preview = None
+            if len(args) > 1:
+                preview = args[1]
+            screen = CharacterAttributeScreen(char=args[0], preview=preview)
         elif screen_name.startswith('status_board'):
             self.whitelist.append(screen_name)
             screen = StatusBoardManager(char=args[0])
