@@ -1,5 +1,5 @@
 from kivy.app import App
-from kivy.properties import BooleanProperty, ListProperty, StringProperty
+from kivy.properties import BooleanProperty, ListProperty, OptionProperty
 
 from src.modules.KivyBase.Hoverable import ModalViewBase as ModalView
 
@@ -8,7 +8,9 @@ class Sortable(object):
     previews_sort = ListProperty(None)
     values_sort = ListProperty([])
     ascending = BooleanProperty(True)
-    sort_type = StringProperty('Strength')
+    sort_type = OptionProperty('Strength', options=['Strength', 'Magic', 'Endurance', 'Dexterity', 'Agility',
+                                           'Phy. Atk', 'Mag. Atk', 'Defense', 'Health', 'Mana',
+                                           'Party', 'Rank', 'Name', 'Score', 'Worth'])
     no_sort = BooleanProperty(False)
 
     # Sorting Types:

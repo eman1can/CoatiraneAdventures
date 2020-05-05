@@ -1,3 +1,4 @@
+from kivy.app import App
 from kivy.clock import Clock
 from kivy.properties import ObjectProperty, BooleanProperty, ListProperty, StringProperty
 from kivy.uix.recyclegridlayout import RecycleGridLayout
@@ -29,8 +30,9 @@ class RecyclePreview(HoverBehaviour, RecycleView, Filterable, Sortable):
         self.viewclass = 'FilledCharacterPreview'
         self.child = self.scroll
 
+        party = App.get_running_app().main.parties[App.get_running_app().main.parties[0] + 1]
         for char in self.characters:
-            self.data.append({'id': char.get_id(), 'character': char, 'support': None, 'is_select': True})
+            self.data.append({'id': char.get_id(), 'character': char, 'support': None, 'is_select': True, 'has_tag': char in party, 'has_stat': True, 'stat_type': self.sort_type})
         self.previews_sort = self.data
         self.force_update_values()
 
@@ -51,7 +53,7 @@ class RecyclePreview(HoverBehaviour, RecycleView, Filterable, Sortable):
         for char in self.characters:
             if single is not None and single == char:
                 continue
-            self.data.append({'id': char.get_id(), 'character': char, 'support': None, 'is_select': True, 'preview': self.preview, 'is_support': char.is_support(), 'has_tag': char in party})
+            self.data.append({'id': char.get_id(), 'character': char, 'support': None, 'is_select': True, 'preview': self.preview, 'is_support': char.is_support(), 'has_tag': char in party, 'has_stat': True, 'stat_type': self.sort_type})
         self.previews_sort = self.data
         self.force_update_values()
 
@@ -80,6 +82,8 @@ class RecyclePreview(HoverBehaviour, RecycleView, Filterable, Sortable):
 
     def on_after_sort(self, *args):
         self.previews_filter = self.previews_sort
+        for preview in self.previews_filter:
+            preview['stat_type'] = self.sort_type
         self.filter()
 
     def on_after_filter(self):
@@ -215,7 +219,6 @@ class Preview(HoverBehaviour, RecycleGridLayout):
         if not self.collide_point(*touch.pos):
             return False
         return self.dispatch_to_children(touch)
-
 
 class ScrollPreview(Preview):
     pass

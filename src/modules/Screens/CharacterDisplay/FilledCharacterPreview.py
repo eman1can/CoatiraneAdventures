@@ -43,6 +43,7 @@ class FilledCharacterPreview(RelativeLayout):
     emptied = BooleanProperty(False)
     event = ObjectProperty(None, allownone=True)
     has_tag = BooleanProperty(False)
+    has_stat = BooleanProperty(False)
 
     preview_wgap = NumericProperty(0)
     preview_hgap = NumericProperty(0)

@@ -1215,12 +1215,15 @@
 <SquareCharacterPreview>:
     ImageBase:
         id: background
+        allow_stretch: True
         source: root.background_source
     AsyncImageBase:
         id: char_image
+        allow_stretch: True
         source: root.char_image_source
     ImageBase:
         id: overlay
+        allow_stretch: True
         source: root.overlay_source
     HTButton:
         id: char_button
@@ -1228,6 +1231,35 @@
         collide_image: root.char_button_collide_image
         on_touch_down: root.on_char_touch_down(*args)
         on_touch_up: root.on_char_touch_up(*args)
+    ImageBase:
+        id: stat_image
+        allow_stretch: True
+        source: root.stat_image_source
+        size_hint: 0.16, 0.16
+        pos_hint: {'x': 0.055, 'top': 0.98}
+        opacity: 0 if root.stat_image_source == '' else 1 if root.has_stat else 0
+    LabelBase:
+        id: stat_label
+        text: root.stat_text
+        opacity: 1 if root.has_stat else 0
+        color: 0.796, 0.773, 0.678, 1
+        font_name: '../res/fnt/Gabriola.ttf'
+        font_size: root.height * 0.14
+        size_hint_x: 1 if root.stat_type == 'Name' else 0.392 if root.stat_image_source == '' else 0.232
+        size_hint_y: None
+        height: self.texture_size[1]
+        pos_hint: {'center_x': 0.5, 'center_y': 0.9} if root.stat_type == 'Name' else {'right': 0.5, 'center_y': 0.9}
+    LabelBase:
+        id: stat_numbers
+        text: str(round(root.stat_number, 2))
+        opacity: 0 if root.stat_type == 'Name' else 0 if root.stat_type == 'Party' else 0 if root.stat_type == 'Rank' else 1 if root.has_stat else 0
+        color: 0.796, 0.773, 0.678, 1
+        font_name: '../res/fnt/Gabriola.ttf'
+        font_size: root.height * 0.14
+        size_hint_x: 0.48
+        size_hint_y: None
+        height: self.texture_size[1]
+        pos_hint: {'right': 0.98, 'center_y': 0.9}
     LabelBase:
         id: tag
         text: '[b]Selected[/b]' if root.has_tag else ''
@@ -1244,7 +1276,7 @@
         allow_stretch: True
         opacity: 0 if root.character is None else 1 if root.character.get_rank(1).unlocked else 0
         size_hint: app.get_dkey('scp.star_1 s_h')
-        pos_hint: {'center_x': 0.144, 'center_y': 0.806} #app.get_dkey('scp.star_1 p_h')
+        pos_hint: app.get_dkey('scp.star_1 p_h')
     ImageBase:
         id: star_2
         source: '' if root.character is None else '../res/screens/stats/rankbrk.png' if root.character.get_rank(2).broken else '../res/screens/stats/star.png' if root.character.get_rank(2).unlocked else ''
@@ -1386,14 +1418,15 @@
 <GridPreview>:
     id: layout
     cols: 8
-    col_default_width: (self.width - self.padding[0] * 2 - self.spacing[0] * 7) / 8
-    default_size: app.get_dkey('grdp ds', app.width)
     default_size_hint: app.get_dkey('grdp ds_h')
+    col_default_width: (self.width - self.padding[0] * 2 - self.spacing[0] * 7) / 8
+    row_default_height: (self.width - self.padding[0] * 2 - self.spacing[0] * 7) / 8
+#    default_size: app.get_dkey('grdp ds', app.width)
     size_hint_y: None
     height: self.minimum_height
     orientation: 'vertical'
-    spacing: app.get_dkey('grdp spa')
-    padding: app.get_dkey('grdp pad')
+    spacing: app.get_dkey('grdp spa', self.width)
+    padding: app.get_dkey('grdp pad', self.width)
 
 <SinglePreview>:
     FilledCharacterPreview:

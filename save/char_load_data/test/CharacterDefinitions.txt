@@ -134,7 +134,7 @@ A, 4, 4, 143, 25, 14, 9 , 15, 11, 13, Jenna Primbasch   , Wrong Place Wrong Time
 A, 0, 6, 136, 37, 19, 17, 7 , 9 , 10, Carlie Morgan     , Yaht                  , yaht_carlie                          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
 A, 1, 6, 148, 34, 18, 15, 6 , 3 , 7 , Ester Cash        , Yogalicious           , yogalicious_ester                    , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
 A, 0, 1, 121, 50, 19, 9 , 6 , 2 , 7 , Daphne Lauros     , Striking              , striking_daphne                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
-A, 0, 0, 109, 42, 17, 7 , 12, 9 , 5 ,                   , Carefree              , carefree_lefyia                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
+A, 0, 0, 109, 42, 17, 7 , 12, 9 , 5 , Lefyia Viridis    , Carefree              , carefree_lefyia                      , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
 A, 2, 4, 140, 42, 17, 10, 4 , 6 , 8 , Ais Wallenstein   , Blustering Beauty     , blustering_beauty_ais                , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
 A, 1, 0, 124, 52, 14, 11, 6 , 1 , 8 , Chloe Lolo        , Catty                 , catty_chloe                          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
 A, 0, 4, 106, 50, 18, 20, 13, 8 , 4 , Mikoto Yamato     , Deserted Island       , deserted_island_mikoto               , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
