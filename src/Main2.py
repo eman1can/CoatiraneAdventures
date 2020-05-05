@@ -30,6 +30,7 @@ class GameApp(App):
     def __init__(self, *args, **kwargs):
         Window.bind(on_resize=self.on_resize)
         Window.bind(on_request_close=self.close_window)
+        Window.bind(on_memorywarning=self.on_memory_warning)
         self.program_type = "test"
         self._size = (0, 0)
         self.ratios = None
@@ -70,6 +71,9 @@ class GameApp(App):
     def close_window(self, *args):
         if platform == 'win':
             Window.close()
+
+    def on_memory_warning(self):
+        self.main.clean_whitelist()
 
     def on_stop(self):
         # On IOS and Android, DO NOT programmically close; Let OS handle

@@ -99,6 +99,7 @@ class DungeonMain(Screen):
     def add_bonus(self):
         for x in range(200):
             GameMechanics.generateFamiliarityBonuses(App.get_running_app().main.parties[App.get_running_app().main.parties[0] + 1])
+        App.get_running_app().main.clean_whitelist()
 
     def on_back_press(self):
         if super().on_back_press():

@@ -49,6 +49,25 @@ class Root(ScreenManager):
         for screen in self.whitelist:
             self.create_screen(screen)
 
+    def clean_whitelist(self):
+        remove = []
+        for screen_name in self.whitelist:
+            if screen_name.startswith("char_attr") or screen_name.startswith("status_board") or \
+               screen_name.startswith("image_preview") or screen_name.startswith("equipment_change"):
+                remove.append(screen_name)
+        for screen_name in remove:
+            if screen_name == self.current_screen.name:
+                continue
+            print("delete ", screen_name)
+            self.whitelist.remove(screen_name)
+            screen_s = None
+            for screen in self.screens:
+                if screen.name == screen_name:
+                    screen_s = screen
+                    break
+            self.remove_widget(screen_s)
+        del remove
+
     def display_screen(self, next_screen, direction, track):
         old_screen = None
         if not isinstance(next_screen, Screen) and next_screen is not None:
@@ -92,7 +111,7 @@ class Root(ScreenManager):
             screen = CharacterSelector()
         elif screen_name == 'recruit':
             screen = RecruitPreview(character=args[0], viewed_characters=args[1])
-        elif screen_name == 'char_attr':
+        elif screen_name.startswith('char_attr'):
             self.whitelist.append(screen_name)
             preview = None
             if len(args) > 1:

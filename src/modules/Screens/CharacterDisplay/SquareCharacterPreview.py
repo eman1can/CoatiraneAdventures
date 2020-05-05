@@ -148,7 +148,7 @@ class SquareCharacterPreview(RelativeLayout):
                             break
                     return True
                 elif touch.button == 'right':
-                    screen, made = root.create_screen('char_attr', self.character, self.preview)
+                    screen, made = root.create_screen('char_attr_' + self.character.get_name(), self.character, self.preview)
                     root.display_screen(screen, True, True)
                     return True
             return False

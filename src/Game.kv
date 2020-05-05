@@ -2077,7 +2077,7 @@
                             pos_hint: {'center_x': 0.741, 'center_y': 0.5}
 
 <CharacterAttributeScreen>:
-    name: self.char.get_name()
+    name: 'char_attr_' + self.char.get_name()
     ImageBase:
         id: familia_mark
         source: '' if root.char is None else '../res/familias/marks/Takemikazuchi.png'
