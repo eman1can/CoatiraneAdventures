@@ -122,6 +122,16 @@ class StatusBoardManager(Screen):
 
     def on_board_move(self, index):
         self.current_board_name = f'Rank {index + 1}\nStatus Board'
+        if index != 0 and index != 9:
+            if not self.animation_left.repeat or not self.animation_right.repeat:
+                self.animation_left.cancel(self.ids.left_arrow)
+                self.animation_right.cancel(self.ids.right_arrow)
+                self.animate_left_arrow()
+                self.animate_right_arrow()
+        elif index == 0:
+            self.unanimate_left_arrow()
+        else:
+            self.unanimate_right_arrow()
 
     def on_arrow_touch(self, direction):
         if direction:
@@ -129,21 +139,48 @@ class StatusBoardManager(Screen):
         else:
             self.ids.status_board_screen.load_next()
 
-    def animate_arrows(self):
+    def animate_arrows(self, index=0):
+        self.ensure_creation()
+        if index > 0:
+            self.animate_left_arrow()
+        if index < 9:
+            self.animate_right_arrow()
+
+    def ensure_creation(self):
         if self.animation_left is None or self.animation_right is None:
             self.animation_left = Animation(x=self.animate_start_left - self.animate_distance, duration=1) + Animation(x=self.animate_start_left, duration=0.25)
             self.animation_right = Animation(x=self.animate_start_right + self.animate_distance, duration=1) + Animation(x=self.animate_start_right, duration=0.25)
-        self.animation_left.repeat = True
-        self.animation_right.repeat = True
-        self.animation_left.start(self.ids.left_arrow)
-        self.animation_right.start(self.ids.right_arrow)
 
     def unanimate_arrows(self):
+        self.unanimate_left_arrow()
+        self.unanimate_right_arrow()
+
+    def unanimate_left_arrow(self):
+        if self.animation_left is None:
+            return
+        self.animation_left.cancel(self.ids.left_arrow)
         self.animation_left.repeat = False
+
+    def animate_left_arrow(self):
+        if self.animation_left is None:
+            return
+        self.animation_left.repeat = True
+        self.animation_left.start(self.ids.left_arrow)
+
+    def unanimate_right_arrow(self):
+        if self.animation_right is None:
+            return
+        self.animation_right.cancel(self.ids.right_arrow)
         self.animation_right.repeat = False
 
+    def animate_right_arrow(self):
+        if self.animation_right is None:
+            return
+        self.animation_right.repeat = True
+        self.animation_right.start(self.ids.right_arrow)
+
     def on_enter(self, *args):
-        self.animate_arrows()
+        self.animate_arrows(self.ids.status_board_screen._get_index())
 
     def on_leave(self, *args):
         self.unanimate_arrows()
