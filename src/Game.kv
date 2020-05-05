@@ -518,7 +518,6 @@
     HTButton:
         id: left_arrow
         path: '../res/screens/buttons/ArrowLeft'
-        background_hover: '../res/screens/buttons/ArrowLeft.normal.png'
         size_hint: app.get_dkey('dm.la s_h')
         pos_hint: app.get_dkey('dm.la p_h')
         x: root.animate_start_left
@@ -526,7 +525,6 @@
     HTButton:
         id: right_arrow
         path: '../res/screens/buttons/ArrowRight'
-        background_hover: '../res/screens/buttons/ArrowRight.normal.png'
         size_hint: app.get_dkey('dm.ra s_h')
         pos_hint: app.get_dkey('dm.ra p_h')
         x: root.animate_start_right
@@ -2366,10 +2364,6 @@
         size_hint: app.get_dkey('cas.ipb s_h')
         pos_hint: app.get_dkey('cas.ipb p_h')
         on_release: root.on_image_preview()
-#    StatusBoardManager:
-#        id: status_board_screen
-#        size_hint: app.get_dkey('cas.sbm s_h')
-#        character: root.char
     ImageBase:
         id: star_1
         source: '' if root.char is None else '../res/screens/stats/rankbrk.png' if root.char.get_rank(1).broken else '../res/screens/stats/star.png' if root.char.get_rank(1).unlocked else ''
@@ -3097,22 +3091,6 @@
         on_change: root.on_board_move(self.index)
         size_hint: app.get_dkey('sbm.sbs s_h')
         pos_hint: app.get_dkey('sbm.sbs p_h')
-    HTButton:
-        id: left_arrow
-        path: '../res/screens/buttons/ArrowLeft'
-        background_hover: '../res/screens/buttons/ArrowLeft.normal.png'
-        size_hint: app.get_dkey('sbm.la s_h')
-        pos_hint: app.get_dkey('sbm.la p_h')
-        x: root.animate_start_left
-        on_release: root.on_arrow_touch(True)
-    HTButton:
-        id: right_arrow
-        path: '../res/screens/buttons/ArrowRight'
-        background_hover: '../res/screens/buttons/ArrowRight.normal.png'
-        size_hint: app.get_dkey('sbm.ra s_h')
-        pos_hint: app.get_dkey('sbm.ra p_h')
-        x: root.animate_start_right
-        on_release: root.on_arrow_touch(False)
     LabelBase:
         id: board_name
         text: root.current_board_name
@@ -3319,6 +3297,20 @@
         opacity: 0 if root.char is None else 1 if root.char.get_rank(10).unlocked else 0
         size_hint: app.get_dkey('sbm.star_10 s_h')
         pos_hint: app.get_dkey('sbm.star_10 p_h')
+    HTButton:
+        id: left_arrow
+        path: '../res/screens/buttons/ArrowLeft'
+        size_hint: app.get_dkey('sbm.la s_h')
+        pos_hint: app.get_dkey('sbm.la p_h')
+        x: root.animate_start_left
+        on_release: root.on_arrow_touch(True)
+    HTButton:
+        id: right_arrow
+        path: '../res/screens/buttons/ArrowRight'
+        size_hint: app.get_dkey('sbm.ra s_h')
+        pos_hint: app.get_dkey('sbm.ra p_h')
+        x: root.animate_start_right
+        on_release: root.on_arrow_touch(False)
 
 <ImagePreview>:
     name: 'image_preview_unassigned' if root.char is None else 'image_preview_' + str(root.char.get_name())

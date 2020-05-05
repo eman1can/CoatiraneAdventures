@@ -25,25 +25,6 @@ class DungeonMain(Screen):
         for index in range(0, len(App.get_running_app().main.parties) - 1):
             self.ids.portfolio.add_widget(CharacterPortfolio(party=App.get_running_app().main.parties[index + 1], party_index=(index + 1), dungeon=self))
 
-    # def on_touch_hover(self, touch):
-    #     touch.push()
-    #     touch.apply_transform_2d(self.to_local)
-    #     ret = True
-    #     if self.ids.inventory_button.dispatch('on_touch_hover', touch):
-    #         pass
-    #     elif self.ids.gear_button.dispatch('on_touch_hover', touch):
-    #         pass
-    #     elif self.ids.ascend_button.dispatch('on_touch_hover', touch):
-    #         pass
-    #     elif self.ids.descend_button.dispatch('on_touch_hover', touch):
-    #         pass
-    #     elif self.ids.portfolio.dispatch('on_touch_hover', touch):
-    #         pass
-    #     else:
-    #         ret = False
-    #     touch.pop()
-    #     return ret
-
     def on_arrow_touch(self, direction):
         if direction:
             self.ids.portfolio.load_previous()

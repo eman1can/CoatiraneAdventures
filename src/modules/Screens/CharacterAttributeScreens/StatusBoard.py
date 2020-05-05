@@ -148,6 +148,8 @@ class StatusBoardManager(Screen):
 
     def ensure_creation(self):
         if self.animation_left is None or self.animation_right is None:
+            self.ids.left_arrow.disabled = True
+            self.ids.right_arrow.disabled = True
             self.animation_left = Animation(x=self.animate_start_left - self.animate_distance, duration=1) + Animation(x=self.animate_start_left, duration=0.25)
             self.animation_right = Animation(x=self.animate_start_right + self.animate_distance, duration=1) + Animation(x=self.animate_start_right, duration=0.25)
 
@@ -159,24 +161,28 @@ class StatusBoardManager(Screen):
         if self.animation_left is None:
             return
         self.animation_left.cancel(self.ids.left_arrow)
+        self.ids.left_arrow.disabled = True
         self.animation_left.repeat = False
 
     def animate_left_arrow(self):
         if self.animation_left is None:
             return
         self.animation_left.repeat = True
+        self.ids.left_arrow.disabled = False
         self.animation_left.start(self.ids.left_arrow)
 
     def unanimate_right_arrow(self):
         if self.animation_right is None:
             return
         self.animation_right.cancel(self.ids.right_arrow)
+        self.ids.right_arrow.disabled = True
         self.animation_right.repeat = False
 
     def animate_right_arrow(self):
         if self.animation_right is None:
             return
         self.animation_right.repeat = True
+        self.ids.right_arrow.disabled = False
         self.animation_right.start(self.ids.right_arrow)
 
     def on_enter(self, *args):
@@ -243,22 +249,22 @@ class GridWidget(RelativeLayout):
                 #title = Label(text="Rank " + str(self.grid.index), size_hint=(None, None), color=(0, 0, 0, 1), font_name="../res/fnt/Precious.ttf")
                 disabled = self.grid.index > rank
                 if column == 'S':
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_strength", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_strength.down.png", toggle_state=slot_unlocked)
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_strength", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_strength.down.png", toggle_state=slot_unlocked)
                     slot.bind(on_release=lambda instance: self.manager.on_release('strength', self.grid.index))
                 elif column == 'M':
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_magic", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_magic.down.png", toggle_state=slot_unlocked)
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_magic", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_magic.down.png", toggle_state=slot_unlocked)
                     slot.bind(on_release=lambda instance: self.manager.on_release('magic', self.grid.index))
                 elif column == 'E':
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_endurance", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_endurance.down.png", toggle_state=slot_unlocked)
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_endurance", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_endurance.down.png", toggle_state=slot_unlocked)
                     slot.bind(on_release=lambda instance: self.manager.on_release('endurance', self.grid.index))
                 elif column == 'D':
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_dexterity", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_dexterity.down.png", toggle_state=slot_unlocked)
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_dexterity", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_dexterity.down.png", toggle_state=slot_unlocked)
                     slot.bind(on_release=lambda instance: self.manager.on_release('dexterity', self.grid.index))
                 else:
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.0625, 0.0625), path="../res/screens/status/slot_agility", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_agility.down.png", toggle_state=slot_unlocked)
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_agility", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_agility.down.png", toggle_state=slot_unlocked)
                     slot.bind(on_release=lambda instance: self.manager.on_release('agility', self.grid.index))
                 # print(index, r, c, column, pos_hint_x, pos_hint_y)
-                pos_hint_x += 0.00625 + 0.03125
+                pos_hint_x += 0.007076 + 0.03538
                 pos_hint_y -= 0.00625 + 0.03125
 
                 slot.disabled = disabled
@@ -269,7 +275,7 @@ class GridWidget(RelativeLayout):
                 self.toffsets.append((0, 0))
                 self.add_widget(slot)
                 #self.add_widget(title)
-            pos_hint_x -= (0.00625 + 0.03125) * (len(row) + 1)
+            pos_hint_x -= (0.007076 + 0.03538) * (len(row) + 1)
             pos_hint_y += (0.00625 + 0.03125) * (len(row) - 1)
             self.slots.append(list)
             self.offsets.append(offsets)
