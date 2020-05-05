@@ -2546,7 +2546,7 @@
         id: title
         size_hint: None, None
         size: self.texture_size
-        pos_hint: {'center_y': 0.8975, 'x': 0.01}
+        pos_hint: {'center_y': 0.8975, 'x': 0.025}
         markup: True
         font_size: root.height * 0.175
         font_name: '../res/fnt/Gabriola.ttf'
@@ -2556,8 +2556,8 @@
         id: body
         valign: 'top'
         halign: 'left'
-        size_hint: 0.98, 0.73
-        pos_hint: {'x': 0.01, 'y': 0.01}
+        size_hint: 0.95, 0.73
+        pos_hint: {'x': 0.025, 'y': 0.01}
         text_size: self.size
         font_size: root.height * 0.15
         color: 0, 0, 0, 1
@@ -2600,8 +2600,8 @@
         id: body
         valign: 'top'
         halign: 'left'
-        size_hint: 0.98, 0.73
-        pos_hint: {'x': 0.01, 'y': 0.01}
+        size_hint: 0.95, 0.73
+        pos_hint: {'x': 0.025, 'y': 0.01}
         text_size: self.size
         font_size: root.height * 0.15
         color: 0, 0, 0, 1
@@ -2614,6 +2614,7 @@
         id: bar_health
         source: root.stat_bar_source
         allow_stretch: True
+        keep_ratio: False
         size_hint: app.get_dkey('ssb.bar s_h')
         pos_hint: app.get_dkey('ssb.hea.bar p_h')
     ImageBase:
@@ -2633,7 +2634,7 @@
         pos_hint: app.get_dkey('ssb.hea.lbl p_h')
     LabelBase:
         id: label_health_number
-        text: str(root.health)
+        text: str(round(root.health, 2))
         color: root.number_color
         font_name: root.font
         font_size: image_health.height
@@ -2645,6 +2646,7 @@
         id: bar_mana
         source: root.stat_bar_source
         allow_stretch: True
+        keep_ratio: False
         size_hint: app.get_dkey('ssb.bar s_h')
         pos_hint: app.get_dkey('ssb.man.bar p_h')
     ImageBase:
@@ -2664,7 +2666,7 @@
         pos_hint: app.get_dkey('ssb.man.lbl p_h')
     LabelBase:
         id: label_mana_number
-        text: str(root.mana)
+        text: str(round(root.mana, 2))
         color: root.number_color
         font_name: root.font
         font_size: image_mana.height
@@ -2676,6 +2678,7 @@
         id: bar_phy_attack
         source: root.stat_bar_source
         allow_stretch: True
+        keep_ratio: False
         size_hint: app.get_dkey('ssb.bar s_h')
         pos_hint: app.get_dkey('ssb.phy.bar p_h')
     ImageBase:
@@ -2686,7 +2689,7 @@
         pos_hint: app.get_dkey('ssb.phy.img p_h')
     LabelBase:
         id: label_phy_attack
-        text: 'P.Attack'
+        text: 'Phy. Atk'
         color: root.color
         font_name: root.font
         font_size: image_phy_attack.height
@@ -2695,7 +2698,7 @@
         pos_hint: app.get_dkey('ssb.phy.lbl p_h')
     LabelBase:
         id: label_phy_attack_number
-        text: str(root.phy_attack)
+        text: str(round(root.phy_attack, 2))
         color: root.number_color
         font_name: root.font
         font_size: image_phy_attack.height
@@ -2707,6 +2710,7 @@
         id: bar_mag_attack
         source: root.stat_bar_source
         allow_stretch: True
+        keep_ratio: False
         size_hint: app.get_dkey('ssb.bar s_h')
         pos_hint: app.get_dkey('ssb.mag.bar p_h')
     ImageBase:
@@ -2717,7 +2721,7 @@
         pos_hint: app.get_dkey('ssb.mag.img p_h')
     LabelBase:
         id: label_mag_attack
-        text: 'M.Attack'
+        text: 'Mag. Atk'
         color: root.color
         font_name: root.font
         font_size: image_mag_attack.height
@@ -2726,7 +2730,7 @@
         pos_hint: app.get_dkey('ssb.mag.lbl p_h')
     LabelBase:
         id: label_mag_attack_number
-        text: str(root.mag_attack)
+        text: str(round(root.mag_attack, 2))
         color: root.number_color
         font_name: root.font
         font_size: image_mag_attack.height
@@ -2738,6 +2742,7 @@
         id: bar_defense
         source: root.stat_bar_source
         allow_stretch: True
+        keep_ratio: False
         size_hint: app.get_dkey('ssb.bar s_h')
         pos_hint: app.get_dkey('ssb.def.bar p_h')
     ImageBase:
@@ -2757,7 +2762,7 @@
         pos_hint: app.get_dkey('ssb.def.lbl p_h')
     LabelBase:
         id: label_defense_number
-        text: str(root.defense)
+        text: str(round(root.defense, 2))
         color: root.number_color
         font_name: root.font
         font_size: image_defense.height
@@ -2770,10 +2775,13 @@
         id: background
         source: root.background_source
         allow_stretch: True
+        keep_ratio: False
     LabelBase:
         id: strength_label
         text: 'Strength'
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         size_hint: app.get_dkey('asb.lbl s_h')
         pos_hint: app.get_dkey('asb.str.lbl p_h')
@@ -2786,8 +2794,10 @@
         pos_hint: app.get_dkey('asb.str.img p_h')
     LabelBase:
         id: strength_label_number
-        text: str(root.strength)
+        text: str(round(root.strength, 2))
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         width: self.texture_size[0]
         size_hint: app.get_dkey('asb.num s_h')
@@ -2797,6 +2807,8 @@
         id: magic_label
         text: 'Magic'
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         size_hint: app.get_dkey('asb.lbl s_h')
         pos_hint: app.get_dkey('asb.mag.lbl p_h')
@@ -2809,8 +2821,10 @@
         pos_hint: app.get_dkey('asb.mag.img p_h')
     LabelBase:
         id: magic_label_number
-        text: str(root.magic)
+        text: str(round(root.magic, 2))
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         width: self.texture_size[0]
         size_hint: app.get_dkey('asb.num s_h')
@@ -2820,6 +2834,8 @@
         id: endurance_label
         text: 'Endurance'
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         size_hint: app.get_dkey('asb.lbl s_h')
         pos_hint: app.get_dkey('asb.end.lbl p_h')
@@ -2832,8 +2848,10 @@
         pos_hint: app.get_dkey('asb.end.img p_h')
     LabelBase:
         id: endurance_label_number
-        text: str(root.endurance)
+        text: str(round(root.endurance, 2))
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         width: self.texture_size[0]
         size_hint: app.get_dkey('asb.num s_h')
@@ -2843,6 +2861,8 @@
         id: dexterity_label
         text: 'Dexterity'
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         size_hint: app.get_dkey('asb.lbl s_h')
         pos_hint: app.get_dkey('asb.dex.lbl p_h')
@@ -2855,8 +2875,10 @@
         pos_hint: app.get_dkey('asb.dex.img p_h')
     LabelBase:
         id: dexterity_label_number
-        text: str(root.dexterity)
+        text: str(round(root.dexterity, 2))
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         width: self.texture_size[0]
         size_hint: app.get_dkey('asb.num s_h')
@@ -2866,6 +2888,8 @@
         id: agility_label
         text: 'Agility'
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         size_hint: app.get_dkey('asb.lbl s_h')
         pos_hint: app.get_dkey('asb.agi.lbl p_h')
@@ -2878,8 +2902,10 @@
         pos_hint: app.get_dkey('asb.agi.img p_h')
     LabelBase:
         id: agility_label_number
-        text: str(root.agility)
+        text: str(round(root.agility, 2))
         color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
         font_name: root.font
         width: self.texture_size[0]
         size_hint: app.get_dkey('asb.num s_h')
