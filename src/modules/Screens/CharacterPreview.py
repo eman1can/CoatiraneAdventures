@@ -86,9 +86,9 @@ class CharacterPreview(ScreenManager):
         # set new char, support and name values
         self.char = character
         self.support = support
-        name = self.char.get_name()
+        name = self.char.get_id()
         if self.support is not None:
-            name += '_' + self.support.get_name()
+            name += '_' + self.support.get_id()
         # update information
         if not self.is_select:
             self.parent.party_change(self, self.char, self.support)

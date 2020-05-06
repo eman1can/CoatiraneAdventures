@@ -5,6 +5,11 @@ from kivy.app import App
 from src.modules.HTButton import HTButton
 from src.modules.KivyBase.Hoverable import ScreenBase as Screen, RelativeLayoutBase as RelativeLayout
 
+from kivy.graphics import Line
+from kivy.gesture import Gesture, GestureDatabase
+from src.modules.ca_gestures import left, right
+import math
+
 
 class StatusBoardManager(Screen):
     char = ObjectProperty(None)
@@ -21,94 +26,20 @@ class StatusBoardManager(Screen):
     animate_start_left = NumericProperty(5)
     animate_start_right = NumericProperty(95)
 
+    minimum_x_distance = NumericProperty(0.0)
+    minimum_y_distance = NumericProperty(0.0)
+
     def __init__(self, **kwargs):
+        self.gdb = GestureDatabase()
+        self.gdb.add_gesture(left)
+        self.gdb.add_gesture(right)
         super().__init__(**kwargs)
 
-        # self.root = DragSnapWidgetNew(main_screen=App.get_running_app())
-        #
         sb = self.ids.status_board_screen
         ranks = self.char.get_grids()
         for rank in ranks:
-            # drag = DragWidgetObject(drag_ratio=(1 / 4))
-            # drag.root = GridWidget(self.character.get_current_rank(), grid=rank.grid)
-            # drag.root._parent = self
             sb.add_widget(GridWidget(self.char.get_current_rank(), rank.grid, manager=self))
         sb.load_slide(sb.slides[self.char.get_current_rank() - 1])
-
-    #     self.overlay_background = Image(source="../res/screens/attribute/stat_background.png", size_hint=(None, None), allow_stretch=True)
-    #     self.overlay = Image(source="../res/screens/attribute/stat_background_overlay.png", size_hint=(None, None), allow_stretch=True)
-    #
-    #     self.total_abilities = Label(text="Total Abilities", size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
-    #     self.rank_abilities = Label(text="Rank Abilities", size_hint=(None, None), color=(0, 0, 0, 1), font_name='../res/fnt/Precious.ttf')
-    #
-    #     self.total_abilities_box = AbilityStatBox(color=(0, 0, 0, 1), font='../res/fnt/Gabriola.ttf',
-    #                                               strength=self.character.get_strength(), strength_path=self.character.get_strength_rank(),
-    #                                               magic=self.character.get_magic(), magic_path=self.character.get_magic_rank(),
-    #                                               endurance=self.character.get_endurance(), endurance_path=self.character.get_endurance_rank(),
-    #                                               dexterity=self.character.get_dexterity(), dexterity_path=self.character.get_dexterity_rank(),
-    #                                               agility=self.character.get_agility(), agility_path=self.character.get_agility_rank())
-    #
-    #     self.current_abilities_box = AbilityStatBox(color=(0, 0, 0, 1), font='../res/fnt/Gabriola.ttf',
-    #                                                 strength=self.character.get_strength(self.character.get_current_rank()), strength_path=self.character.get_strength_rank(self.character.get_current_rank()),
-    #                                                 magic=self.character.get_magic(self.character.get_current_rank()), magic_path=self.character.get_magic_rank(self.character.get_current_rank()),
-    #                                                 endurance=self.character.get_endurance(self.character.get_current_rank()), endurance_path=self.character.get_endurance_rank(self.character.get_current_rank()),
-    #                                                 dexterity=self.character.get_dexterity(self.character.get_current_rank()), dexterity_path=self.character.get_dexterity_rank(self.character.get_current_rank()),
-    #                                                 agility=self.character.get_agility(self.character.get_current_rank()), agility_path=self.character.get_agility_rank(self.character.get_current_rank()))
-    #
-    #     self.add_widget(self.background)
-    #     # self.add_widget(self.root)
-    #     self.add_widget(self.overlay_background)
-    #     self.add_widget(self.overlay)
-    #
-    #     self.add_widget(self.total_abilities)
-    #     self.add_widget(self.rank_abilities)
-    #
-    #     self.add_widget(self.total_abilities_box)
-    #     self.add_widget(self.current_abilities_box)
-    #
-    #     self.add_widget(self.back_button)
-    #     self.initialized = True
-    #
-    # def on_size(self, instance, size):
-    #     if not self.initialized or self._size == size:
-    #         return
-    #     self._size = size.copy()
-    #
-    #     self.background.size = self.size
-    #
-    #     slot_size = self.height / 13
-    #     spacer = (self.height - slot_size * 11) / 13
-    #     msize = slot_size * 11 + spacer * 10
-    #     overlay_size = self.width - msize - spacer * 3, (self.width - msize - spacer * 3) * 610 / 620
-    #     overlay_pos = spacer, spacer
-    #
-    #     self.overlay_background.size = overlay_size
-    #     self.overlay_background.pos = overlay_pos
-    #
-    #     self.overlay.size = overlay_size
-    #     self.overlay.pos = overlay_pos
-    #
-    #     self.total_abilities.font_size = self.width * 0.0175
-    #     self.total_abilities.texture_update()
-    #     self.total_abilities.size = self.total_abilities.texture_size
-    #     self.total_abilities.pos = overlay_pos[0] + (overlay_size[0] - self.total_abilities.width * 2) / 3, overlay_pos[1] + overlay_size[1] - self.total_abilities.height * 1.5
-    #
-    #     self.rank_abilities.font_size = self.width * 0.0175
-    #     self.rank_abilities.texture_update()
-    #     self.rank_abilities.size = self.rank_abilities.texture_size
-    #     self.rank_abilities.pos = overlay_pos[0] + (overlay_size[0] - self.rank_abilities.width * 2) * 2 / 3 + self.total_abilities.width, overlay_pos[1] + overlay_size[1] - self.rank_abilities.height * 1.5
-    #
-    #     self.total_abilities_box.size = overlay_size[0] * 0.35, overlay_size[0] * 0.35 * 250 / 260
-    #     spacer = (overlay_size[0] - self.total_abilities_box.width * 2) / 3
-    #     self.total_abilities_box.pos = overlay_pos[0] + spacer, overlay_pos[1] + overlay_size[1] - self.total_abilities.height * 1.75 - self.total_abilities_box.height
-    #
-    #     self.current_abilities_box.size = overlay_size[0] * 0.35, overlay_size[0] * 0.35 * 250 / 260
-    #     self.current_abilities_box.pos = overlay_pos[0] + spacer * 2 + self.total_abilities_box.width, overlay_pos[1] + overlay_size[1] - self.rank_abilities.height * 1.75 - self.current_abilities_box.height
-    #
-    #     self.back_button.size = self.width * .05, self.width * .05
-    #     self.back_button.pos = 0, self.height - self.back_button.height
-
-        # self.root.size = self.size
 
     def on_skills_switch(self):
         if self.skills_switch_text == 'Skills':
@@ -218,7 +149,115 @@ class StatusBoardManager(Screen):
             raise Exception("Unknown slot releasing")
         self.total_abilities_box.reload()
         self.current_abilities_box.reload()
-        #Update item count when applicable
+
+    def simplegesture(self, name, point_list):
+        g = Gesture()
+        g.add_stroke(point_list)
+        g.normalize()
+        g.name = name
+        return g
+
+    def on_touch_down(self, touch):
+        touch.ud['start'] = (touch.x, touch.y)
+        touch.ud['line'] = Line(points=(touch.x, touch.y))
+        return super().on_touch_down(touch)
+
+    def on_touch_move(self, touch):
+        try:
+            touch.ud['line'].points += [touch.x, touch.y]
+        except (KeyError) as e:
+            pass
+        return super().on_touch_move(touch)
+
+    def on_touch_up(self, touch):
+        if 'start' in touch.ud:
+            if math.fabs(touch.x - touch.ud['start'][0]) <= self.minimum_x_distance:
+                return super().on_touch_up(touch)
+            if math.fabs(touch.y - touch.ud['start'][1]) <= self.minimum_y_distance:
+                return super().on_touch_up(touch)
+        else:
+            return super().on_touch_up(touch)
+
+        g = self.simplegesture('', list(zip(touch.ud['line'].points[::2],
+                                            touch.ud['line'].points[1::2])))
+        # print("gesture representation:", self.gdb.gesture_to_str(g))
+        # print("left:", g.get_score(left))
+        # print("right:", g.get_score(right))
+        g2 = self.gdb.find(g, minscore=0.70)
+        if g2:
+            if g2[1] == left:
+                self.goto_left()
+            if g2[1] == right:
+                self.goto_right()
+        return super().on_touch_up(touch)
+
+    def goto_left(self):
+        root = App.get_running_app().main
+        party = root.parties[root.parties[0] + 1]
+        if self.char in party:
+            index = party.index(self.char)
+            next = None
+            for x in range(index - 1, -1, -1):
+                if party[x] is not None:
+                    next = party[x]
+                    break
+            if next is None:
+                for x in range(len(party) - 1, index, -1):
+                    if party[x] is not None:
+                        next = party[x]
+                        break
+            if next is not None:
+                screen, made = root.create_screen('status_board_' + next.get_id(), next)
+                root.display_screen(screen, True, False)
+        else:
+            for screen in root.screens:
+                if screen.name == 'select_char':
+                    index = 0
+                    for char in screen.multi.data:
+                        if char['id'] == self.char.get_id():
+                            if index == 0:
+                                next = screen.multi.data[len(screen.multi.data) - 1]
+                            else:
+                                next = screen.multi.data[index - 1]
+                            screen, made = root.create_screen('status_board_' + next['id'], next['character'])
+                            root.display_screen(screen, True, False)
+                            break
+                        index += 1
+                    break
+
+    def goto_right(self):
+        root = App.get_running_app().main
+        party = root.parties[root.parties[0] + 1]
+        if self.char in party:
+            index = party.index(self.char)
+            next = None
+            for x in range(index + 1, len(party)):
+                if party[x] is not None:
+                    next = party[x]
+                    break
+            if next is None:
+                for x in range(0, index):
+                    if party[x] is not None:
+                        next = party[x]
+                        break
+            if next is not None:
+                screen, made = root.create_screen('status_board_' + next.get_id(), next)
+                root.display_screen(screen, True, False)
+        else:
+            for screen in root.screens:
+                if screen.name == 'select_char':
+                    index = 0
+                    for char in screen.multi.data:
+                        if char['id'] == self.char.get_id():
+                            if index == len(screen.multi.data) - 1:
+                                next = screen.multi.data[0]
+                            else:
+                                next = screen.multi.data[index + 1]
+                            screen, made = root.create_screen('status_board_' + next['id'], next['character'])
+                            root.display_screen(screen, True, False)
+                            break
+                        index += 1
+                    break
 
 
 class GridWidget(RelativeLayout):
