@@ -16,6 +16,7 @@ class PartyIndexer(RelativeLayout):
                             '../res/screens/buttons/party_empty.png'])
 
     def __init__(self, **kwargs):
+        self.register_event_type('on_click')
         super().__init__(**kwargs)
         self.update_sources()
 
@@ -23,3 +24,6 @@ class PartyIndexer(RelativeLayout):
         party_index = App.get_running_app().main.parties[0]
         for index in range(0, 10):
             self.sources[index] = '../res/screens/buttons/party_full.png' if party_index == index else '../res/screens/buttons/party_empty.png'
+
+    def on_click(self, index):
+        pass

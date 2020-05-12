@@ -32,6 +32,10 @@ class DungeonMain(Screen):
 
         for index in range(0, len(App.get_running_app().main.parties) - 1):
             self.ids.portfolio.add_widget(CharacterPortfolio(party=App.get_running_app().main.parties[index + 1], party_index=(index + 1), dungeon=self))
+        self.ids.indexer.bind(on_click=self.on_click)
+
+    def on_click(self, instance, index):
+        self.ids.portfolio.load_slide(self.ids.portfolio.slides[index])
 
     def on_touch_hover(self, touch):
         if self.confirm_open:
