@@ -28,3 +28,6 @@ class StatBox(RelativeLayout):
         self.mag_attack_source = "../res/screens/stats/MagicalAttack.png"
         self.defense_source = "../res/screens/stats/Defense.png"
         super().__init__(**kwargs)
+
+    def reload(self):
+        pass

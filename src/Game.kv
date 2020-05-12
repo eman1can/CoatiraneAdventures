@@ -11,6 +11,7 @@
 #:import StencilViewBase src.modules.KivyBase.Hoverable.StencilViewBase
 #:import ScrollViewBase src.modules.KivyBase.Hoverable.ScrollViewBase
 
+#:import HTButton src.modules.HTButton.HTButton
 #:import DisplayEquipmentSlot src.modules.Screens.Equipment.EquipmentSlot.DisplayEquipmentSlot
 #:import DetailEquipmentSlot src.modules.Screens.Equipment.EquipmentSlot.DetailEquipmentSlot
 #:import AbilityStatBox src.modules.Screens.CharacterAttributeScreens.AbilityStatBox.AbilityStatBox
@@ -534,6 +535,64 @@
         size_hint: 0.1, 0.1
         pos_hint: {'right': 1, 'top': 1}
         on_release: root.add_bonus()
+
+<ConfirmWidget>:
+    auto_dismiss: False
+    background: '../res/screens/stats/sort_background.png'
+    size_hint: 0.45, 0.8
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    border: [0, 0, 0, 0]
+    RelativeLayoutBase:
+        LabelBase:
+            id: title
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Descending' if root.descending else 'Ascending'
+        LabelBase:
+            id: floor_info
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.15
+            pos_hint: {'center_x': 0.5, 'top': 0.8}
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Floor ' + root.current_floor + ' -> Floor ' + root.next_floor
+        LabelBase:
+            id: recc_score_info
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.15
+            pos_hint: {'center_x': 0.5, 'top': 0.65}
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Recommended Score: ' + str(root.recc_score)
+        LabelBase:
+            id: act_score_info
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.15
+            pos_hint: {'center_x': 0.5, 'top': 0.5}
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Actual Score: ' + str(root.act_score)
+        HTButton:
+            id: cancel
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Cancel'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        HTButton:
+            id: confirm
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Confirm'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
 
 <DragSnapWidget>:
     min_move: 0.3
@@ -2436,6 +2495,20 @@
         opacity: 0 if root.char is None else 1 if root.char.get_rank(10).unlocked else 0
         size_hint: app.get_dkey('cas.star_10 s_h')
         pos_hint: app.get_dkey('cas.star_10 p_h')
+    ButtonBase:
+        text: 'ru'
+        size_hint: 0.05, 0.05
+        pos_hint: {'right': 1, 'top': 1}
+        on_release:
+            root.char.rank_up()
+            root.reload()
+    ButtonBase:
+        size_hint: 0.05, 0.05
+        text: 'rb'
+        pos_hint: {'right': 1, 'top': 0.95}
+        on_release:
+            root.char.rank_break()
+            root.reload()
 
 <StatInfoBox>:
     ImageBase:
@@ -3091,7 +3164,7 @@
         pos_hint: app.get_dkey('sbm.sbs p_h')
     DragSnapWidget:
         id: status_board_screen
-        manager: root
+        relative: True
         on_change: root.on_board_move(self.index)
         size_hint: app.get_dkey('sbm.sbs s_h')
         pos_hint: app.get_dkey('sbm.sbs p_h')
@@ -3185,7 +3258,7 @@
             size_hint: app.get_dkey('sbm.tl s_h')
             pos_hint: app.get_dkey('sbm.tl p_h')
         StatBox:
-            id: stats
+            id: total_stats_box
             font: '../res/fnt/Gabriola.ttf'
             health: 0 if root.char is None else root.char.get_health()
             mana: 0 if root.char is None else root.char.get_mana()
@@ -3969,8 +4042,82 @@
         opacity: 0
         collide_image: '../res/screens/buttons/default.collision.png'
 
+<CustomSlot>:
+    AsyncImageBase:
+        id: background
+        source: '../res/screens/status/slot_' + str(root.type) + '_background.png'
+    AsyncImageBase:
+        id: unlocked_overlay
+        source: '../res/screens/status/slot_unlocked_overlay.png'
+        opacity: 0 if root.locked else 1
+    LabelBase:
+        id: label_letter
+        text: str(root.type).capitalize()[0]
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_x': 0.5, 'top': 0.875}
+        font_size: root.height * 0.6
+        color: 0, 0, 0, 1
+        font_name: '../res/fnt/Gabriola.ttf'
+    LabelBase:
+        id: label_number
+        text: '+' + str(root.value)
+        font_size: root.height * 0.35
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_x': 0.5, 'y': 0.15}
+        color: 1,1,1, 1
+        font_name: '../res/fnt/Gabriola.ttf'
+    AsyncImageBase:
+        id: disabled_overlay
+        source: '../res/screens/status/slot_disabled_overlay.png'
+        opacity: 1 if root.disabled else 0
+    HTButton:
+        id: button
+        collide_image: '../res/screens/status/slot_collide.png'
+        opacity: 0
+        on_release: root.dispatch('on_unlock')
 
-
+<SlotConfirm>
+    auto_dismiss: False
+    background: '../res/screens/stats/sort_background.png'
+    size_hint: 0.5, 0.889
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    RelativeLayoutBase:
+        LabelBase:
+            id: label_large
+            color: 0, 0, 0, 1
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: root.text_main
+            font_size: root.height * 0.2
+            size_hint: 0.4, 0.25
+            pos_hint: {'center_x': 0.5, 'center_y': 0.85}
+        LabelBase:
+            id: label_small
+            color: 0, 0, 0, 1
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: root.text_update
+            font_size: root.height * 0.1
+            size_hint: 0.4, 0.25
+            pos_hint: {'center_x': 0.5, 'center_y': 0.675}
+        HTButton:
+            id: cancel
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Cancel'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: self.height * 0.6
+            size_hint: 0.35, 0.132
+            pos_hint: {'center_x': 0.3, 'center_y': 0.2}
+        HTButton:
+            id: confirm
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Confirm'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.dispatch('on_confirm')
+            font_size: self.height * 0.6
+            size_hint: 0.35, 0.132
+            pos_hint: {'center_x': 0.7, 'center_y': 0.2}
 
 
 

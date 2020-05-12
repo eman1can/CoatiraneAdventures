@@ -23,3 +23,6 @@ class AbilityStatBox(RelativeLayout):
     def __init__(self, **kwargs):
         self.background_source = "../res/screens/attribute/ability_overlay.png"
         super().__init__(**kwargs)
+
+    def reload(self):
+        pass

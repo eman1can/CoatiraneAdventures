@@ -7,8 +7,8 @@ class SelectScreen(Screen):
     def choose_character(self, choice):
         # print('Chosen Character: %s, adding to char Array.' % choice)
         root = App.get_running_app().main
-        testing = True
-        if (testing):
+        testing = False
+        if testing:
             for x in root.characters:
                 root.obtained_characters.append(x.get_index())
                 if x.is_support():

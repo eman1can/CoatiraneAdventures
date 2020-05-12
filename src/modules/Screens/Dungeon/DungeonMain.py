@@ -5,6 +5,7 @@ from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 from src.modules.GameMechanics import GameMechanics
 from src.modules.KivyBase.Hoverable import ScreenBase as Screen
 from src.modules.Screens.CharacterDisplay.CharacterPortfolio import CharacterPortfolio
+from src.modules.Screens.Dungeon.modals import ConfirmWidget
 
 
 class DungeonMain(Screen):
@@ -18,12 +19,24 @@ class DungeonMain(Screen):
     animate_start_left = NumericProperty(5)
     animate_start_right = NumericProperty(95)
 
+    confirm_open = BooleanProperty(False)
+
     def __init__(self, **kwargs):
+        self.confirm = ConfirmWidget()
+        self.confirm.current_floor = 'Surface'
+        self.confirm.next_floor = '1'
         super().__init__(**kwargs)
+        self.confirm.bind(on_confirm=self.do_confirm)
+        self.confirm.bind(on_dismiss=self.dismiss_confirm)
         self.ids.portfolio.dungeon = self
 
         for index in range(0, len(App.get_running_app().main.parties) - 1):
             self.ids.portfolio.add_widget(CharacterPortfolio(party=App.get_running_app().main.parties[index + 1], party_index=(index + 1), dungeon=self))
+
+    def on_touch_hover(self, touch):
+        if self.confirm_open:
+            return False
+        return self.dispatch_to_relative_children(touch)
 
     def on_arrow_touch(self, direction):
         if direction:
@@ -63,6 +76,7 @@ class DungeonMain(Screen):
         party_score = self.ids.portfolio.get_party_score()
         if self.party_score != party_score:
             self.party_score = party_score
+        self.confirm.act_score = party_score
 
     def on_widget_move(self, index):
         App.get_running_app().main.parties[0] = 0 if index is None else index
@@ -108,8 +122,32 @@ class DungeonMain(Screen):
     def close_hints(self):
         self.ids.portfolio.close_hints()
 
-
     def on_descend(self):
+        if self.level == 0:
+            root = App.get_running_app().main
+            count = 0
+            for char in root.parties[root.parties[0] + 1]:
+                if char is not None:
+                    count += 1
+            if count == 0:
+                return
+        self.confirm.descending = True
+        self.confirm.next_floor = str(self.level + 1)
+        self.confirm.open()
+        self.confirm_open = True
+
+    def do_confirm(self, *args):
+        self.confirm_open = False
+        if self.confirm.descending:
+            self.do_descend()
+        else:
+            self.do_ascend()
+
+    def dismiss_confirm(self, *args):
+        self.confirm_open = False
+
+    def do_descend(self):
+        self.confirm.current_floor = str(self.level + 1)
         self.close_hints()
         # print("Delve")
         self.level += 1
@@ -128,20 +166,29 @@ class DungeonMain(Screen):
 
     def on_ascend(self):
         if not self.ids.ascend_button.disabled:
-            self.close_hints()
-            self.level -= 1
-            self.update_buttons()
-            # # print("Ascend")
-            # if len(shownparty) > 0:
-            #     print("Ascending from dungeon")
-            #     self.level = self.level - 1
-            #     if (self.level < 2):
-            #         print('disabling ascend')
-            #         self.ids['ascend'].disabled = True
-            #         self.ids['ascend_text'].text = '[s]Ascend[/s]'
-            #     else:
-            #         print('enabling ascend')
-            #         self.ids['ascend_text'].text = 'Ascend'
-            #         self.ids['ascend'].disabled = False
-            # else:
-            #     print("not enough Characters to explore")
+            self.confirm.descending = False
+            self.confirm.next_floor = str(self.level - 1)
+            if self.level - 1 == 0:
+                self.confirm.next_floor = 'Surface'
+            self.confirm.open()
+            self.confirm_open = True
+
+    def do_ascend(self):
+        self.confirm.current_floor = str(self.level - 1)
+        self.close_hints()
+        self.level -= 1
+        self.update_buttons()
+        # # print("Ascend")
+        # if len(shownparty) > 0:
+        #     print("Ascending from dungeon")
+        #     self.level = self.level - 1
+        #     if (self.level < 2):
+        #         print('disabling ascend')
+        #         self.ids['ascend'].disabled = True
+        #         self.ids['ascend_text'].text = '[s]Ascend[/s]'
+        #     else:
+        #         print('enabling ascend')
+        #         self.ids['ascend_text'].text = 'Ascend'
+        #         self.ids['ascend'].disabled = False
+        # else:
+        #     print("not enough Characters to explore")

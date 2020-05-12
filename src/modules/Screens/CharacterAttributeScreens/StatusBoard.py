@@ -1,9 +1,8 @@
 from kivy.animation import Animation
-from kivy.properties import ObjectProperty, ListProperty, StringProperty, NumericProperty
+from kivy.properties import ObjectProperty, ListProperty, StringProperty, NumericProperty, BooleanProperty, OptionProperty
 from kivy.app import App
 
-from src.modules.HTButton import HTButton
-from src.modules.KivyBase.Hoverable import ScreenBase as Screen, RelativeLayoutBase as RelativeLayout
+from src.modules.KivyBase.Hoverable import ScreenBase as Screen, RelativeLayoutBase as RelativeLayout, ModalViewBase as ModalView, WidgetBase as Widget
 
 from kivy.graphics import Line
 from kivy.gesture import Gesture, GestureDatabase
@@ -33,13 +32,76 @@ class StatusBoardManager(Screen):
         self.gdb = GestureDatabase()
         self.gdb.add_gesture(left)
         self.gdb.add_gesture(right)
+        self.rank_loaded_max = 0
+        self.rank_loaded_min = 0
+        self.finished_loading = False
+        self.rank_current = -1
+        self.slot_confirm = SlotConfirm()
         super().__init__(**kwargs)
 
         sb = self.ids.status_board_screen
         ranks = self.char.get_grids()
-        for rank in ranks:
-            sb.add_widget(GridWidget(self.char.get_current_rank(), rank.grid, manager=self))
-        sb.load_slide(sb.slides[self.char.get_current_rank() - 1])
+        self.rank_loaded_min = self.rank_current = self.rank_loaded_max = self.char.get_current_rank() - 1
+
+        if self.rank_current != 0:
+            for index in range(0, self.rank_current - 1):
+                sb.add_widget(Widget())
+            self.rank_loaded_min = self.rank_current - 1
+            sb.add_widget(GridWidget(self.char.get_current_rank(), ranks[self.rank_current - 1].grid, manager=self))
+        sb.add_widget(GridWidget(self.char.get_current_rank(), ranks[self.rank_current].grid, manager=self))
+        if self.rank_current != 9:
+            self.rank_loaded_max = self.rank_current + 1
+            sb.add_widget(GridWidget(self.char.get_current_rank(), ranks[self.rank_current + 1].grid, manager=self))
+            for index in range(self.rank_current + 2, 10):
+                sb.add_widget(Widget())
+        self.current_board_name = f'Rank {self.rank_current + 1}\nStatus Board'
+        sb.bind(on_load_next=self.goto_next_board)
+        sb.bind(on_load_previous=self.goto_previous_board)
+        sb.anim_move_duration = 0.0
+        sb.load_slide(sb.slides[self.rank_current])
+        sb.anim_move_duration = 0.5
+        self.finished_loading = True
+
+    def goto_next_board(self, *args):
+        self.rank_current += 1
+        if self.rank_loaded_max == 9:
+            return
+        if self.rank_loaded_max > self.rank_current:
+            return
+        ranks = self.char.get_grids()
+        self.ids.status_board_screen.replace_widget(self.rank_loaded_max + 1, GridWidget(self.char.get_current_rank(), ranks[self.rank_loaded_max + 1].grid, manager=self))
+        self.rank_loaded_max += 1
+
+    def goto_previous_board(self, *args):
+        self.rank_current -= 1
+        if self.rank_loaded_min == 0:
+            return
+        if self.rank_loaded_min < self.rank_current:
+            return
+        ranks = self.char.get_grids()
+        self.ids.status_board_screen.replace_widget(self.rank_loaded_min - 1, GridWidget(self.char.get_current_rank(), ranks[self.rank_loaded_min - 1].grid, manager=self))
+        self.rank_loaded_min -= 1
+
+    def on_board_move(self, index):
+        if self.finished_loading:
+            print("in ", index, self.rank_current)
+            if index < self.rank_current:
+                self.goto_previous_board()
+            elif index > self.rank_current:
+                self.goto_next_board()
+
+        self.current_board_name = f'Rank {self.rank_current + 1}\nStatus Board'
+        if index != 0 and index != 9:
+
+            if self.animation_left is not None and not self.animation_left.repeat or self.animation_right is not None and not self.animation_right.repeat:
+                self.animation_left.cancel(self.ids.left_arrow)
+                self.animation_right.cancel(self.ids.right_arrow)
+                self.animate_left_arrow()
+                self.animate_right_arrow()
+        elif index == 0:
+            self.unanimate_left_arrow()
+        else:
+            self.unanimate_right_arrow()
 
     def on_skills_switch(self):
         if self.skills_switch_text == 'Skills':
@@ -50,19 +112,6 @@ class StatusBoardManager(Screen):
         self.ids.skill_layout.opacity = int(not bool(int(self.ids.skill_layout.opacity)))
         self.ids.skillslist.scroll_y = 1
         self.ids.skillslist.update_from_scroll()
-
-    def on_board_move(self, index):
-        self.current_board_name = f'Rank {index + 1}\nStatus Board'
-        if index != 0 and index != 9:
-            if not self.animation_left.repeat or not self.animation_right.repeat:
-                self.animation_left.cancel(self.ids.left_arrow)
-                self.animation_right.cancel(self.ids.right_arrow)
-                self.animate_left_arrow()
-                self.animate_right_arrow()
-        elif index == 0:
-            self.unanimate_left_arrow()
-        else:
-            self.unanimate_right_arrow()
 
     def on_arrow_touch(self, direction):
         if direction:
@@ -117,38 +166,44 @@ class StatusBoardManager(Screen):
         self.animation_right.start(self.ids.right_arrow)
 
     def on_enter(self, *args):
-        self.animate_arrows(self.ids.status_board_screen._get_index())
+        self.animate_arrows(self.ids.status_board_screen.index)
 
     def on_leave(self, *args):
         self.unanimate_arrows()
 
-    def on_release(self, type, slot_num):
+    def on_release(self, slot_obj, type, slot_num):
         rank = self.char.get_rank(slot_num)
+        self.slot_confirm.text_main = type[:3].capitalize() + '. +' + str(slot_obj.value)
+        stat = 0
+        if type == 'strength':
+            stat = self.char.get_strength(slot_num)
+        elif type == 'magic':
+            stat = self.char.get_magic(slot_num)
+        elif type == 'endurance':
+            stat = self.char.get_endurance(slot_num)
+        elif type == 'dexterity':
+            stat = self.char.get_dexterity(slot_num)
+        elif type == 'agility':
+            stat = self.char.get_agility(slot_num)
+        self.slot_confirm.text_update = str(stat) + ' -> ' + str(stat + slot_obj.value)
+        self.slot_confirm.callback = lambda: self.unlock_slot(slot_obj, type, rank)
+        self.slot_confirm.open()
 
+    def unlock_slot(self, slot_obj, type, rank):
+        print("unlock slot!!")
         if type == 'strength':
             rank.update_strength(rank.grid.amounts[0], True)
-            self.total_abilities_box.strength = self.char.get_strength()
-            self.current_abilities_box.strength = self.char.get_strength(self.char.get_current_rank())
         elif type == 'magic':
             rank.update_magic(rank.grid.amounts[1], True)
-            self.total_abilities_box.magic = self.char.get_magic()
-            self.current_abilities_box.magic = self.char.get_magic(self.char.get_current_rank())
         elif type == 'endurance':
             rank.update_endurance(rank.grid.amounts[2], True)
-            self.total_abilities_box.endurance = self.char.get_endurance()
-            self.current_abilities_box.endurance = self.char.get_endurance(self.char.get_current_rank())
         elif type == 'dexterity':
             rank.update_dexterity(rank.grid.amounts[3], True)
-            self.total_abilities_box.dexterity = self.char.get_dexterity()
-            self.current_abilities_box.dexterity = self.char.get_dexterity(self.char.get_current_rank())
         elif type == 'agility':
             rank.update_agility(rank.grid.amounts[4], True)
-            self.total_abilities_box.agility = self.char.get_agility()
-            self.current_abilities_box.agility = self.char.get_agility(self.char.get_current_rank())
-        else:
-            raise Exception("Unknown slot releasing")
-        self.total_abilities_box.reload()
-        self.current_abilities_box.reload()
+        slot_obj.unlock_slot()
+        self.ids.total_stats_box.reload()
+        self.ids.total_abilities_box.reload()
 
     def simplegesture(self, name, point_list):
         g = Gesture()
@@ -260,8 +315,22 @@ class StatusBoardManager(Screen):
                     break
 
 
+class SlotConfirm(ModalView):
+    text_main = StringProperty('')
+    text_update = StringProperty('')
+    callback = ObjectProperty(None, allownone=True)
+
+    def __init__(self, **kwargs):
+        self.register_event_type('on_confirm')
+        super().__init__(**kwargs)
+
+    def on_confirm(self):
+        if self.callback is not None:
+            self.dismiss()
+            self.callback()
+
+
 class GridWidget(RelativeLayout):
-#     initialized = BooleanProperty(False)
     grid = ObjectProperty(None)
     manager = ObjectProperty(None)
 
@@ -272,8 +341,8 @@ class GridWidget(RelativeLayout):
 
     overlay_background_source = StringProperty("../res/screens/attribute/stat_background.png")
     overlay_source = StringProperty("../res/screens/attribute/stat_background_overlay.png")
-#
-    def __init__(self, rank, grid, **kwargs):  # number, managerPass, rank, char, grid
+
+    def __init__(self, rank, grid, **kwargs):
         self.grid = grid
         super().__init__(**kwargs)
 
@@ -282,100 +351,38 @@ class GridWidget(RelativeLayout):
         pos_hint_x, pos_hint_y = 0.5, 0.5 + y_i * 0.03125 + y_i * 0.00625
         for r, row in enumerate(self.grid.grid):
             list = []
-            offsets = []
+            # offsets = []
             for c, column in enumerate(row):
                 slot_unlocked = self.grid.unlocked[r][c]
-                #title = Label(text="Rank " + str(self.grid.index), size_hint=(None, None), color=(0, 0, 0, 1), font_name="../res/fnt/Precious.ttf")
+                # print(self.grid.amounts)
+                # print("gi-r ", self.grid.index, rank)
                 disabled = self.grid.index > rank
                 if column == 'S':
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_strength", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_strength.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self.manager.on_release('strength', self.grid.index))
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), type='strength', locked=(not slot_unlocked), disabled=disabled, value=self.grid.amounts[0])
+                    slot.bind(on_unlock=lambda instance: self.manager.on_release(instance, 'strength', self.grid.index))
                 elif column == 'M':
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_magic", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_magic.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self.manager.on_release('magic', self.grid.index))
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625),type='magic', locked=(not slot_unlocked), disabled=disabled, value=self.grid.amounts[1])
+                    slot.bind(on_unlock=lambda instance: self.manager.on_release(instance, 'magic', self.grid.index))
                 elif column == 'E':
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_endurance", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_endurance.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self.manager.on_release('endurance', self.grid.index))
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), type='endurance', locked=(not slot_unlocked), disabled=disabled, value=self.grid.amounts[2])
+                    slot.bind(on_unlock=lambda instance: self.manager.on_release(instance, 'endurance', self.grid.index))
                 elif column == 'D':
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_dexterity", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_dexterity.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self.manager.on_release('dexterity', self.grid.index))
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625),  type='dexterity', locked=(not slot_unlocked), disabled=disabled, value=self.grid.amounts[3])
+                    slot.bind(on_unlock=lambda instance: self.manager.on_release(instance, 'dexterity', self.grid.index))
                 else:
-                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625), path="../res/screens/status/slot_agility", collide_image="../res/screens/status/slot.collision.png", background_hover_down="../res/screens/status/slot_agility.down.png", toggle_state=slot_unlocked)
-                    slot.bind(on_release=lambda instance: self.manager.on_release('agility', self.grid.index))
-                # print(index, r, c, column, pos_hint_x, pos_hint_y)
+                    slot = CustomSlot(pos_hint={'center_x': pos_hint_x, 'center_y': pos_hint_y}, size_hint=(0.07076, 0.0625),  type='agility', locked=(not slot_unlocked), disabled=disabled, value=self.grid.amounts[4])
+                    slot.bind(on_unlock=lambda instance: self.manager.on_release(instance, 'agility', self.grid.index))
                 pos_hint_x += 0.007076 + 0.03538
                 pos_hint_y -= 0.00625 + 0.03125
-
-                slot.disabled = disabled
                 list.append(slot)
                 index += 1
-                offsets.append((0, 0))
-                #self.titles.append(title)
-                self.toffsets.append((0, 0))
+                # offsets.append((0, 0))
+                # self.toffsets.append((0, 0))
                 self.add_widget(slot)
-                #self.add_widget(title)
             pos_hint_x -= (0.007076 + 0.03538) * (len(row) + 1)
             pos_hint_y += (0.00625 + 0.03125) * (len(row) - 1)
             self.slots.append(list)
-            self.offsets.append(offsets)
-
-
-
-
-#         self.initialized = True
-#
-#     def on_size(self, instance, size):
-#         if not self.initialized or self._size == size:
-#             return
-#         self._size = size.copy()
-#
-#
-#
-#         length = len(self.grid.grid[0])
-#         slot_size = self.height / 13
-#         spacer = (self.height - slot_size * 11) / 13
-#         msize = slot_size * 11 + spacer * 10
-#         tsize = slot_size * length + spacer * (length - 1)
-#         x, y = self.width - spacer - msize/2 - slot_size / 2, self.height - (self.height - tsize) / 2 - slot_size - spacer
-#
-#         for i, title in enumerate(self.titles):
-#             title.font_size = self.height * 0.1
-#             title.texture_update()
-#             title.size = title.texture_size
-#             title.pos = self.x + self.width - msize - title.width, self.y + self.height - title.height * 1.25
-#             self.toffsets[i] = (self.width - msize, self.height - title.height * 1.25)
-#
-#         for r, (row, offsets) in enumerate(zip(self.slots, self.offsets)):
-#             for c, (column, offset) in enumerate(zip(row, offsets)):
-#                 column.size = slot_size, slot_size
-#                 column.pos = self.x + x, self.y + y
-#                 self.offsets[r][c] = (x, y)
-#
-#                 x += slot_size / 2 + spacer / 2
-#                 y -= (slot_size / 2 + spacer / 2)
-#             x -= (slot_size * float(len(row) + 1) / 2 + float(spacer * (len(row) + 1)) / 2)
-#             y += slot_size * float(len(row) - 1) / 2 + spacer * float(len(row) - 1) / 2
-#
-#     def on_pos(self, instance, pos):
-#         if not self.initialized or self._pos == pos:
-#             return
-#         self._pos = pos.copy()
-#
-#         for title, offset in zip(self.titles, self.toffsets):
-#             title.pos = self.x + offset[0], self.y + offset[1]
-#
-#         for row, offsets in zip(self.slots, self.offsets):
-#             for column, offset in zip(row, offsets):
-#                 column.pos = self.x + offset[0], self.y + offset[1]
-#
-#     def on_mouse_pos(self, hover):
-#         if not self.collide_point(*hover.pos):
-#             return False
-#         for slots in self.slots:
-#             for slot in slots:
-#                 if slot.dispatch('on_mouse_pos', hover):
-#                     return True
-#         return False
+            # self.offsets.append(offsets)
 
     # def slotPressed(self, instance, touch):
     #     if instance.collide_point(*touch.pos):
@@ -491,404 +498,27 @@ class GridWidget(RelativeLayout):
     #             self.remove_widget(self.confirm)
 
 
-class CustomSlot(HTButton):
+class CustomSlot(RelativeLayout):
+
+    type = OptionProperty('strength', options=['strength', 'magic', 'endurance', 'dexterity', 'agility'])
+    locked = BooleanProperty(False)
+    value = NumericProperty(0.0)
 
     def __init__(self, **kwargs):
-        super().__init__(toggle_enabled=True, **kwargs)
+        self.register_event_type('on_unlock')
+        super().__init__(**kwargs)
 
     def _do_press(self):
-        if self.toggle_enabled:
-            self.toggle_state = True
-            if not self.state.startswith('hover'):
-                self.state = 'down' if self.toggle_state else 'normal'
-            else:
-                if self.do_hover:
-                    self.state = 'hover_down' if self.toggle_state else 'hover_normal'
-        else:
+        if not self.toggle_enabled:
             self.state = 'down'
-#
-# class StatLabel(Label):
-#
-#     def __init__(self, **kwargs):
-#         super(StatLabel, self).__init__(**kwargs)
-#         if self.font_size != 60 and self.font_size != 50:
-#             self.font_size = 40
-#
-#
-# class StatPreview(Image):
-#
-#     def __init__(self, char, rank, attacktype, totalstats, physicalattack, magicalattack, magicalpoints, health,
-#                  defense, strength, magic, agility, dexterity, endurance, **kwargs):
-#         super(StatPreview, self).__init__(**kwargs)
-#         self.source = "../res/screens/stats/TotalSingleAttackWindow.png"
-#         self.size_hint = None, None
-#         self.allow_stretch = True
-#         self.keep_ratio = False
-#         x = self.x + 10
-#         y = self.y + self.height * .85
-#         # size: app.size
-#         # allow_stretch: True
-#         # keep_ratio: False
-#         # source: 'res/TotalSingleAttackWindow'
-#
-#         if totalstats:
-#             y -= 25
-#             x += 10
-#             barwidth = 166
-#             barheight = (self.height * .85) / 5
-#             self.add_widget(Label(text="Total   Stats", color=(.1, .1, .1, 1), font_size=40, pos=(x + 55, y - 10)))
-#             y -= (barheight / 2 - 10) + 25
-#             self.add_widget(Image(source='../res/screens/stats/StatBar.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                                   allow_stretch=True))
-#             self.add_widget(Image(source='../res/screens/stats/Health.png', size=(40, 40), pos=(x + 15, y + 5)))
-#             self.healthlabel = StatLabel(text='HP')
-#             self.healthlabel.x = x + 65
-#             self.healthlabel.y = y
-#             self.healthlabelnumber = StatLabel(text='%d' % health, color=(0, 0, 0, 1))
-#             self.healthlabelnumber.x = x + 190
-#             self.healthlabelnumber.y = y
-#             self.healthlabeldiff = StatLabel(text='(+ 0)', color=(.3, .4, .6, 1))
-#             self.healthlabeldiff.x = x + 310
-#             self.healthlabeldiff.y = y
-#             self.add_widget(self.healthlabelnumber)
-#             self.add_widget(self.healthlabeldiff)
-#             self.add_widget(self.healthlabel)
-#
-#             y -= (barheight + 5)
-#             self.add_widget(Image(source='../res/screens/stats/StatBar.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                                   allow_stretch=True))
-#             self.add_widget(Image(source='../res/screens/stats/Mana.png', size=(40, 40), pos=(x + 15, y + 5)))
-#             self.magicalpointlabel = StatLabel(text='MP')
-#             self.magicalpointlabel.x = x + 65
-#             self.magicalpointlabel.y = y
-#             self.magicalpointlabelnumber = StatLabel(text='%d' % magicalpoints, color=(0, 0, 0, 1))
-#             self.magicalpointlabelnumber.x = x + 190
-#             self.magicalpointlabelnumber.y = y
-#             self.magicalpointlabeldiff = StatLabel(text='(+0)', color=(.3, .4, .6, 1))
-#             self.magicalpointlabeldiff.x = x + 310
-#             self.magicalpointlabeldiff.y = y
-#             self.add_widget(self.magicalpointlabelnumber)
-#             self.add_widget(self.magicalpointlabeldiff)
-#             self.add_widget(self.magicalpointlabel)
-#
-#             y -= (barheight + 5)
-#             if attacktype == 1:
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.add_widget(Image(source='../res/screens/stats/PhysicalAttack.png', size=(40, 40), pos=(x + 15, y + 5)))
-#                 self.attacklabel = StatLabel(text='P.Atk')
-#                 self.attacklabel.x = x + 65
-#                 self.attacklabel.y = y
-#                 self.attacklabelnumber = StatLabel(text='%d' % physicalattack, color=(0, 0, 0, 1))
-#                 self.attacklabelnumber.x = x + 190
-#                 self.attacklabelnumber.y = y
-#                 self.attacklabeldiff = StatLabel(text='(+0)', color=(.3, .4, .6, 1))
-#                 self.attacklabeldiff.x = x + 310
-#                 self.attacklabeldiff.y = y
-#                 self.add_widget(self.attacklabelnumber)
-#                 self.add_widget(self.attacklabeldiff)
-#                 self.add_widget(self.attacklabel)
-#             elif attacktype == 2:
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.add_widget(Image(source='../res/screens/stats/MagicalAttack.png', size=(40, 40), pos=(x + 15, y + 5)))
-#                 self.attacklabel2 = StatLabel(text='M.Atk')
-#                 self.attacklabel2.x = x + 65
-#                 self.attacklabel2.y = y
-#                 self.attacklabel2number = StatLabel(text='%d' % magicalattack, color=(0, 0, 0, 1))
-#                 self.attacklabel2number.x = x + 190
-#                 self.attacklabel2number.y = y
-#                 self.attacklabel2diff = StatLabel(text='(+0)', color=(.3, .4, .6, 1))
-#                 self.attacklabel2diff.x = x + 310
-#                 self.attacklabel2diff.y = y
-#                 self.add_widget(self.attacklabel2number)
-#                 self.add_widget(self.attacklabel2diff)
-#                 self.add_widget(self.attacklabel2)
-#             else:
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.add_widget(Image(source='../res/screens/stats/PhysicalAttack.png', size=(40, 40), pos=(x + 15, y + 5)))
-#                 self.attacklabel = StatLabel(text='P.Atk')
-#                 self.attacklabel.x = x + 65
-#                 self.attacklabel.y = y
-#                 self.attacklabelnumber = StatLabel(text='%d' % physicalattack, color=(0, 0, 0, 1))
-#                 self.attacklabelnumber.x = x + 190
-#                 self.attacklabelnumber.y = y
-#                 self.attacklabeldiff = StatLabel(text='(+0)', color=(.3, .4, .6, 1))
-#                 self.attacklabeldiff.x = x + 310
-#                 self.attacklabeldiff.y = y
-#                 self.add_widget(self.attacklabelnumber)
-#                 self.add_widget(self.attacklabeldiff)
-#                 self.add_widget(self.attacklabel)
-#                 y -= (barheight + 5)
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.add_widget(Image(source='../res/screens/stats/magicalAttack.png', size=(40, 40), pos=(x + 15, y + 5)))
-#                 self.attacklabel2 = StatLabel(text='M.Atk')
-#                 self.attacklabel2.x = x + 65
-#                 self.attacklabel2.y = y
-#                 self.attacklabel2number = StatLabel(text='%d' % magicalattack, color=(0, 0, 0, 1))
-#                 self.attacklabel2number.x = x + 190
-#                 self.attacklabel2number.y = y
-#                 self.attacklabel2diff = StatLabel(text='(+0)', color=(.3, .4, .6, 1))
-#                 self.attacklabel2diff.x = x + 310
-#                 self.attacklabel2diff.y = y
-#                 self.add_widget(self.attacklabel2number)
-#                 self.add_widget(self.attacklabel2diff)
-#                 self.add_widget(self.attacklabel2)
-#             y -= (barheight + 5)
-#             self.add_widget(Image(source='../res/screens/stats/StatBar.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                                   allow_stretch=True))
-#             self.add_widget(Image(source='../res/screens/stats/Defense.png', size=(40, 40), pos=(x + 15, y + 5)))
-#             self.defenselabel = StatLabel(text='Def')
-#             self.defenselabel.x = x + 65
-#             self.defenselabel.y = y
-#             self.defenselabelnumber = StatLabel(text='%d' % defense, color=(0, 0, 0, 1))
-#             self.defenselabelnumber.x = x + 190
-#             self.defenselabelnumber.y = y
-#
-#             self.defenselabeldiff = StatLabel(text='(+0)', color=(.3, .4, .6, 1))
-#             self.defenselabeldiff.x = x + 310
-#             self.defenselabeldiff.y = y
-#             self.add_widget(self.defenselabelnumber)
-#             self.add_widget(self.defenselabeldiff)
-#             self.add_widget(self.defenselabel)
-#             y += 200
-#             x += 470
-#             barwidth = 330
-#             barheight = 60
-#             if attacktype == 1:
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.strengthlabel = StatLabel(text='Str.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#                 # print(str(strength))
-#                 # print(str(char.ranks[9].strengthMax))
-#                 self.strengthgrade = Image(source=Scale.getScaleAsImagePath(strength, char.totalCaps[0]),
-#                                            pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#                 self.strengthnumber = StatLabel(text='%d' % strength, font_size=50, color=(0, 0, 0, 1),
-#                                                 pos=(x + 180, y))
-#                 self.add_widget(self.strengthgrade)
-#                 self.add_widget(self.strengthlabel)
-#                 self.add_widget(self.strengthnumber)
-#             elif attacktype == 2:
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.magiclabel = StatLabel(text='Mag.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#                 self.magicgrade = Image(source=Scale.getScaleAsImagePath(magic, char.totalCaps[1]),
-#                                         pos=(x + 90, y + 10),
-#                                         height=40, keep_ratio=True, allow_stretch=True)
-#                 self.magicnumber = StatLabel(text='%d' % magic, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#                 self.add_widget(self.magicgrade)
-#                 self.add_widget(self.magiclabel)
-#                 self.add_widget(self.magicnumber)
-#             else:
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.strengthlabel = StatLabel(text='Str.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#                 self.strengthgrade = Image(source=Scale.getScaleAsImagePath(strength, char.totalCaps[0]),
-#                                            pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#                 self.strengthnumber = StatLabel(text='%d' % strength, font_size=50, color=(0, 0, 0, 1),
-#                                                 pos=(x + 180, y))
-#                 self.add_widget(self.strengthgrade)
-#                 self.add_widget(self.strengthlabel)
-#                 self.add_widget(self.strengthnumber)
-#                 y -= 70
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.magiclabel = StatLabel(text='Mag.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#                 self.magicgrade = Image(source=Scale.getScaleAsImagePath(magic, char.totalCaps[1]),
-#                                         pos=(x + 90, y + 10),
-#                                         height=40, keep_ratio=True, allow_stretch=True)
-#                 self.magicnumber = StatLabel(text='%d' % magic, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#                 self.add_widget(self.magicgrade)
-#                 self.add_widget(self.magiclabel)
-#                 self.add_widget(self.magicnumber)
-#             y -= 70
-#             self.add_widget(Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                                   allow_stretch=True))
-#             self.agilitylabel = StatLabel(text='Agi.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#             self.agilitygrade = Image(source=Scale.getScaleAsImagePath(agility, char.totalCaps[2]),
-#                                       pos=(x + 90, y + 10),
-#                                       height=40, keep_ratio=True, allow_stretch=True)
-#             self.agilitynumber = StatLabel(text='%d' % agility, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#             self.add_widget(self.agilitygrade)
-#             self.add_widget(self.agilitylabel)
-#             self.add_widget(self.agilitynumber)
-#             y -= 70
-#             self.add_widget(Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                                   allow_stretch=True))
-#             self.dexteritylabel = StatLabel(text='Dex.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#             self.dexteritygrade = Image(source=Scale.getScaleAsImagePath(dexterity, char.totalCaps[3]),
-#                                         pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#             self.dexteritynumber = StatLabel(text='%d' % dexterity, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#             self.add_widget(self.dexteritygrade)
-#             self.add_widget(self.dexteritylabel)
-#             self.add_widget(self.dexteritynumber)
-#             y -= 70
-#             self.add_widget(Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                                   allow_stretch=True))
-#             self.endurancelabel = StatLabel(text='End.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#             self.endurancegrade = Image(source=Scale.getScaleAsImagePath(endurance, char.totalCaps[4]),
-#                                         pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#             self.endurancenumber = StatLabel(text='%d' % endurance, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#             self.add_widget(self.endurancegrade)
-#             self.add_widget(self.endurancelabel)
-#             self.add_widget(self.endurancenumber)
-#             y += 200
-#             x += 470
-#             # self.healthLvlBar = ProgressBar(max = 120, value = 0, pos =(x, y), width = 200, height =25)
-#             # self.mpLvlBar = ProgressBar(max = 120, value = 0, pos= (x,y), width = 200, height = 25)
-#             # Health Exp Bar
-#             self.healthLvlBar = ProgressBar(1, (275, 25))
-#             self.healthLvlBar.max = char.ranks[char.currentRank - 1].expHpCap
-#             self.healthLvlBar.value = char.ranks[char.currentRank - 1].exphealth
-#             self.healthLvlBar.pos = 890, 190
-#             self.healthLvlTitle = Label(text='HP', font_size=30, color=(0, 0, 0, 1), size=(50, 20), pos=(860, 200))
-#             self.healthLvlTitle.size = self.healthLvlTitle.texture_size
-#             self.add_widget(self.healthLvlBar)
-#             self.add_widget(self.healthLvlTitle)
-#             # Mp Exp Bar
-#             self.mpLvlBar = ProgressBar(2, (275, 25))
-#             self.mpLvlBar.max = char.ranks[char.currentRank - 1].expMpCap
-#             self.mpLvlBar.value = char.ranks[char.currentRank - 1].expmagicalpoints
-#             self.mpLvlBar.pos = 890, 160
-#             self.mpLvlTitle = Label(text='MP', font_size=30, color=(0, 0, 0, 1), size=(50, 20), pos=(860, 170))
-#             self.mpLvlTitle.size = self.mpLvlTitle.texture_size
-#             self.add_widget(self.mpLvlBar)
-#             self.add_widget(self.mpLvlTitle)
-#             # Def Exp Bar
-#             self.defLvlBar = ProgressBar(0, (275, 25))
-#             self.defLvlBar.max = char.ranks[char.currentRank - 1].expDefCap
-#             self.defLvlBar.value = char.ranks[char.currentRank - 1].expdefense
-#             self.defLvlBar.pos = 890, 130
-#             self.defLvlTitle = Label(text='Def', font_size=30, color=(0, 0, 0, 1), size=(50, 20), pos=(860, 140))
-#             self.defLvlTitle.size = self.defLvlTitle.texture_size
-#             self.add_widget(self.defLvlBar)
-#             self.add_widget(self.defLvlTitle)
-#             # Str Exp Bar
-#             self.strLvlBar = ProgressBar(1, (275, 25))
-#             self.strLvlBar.max = char.ranks[char.currentRank - 1].expStrCap
-#             self.strLvlBar.value = char.ranks[char.currentRank - 1].expstrength
-#             self.strLvlBar.pos = 890, 100
-#             self.strLvlTitle = Label(text='Str', font_size=30, color=(0, 0, 0, 1), size=(50, 20), pos=(860, 110))
-#             self.strLvlTitle.size = self.strLvlTitle.texture_size
-#             self.add_widget(self.strLvlBar)
-#             self.add_widget(self.strLvlTitle)
-#             # Agi Exp Bar
-#             self.agiLvlBar = ProgressBar(3, (275, 25))
-#             self.agiLvlBar.max = char.ranks[char.currentRank - 1].expAgiCap
-#             self.agiLvlBar.value = char.ranks[char.currentRank - 1].expagility
-#             self.agiLvlBar.pos = 890, 70
-#             self.agiLvlTitle = Label(text='Agi', font_size=30, color=(0, 0, 0, 1), size=(50, 20), pos=(860, 80))
-#             self.agiLvlTitle.size = self.agiLvlTitle.texture_size
-#             self.add_widget(self.agiLvlBar)
-#             self.add_widget(self.agiLvlTitle)
-#             # Dex Exp Bar
-#             self.dexLvlBar = ProgressBar(4, (275, 25))
-#             self.dexLvlBar.max = char.ranks[char.currentRank - 1].expDexCap
-#             self.dexLvlBar.value = char.ranks[char.currentRank - 1].expdexterity
-#             self.dexLvlBar.pos = 890, 40
-#             self.dexLvlTitle = Label(text='Dex', font_size=30, color=(0, 0, 0, 1), size=(50, 20), pos=(860, 50))
-#             self.dexLvlTitle.size = self.dexLvlTitle.texture_size
-#             self.add_widget(self.dexLvlBar)
-#             self.add_widget(self.dexLvlTitle)
-#             # End Exp Bar
-#             self.endLvlBar = ProgressBar(5, (275, 25))
-#             self.endLvlBar.max = char.ranks[char.currentRank - 1].expEndCap
-#             self.endLvlBar.value = char.ranks[char.currentRank - 1].expendurance
-#             self.endLvlBar.pos = 890, 10
-#             self.endLvlTitle = Label(text='End', font_size=30, color=(0, 0, 0, 1), size=(50, 20), pos=(860, 20))
-#             self.endLvlTitle.size = self.endLvlTitle.texture_size
-#             self.add_widget(self.endLvlBar)
-#             self.add_widget(self.endLvlTitle)
-#             # self.add_widget(self.mpLvlBar)
-#         if not totalstats:
-#             y -= 50
-#             self.add_widget(Label(text="Rank Attributes", color=(.1, .1, .1, 1), font_size=40, pos=(x + 90, y + 20)))
-#             barwidth = 330
-#             barheight = 60
-#             y -= 15
-#             if attacktype == 1:
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.strengthlabel = StatLabel(text='Str.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#                 self.strengthgrade = Image(source=Scale.getScaleAsImagePath(strength, char.ranks[rank - 1].strengthMax),
-#                                            pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#                 self.strengthnumber = StatLabel(text='%d' % strength, font_size=50, color=(0, 0, 0, 1),
-#                                                 pos=(x + 180, y))
-#                 self.add_widget(self.strengthgrade)
-#                 self.add_widget(self.strengthlabel)
-#                 self.add_widget(self.strengthnumber)
-#             elif attacktype == 2:
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.magiclabel = StatLabel(text='Mag.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#                 self.magicgrade = Image(source=Scale.getScaleAsImagePath(magic, char.ranks[rank - 1].magicMax),
-#                                         pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#                 self.magicnumber = StatLabel(text='%d' % magic, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#                 self.add_widget(self.magicgrade)
-#                 self.add_widget(self.magiclabel)
-#                 self.add_widget(self.magicnumber)
-#             else:
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.strengthlabel = StatLabel(text='Str.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#                 self.strengthgrade = Image(source=Scale.getScaleAsImagePath(strength, char.ranks[rank - 1].strengthMax),
-#                                            pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#                 self.strengthnumber = StatLabel(text='%d' % strength, font_size=50, color=(0, 0, 0, 1),
-#                                                 pos=(x + 180, y))
-#                 self.add_widget(self.strengthgrade)
-#                 self.add_widget(self.strengthlabel)
-#                 self.add_widget(self.strengthnumber)
-#                 y -= 70
-#                 self.add_widget(
-#                     Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                           allow_stretch=True))
-#                 self.magiclabel = StatLabel(text='Mag.', font_size=60, color=(0, 0, 0, 1), pos=(x + 20, y))
-#                 self.magicgrade = Image(source=Scale.getScaleAsImagePath(magic, char.ranks[rank - 1].magicMax),
-#                                         pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#                 self.magicnumber = StatLabel(text='%d' % magic, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#                 self.add_widget(self.magicgrade)
-#                 self.add_widget(self.magiclabel)
-#                 self.add_widget(self.magicnumber)
-#             y -= 70
-#             self.add_widget(Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                                   allow_stretch=True))
-#             self.agilitylabel = StatLabel(text='Agi.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#             self.agilitygrade = Image(source=Scale.getScaleAsImagePath(agility, char.ranks[rank - 1].agilityMax),
-#                                       pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#             self.agilitynumber = StatLabel(text='%d' % agility, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#             self.add_widget(self.agilitygrade)
-#             self.add_widget(self.agilitylabel)
-#             self.add_widget(self.agilitynumber)
-#             y -= 70
-#             self.add_widget(Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                                   allow_stretch=True))
-#             self.dexteritylabel = StatLabel(text='Dex.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#             self.dexteritygrade = Image(source=Scale.getScaleAsImagePath(dexterity, char.ranks[rank - 1].dexterityMax),
-#                                         pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#             self.dexteritynumber = StatLabel(text='%d' % dexterity, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#             self.add_widget(self.dexteritygrade)
-#             self.add_widget(self.dexteritylabel)
-#             self.add_widget(self.dexteritynumber)
-#             y -= 70
-#             self.add_widget(Image(source='../res/screens/stats/StatBar2.png', size=(barwidth, barheight), pos=(x, y), keep_ratio=False,
-#                                   allow_stretch=True))
-#             self.endurancelabel = StatLabel(text='End.', font_size=50, color=(0, 0, 0, 1), pos=(x + 20, y))
-#             self.endurancegrade = Image(source=Scale.getScaleAsImagePath(endurance, char.ranks[rank - 1].enduranceMax),
-#                                         pos=(x + 90, y + 10), height=40, keep_ratio=True, allow_stretch=True)
-#             self.endurancenumber = StatLabel(text='%d' % endurance, font_size=50, color=(0, 0, 0, 1), pos=(x + 180, y))
-#             self.add_widget(self.endurancegrade)
-#             self.add_widget(self.endurancelabel)
-#             self.add_widget(self.endurancenumber)
+        else:
+            if self.locked:
+                self.dispatch('on_unlock')
+
+    def on_unlock(self, *args):
+        pass
+
+    def unlock_slot(self):
+        if not self.locked:
+            return
+        self.locked = False

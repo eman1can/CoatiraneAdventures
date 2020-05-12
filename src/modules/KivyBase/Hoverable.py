@@ -71,16 +71,14 @@ class CarouselBase(HoverBehaviour, Carousel):
     def on_touch_hover(self, touch):
         if not self.collide_point(*touch.pos):
             return False
-        if self.current_slide.dispatch('on_touch_hover', touch):
-            return True
-        return False
+        return self.current_slide.dispatch('on_touch_hover', touch)
 
     def on_touch_down(self, touch):
         if not self.collide_point(*touch.pos):
             touch.ud[self._get_uid('cavoid')] = True
             return
         if self.disabled:
-            return True
+            return False
         if self._touch:
             return super(Carousel, self).on_touch_down(touch)
         Animation.cancel_all(self)

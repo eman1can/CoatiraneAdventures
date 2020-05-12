@@ -84,7 +84,6 @@ class HTButton(HoverBehaviour, Widget):
                 self.state = 'down'
             else:
                 self.state = 'normal'
-
         else:
             self.state = 'normal'
 
@@ -180,19 +179,11 @@ class HTButton(HoverBehaviour, Widget):
             self.texture = old_texture
 
     def on_disabled(self, instance, disabled):
-        if not self.initialized:
-            return
-        if self.state == 'hover_normal' or self.state == 'hover_down':
-            raise Exception("Change ya timing dude!")
-        else:
-            if self.state == 'normal':
-                self.texture = Image(self.background_disabled_normal).texture if self.disabled else Image(self.background_normal).texture
-            else:
-                self.texture = Image(self.background_disabled_down).texture if self.disabled else Image(self.background_down).texture
+        self.on_state(None, self.state)
 
     def _do_press(self):
         if not self.toggle_enabled:
-                self.state = 'down'
+            self.state = 'down'
         else:
             self.toggle_state = not self.toggle_state
 

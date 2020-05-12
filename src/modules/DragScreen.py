@@ -1,13 +1,19 @@
-from kivy.properties import ObjectProperty, BooleanProperty
-from src.modules.KivyBase.Hoverable import CarouselBase as Carousel, HoverBehaviour
+from kivy.animation import Animation
+from kivy.clock import Clock
+from kivy.properties import ObjectProperty, BooleanProperty, NumericProperty
+from src.modules.KivyBase.Hoverable import CarouselBase as Carousel
 
 
 class DragSnapWidget(Carousel):
     dungeon = ObjectProperty(None)
     locked = BooleanProperty(False)
 
+    relative = BooleanProperty(False)
+
     def __init__(self, **kwargs):
         self.register_event_type('on_change')
+        self.register_event_type('on_load_next')
+        self.register_event_type('on_load_previous')
         super().__init__(**kwargs)
 
     def check_current(self, instance):
@@ -35,8 +41,59 @@ class DragSnapWidget(Carousel):
     def on_current_slide(self, *args):
         self.dispatch('on_change', self.index)
 
+    def replace_widget(self, index, widget):
+        if index >= len(self.slides):
+            return False
+        slide = self.slides[index]
+        container = slide.parent
+        container.remove_widget(slide)
+        container.add_widget(widget)
+        self.slides[index] = widget
+        return True
+
     def on_change(self, *args):
         pass
+
+    def on_load_next(self):
+        pass
+
+    def on_load_previous(self):
+        pass
+
+    def on_touch_down(self, touch):
+        if not self.collide_point(*touch.pos):
+            touch.ud[self._get_uid('cavoid')] = True
+            return
+        if self.disabled:
+            return False
+        if self._touch:
+            touch.push()
+            touch.apply_transform_2d(lambda x, y: self.to_local(x, y, self.relative))
+            ret =  super(Carousel, self).on_touch_down(touch)
+            touch.pop()
+            return ret
+        Animation.cancel_all(self)
+        self._touch = touch
+        uid = self._get_uid()
+        touch.grab(self)
+        touch.ud[uid] = {
+            'mode': 'unknown',
+            'time': touch.time_start}
+        self._change_touch_mode_ev = Clock.schedule_once(
+            self._change_touch_mode, self.scroll_timeout / 1000.)
+        self.touch_mode_change = False
+        return True
+
+    def on_touch_hover(self, touch):
+        if not self.collide_point(*touch.pos):
+            return False
+        touch.push()
+        touch.apply_transform_2d(lambda x, y: self.to_local(x, y, self.relative))
+        if self.current_slide.dispatch('on_touch_hover', touch):
+            touch.pop()
+            return True
+        touch.pop()
+        return False
 
     def load_next(self, mode='next'):
         '''Animate to the next slide.
