@@ -5,7 +5,7 @@ from kivy.properties import ObjectProperty, NumericProperty, BooleanProperty
 from src.modules.GameMechanics import GameMechanics
 from src.modules.KivyBase.Hoverable import ScreenBase as Screen
 from src.modules.Screens.CharacterDisplay.CharacterPortfolio import CharacterPortfolio
-from src.modules.Screens.Dungeon.modals import ConfirmWidget
+from src.modules.Screens.Dungeon.modals import DMConfirmWidget
 
 
 class DungeonMain(Screen):
@@ -22,7 +22,7 @@ class DungeonMain(Screen):
     confirm_open = BooleanProperty(False)
 
     def __init__(self, **kwargs):
-        self.confirm = ConfirmWidget()
+        self.confirm = DMConfirmWidget()
         self.confirm.current_floor = 'Surface'
         self.confirm.next_floor = '1'
         super().__init__(**kwargs)

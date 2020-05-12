@@ -7,8 +7,8 @@ from src.modules.Screens.NewGameScreen import NewGameScreen
 from src.modules.Screens.SelectScreen import SelectScreen
 from src.modules.Screens.TownScreen import TownScreen
 from src.modules.Screens.Dungeon.DungeonMain import DungeonMain
-from src.modules.Screens.TavernMain import TavernMain
-from src.modules.Screens.RecruitPreview import RecruitPreview
+from src.modules.Screens.Tavern.TavernMain import TavernMain
+from src.modules.Screens.Tavern.RecruitPreview import RecruitPreview
 from src.modules.Screens.CharacterDisplay.CharacterSelector import CharacterSelector
 from src.modules.Screens.CharacterAttributeScreens.StatusBoard import StatusBoardManager
 from src.modules.Screens.ImagePreview import ImagePreview

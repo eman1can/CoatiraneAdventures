@@ -428,6 +428,127 @@
             size_hint: app.get_dkey('nrw.ok s_h')
             pos_hint: app.get_dkey('nrw.ok p_h')
 
+<TMConfirmWidget>:
+    auto_dismiss: False
+    background: '../res/screens/stats/sort_background.png'
+    size_hint: 0.45, 0.8
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    border: [0, 0, 0, 0]
+    RelativeLayoutBase:
+        LabelBase:
+            id: title
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Are you sure?'
+        HTButton:
+            id: cancel
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Cancel'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        HTButton:
+            id: confirm
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Confirm'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+
+<TMCancelWidget>:
+    auto_dismiss: False
+    background: '../res/screens/stats/sort_background.png'
+    size_hint: 0.45, 0.8
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    border: [0, 0, 0, 0]
+    RelativeLayoutBase:
+        LabelBase:
+            id: title
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Are you sure?'
+        LabelBase:
+            id: warning
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.5
+            halign: 'center'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'You will not gain\nthis character.'
+        HTButton:
+            id: cancel
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Cancel'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        HTButton:
+            id: confirm
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Confirm'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+
+<TMRollWidget>:
+    auto_dismiss: False
+    background: '../res/screens/stats/sort_background.png'
+    size_hint: 0.45, 0.8
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    border: [0, 0, 0, 0]
+    RelativeLayoutBase:
+        LabelBase:
+            id: title
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Are you sure?'
+        LabelBase:
+            id: warning
+            font_size: root.height * 0.075
+            color: 0, 0, 0, 1
+            opacity: 1 if root.show_warning else 0
+            size_hint: 1, 0.25
+            halign: 'center'
+            pos_hint: {'center_x': 0.5, 'top': 0.8}
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'You will not gain\nthis character.'
+        HTButton:
+            id: cancel
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Cancel'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        HTButton:
+            id: confirm
+            font_name: '../res/fnt/Gabriola.ttf'
+            text: 'Confirm'
+            path: '../res/screens/buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+
 <DungeonMain>:
     name: 'dungeon_main'
     animate_distance: app.get_dkey('dm.a ad', self.width)
@@ -536,7 +657,7 @@
         pos_hint: {'right': 1, 'top': 1}
         on_release: root.add_bonus()
 
-<ConfirmWidget>:
+<DMConfirmWidget>:
     auto_dismiss: False
     background: '../res/screens/stats/sort_background.png'
     size_hint: 0.45, 0.8

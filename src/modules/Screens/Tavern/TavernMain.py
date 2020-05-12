@@ -1,22 +1,41 @@
 import random
 from kivy.app import App
 from kivy.core.audio import SoundLoader
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.screenmanager import SwapTransition
 
 from src.modules.KivyBase.Hoverable import ScreenBase as Screen
-from src.modules.NoRecruit import NoRecruitWidget
+from src.modules.Screens.Tavern.NoRecruit import NoRecruitWidget
+from src.modules.Screens.Tavern.modals import TMRollWidget
 
 
 class TavernMain(Screen):
     background_texture = ObjectProperty(None, allownone=True)
 
+    modal_open = BooleanProperty(False)
+
     def __init__(self, **kwargs):
         self.sound = SoundLoader.load('../res/snd/recruit.wav')
         self.no_recruits = NoRecruitWidget()
+        self.roll_modal = TMRollWidget()
+        self.roll_modal.show_warning = False
         super().__init__(**kwargs)
+        self.roll_modal.bind(on_confirm=self.do_recruit)
+        self.roll_modal.bind(on_dismiss=self.dismiss_modal)
 
-    def on_recruit(self):
+    def on_touch_hover(self, touch):
+        if self.modal_open:
+            return False
+        return self.dispatch_to_relative_children(touch)
+
+    def dismiss_modal(self, *args):
+        self.modal_open = False
+
+    def on_recruit(self, *args):
+        self.modal_open = True
+        self.roll_modal.open()
+
+    def do_recruit(self, *args):
         root = App.get_running_app().main
         if len(root.obtained_characters) == len(root.characters):
             self.no_recruits.open()

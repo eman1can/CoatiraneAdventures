@@ -2,7 +2,7 @@ from src.modules.KivyBase.Hoverable import ModalViewBase as ModalView
 from kivy.properties import BooleanProperty, NumericProperty, StringProperty
 
 
-class ConfirmWidget(ModalView):
+class DMConfirmWidget(ModalView):
     descending = BooleanProperty(False)
     current_floor = StringProperty('')
     next_floor = StringProperty('')
