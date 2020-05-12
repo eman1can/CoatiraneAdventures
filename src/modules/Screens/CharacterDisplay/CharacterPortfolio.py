@@ -69,9 +69,16 @@ class CharacterPortfolio(RelativeLayout):
         # -> move character
         # if selecting a character that is already selected and has a support
         # -> move character and support
+        before = True
         for preview in self.previews:
             if preview != dest:
                 if preview.char == character:
+                    if before:
+                        preview.transition.direction = 'right'
+                        dest.transition.direction = 'right'
+                    else:
+                        preview.transition.direction = 'left'
+                        dest.transition.direction = 'left'
                     if dest.char is not None:
                         support = preview.support
                         preview.set_char_screen(False, dest.char, dest.support)
@@ -80,8 +87,16 @@ class CharacterPortfolio(RelativeLayout):
                         preview.set_empty()
                         return None
                 elif support is not None and preview.support == support:
+                    if before:
+                        preview.transition.direction = 'right'
+                        dest.transition.direction = 'right'
+                    else:
+                        preview.transition.direction = 'left'
+                        dest.transition.direction = 'left'
                     preview.set_char_screen(False, preview.char, dest.support)
                     return None
+            else:
+                before = False
 
     def reload(self):
         for preview in self.previews:

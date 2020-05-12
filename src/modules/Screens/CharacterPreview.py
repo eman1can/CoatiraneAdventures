@@ -18,6 +18,7 @@ class CharacterPreview(ScreenManager):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.transition.direction = 'left'
 
         if self.char is None:
             self.set_empty()
@@ -97,7 +98,7 @@ class CharacterPreview(ScreenManager):
         # transition to existing screen if it exists
         for child in self.screens:
             if child.name == name:
-                self.transition.direction = 'left'
+                # self.transition.direction = 'left'
                 self.current = child.name
                 if old_screen is not None:
                     if old_screen.name != 'empty':
@@ -108,7 +109,7 @@ class CharacterPreview(ScreenManager):
         preview.size = self.size
         preview.preview.pos = (0, 0)# Force update pos, since the screen will never update pos after initialization. Only needed for new screens.
         self.add_widget(preview)
-        self.transition.direction = 'left'
+        # self.transition.direction = 'left'
         self.current = preview.name
         if old_screen is not None:
             if old_screen.name != 'empty':
