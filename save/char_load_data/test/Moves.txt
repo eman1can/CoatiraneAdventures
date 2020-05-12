@@ -1,4 +1,3 @@
-//moveName, MoveCover, MoveCoverName, MoveType, MovePower, EffectNum, MoveEffects
 Drill,False,0,0,Mid,1,Stun,.5
 Rapture,False,0,0,Mid,1,Charm,.6
 Fiendfyre,False,0,0,High,2,Burn,.4,Stun,.2

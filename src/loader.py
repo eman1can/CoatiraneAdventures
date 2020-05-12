@@ -114,10 +114,14 @@ class CALoader(HoverBehaviour, Widget):
                 file = open(filename, "r")
                 if file.mode == 'r':
                     for x in file:
-                        self.lines.append(x)
+                        if x != '':
+                            self.lines.append(x)
                     file.close()
                 else:
                     raise Exception(f"Failed to open {filename}!")
+
+                if len(self.lines) != self.max_values[self.curr_values[CURRENT_INDEX]]:
+                    raise Exception("Wrong initalization numbers!")
 
                 for x in range(len(self.lines)):
                     triggers.append(Clock.create_trigger(lambda dt: loader([self.incCurr, subloader.inc_triggers, lambda: subloader.start(), lambda: finished_block(subloader, callbacks)])))
