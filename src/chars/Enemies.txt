@@ -1,4 +1,0 @@
-//EnemyName, HealthMin, HealthMax, AttackType, StrMin, StrMax, MagMin, MagMax, AgiMin, AgiMax, DexMin, DexMax, EndMin, EndMax, Move[]Num, [MoveName,Propability]
-Kobold,20,40,0,3,6,0,0,2,6,2,6,3,8,2,EnmyAttack,.75,Scratch,.25
-Goblin,20,40,0,3,6,0,0,3,8,3,8,2,6,2,EnmyAttack,.75,Slash,.25
-Jack Bird,60,90,0,1,4,0,0,2,6,2,6,2,6,2,EnmyAttack,.75,Peck,.25

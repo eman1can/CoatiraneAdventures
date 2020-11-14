@@ -1,0 +1,9 @@
+<Canvas>:
+    Button:
+        id: button
+        size_hint: 0.2, 0.2
+        pos_hint: {'x': 0.2, 'y': 0.2}
+
+    Button:
+        size_hint: 0.2, 0.2
+        pos_hint: {'x': Constraint.torOf(self, button, 0), 'y': 20}

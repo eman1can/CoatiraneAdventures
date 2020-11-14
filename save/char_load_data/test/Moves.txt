@@ -1,0 +1,11 @@
+Drill,False,0,0,Mid,1,Stun,.5
+Rapture,False,0,0,Mid,1,Charm,.6
+Fiendfyre,False,0,0,High,2,Burn,.4,Stun,.2
+Tenebris,False,0,0,Mid,2,Stun,.5,Charm,.3
+Lil Rafaga,True,Special Arts,0,Ultra,1,Stun,.35
+EnmyAttack,False,0,0,Mid,0
+Slash,False,0,0,High,0
+Scratch,False,0,0,High,0
+Peck,False,0,0,High,0
+Mid P.Attack,False,0,0,Mid,0
+Mid M.Attack,False,0,0,Mid,0
