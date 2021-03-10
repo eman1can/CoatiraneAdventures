@@ -1,14 +1,15 @@
-7,Loading Ratios,Loading Moves,Loading Enemies,Loading Families,Loading Chars,Loading Floors,Loading Screens
+8,Loading Game Data,Loading Skills and Abilities,Loading Enemies,Loading Families,Loading Chars,Loading Floors,Loading Shop Items,Finalizing Game Data
 1
-11
+720
 3
 2
 195
-1
+3
+35
 1
 # breaks on this line
 totalnum=7
-ratios
+save data
 numofmoves
 numofenemies
 numoffamilies

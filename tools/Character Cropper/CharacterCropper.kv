@@ -1,0 +1,223 @@
+Root:
+    Screen:
+        name: 'start_page'
+        Label:
+            size_hint: 1, 0.25
+            pos_hint: {'center_y': 0.75}
+            font_size: self.height * 0.25
+            text: 'Open a picture file to get started'
+        Button:
+            size_hint: 0.75, 0.25
+            font_size: self.height * 0.75
+            pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+            text: 'Open File Chooser'
+            on_release: root.show_load()
+    Screen:
+        name: 'confirm_page'
+        Label:
+            size_hint: 1, 0.25
+            pos_hint: {'top': 1}
+            font_size: self.height * 0.25
+            text: 'Are you sure you want to use this photo?'
+        Image:
+            size_hint: 1, 0.7
+            pos_hint: {'center_x': 0.5, 'top': 0.75}
+            source: root.filename
+        BoxLayout:
+            size_hint: 1, 0.05
+            Button:
+                text: "Cancel"
+                on_release:
+                    root.current = 'start_page'
+                    root.show_load()
+            Button:
+                text: "Confirm"
+                on_release: root.goto_first_crop()
+    Screen:
+        name: 'first_crop'
+        Label:
+            size_hint: 1, 0.25
+            pos_hint: {'top': 1}
+            font_size: self.height * 0.25
+            text: 'Please position the slide crop'
+        Image:
+            size_hint: 0.5, 0.7
+            pos_hint: {'top': 0.75}
+            source: root.filename
+        RelativeLayout:
+            size_hint: 0.5, 0.7
+            pos_hint: {'x': 0.5, 'top': 0.75}
+            FirstCropScatter:
+                id: first_crop_scatter
+                do_rotation: False
+                scale_max: 5
+                scale_min: 1
+        BoxLayout:
+            size_hint: 1, 0.05
+            Button:
+                text: "Cancel"
+                on_release:
+                    root.current = 'start_page'
+                    root.show_load()
+            Button:
+                text: "Confirm"
+                on_release: root.goto_second_crop()
+    Screen:
+        name: 'second_crop'
+        Label:
+            size_hint: 1, 0.25
+            pos_hint: {'top': 1}
+            font_size: self.height * 0.25
+            text: 'Please position the preview crop'
+        Image:
+            size_hint: 0.5, 0.7
+            pos_hint: {'top': 0.75}
+            source: root.filename
+        StencilView:
+            size_hint: 0.5, 0.7
+            pos_hint: {'x': 0.5, 'top': 0.75}
+            RelativeLayout:
+                pos: self.parent.pos
+                size: self.parent.size
+    #            StencilView:
+    #                size: self.parent.size
+    #                pos: self.parent.pos
+                CropScatter:
+                    id: second_crop_scatter
+                    do_rotation: False
+                    scale_max: 5
+                    scale_min: 1
+        BoxLayout:
+            size_hint: 1, 0.05
+            Button:
+                text: "Cancel"
+                on_release:
+                    root.current = 'start_page'
+                    root.show_load()
+            Button:
+                text: "Confirm"
+                on_release: root.goto_confirm()
+    Screen:
+        name: 'confirm_crop_page'
+        Label:
+            size_hint: 1, 0.2
+            pos_hint: {'top': 1}
+            font_size: self.height * 0.25
+            text: 'Do you like your output crops?\nPlease enter a save name'
+        TextInput:
+            id: character_name
+            size_hint: 0.75, 0.2
+            pos_hint: {'top': 0.8, 'center_x': 0.5}
+            font_size: self.height * 0.25
+            hint_text: 'Character Name'
+        Image:
+            size_hint: 0.25, 0.55
+            pos_hint: {'x': 0.05, 'top': 0.6}
+            source: root.filename
+        RelativeLayout:
+            size_hint: 0.25, 0.55
+            pos_hint: {'center_x': 0.5, 'top': 0.6}
+            CroppedImage:
+                id: slide_image
+                source: root.filename
+        RelativeLayout:
+            size_hint: 0.25, 0.55
+            pos_hint: {'right': 0.95, 'top': 0.6}
+            CroppedImage:
+                id: preview_image
+                source: root.filename
+        BoxLayout:
+            size_hint: 1, 0.05
+            Button:
+                text: "Cancel"
+                on_release:
+                    root.current = 'start_page'
+                    root.show_load()
+            Button:
+                text: "Confirm"
+                on_release:
+                    root.save_crops()
+                    root.current = 'start_page'
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            rootpath: 'input/'
+            filters: ['*.png', '*.jpg']
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
+
+<CropScatter>:
+    texture: image.texture
+    canvas.after:
+        Color:
+            rgba: 0, 0, 0, 0.4
+        PushMatrix
+        MatrixInstruction:
+            matrix: self.transform
+        Rectangle:
+            size: self.image_size
+            pos: self.image_pos
+        PopMatrix
+        Color:
+            rgba: 1, 1, 1, 1
+        StencilPush
+        Rectangle:
+            size: self.crop_size
+            pos: (self.width - self.crop_width) / 2, (self.height - self.crop_height) / 2
+        StencilUse
+        PushMatrix
+        MatrixInstruction:
+            matrix: self.transform
+        Rectangle:
+            texture: self.texture
+            size: self.image_size
+            pos: self.image_pos
+        PopMatrix
+        StencilUnUse
+        Rectangle:
+            size: self.crop_size
+            pos: (self.width - self.crop_width) / 2, (self.height - self.crop_height) / 2
+        StencilPop
+        Color:
+            rgba: 1, 1, 1, 1
+    Image:
+        id: image
+        allow_stretch: True
+        keep_ratio: False
+        source: root.source
+        size_hint: None, None
+        size: root.image_size
+        pos: root.image_pos
+
+<-CroppedImage>:
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        StencilPush
+        Rectangle:
+            size: self.crop_size
+            pos: self.crop_pos
+        StencilUse
+        Rectangle:
+            texture: self.texture
+            size: self.texture_size
+            pos: self.texture_pos
+        StencilUnUse
+        Rectangle:
+            size: self.crop_size
+            pos: self.crop_pos
+        StencilPop
+        Color:
+            rgba: 1, 1, 1, 1

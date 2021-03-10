@@ -19,32 +19,3 @@
 >Code Altered By Ethan Wolfe @ 2019
 Description:
 A purely Python implementation of GREE's Lwf C# Library implementation for use in Coatirane Adventures Game
->
->Added:
-lwf_core       - Go Over Again
-lwf_animation
-lwf_bitmap
-lwf_bitmapEx
-lwf_button
-lwf_bitmapClip
-lwf_object
-lwf_IObject
-lwf_type
-lwf_utility
-lwf_text
-lwf_format
-lwf_coredata
-lwf_eventmovie
-lwf_movie
-lwf_property
-lwf_graphic
-lwf_particle
-lwf_programobj
-lwf_eventbutton
-lwf_coreop
-lwf_data
-lwf_renderer
-lwf_lwfcontainer
-lwf_movieprop
-lwf_movieop
-lwf_movieat

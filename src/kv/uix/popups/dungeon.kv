@@ -1,0 +1,57 @@
+<Confirm>:
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+    size_hint: 0.45, 0.8
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    border: [0, 0, 0, 0]
+    RelativeLayout:
+        Label:
+            id: title
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: 'Gabriola.ttf'
+            text: 'Descending' if root.descending else 'Ascending'
+        Label:
+            id: floor_info
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.15
+            pos_hint: {'center_x': 0.5, 'top': 0.8}
+            font_name: 'Gabriola.ttf'
+            text: 'Floor ' + root.current_floor + ' -> Floor ' + root.next_floor
+        Label:
+            id: recc_score_info
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.15
+            pos_hint: {'center_x': 0.5, 'top': 0.65}
+            font_name: 'Gabriola.ttf'
+            text: 'Recommended Score: ' + str(root.recc_score)
+        Label:
+            id: act_score_info
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.15
+            pos_hint: {'center_x': 0.5, 'top': 0.5}
+            font_name: 'Gabriola.ttf'
+            text: 'Actual Score: ' + str(root.act_score)
+        PPCHoverPathButton:
+            id: cancel
+            font_name: 'Gabriola.ttf'
+            text: 'Cancel'
+            path: 'buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        PPCHoverPathButton:
+            id: confirm
+            font_name: 'Gabriola.ttf'
+            text: 'Confirm'
+            path: 'buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}

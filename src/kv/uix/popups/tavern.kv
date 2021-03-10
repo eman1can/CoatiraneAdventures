@@ -1,0 +1,154 @@
+<Confirm>:
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+    size_hint: 0.45, 0.8
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    border: [0, 0, 0, 0]
+    RelativeLayout:
+        Label:
+            id: title
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: 'Gabriola.ttf'
+            text: 'Are you sure?'
+        PPCHoverPathButton:
+            id: cancel
+            font_name: 'Gabriola.ttf'
+            text: 'Cancel'
+            path: 'buttons/long_stat'
+            on_release: root.manager.goto_previous()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        PPCHoverPathButton:
+            id: confirm
+            font_name: 'Gabriola.ttf'
+            text: 'Confirm'
+            path: 'buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+
+<Cancel>:
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+    size_hint: 0.45, 0.8
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    border: [0, 0, 0, 0]
+    RelativeLayout:
+        Label:
+            id: title
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: 'Gabriola.ttf'
+            text: 'Are you sure?'
+        Label:
+            id: warning
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.5
+            halign: 'center'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            font_name: 'Gabriola.ttf'
+            text: 'You will not gain\nthis character.'
+        PPCHoverPathButton:
+            id: cancel
+            font_name: 'Gabriola.ttf'
+            text: 'Cancel'
+            path: 'buttons/long_stat'
+            on_release: root.manager.goto_previous()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        PPCHoverPathButton:
+            id: confirm
+            font_name: 'Gabriola.ttf'
+            text: 'Confirm'
+            path: 'buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+
+<Roll>:
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+    size_hint: 0.45, 0.8
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    border: [0, 0, 0, 0]
+    RelativeLayout:
+        Label:
+            id: title
+            font_size: root.height * 0.15
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: 'Gabriola.ttf'
+            text: 'Are you sure?'
+        Label:
+            id: warning
+            font_size: root.height * 0.075
+            color: 0, 0, 0, 1
+            opacity: 1 if root.show_warning else 0
+            size_hint: 1, 0.25
+            halign: 'center'
+            pos_hint: {'center_x': 0.5, 'top': 0.8}
+            font_name: 'Gabriola.ttf'
+            text: 'You will not gain\nthis character.'
+        PPCHoverPathButton:
+            id: cancel
+            font_name: 'Gabriola.ttf'
+            text: 'Cancel'
+            path: 'buttons/long_stat'
+            on_release: root.manager.goto_previous()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        PPCHoverPathButton:
+            id: confirm
+            font_name: 'Gabriola.ttf'
+            text: 'Confirm'
+            path: 'buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+
+<NoRecruit>
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+    size_hint: app.get_dkey('nrw s_h')
+    pos_hint: app.get_dkey('nrw p_h')
+    border: app.get_dkey('nrw b')
+    RelativeLayout:
+        Label:
+            id: label_large
+            color: app.get_dkey('nrw.ll c')
+            font_name: 'Gabriola.ttf'
+            text: 'All Characters Recruited'
+            font_size: app.get_dkey('nrw.ll fs', root.height)
+            size_hint: app.get_dkey('nrw.ll s_h')
+            pos_hint: app.get_dkey('nrw.ll p_h')
+        Label:
+            id: label_small
+            color: app.get_dkey('nrw.ls c')
+            font_name: 'Gabriola.ttf'
+            halign: 'center'
+            text: 'More characters will be added\nin future updates'
+            font_size: app.get_dkey('nrw.ls fs', root.height)
+            size_hint: app.get_dkey('nrw.ls s_h')
+            pos_hint: app.get_dkey('nrw.ls p_h')
+        PPCHoverPathButton:
+            id: ok
+            font_name: 'Gabriola.ttf'
+            text: 'Ok'
+            path: 'buttons/long_stat'
+            on_release: root.manager.goto_previous()
+            font_size: app.get_dkey('nrw.ok fs', root.height)
+            size_hint: app.get_dkey('nrw.ok s_h')
+            pos_hint: app.get_dkey('nrw.ok p_h')

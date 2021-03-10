@@ -1,0 +1,553 @@
+<FilterButton@PPCHoverPathButton>:
+    path: 'buttons/long_toggle'
+#    size_hint: app.get_dkey('fw.fb s_h')
+    state: 'down'
+#    font_size: app.get_dkey('sw.bu fs', root.height)
+    color: 0, 0, 0, 1
+    font_name: 'Gabriola'
+    font_size: '30pt'
+
+<FilterPopup>:
+    id: filter
+#    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+#    size_hint: app.get_dkey('fw s_h')
+#    pos_hint: app.get_dkey('fw p_h')
+#    border: app.get_dkey('fw b')
+#    RelativeLayout:
+#        PPCHoverPathButton:
+#            id: back
+#            path: 'buttons/back'
+#            size_hint: app.get_dkey('fw.bb s_h')
+#            pos_hint: app.get_dkey('fw.bb p_h')
+    GridLayout:
+        cols: 1
+        rows: 8
+        size_hint: 0.975 * 0.75, 0.975 * 0.9
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+#        size_hint: app.get_dkey("fw.ml s_h")
+#        pos_hint: app.get_dkey("fw.ml p_h")
+#        padding: 0.071, 0.0064 # app.get_dkey("fw.ml pad", root.width, root.height)
+#        spacing: 0.0125
+        Label:
+            id: title
+            text: 'Filter'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            font_size: '60pt'
+            size_hint: 1, 0.1868
+#            color: app.get_dkey('fw.t c')
+#            font_size: app.get_dkey('fw.t fs', root.height)
+#            size_hint: app.get_dkey('fw.t s_h')
+#            height: self.texture_size[1]
+        RelativeLayout:
+            id: space
+            size_hint: 1, 0.1174
+            PPCHoverPathButton:
+                id: apply_filter
+                text: 'Apply Filter'
+                path: 'buttons/long_stat'
+                color: 0, 0, 0, 1
+                font_name: 'Gabriola'
+                size_hint: 0.15, 1
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    #            size_hint: app.get_dkey('fw.fb s_h')
+    #            font_size: app.get_dkey('fw.fb fs', root.height)
+    #            pos_hint: app.get_dkey('fw.fb p_h', root.height)
+        GridLayout:
+            rows: 1
+            cols: 3
+            Label:
+                id: type_label
+                text: 'By Type'
+                font_name: 'Precious'
+                color: app.get_dkey('fw.ot c')
+                size_hint: 0.275, 1
+                font_size: '30pt'
+#                size_hint: app.get_dkey('fw.ot s_h')
+#                size: self.texture_size
+#                font_size: app.get_dkey('fw.ot fs', root.height)
+            Image:
+                id: type_overlay_bar
+                allow_stretch: True
+                source: 'screens/stats/overlay_bar.png'
+                size_hint: 0.475, 1
+#                size_hint: app.get_dkey('fw.ob s_h')
+            Widget:
+                size_hint: 0.275, 1
+        GridLayout:
+            id: layout_type
+            cols: 5
+            rows: 2
+            size_hint: 1, 0.125
+#            size_hint: app.get_dkey("fw.ols s_h")
+            FilterButton:
+                id: magical
+                text: 'Magical'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: physical
+                text: 'Physical'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: balanced
+                text: 'Balanced'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: defensive
+                text: 'Defensive'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: healing
+                text: 'Healing'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+        GridLayout:
+            cols: 3
+            rows: 1
+            Label:
+                id: element_label
+                text: 'By Element'
+                font_name: 'Precious.ttf'
+                color: app.get_dkey('fw.ot c')
+                font_size: '30pt'
+                size_hint: 0.275, 1
+#                size_hint: app.get_dkey('fw.ot s_h')
+#                size: self.texture_size
+#                font_size: app.get_dkey('fw.ot fs', root.height)
+            Image:
+                id: element_overlay_bar
+                allow_stretch: True
+                source: 'screens/stats/overlay_bar.png'
+                size_hint: 0.475, 1
+#                size_hint: app.get_dkey('fw.ob s_h')
+            Widget:
+                size_hint: 0.275, 1
+        GridLayout:
+            id: layout_element
+            cols: 5
+            rows: 2
+            size_hint: 1, 0.25
+            FilterButton:
+                id: light
+                text: 'Light'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: dark
+                text: 'Dark'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: earth
+                text: 'Earth'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: wind
+                text: 'Wind'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: thunder
+                text: 'Thunder'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: fire
+                text: 'Fire'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+            FilterButton:
+                id: water
+                text: 'Water'
+                on_release: root.modify_filtering(self.text)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+#                font_size: app.get_dkey('fw.bu fs', root.height)
+#                label_padding: app.get_dkey('fw.bu lp', self.height)
+        GridLayout:
+            cols: 3
+            rows: 1
+            Label:
+                id: rank_label
+                text: 'By Rank'
+                font_name: 'Precious.ttf'
+                color: app.get_dkey('fw.ot c')
+                size_hint: 0.275, 1
+                font_size: '30pt'
+#                size_hint: app.get_dkey('fw.ot s_h')
+#                size: self.texture_size
+#                font_size: app.get_dkey('fw.ot fs', root.height)
+            Image:
+                id: rank_overlay_bar
+                allow_stretch: True
+                source: 'screens/stats/overlay_bar.png'
+                size_hint: 0.475, 1
+#                size_hint: app.get_dkey('fw.ob s_h')
+            Widget:
+                size_hint: 0.275, 1
+        GridLayout:
+            id: rank_element
+            cols: 5
+            rows: 2
+            size_hint: 1, 0.25
+            FilterButton:
+                id: rank_1
+                on_release: root.modify_filtering(1)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+            FilterButton:
+                id: rank_2
+                on_release: root.modify_filtering(2)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+            FilterButton:
+                id: rank_3
+                on_release: root.modify_filtering(3)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
+            FilterButton:
+                id: rank_4
+                on_release: root.modify_filtering(4)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
+            FilterButton:
+                id: rank_5
+                on_release: root.modify_filtering(5)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5025, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6615, 'center_y': 0.5}
+            FilterButton:
+                id: rank_6
+                on_release: root.modify_filtering(6)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.4936, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6704, 'center_y': 0.5}
+            FilterButton:
+                id: rank_7
+                on_release: root.modify_filtering(7)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.46275, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5025, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6615, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.70125, 'center_y': 0.5}
+            FilterButton:
+                id: rank_8
+                on_release: root.modify_filtering(8)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.4583, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.4936, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6704, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.7057, 'center_y': 0.5}
+            FilterButton:
+                id: rank_9
+                on_release: root.modify_filtering(9)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.423, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.46275, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5025, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6615, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.70125, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.741, 'center_y': 0.5}
+            FilterButton:
+                id: rank_10
+                on_release: root.modify_filtering(10)
+#                path: 'buttons/long_toggle'
+#                toggle_enabled: True
+#                toggle_state: True
+                RelativeLayout:
+                    size: self.parent.size
+                    pos: self.parent.pos
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.423, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.4583, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.4936, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.6704, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.7057, 'center_y': 0.5}
+                    Image:
+                        source: 'screens/stats/star.png'
+                        size_hint: 0.226, 0.6
+                        pos_hint: {'center_x': 0.741, 'center_y': 0.5}

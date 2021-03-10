@@ -1,0 +1,17 @@
+<CharacterPortfolio>:
+    Label:
+        id: title
+        text: 'Party ' + str(root.party_index + 1)
+        font_name: 'Precious'
+        size: self.texture_size
+        color: app.get_dkey('cpo.t c')
+        font_size: app.get_dkey('cpo.t fs', root.height)
+        size_hint: app.get_dkey('cpo.t s_h')
+        pos_hint: app.get_dkey('cpo.t p_h')
+    Image:
+        id: lock
+        source: 'screens/stats/lock.png'
+        allow_stretch: True
+        opacity : 1 if root.locked else 0
+        size_hint: app.get_dkey('cpo.l s_h')
+        pos_hint: app.get_dkey('cpo.l p_h')

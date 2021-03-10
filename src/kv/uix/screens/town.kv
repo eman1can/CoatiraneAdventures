@@ -1,0 +1,91 @@
+#:import PPCHoverPathButton kivy.uix.buttonversions.PPCHoverPathButton
+
+<SmallTownButton@PPCHoverPathButton>:
+    collision_source: 'buttons/smallbutton.collision.png'
+
+<TownScreen>:
+    name: 'town_main'
+    background_source: 'backgrounds/townClip.jpg'
+    SmallTownButton:
+        id: tavern
+        size_hint: 0.1, 0.203
+        pos_hint: {'x': 0.015, 'center_y': 0.919}
+        path: 'buttons/tavern_button'
+        on_release: root.on_tavern()
+        Image:
+            id: tavern_lock
+            source: 'buttons/small_button_lock.png'
+            size: tavern.size
+            pos: tavern.pos
+    Label:
+        id: tavern_label
+        size_hint: 0.15, 0.032
+        pos_hint: {'center_x': 0.065, 'top': 0.838}
+        font_size: '20pt'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: 'Tavern'
+    SmallTownButton:
+        id: shop
+        size_hint: 0.1, 0.203
+        pos_hint: {'x': 0.015, 'center_y': 0.725}
+        path: 'buttons/shop_button'
+    Label:
+        id: shop_label
+        size_hint: 0.15, 0.032
+        pos_hint: {'center_x': 0.065, 'top': 0.644}
+        font_size: '20pt'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: 'Shop'
+    SmallTownButton:
+        id: quests
+        size_hint: 0.1, 0.203
+        pos_hint: {'x': 0.015, 'center_y': 0.531}
+        path: 'buttons/quest_button'
+    Label:
+        id: quests_label
+        size_hint: 0.15, 0.032
+        pos_hint: {'center_x': 0.065, 'top': 0.45}
+        font_size: '20pt'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: 'Quests'
+    SmallTownButton:
+        id: crafting
+        size_hint: 0.1, 0.203
+        pos_hint: {'x': 0.015, 'center_y': 0.337}
+        path: 'buttons/crafting_button'
+        Image:
+            id: crafting_lock
+            source: 'buttons/small_button_lock.png'
+            size: crafting.size
+            pos: crafting.pos
+    Label:
+        id: crafting_label
+        size_hint: 0.15, 0.032
+        pos_hint: {'center_x': 0.065, 'top': 0.256}
+        font_size: '20pt'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: 'Crafting'
+    SmallTownButton:
+        id: inventory
+        size_hint: 0.1, 0.203
+        pos_hint: {'x': 0.015, 'center_y': 0.143}
+        path: 'buttons/inventory_button'
+    Label:
+        id: inventory_label
+        size_hint: 0.15, 0.032
+        pos_hint: {'center_x': 0.065, 'top': 0.062}
+        font_size: '20pt'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: 'Inventory'
+    PPCHoverPathButton:
+        id: dungeon
+        size_hint: 0.15, 0.198
+        pos_hint: {'right': 0.985, 'center_y': 0.163}
+        path: 'buttons/dungeon_button'
+        collision_source: 'buttons/largebutton.collision.png'
+        on_release: root.on_dungeon()

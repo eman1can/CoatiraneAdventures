@@ -1,0 +1,162 @@
+
+<StatBox>:
+    #Health
+    Image:
+        id: bar_health
+        source: root.stat_bar_source
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.hea.bar p_h')
+    Image:
+        id: image_health
+        source: root.health_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.hea.img p_h')
+    Label:
+        id: label_health
+        text: 'Health'
+        color: root.color
+        font_name: root.font
+        font_size: image_health.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.hea.lbl p_h')
+    Label:
+        id: label_health_number
+        text: str(round(root.health, 2))
+        color: root.number_color
+        font_name: root.font
+        font_size: image_health.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.hea.num p_h')
+    #Mana
+    Image:
+        id: bar_mana
+        source: root.stat_bar_source
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.man.bar p_h')
+    Image:
+        id: image_mana
+        source: root.mana_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.man.img p_h')
+    Label:
+        id: label_mana
+        text: 'Mana'
+        color: root.color
+        font_name: root.font
+        font_size: image_mana.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.man.lbl p_h')
+    Label:
+        id: label_mana_number
+        text: str(round(root.mana, 2))
+        color: root.number_color
+        font_name: root.font
+        font_size: image_mana.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.man.num p_h')
+    #Phy. Attack
+    Image:
+        id: bar_phy_attack
+        source: root.stat_bar_source
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.phy.bar p_h')
+    Image:
+        id: image_phy_attack
+        source: root.phy_attack_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.phy.img p_h')
+    Label:
+        id: label_phy_attack
+        text: 'Phy. Atk'
+        color: root.color
+        font_name: root.font
+        font_size: image_phy_attack.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.phy.lbl p_h')
+    Label:
+        id: label_phy_attack_number
+        text: str(round(root.phy_attack, 2))
+        color: root.number_color
+        font_name: root.font
+        font_size: image_phy_attack.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.phy.num p_h')
+    #Mag. Attack
+    Image:
+        id: bar_mag_attack
+        source: root.stat_bar_source
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.mag.bar p_h')
+    Image:
+        id: image_mag_attack
+        source: root.mag_attack_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.mag.img p_h')
+    Label:
+        id: label_mag_attack
+        text: 'Mag. Atk'
+        color: root.color
+        font_name: root.font
+        font_size: image_mag_attack.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.mag.lbl p_h')
+    Label:
+        id: label_mag_attack_number
+        text: str(round(root.mag_attack, 2))
+        color: root.number_color
+        font_name: root.font
+        font_size: image_mag_attack.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.mag.num p_h')
+    #Defense
+    Image:
+        id: bar_defense
+        source: root.stat_bar_source
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: app.get_dkey('ssb.bar s_h')
+        pos_hint: app.get_dkey('ssb.def.bar p_h')
+    Image:
+        id: image_defense
+        source: root.defense_source
+        allow_stretch: True
+        size_hint: app.get_dkey('ssb.img s_h')
+        pos_hint: app.get_dkey('ssb.def.img p_h')
+    Label:
+        id: label_defense
+        text: 'Defense'
+        color: root.color
+        font_name: root.font
+        font_size: image_defense.height
+        height: self.texture_size[1]
+        size_hint: app.get_dkey('ssb.lbl s_h')
+        pos_hint: app.get_dkey('ssb.def.lbl p_h')
+    Label:
+        id: label_defense_number
+        text: str(round(root.defense, 2))
+        color: root.number_color
+        font_name: root.font
+        font_size: image_defense.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('ssb.def.num p_h')

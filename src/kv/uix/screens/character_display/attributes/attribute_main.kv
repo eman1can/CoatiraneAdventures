@@ -1,0 +1,374 @@
+#:import DisplayEquipmentSlot uix.screens.equipment.slot.DisplayEquipmentSlot
+#:import DetailEquipmentSlot uix.screens.equipment.slot.DetailEquipmentSlot
+#:import AbilityStatBox uix.screens.character_display.attributes.ability_stat.AbilityStatBox
+#:import StatInfoBox uix.screens.character_display.attributes.stat_info.StatInfoBox
+#:import StatBox uix.screens.character_display.attributes.stat.StatBox
+#:import SkillsList uix.screens.character_display.attributes.skills_list.SkillsList
+#:import AttackLabel uix.screens.character_display.attributes.status_label.AttackLabel
+#:import GesturePad modules.gesture_pad.GesturePad
+#:import LayeredImage modules.layered_image.LayeredImage
+
+<CharacterAttributeScreen>:
+    name: 'char_attr_' + self.char.get_id()
+    Image:
+        id: familia_mark
+        source: '' if root.char is None else 'familias/marks/Takemikazuchi.png'
+        nocache: True
+        size_hint: app.get_dkey('cas.ci s_h')
+        width: self.height * self.image_ratio
+        pos_hint: app.get_dkey('cas.ci p_h')
+    Image:
+        id: char_image
+        source: '' if root.char is None else root.char.full_image_source
+        allow_stretch: True
+        nocache: True
+        size_hint: app.get_dkey('cas.ci s_h')
+        width: self.height * self.image_ratio
+        pos_hint: app.get_dkey('cas.ci p_h')
+    PPCHoverPathButton:
+        id: back_button
+        path: 'buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    Image:
+        id: overlay_background
+        source: root.overlay_background_source
+        allow_stretch: True
+        size_hint: app.get_dkey('cas.os.ob s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
+    Image:
+        id: overlay
+        source: root.overlay_source
+        allow_stretch: True
+        size_hint: app.get_dkey('cas.os.o s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
+    StatInfoBox:
+        id: persistent_layout
+        type_flag_source: '' if root.char is None else "screens/recruit/" + str(root.char.get_type()).lower() + "_flag.png"
+        element_flag_source: '' if root.char is None else "screens/attributes/" + root.char.get_element().lower() + "_flag.png"
+        element_flag_image_source: '' if root.char is None else "screens/attributes/" + root.char.get_element().lower() + ".png"
+        char_type: '' if root.char is None else 'Supporter' if root.char.is_support() else 'Adventurer'
+        char_stype: '' if root.char is None else str(root.char.get_type()) + " Type"
+        char_element: '' if root.char is None else str(root.char.get_element()).capitalize()
+        char_display_name: '' if root.char is None else str(root.char.get_display_name())
+        char_name: '' if root.char is None else str(root.char.get_name())
+        skills_switch_text: root.skills_switch_text
+        on_skills_switch: root.on_skills_switch()
+        size_hint: app.get_dkey('cas.os.o s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
+    RelativeLayout:
+        id: normal_layout
+        size_hint: app.get_dkey('cas.os.o s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
+        Label:
+            id: total_label
+            text: 'Total Stats'
+            font_name: 'Precious'
+            height: self.texture_size[1]
+            color: app.get_dkey('cas.tl c')
+            font_size: app.get_dkey('cas.tl fs', root.width)
+            size_hint: app.get_dkey('cas.tl s_h')
+            pos_hint: app.get_dkey('cas.tl p_h')
+        StatBox:
+            id: stats
+            font: 'Gabriola'
+            char: root.char
+            color: app.get_dkey('cas.sts c')
+            number_color: app.get_dkey('cas.sts nc')
+            size_hint: app.get_dkey('cas.sts s_h')
+            pos_hint: app.get_dkey('cas.sts p_h')
+        Label:
+            id: total_abilities
+            text: 'Total Abilities'
+            font_name: 'Precious'
+            height: self.texture_size[1]
+            color: app.get_dkey('cas.ta c')
+            font_size: app.get_dkey('cas.ta fs', root.width)
+            size_hint: app.get_dkey('cas.ta s_h')
+            pos_hint: app.get_dkey('cas.ta p_h')
+        AbilityStatBox:
+            id: total_abilities_box
+            font: 'Gabriola'
+            char: root.char
+            color: app.get_dkey('cas.tab c')
+            size_hint: app.get_dkey('cas.tab s_h')
+            pos_hint: app.get_dkey('cas.tab p_h')
+        Label:
+            id: rank_abilities
+            text: 'Rank Abilities'
+            font_name: 'Precious'
+            height: self.texture_size[1]
+            color: app.get_dkey('cas.ra c')
+            font_size: app.get_dkey('cas.ra fs', root.width)
+            size_hint: app.get_dkey('cas.ra s_h')
+            pos_hint: app.get_dkey('cas.ra p_h')
+        AbilityStatBox:
+            id: rank_abilities_box
+            font: 'Gabriola'
+            char: root.char
+            rank: True
+            color: app.get_dkey('cas.rab c')
+            size_hint: app.get_dkey('cas.rab s_h')
+            pos_hint: app.get_dkey('cas.rab p_h')
+        Image:
+            id: neat_stat_overlay
+            source: root.neat_stat_overlay_source
+            size_hint: app.get_dkey('cas.nsl s_h')
+            pos_hint: app.get_dkey('cas.nsl p_h')
+        GridLayout:
+            id: neat_stat_layout
+            rows: 3
+            cols: 3
+            size_hint: app.get_dkey('cas.nsl s_h')
+            pos_hint: app.get_dkey('cas.nsl p_h')
+            Label:
+                id: familia_label
+                text: root.family_name
+                font_name: 'Gabriola'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            Label:
+                id: score_label
+                text: root.score
+                font_name: 'Gabriola'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            Label:
+                id: floor_depth_label
+                text: root.floor_depth
+                font_name: 'Gabriola'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            Label:
+                id: race_label
+                text: root.race
+                font_name: 'Gabriola'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            Label:
+                id: worth_label
+                text: root.worth
+                font_name: 'Gabriola'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            Label:
+                id: monsters_slain_label
+                text: root.monsters_slain
+                font_name: 'Gabriola'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            Label:
+                id: gender_label
+                text: root.gender
+                font_name: 'Gabriola'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            Label:
+                id: high_dmg_label
+                text: root.high_dmg
+                font_name: 'Gabriola'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+            Label:
+                id: people_slain_label
+                text: root.people_slain
+                font_name: 'Gabriola'
+                color: app.get_dkey('cas.nsl c')
+                font_size: app.get_dkey('cas.nsl fs', neat_stat_layout.height)
+        GridLayout:
+            id: equipment_layout
+            rows: 3
+            cols: 3
+            size_hint: app.get_dkey('cas.el s_h')
+            padding: app.get_dkey('cas.el pad', overlay.width, overlay.height)
+            spacing: app.get_dkey('cas.el spa', overlay.width, overlay.height)
+            default_size_hint: app.get_dkey('cas.el ds_h')
+            DisplayEquipmentSlot:
+                id: weapon
+                slot_name: "weapon"
+#                item: None if root.char is None else root.char.get_equipment().weapon
+                font: 'Gabriola'
+                color: app.get_dkey('cas.el c')
+            DisplayEquipmentSlot:
+                id: necklace
+#                item: None if root.char is None else root.char.get_equipment().necklace
+                slot_name: 'necklace'
+                font: 'Gabriola'
+                color: app.get_dkey('cas.el c')
+            DisplayEquipmentSlot:
+                id: ring
+#                item: None if root.char is None else root.char.get_equipment().ring
+                slot_name: 'ring'
+                font: 'Gabriola'
+                color: app.get_dkey('cas.el c')
+            DisplayEquipmentSlot:
+                id: helmet
+#                item: None if root.char is None else root.char.get_equipment().helmet
+                slot_name: 'helmet'
+                font: 'Gabriola'
+                color: app.get_dkey('cas.el c')
+            DisplayEquipmentSlot:
+                id: vambraces
+#                item: None if root.char is None else root.char.get_equipment().vambraces
+                slot_name: 'vambraces'
+                font: 'Gabriola'
+                color: app.get_dkey('cas.el c')
+            DisplayEquipmentSlot:
+                id: gloves
+#                item: None if root.char is None else root.char.get_equipment().gloves
+                slot_name: 'gloves'
+                font: 'Gabriola'
+                color: app.get_dkey('cas.el c')
+            DisplayEquipmentSlot:
+                id: chest
+#                item: None if root.char is None else root.char.get_equipment().chest
+                slot_name: 'chest'
+                font: 'Gabriola'
+                color: app.get_dkey('cas.el c')
+            DisplayEquipmentSlot:
+                id: grieves
+#                item: None if root.char is None else root.char.get_equipment().grieves
+                slot_name: 'grieves'
+                font: 'Gabriola'
+                color: app.get_dkey('cas.el c')
+            DisplayEquipmentSlot:
+                id: boots
+#                item: None if root.char is None else root.char.get_equipment().boots
+                slot_name: 'boots'
+                font: 'Gabriola'
+                color: app.get_dkey('cas.el c')
+    RelativeLayout:
+        id: skill_layout
+        opacity: 0
+        size_hint: app.get_dkey('cas.os.o s_h')
+        pos_hint: app.get_dkey('cas.os p_h')
+        SkillsList:
+            id: skillslist
+            height_unit: skill_layout.height
+            size_hint: app.get_dkey('cas.scrl s_h')
+            pos_hint: app.get_dkey('cas.scrl p_h')
+    PPCHoverPathButton:
+        id: change_equip
+        opacity: 1
+        path: 'buttons/long_stat'
+        text: 'Change Equip'
+        font_name: 'Gabriola'
+#        label_color: app.get_dkey('cas.ceb lc')
+        font_size: app.get_dkey('cas.ceb fs', root.height)
+        size_hint: app.get_dkey('cas.ceb s_h')
+        pos_hint: app.get_dkey('cas.ceb p_h')
+        on_release: root.on_change_equip()
+    PPCHoverPathButton:
+        id: status_board
+        path: 'buttons/long_stat'
+        text: 'Status Board'
+        font_name: 'Gabriola'
+#        label_color: app.get_dkey('cas.sbb lc')
+        font_size: app.get_dkey('cas.sbb fs', root.height)
+        size_hint: app.get_dkey('cas.sbb s_h')
+        pos_hint: app.get_dkey('cas.sbb p_h')
+        on_release: root.on_status_board()
+    PPCHoverPathButton:
+        id: image_preview
+        path: 'buttons/preview'
+        size_hint: app.get_dkey('cas.ipb s_h')
+        pos_hint: app.get_dkey('cas.ipb p_h')
+        on_release: root.on_image_preview()
+    LayeredImage:
+        id: stars
+        data: root.star_list_data
+#    Image:
+#        id: star_1
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(1).broken else 'screens/stats/star.png' if root.char.get_rank(1).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(1).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_1 s_h')
+#        pos_hint: app.get_dkey('cas.star_1 p_h')
+#    Image:
+#        id: star_2
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(2).broken else 'screens/stats/star.png' if root.char.get_rank(2).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(2).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_2 s_h')
+#        pos_hint: app.get_dkey('cas.star_2 p_h')
+#    Image:
+#        id: star_3
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(3).broken else 'screens/stats/star.png' if root.char.get_rank(3).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(3).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_3 s_h')
+#        pos_hint: app.get_dkey('cas.star_3 p_h')
+#    Image:
+#        id: star_4
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(4).broken else 'screens/stats/star.png' if root.char.get_rank(4).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(4).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_4 s_h')
+#        pos_hint: app.get_dkey('cas.star_4 p_h')
+#    Image:
+#        id: star_5
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(5).broken else 'screens/stats/star.png' if root.char.get_rank(5).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(5).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_5 s_h')
+#        pos_hint: app.get_dkey('cas.star_5 p_h')
+#    Image:
+#        id: star_6
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(6).broken else 'screens/stats/star.png' if root.char.get_rank(6).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(6).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_6 s_h')
+#        pos_hint: app.get_dkey('cas.star_6 p_h')
+#    Image:
+#        id: star_7
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(7).broken else 'screens/stats/star.png' if root.char.get_rank(7).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(7).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_7 s_h')
+#        pos_hint: app.get_dkey('cas.star_7 p_h')
+#    Image:
+#        id: star_8
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(8).broken else 'screens/stats/star.png' if root.char.get_rank(8).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(8).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_8 s_h')
+#        pos_hint: app.get_dkey('cas.star_8 p_h')
+#    Image:
+#        id: star_9
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(9).broken else 'screens/stats/star.png' if root.char.get_rank(9).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(9).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_9 s_h')
+#        pos_hint: app.get_dkey('cas.star_9 p_h')
+#    Image:
+#        id: star_10
+#        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(10).broken else 'screens/stats/star.png' if root.char.get_rank(10).unlocked else ''
+#        allow_stretch: True
+#        opacity: 0 if root.char is None else 1 if root.char.get_rank(10).unlocked else 0
+#        size_hint: app.get_dkey('cas.star_10 s_h')
+#        pos_hint: app.get_dkey('cas.star_10 p_h')
+    Button:
+        text: 'ru'
+        size_hint: 0.05, 0.05
+        pos_hint: {'right': 1, 'top': 1}
+        on_release:
+            root.char.rank_up()
+            root.reload()
+    Button:
+        size_hint: 0.05, 0.05
+        text: 'rb'
+        pos_hint: {'right': 1, 'top': 0.95}
+        on_release:
+            root.char.rank_break()
+            root.reload()
+    Button:
+        size_hint: 0.05, 0.05
+        text: 'ms'
+        pos_hint: {'right': 0.95, 'top': 0.95}
+        on_release:
+            root.char.max_stats()
+            root.reload()
+    GesturePad:
+        on_left: root.goto_char_attr(True)
+        on_right: root.goto_char_attr(False)

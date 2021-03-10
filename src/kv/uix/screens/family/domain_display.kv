@@ -1,0 +1,67 @@
+<LargeDomainDisplay>:
+    Image:
+        id: symbol
+        size_hint: 0.3, 0.4
+        pos_hint: {'top': 1}
+        source: None if root.title == '' else 'family/domains/' + root.title + '.png'
+        allow_stretch: True
+    Label:
+        id: title
+        size_hint: None, 0.4
+        pos_hint: {'top': 1, 'x': 0.325}
+        width: self.texture_size[0]
+        font_name: 'Precious'
+        font_size: '90pt'
+        color: 0, 0, 0, 1
+        text: root.title
+    ScrollView:
+        size_hint: 1, 0.6
+        do_scroll_x: False
+        effect_cls: 'ScrollEffect'
+        Label:
+            id: description
+            size_hint_y: None
+            height: self.texture_size[1]
+            text_size: self.width, None
+            font_name: 'Gabriola'
+            font_size: '30pt'
+            halign: 'left'
+            padding: 10, 10
+            color: 0, 0, 0, 1
+            text: root.description + '\n'
+
+<SmallDomainDisplay>:
+    Image:
+        id: border
+        size_hint: 0.35, 1
+#        pos_hint: {'center_y': 0.5}
+        source: 'family/domains/Border2.png' if root.opacity > 0.9 else 'family/domains/Border.png'
+        allow_stretch: True
+        Image:
+            id: symbol
+            pos: self.parent.x + self.parent.width * 0.22, self.parent.y + self.parent.height * 0.22
+            size: self.parent.width * 0.56, self.parent.height * 0.56
+#            size_hint: 0.56, 0.56
+#            pos: self.parent.width * 0.22, self.parent.height  * 0.22
+#            pos_hint: {'center_x': 0.5}
+            source: 'family/domains/' + root.title + '.png'
+            allow_stretch: True
+    Label:
+        id: title
+        size_hint: None, 1
+        pos_hint: {'top': 1, 'x': 0.35}
+        width: self.texture_size[0]
+        font_name: 'Precious'
+        font_size: '50pt'
+        color: 0, 0, 0, 1
+        text: root.title
+#    Label:
+#        id: description
+#        size_hint: 1, 0.25
+#        font_name: 'Gabriola'
+#        font_size: '20pt'
+#        color: 0, 0, 0, 1
+#        text: root.description
+    Button:
+        opacity: 0
+        on_release: root.select()

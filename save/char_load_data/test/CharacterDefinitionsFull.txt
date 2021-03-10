@@ -1,3 +1,74 @@
+New Form Most
+A, 3, 1, 147, 24, 7 , 13, 9 , 6 , 11, Alexis & Emilia   , Actresses             , actresses_alexis_and_emilia          , no_skin   , 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 0, 3, 81 , 45, 6 , 9 , 4 , 3 , 2 , Calyse Lang       , Amatuer Model         , amatuer_model_calyse                 , no_skin   , 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 4, 6, 119, 52, 20, 5 , 11, 1 , 12, Lexi Buhr         , Architect             , architect_lexi                       , no_skin   , 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 3, 1, 106, 58, 4 , 18, 4 , 6 , 12, Sofi              , Athlethic             , athlethic_sofi                       , no_skin   , 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 1, 1, 134, 29, 16, 2 , 8 , 4 , 13, Andrea Garcia     , Aye Aye               , aye_aye_andrea                       , no_skin   , 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 4, 6, 127, 55, 15, 9 , 5 , 3 , 8 , Abigail Cash      , Backyard              , backyard_abigail                     , no_skin   , 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 0, 4, 92 , 52, 16, 18, 11, 15, 11, Ais Wallenstein   , Badass                , badass_ais                           , 1041002011, 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 0, 1, 121, 50, 19, 9 , 6 , 2 , 7 , Daphne Lauros     , Striking              , striking_daphne                      , 1041091003, 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 0, 0, 109, 42, 17, 7 , 12, 9 , 5 , Lefyia Viridis    , Carefree              , carefree_lefyia                      , 1041018009, 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 2, 4, 140, 42, 17, 10, 4 , 6 , 8 , Ais Wallenstein   , Blustering Beauty     , blustering_beauty_ais                , 1041002023, 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 1, 0, 124, 52, 14, 11, 6 , 1 , 8 , Chloe Lolo        , Catty                 , catty_chloe                          , 1041041004, 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 0, 4, 106, 50, 18, 20, 13, 8 , 4 , Mikoto Yamato     , Deserted Island       , deserted_island_mikoto               , 1041004010, 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 4, 5, 131, 60, 13, 18, 8 , 12, 5 , Riveria Ljos Alf  , Siren Song            , siren_song_riveria                   , 1041006009, 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 2, 3, 145, 20, 16, 12, 6 , 8 , 12, Cassandra Ilion   , Washed Out            , washed_out_cassandra                 , 1041092003, 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+A, 3, 5, 84 , 54, 10, 2 , 4 , 2 , 7 , Amid Teasanare    , Sea Saint             , sea_saint_amid                       , 1041043003, 7, 56, 64, 57, 58, 59, 60, 2, 61, 63
+S, 1, 0, 131, 53, 7 , 12, 4 , 14, 9 , Jenna & Aussie    , After Beach Specials  , after_beach_specials_jenna_and_aussie
+S, 4, 0, 88 , 46, 4 , 12, 2 , 9 , 10, Sophie Nicholson  , Beachfront            , beachfront_sophie                    
+S, 3, 4, 139, 34, 9 , 13, 6 , 4 , 14, Maya Lurch        , Caffine Girl          , caffine_girl_maya                    
+S, 1, 3, 128, 60, 15, 5 , 15, 5 , 11, Sophie Nicholson  , Changing Model        , changing_model_sophie                
+S, 3, 2, 103, 49, 13, 14, 7 , 9 , 2 , Sofi              , Cutie Princess        , cutie_princess_sofi                  
+S, 0, 2, 80 , 43, 4 , 9 , 8 , 12, 2 , Tess Scott        , Diner                 , diner_tess                           
+S, 2, 2, 131, 60, 14, 14, 9 , 14, 6 , Carlie Morgan     , Dive                  , dive_carlie                          
+S, 0, 1, 113, 44, 17, 6 , 13, 3 , 13, Sophie Nicholson  , Emerald Wave Girl     , emerald_wave_girl_sophie             
+S, 3, 2, 83 , 46, 14, 13, 8 , 12, 7 , Misha Frot        , Enticing              , enticing_misha                       
+S, 2, 2, 99 , 56, 4 , 4 , 12, 5 , 10, Alexis Cordova    , Entrancing            , entrancing_alexis                    
+S, 1, 1, 123, 40, 12, 16, 4 , 8 , 11, Zabrina Thien     , Fanatic Supporter     , fanatic_supporter_zabrina            
+S, 2, 1, 97 , 41, 12, 11, 9 , 4 , 11, Carlie Morgan     , First Class           , first_class_carlie                   
+S, 3, 6, 136, 52, 8 , 11, 9 , 9 , 13, Sydney Rodriguez  , Flanel Beauty         , flanel_beauty_sydney                 
+S, 4, 0, 124, 29, 7 , 13, 12, 6 , 15, Carlie Morgan     , Flower Garden         , flower_garden_carlie                 
+S, 3, 4, 82 , 44, 17, 5 , 12, 1 , 11, Sydney Rodriguez  , Hide And Bop          , hide_and_bop_sydney                  
+S, 0, 0, 138, 37, 7 , 10, 7 , 3 , 10, Alexis Cordova    , High Flyer            , high_flyer_alexis                    
+S, 0, 5, 114, 24, 6 , 15, 14, 13, 2 , Zabrina Thien     , Honolulu              , honolulu_zabrina                     
+S, 3, 5, 119, 33, 4 , 9 , 2 , 8 , 10, Alexis Cordova    , It                    , it_alexis                            
+S, 0, 1, 87 , 42, 8 , 10, 9 , 1 , 10, Carlie Morgan     , I Like Trains         , I_like_trains_carlie                 
+S, 2, 2, 84 , 20, 13, 20, 4 , 10, 4 , Alexis Cordova    , Maid Girl             , maid_girl_alexis                     
+S, 2, 6, 144, 60, 5 , 13, 12, 12, 2 , Sophie Nicholson  , Malibu Queen          , malibu_queen_sophie                  
+S, 0, 2, 104, 21, 3 , 18, 7 , 14, 13, Jenna & Shayna    , Marine Girls          , marine_girls_jenna_and_shayna        
+S, 4, 4, 106, 25, 9 , 6 , 14, 1 , 2 , Alexis Cordova    , Meadow                , meadow_alexis                        
+S, 2, 5, 148, 56, 9 , 5 , 2 , 6 , 7 , Alexis Cordova    , Perfection            , perfection_alexis                    
+S, 1, 6, 118, 28, 6 , 4 , 3 , 8 , 10, Jenna Primbasch   , Picnic Princess       , picnic_princess_jenna                
+S, 1, 3, 126, 59, 8 , 15, 3 , 12, 8 , Ester Cash        , Plains                , plains_ester                         
+S, 4, 5, 89 , 46, 16, 8 , 5 , 12, 14, Tess Scott        , Pool Extravagance     , pool_extravagance_tess               
+S, 1, 4, 86 , 37, 18, 5 , 6 , 2 , 13, Tess Scott        , Rich Wife             , rich_wife_tess                       
+S, 4, 5, 117, 28, 9 , 16, 12, 10, 8 , Nicole Lowe       , Ring Princess         , ring_princess_nicole                 
+S, 2, 5, 111, 49, 20, 8 , 1 , 12, 5 , Carlie Morgan     , Rose Princess         , rose_princess_carlie                 
+S, 4, 6, 109, 57, 2 , 8 , 13, 7 , 4 , Sofi              , Ruby Wave Girl        , ruby_wave_girl_sofi                  
+S, 2, 3, 101, 31, 12, 2 , 15, 7 , 5 , Carlie Morgan     , Sapphire Princess     , sapphire_princess_carlie             
+S, 2, 0, 138, 27, 8 , 17, 4 , 14, 8 , Sofi              , Sapphire Wave Girl    , sapphire_wave_girl_sofi              
+S, 2, 6, 140, 24, 20, 4 , 1 , 6 , 11, Zabrina Thien     , Shrubby               , shrubby_zabrina                      
+S, 0, 4, 95 , 27, 17, 19, 6 , 6 , 15, Carlie Morgan     , Sk8t3r Gurl           , sk8t3r_gurl_carlie                   
+S, 2, 4, 137, 60, 10, 12, 7 , 4 , 15, Sophie Nicholson  , Skinny Dipper         , skinny_dipper_sophie                 
+S, 1, 6, 135, 23, 19, 2 , 3 , 11, 15, Alexis Cordova    , Snow Princess         , snow_princess_alexis                 
+S, 3, 5, 147, 35, 6 , 17, 13, 1 , 1 , Carlie Morgan     , Summer Camp           , summer_camp_carlie                   
+S, 4, 1, 147, 57, 15, 15, 12, 3 , 3 , Arcie Galvan      , Throwback             , throwback_arcie                      
+S, 0, 5, 89 , 26, 16, 12, 11, 1 , 15, Tess Scott        , Triangal              , triangal_tess                        
+S, 0, 0, 144, 58, 18, 14, 6 , 4 , 10, Catherine Roman   , Upper Class           , upper_class_catherine                
+S, 2, 1, 87 , 46, 8 , 17, 10, 15, 2 , Sophie Nicholson  , Vacationess           , vacationess_sophie                   
+S, 1, 3, 114, 24, 7 , 17, 8 , 13, 14, Sophie Nicholson  , Wallphant             , wallphant_sophie                     
+S, 3, 0, 103, 28, 6 , 9 , 10, 15, 12, Zabrina Thien     , Water Park            , water_park_zabrina                   
+S, 3, 4, 88 , 32, 19, 3 , 8 , 15, 9 , Tess Scott        , Wine Girl             , wine_girl_tess                       
+S, 4, 4, 146, 54, 12, 11, 3 , 10, 3 , Demeter           , Colonel               , colonel_demeter                      
+S, 0, 4, 86 , 25, 18, 11, 1 , 10, 14, Naza Ersuisu      , Cyan Bowtie           , cyan_bowtie_naza                     
+S, 4, 5, 91 , 45, 6 , 11, 1 , 13, 3 , Eina Tulle        , Midsummer Maiden      , midsummer_maiden_eina                
+S, 0, 3, 99 , 43, 17, 12, 6 , 1 , 5 , Syr Flover        , Pristine              , pristine_syr                         
+S, 3, 5, 99 , 50, 15, 4 , 12, 4 , 13, Hestia            , Steamy                , steamy_hestia                        
+S, 2, 4, 103, 51, 19, 17, 5 , 14, 12, Hestia            , Seaweed Tumble        , seaweed_tumble_hestia                
+S, 4, 5, 112, 46, 18, 10, 10, 5 , 5 , Artemis           , Bedtime               , bedtime_artemis                      
+
+Old Form All
+
 A, 4, 1, 114, 31, 16, 8 , 15, 2 , 13, Alexis & Emilia   , Actresses             , actresses_alexis_and_emilia          , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
 A, 3, 2, 135, 50, 3 , 5 , 14, 10, 9 , Calyse Lang       , Amatuer Model         , amatuer_model_calyse                 , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
 A, 0, 5, 141, 33, 4 , 3 , 4 , 2 , 2 , Lexi Buhr         , Architect             , architect_lexi                       , Mid P.Attack,Fiendfyre,Rapture,Drill,Lil Rafaga
