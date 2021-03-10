@@ -1,6 +1,6 @@
-#Conversion Tools
-##Make_char_def_file.py
-This python script is used to generate a character definition file for processing into the main game. It generates random files for the values and reads names from the res path to compile the names using a full name definition text that is found in the current dir and named: names.txt
+#Setup & Generation Tools
+##Character config generator
+This python script is used to generate a character definition file for processing into the main game. It currently generates random files for the values and reads names from the res path to compile the names using a full name definition text that is found in the current dir and named: names.txt
 ##preview_converter.cmd
 A batch script that utilizes image magic and irfanview to resize and add a border to a square character preview image
 ##slide_converter.cmd

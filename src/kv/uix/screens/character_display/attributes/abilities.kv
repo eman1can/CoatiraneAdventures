@@ -1,0 +1,61 @@
+<ASBox>:
+    PPCHoverPathButton:
+        id: button
+        disabled: True if root.locked else True if root.unlocked else False
+        path: 'buttons/ASBox'
+        on_release: root.dispatch('on_touch')
+    Image:
+        id: unlock_image
+        opacity: 1 if root.unlocked else 0
+        source: 'buttons/ASBox.unlocked.png'
+        allow_stretch: True
+    Label:
+        id: body
+        color: 0, 0, 0, 1
+        text: root.body
+        font_name: 'Gabriola'
+        font_size: root.height * 0.35
+        text_size: self.size
+        halign: 'center'
+        valign: 'middle'
+    Image:
+        id: lock_image
+        opacity: 1 if root.locked else 0
+        source: 'buttons/ASBox.locked.png'
+        allow_stretch: True
+
+
+<AbilityBox>:
+    body: 'Choose an\nability' if not root.set else root.name
+
+
+<SkillBox>:
+    body: root.name
+
+
+<AbilityChoice>:
+    Image:
+        source: 'screens/status/ability_choice_background.png'
+        allow_stretch: True
+        keep_ratio: False
+    Label:
+        text: root.title
+        font_size: root.height * 0.3
+        color: 0, 0, 0, 1
+        font_name: 'Gabriola'
+        size_hint: None, 0.3
+        width: self.texture_size[0]
+        pos_hint: {'x': 0.0125, 'top': 1}
+    Label:
+        text: root.body + '\n'
+        font_size: root.height * 0.2
+        color: 0, 0, 0, 1
+        font_name: 'Gabriola'
+        halign: 'left'
+        valign: 'top'
+        size_hint: 0.975, 0.475
+        text_size: self.size
+        pos_hint: {'x': 0.0125, 'y': 0.125}
+    PPCHoverPathButton:
+        path: 'buttons/ability_choice'
+        on_release: root.dispatch('on_choice', root.choice_id)

@@ -1,0 +1,125 @@
+<SortButton@PPCHoverPathButton>:
+    path: 'buttons/long_stat'
+    size_hint: app.get_dkey('sw.bu s_h')
+#    font_size: app.get_dkey('sw.bu fs', root.height)
+    color: 0, 0, 0, 1
+    font_name: 'Gabriola'
+    font_size: '30pt'
+
+
+<SortPopup>:
+    id: sort
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+#    size_hint: app.get_dkey('sw s_h')
+#    pos_hint: app.get_dkey('sw p_h')
+#    border: app.get_dkey('sw b')
+#    RelativeLayout:
+#        PPCHoverPathButton:
+#            id: back
+#            path: 'buttons/back'
+#            size_hint: app.get_dkey('sw.bb s_h')
+#            pos_hint: app.get_dkey('sw.bb p_h')
+    GridLayout:
+        id: main
+        cols: 1
+        rows: 5
+        padding: app.get_dkey('sw.lm pad', root.width, root.height)
+        spacing: app.get_dkey('sw.lm spa', root.width, root.height)
+        size_hint: app.get_dkey('sw.lm s_h')
+        pos_hint: app.get_dkey('sw.lm p_h')
+        Label:
+            id: title
+            text: 'Sort'
+            font_name: 'Precious.ttf'
+            color: app.get_dkey('sw.t c')
+            font_size: app.get_dkey('sw.t fs', root.height)
+            size_hint: app.get_dkey('sw.t s_h')
+        Image:
+            source: 'screens/stats/overlay_bar.png'
+            size_hint: app.get_dkey('sw.ob s_h')
+        GridLayout:
+            id: direction
+            cols: 2
+            rows: 1
+            padding: app.get_dkey('sw.l1 pad', root.width, root.height)
+            spacing: app.get_dkey('sw.l1 spa', root.width, root.height)
+            size_hint: app.get_dkey('sw.l1 s_h')
+            SortButton:
+                id: ascending
+                text: 'Ascending'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: descending
+                text: 'Descending'
+                on_release: root.do_sorting(self.text)
+        Image:
+            source: 'screens/stats/overlay_bar.png'
+            size_hint: app.get_dkey('sw.ob s_h')
+        GridLayout:
+            id: query
+            cols: 3
+            rows: 5
+            padding: app.get_dkey('sw.l2 pad', root.width, root.height)
+            spacing: app.get_dkey('sw.l2 spa', root.width, root.height)
+            size_hint: app.get_dkey('sw.l2 s_h')
+            SortButton:
+                id: strength
+                text: 'Strength'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: magic
+                text: 'Magic'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: endurance
+                text: 'Endurance'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: dexterity
+                text: 'Dexterity'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: agility
+                text: 'Agility'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: health
+                text: 'Health'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: mana
+                text: 'Mana'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: phyatk
+                text: 'Phy. Atk'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: magatk
+                text: 'Mag. Atk'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: defense
+                text: 'Defense'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: party
+                text: 'Party'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: rank
+                text: 'Rank'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: name
+                text: 'Name'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: score
+                text: 'Score'
+                on_release: root.do_sorting(self.text)
+            SortButton:
+                id: worth
+                text: 'Worth'
+                on_release: root.do_sorting(self.text)

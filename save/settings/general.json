@@ -1,0 +1,10 @@
+[
+    {
+        "type": "options",
+        "title": "Window Type",
+        "desc": "Set the window setting",
+        "options": ["Windowed", "FullScreen", "Fake FullScreen"],
+        "section": "graphics",
+        "key": "window"
+    }
+]

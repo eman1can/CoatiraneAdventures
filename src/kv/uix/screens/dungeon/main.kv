@@ -1,0 +1,104 @@
+#:import SnapCarousel uix.modules.snap_carousel.SnapCarousel
+#:import PartyIndexer uix.modules.party_indexer.PartyIndexer
+#:import LeftRightNavigationArrows modules.navigation_arrows.LeftRightNavigationArrows
+
+<DungeonMain>:
+    name: 'dungeon_main'
+    Label:
+        id: level_label
+        text: 'Level - Surface' if root.level == 0 else 'Level - ' + str(root.level) + " - [color=ff0000][b]BOSS[/b][/color]" if root.boss else 'Level - ' + str(root.level)
+        font_name: 'Precious.ttf'
+        markup: True
+        size: self.texture_size
+        color: app.get_dkey('dm.ll c')
+        font_size: app.get_dkey('dm.ll fs', root.height)
+        size_hint: app.get_dkey('dm.ll s_h')
+        pos_hint: app.get_dkey('dm.ll p_h')
+    Label:
+        id: party_score_label
+        text: 'Party Score - ' + str(root.party_score)
+        font_name: 'Precious.ttf'
+        size: self.texture_size
+        color: app.get_dkey('dm.psl c')
+        font_size: app.get_dkey('dm.psl fs', root.height)
+        size_hint: app.get_dkey('dm.psl s_h')
+        pos_hint: app.get_dkey('dm.psl p_h')
+    PPCHoverPathButton:
+        id: back_button
+        path: 'buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    PPCHoverPathButton:
+        id: inventory_button
+        path: 'buttons/InventoryButton'
+        text: 'Inventory'
+        font_name: 'Precious.ttf'
+        font_size: app.get_dkey('dm.ib fs', root.height)
+        size_hint: app.get_dkey('dm.ib s_h')
+        pos_hint: app.get_dkey('dm.ib p_h')
+#        on_release: root.on_inventory()
+    PPCHoverPathButton:
+        id: gear_button
+        path: 'buttons/GearButton'
+        text: 'Gear'
+        font_name: 'Precious.ttf'
+        font_size: app.get_dkey('dm.gb fs', root.height)
+        size_hint: app.get_dkey('dm.gb s_h')
+        pos_hint: app.get_dkey('dm.gb p_h')
+        on_release: root.on_gear()
+    Image:
+        id: gear_lock
+        size_hint: app.get_dkey('dm.gb s_h')
+        pos_hint: app.get_dkey('dm.gb p_h')
+        source: 'buttons/dungeon_button_lock.png'
+    PPCHoverPathButton:
+        id: ascend_button
+        path: 'buttons/AscendButton'
+        text: 'Ascend'
+        font_name: 'Precious.ttf'
+        font_size: app.get_dkey('dm.ab fs', root.height)
+        size_hint: app.get_dkey('dm.ab s_h')
+        pos_hint: app.get_dkey('dm.ab p_h')
+        on_release: root.on_ascend()
+    Image:
+        id: ascend_lock
+        size_hint: app.get_dkey('dm.ab s_h')
+        pos_hint: app.get_dkey('dm.ab p_h')
+        source: 'buttons/dungeon_button_lock.png'
+    PPCHoverPathButton:
+        id: descend_button
+        path: 'buttons/AscendButton'
+        text: 'Descend'
+        font_name: 'Precious.ttf'
+        font_size: app.get_dkey('dm.db fs', root.height)
+        size_hint: app.get_dkey('dm.db s_h')
+        pos_hint: app.get_dkey('dm.db p_h')
+        on_release: root.on_descend()
+    SnapCarousel:
+        id: portfolio
+        loop: True
+        on_change:
+            root.on_widget_move(self.index)
+            indexer.update_sources(root.content.get_current_party_index())
+        size_hint: app.get_dkey('dm.cp s_h')
+        pos_hint: app.get_dkey('dm.cp p_h')
+    PartyIndexer:
+        id: indexer
+        size_hint: app.get_dkey('dm.ind s_h')
+        pos_hint: app.get_dkey('dm.ind p_h')
+    LeftRightNavigationArrows:
+        id: arrows
+        animate_distance: app.get_dkey('dm.a ad', root.width)
+        animate_start_first: app.get_dkey('dm.a a_s_l', root.width)
+        animate_start_second: app.get_dkey('dm.a a_s_r', root.width)
+        arrow_sh: app.get_dkey('dm.la s_h')
+        arrow_first_ph: app.get_dkey('dm.la p_h')
+        arrow_second_ph: app.get_dkey('dm.ra p_h')
+        on_first: portfolio.load_previous()
+        on_second: portfolio.load_next()
+    Button:
+        text: 'Test add bonus'
+        size_hint: 0.1, 0.1
+        pos_hint: {'right': 1, 'top': 1}
+        on_release: root.add_bonus()

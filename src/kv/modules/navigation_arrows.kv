@@ -1,0 +1,43 @@
+<NavigationArrows>:
+    PPCHoverPathButton:
+        id: first_arrow
+        size_hint: root.arrow_sh
+        pos_hint: root.arrow_first_ph
+        on_release: root.on_arrow_touch(True)
+    PPCHoverPathButton:
+        id: second_arrow
+        size_hint: root.arrow_sh
+        pos_hint: root.arrow_second_ph
+        on_release: root.on_arrow_touch(False)
+
+<-LeftRightNavigationArrows>:
+    PPCHoverPathButton:
+        id: first_arrow
+        path: 'buttons/ArrowLeft'
+        size_hint: root.arrow_sh
+        pos_hint: root.arrow_first_ph
+        x: root.animate_start_first
+        on_release: root.on_arrow_touch(True)
+    PPCHoverPathButton:
+        id: second_arrow
+        path: 'buttons/ArrowRight'
+        size_hint: root.arrow_sh
+        pos_hint: root.arrow_second_ph
+        x: root.animate_start_second
+        on_release: root.on_arrow_touch(False)
+
+<-UpDownNavigationArrows>:
+    PPCHoverPathButton:
+        id: first_arrow
+        path: 'buttons/ArrowUp'
+        size_hint: root.arrow_sh
+        pos_hint: root.arrow_first_ph
+        y: root.animate_start_first
+        on_release: root.on_arrow_touch(True)
+    PPCHoverPathButton:
+        id: second_arrow
+        path: 'buttons/ArrowDown'
+        size_hint: root.arrow_sh
+        pos_hint: root.arrow_second_ph
+        y: root.animate_start_second
+        on_release: root.on_arrow_touch(False)

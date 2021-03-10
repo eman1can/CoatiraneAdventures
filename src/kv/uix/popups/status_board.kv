@@ -1,0 +1,402 @@
+<SBSkillUnlock>:
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+    overlay_color: 0, 0, 0, 0
+    size_hint: 0.497, 0.6
+    pos_hint: {'center_x': 0.7015, 'center_y': 0.45}
+    border: [0, 0, 0, 0]
+    RelativeLayout:
+        Label:
+            id: title
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: 'Gabriola'
+            text: 'This will cost'
+        PPCHoverPathButton:
+            id: cancel
+            font_name: 'Gabriola'
+            text: 'Cancel'
+            path: 'buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        PPCHoverPathButton:
+            id: confirm
+            font_name: 'Gabriola'
+            text: 'Confirm'
+            path: 'buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+
+
+<SBAbilityUnlock>:
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+    overlay_color: 0, 0, 0, 0
+    size_hint: 0.497, 0.6
+    pos_hint: {'center_x': 0.7015, 'center_y': 0.45}
+    border: [0, 0, 0, 0]
+    RelativeLayout:
+        Label:
+            id: title
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            text_size: self.size
+            pos_hint: {'center_x': 0.5, 'top': 1}
+            font_name: 'Gabriola'
+            text: 'Choose a new ability'
+        GridLayout:
+            rows: 3
+            id: content
+            size_hint: 0.8, 0.6
+            spacing: root.height * 0.05
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        PPCHoverPathButton:
+            id: cancel
+            font_name: 'Gabriola'
+            text: 'Later'
+            path: 'buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.5, 'center_y': 0.075}
+
+
+<SBUnlockAll>:
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+    overlay_color: 0, 0, 0, 0
+    size_hint: 0.497, 0.6
+    pos_hint: {'center_x': 0.7015, 'center_y': 0.45}
+    border: [0, 0, 0, 0]
+    RelativeLayout:
+        PPCHoverPathButton:
+            id: confirm
+            font_name: 'Gabriola'
+            text: 'Confirm'
+            path: 'buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+        PPCHoverPathButton:
+            id: cancel
+            font_name: 'Gabriola'
+            text: 'Cancel'
+            path: 'buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+        GridLayout:
+            # This will be the top half of the screen
+            cols: 5
+            size_hint: 1, 0.475
+            pos_hint: {'x': 0, 'top': 1}
+            padding: self.width * 0.025
+            GridLayout:
+                rows: 3
+                Image:
+                    id: str_falna_image
+                    source: 'items/equipment/empty.png'
+                    allow_stretch: True
+                Label:
+                    id: str_falna_change
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '90 -> 80'
+                GridLayout:
+                    rows: 2
+                    Label:
+                        id: str_change
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        color: 0, 0, 0, 1
+                        text: 'Str. +20'
+                    Label:
+                        id: str_increase
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        valign: 'top'
+                        color: 0, 0, 0, 1
+                        text: '100 -> 120'
+            GridLayout:
+                rows: 3
+                Image:
+                    id: mag_falna_image
+                    source: 'items/equipment/empty.png'
+                    allow_stretch: True
+                Label:
+                    id: mag_falna_change
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '90 -> 80'
+                GridLayout:
+                    rows: 2
+                    Label:
+                        id: mag_change
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        color: 0, 0, 0, 1
+                        text: 'Mag. +20'
+                    Label:
+                        id: mag_increase
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        valign: 'top'
+                        color: 0, 0, 0, 1
+                        text: '100 -> 120'
+            GridLayout:
+                rows: 3
+                Image:
+                    id: end_falna_image
+                    source: 'items/equipment/empty.png'
+                    allow_stretch: True
+                Label:
+                    id: end_falna_change
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '90 -> 80'
+                GridLayout:
+                    rows: 2
+                    Label:
+                        id: end_change
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        color: 0, 0, 0, 1
+                        text: 'End. +20'
+                    Label:
+                        id: end_increase
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        valign: 'top'
+                        color: 0, 0, 0, 1
+                        text: '100 -> 120'
+            GridLayout:
+                rows: 3
+                Image:
+                    id: dex_falna_image
+                    source: 'items/equipment/empty.png'
+                    allow_stretch: True
+                Label:
+                    id: dex_falna_change
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '90 -> 80'
+                GridLayout:
+                    rows: 2
+                    Label:
+                        id: dex_change
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        color: 0, 0, 0, 1
+                        text: 'Dex. +20'
+                    Label:
+                        id: dex_increase
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        valign: 'top'
+                        color: 0, 0, 0, 1
+                        text: '100 -> 120'
+            GridLayout:
+                rows: 3
+                Image:
+                    id: agi_falna_image
+                    source: 'items/equipment/empty.png'
+                    allow_stretch: True
+                Label:
+                    id: agi_falna_change
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '90 -> 80'
+                GridLayout:
+                    rows: 2
+                    Label:
+                        id: agi_change
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        color: 0, 0, 0, 1
+                        text: 'Agi. +20'
+                    Label:
+                        id: agi_increase
+                        text_size: self.size
+                        font_size: self.height
+                        font_name: 'Gabriola'
+                        halign: 'center'
+                        valign: 'top'
+                        color: 0, 0, 0, 1
+                        text: '100 -> 120'
+        Label:
+            text_size: self.size
+            size_hint: 1, 0.075
+            pos_hint: {'x': 0, 'top': 0.55}
+            font_size: self.height
+            halign: 'center'
+            font_name: 'Gabriola'
+            color: 0, 0, 0, 1
+            text: 'Missing'
+        GridLayout:
+            # This will be the bottom half of the screen
+            cols: 5
+            size_hint: 1, 0.317
+            pos_hint: {'x': 0, 'top': 0.475}
+            padding: self.width * 0.025
+            GridLayout:
+                rows: 2
+                Image:
+                    id: str_missing_image
+                    source: 'items/equipment/empty.png'
+                    allow_stretch: True
+                Label:
+                    id: str_missing
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '4'
+            GridLayout:
+                rows: 2
+                Image:
+                    id: mag_missing_image
+                    source: 'items/equipment/empty.png'
+                Label:
+                    id: mag_missing
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '7'
+            GridLayout:
+                rows: 2
+                Image:
+                    id: end_missing_image
+                    source: 'items/equipment/empty.png'
+                Label:
+                    id: end_missing
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '8'
+            GridLayout:
+                rows: 2
+                Image:
+                    id: dex_missing_image
+                    source: 'items/equipment/empty.png'
+                Label:
+                    id: dex_missing
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '9'
+            GridLayout:
+                rows: 2
+                Image:
+                    id: agi_missing_image
+                    source: 'items/equipment/empty.png'
+                Label:
+                    id: agi_missing
+                    text_size: self.size
+                    font_size: self.height * 0.5
+                    font_name: 'Gabriola'
+                    halign: 'center'
+                    valign: 'top'
+                    color: 0, 0, 0, 1
+                    text: '1'
+
+
+<SlotConfirm>
+    auto_dismiss: False
+    background: 'screens/stats/sort_background.png'
+    size_hint: 0.337, 0.6
+    pos_hint: {'center_x': 0.7015, 'center_y': 0.45}
+#    size_hint: 0.5, 0.889
+#    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    RelativeLayout:
+        Label:
+            id: label_large
+            color: 0, 0, 0, 1
+            font_name: 'Gabriola'
+            text: root.text_main
+            font_size: root.height * 0.2
+            size_hint: 0.4, 0.25
+            pos_hint: {'center_x': 0.5, 'center_y': 0.85}
+        Label:
+            id: label_small
+            color: 0, 0, 0, 1
+            font_name: 'Gabriola'
+            text: root.text_update
+            font_size: root.height * 0.1
+            size_hint: 0.4, 0.25
+            pos_hint: {'center_x': 0.5, 'center_y': 0.675}
+        PPCHoverPathButton:
+            id: cancel
+            font_name: 'Gabriola'
+            text: 'Cancel'
+            path: 'buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: self.height * 0.6
+            size_hint: 0.35, 0.132
+            pos_hint: {'center_x': 0.3, 'center_y': 0.2}
+        PPCHoverPathButton:
+            id: confirm
+            font_name: 'Gabriola'
+            text: 'Confirm'
+            path: 'buttons/long_stat'
+            on_release: root.dispatch('on_confirm')
+            font_size: self.height * 0.6
+            size_hint: 0.35, 0.132
+            pos_hint: {'center_x': 0.7, 'center_y': 0.2}

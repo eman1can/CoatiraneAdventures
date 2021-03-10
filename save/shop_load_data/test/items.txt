@@ -1,0 +1,133 @@
+S, compass, Compass, general, single, 375
+none
+Have trouble getting lost? Buy a compass and never get lost again!
+
+S, pocket_watch, Pocket Watch, general, single, 375
+none
+Keep losing track of time? Buy a watch and always know the time!
+
+S, harvesting_knife_weak, Harvesting Knife, general, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+Warning: May not work on Monsters Level 5 and below.
+
+S, pickaxe_weak, Pickaxe, general, single, 500
+none
+An essential tool for harvesting straight from the dungeon!
+Warning: May not work on items Level 12 and below.
+
+S, shovel_weak, Shovel, general, single, 500
+none
+An essential tool for harvesting straight from the dungeon!
+Warning: May not work on items Level 12 and below.
+
+S, axe_weak, Axe, general, single, 500
+none
+An essential tool for harvesting straight from the dungeon!
+Warning: May not work on items Level 12 and below.
+
+S, harvesting_knife_sturdy, Sturdy Harvesting Knife, general, single, 1500
+floor, 11
+An essential tool for collecting all manner of items in the dungeon!
+Warning: May not work on Monsters Level 12 and below.
+
+S, pickaxe_sturdy, Sturdy Pickaxe, general, single, 1750
+floor, 11
+An essential tool for harvesting straight from the dungeon!
+Warning: May not work on items Level 17 and below.
+
+S, harvesting_knife_strong, Strong Harvesting Knife, general, single, 5000
+floor, 16
+An essential tool for collecting all manner of items in the dungeon!
+Warning: May not work on Monsters Level 17 and below.
+
+S, harvesting_knife_mythril, Mythril Harvesting Knife, general, single, 25000
+floor, 29
+An essential tool for collecting all manner of items in the dungeon!
+Warning: May not work on Monsters Level 30 and below.
+
+S, harvesting_knife_adamantite, Adamantite Harvesting Knife, general, single, 100000
+floor, 49
+An essential tool for collecting all manner of items in the dungeon!
+Warning: May not work on Monsters Level 50 and below.
+
+S, path_map_floor_1, Main Path, floor_1, single, 500
+none
+A detailed map to get you to the second floor.
+
+S, full_map_floor_1, Full Map, floor_1, single, 1500
+none
+A detailed map of the entire first floor!
+
+S, resource_map_floor_1, Resource Map, floor_1, single, 2500
+map_data, full_map_floor_1
+Shows the most common resource locations on the first floor from the past week.
+
+S, path_map_floor_2, Main Path, floor_2, single, 500
+none
+A detailed map to get you to the third floor.
+
+S, full_map_floor_2, Full Map, floor_2, single, 1500
+none
+A detailed map of the entire second floor!
+
+S, resource_map_floor_2, Resource Map, floor_2, single, 2500
+map_data, full_map_floor_2
+Shows the most common resource locations on the second floor from the past week.
+
+S, path_map_floor_3, Main Path, floor_3, single, 500
+none
+A detailed map to get you to the fourth floor.
+
+S, full_map_floor_3, Full Map, floor_3, single, 1500
+none
+A detailed map of the entire third floor!
+
+S, resource_map_floor_3, Resource Map, floor_3, single, 2500
+map_data, full_map_floor_3
+Shows the most common resource locations on the third floor from the past week.
+
+D, fang_goblin_monster_drop, Goblin Fang, multi, 20, 30
+A small fang belonging to a Goblin.
+
+D, claw_goblin_monster_drop, Goblin Claw, multi, 20, 30
+A small claw belonging to a Goblin.
+
+D, fang_kobold_monster_drop, Kobold Fang, multi, 40, 50
+A medium fang belonging to a Kobold
+
+D, claw_kobold_monster_drop, Kobold Claw, multi, 40, 50
+A medium claw belonging to a Kobold
+
+D, egg_jack_bird_monster_drop, Jack Bird's Golden Egg, multi, 1250000, 1500000
+A solid gold egg, laid by a Jack Bird
+
+D, tiny_tiny_magic_stone, Tiny Magic Stone Sliver, multi, 100, 120
+A tiny fragment of a magic stone.
+
+D, small_tiny_magic_stone, Small Magic Stone Sliver, multi, 140, 160
+A tiny fragment of a magic stone.
+
+D, medium_tiny_magic_stone, Medium Magic Stone Sliver, multi, 180, 250
+A tiny fragment of a magic stone.
+
+D, large_tiny_magic_stone, Large Magic Stone Sliver, multi, 250, 300
+A tiny fragment of a magic stone.
+
+D, huge_tiny_magic_stone, Huge Magic Stone Sliver, multi, 300, 400
+A tiny fragment of a magic stone.
+
+D, tiny_small_magic_stone, Tiny Magic Stone Fragment, multi, 500, 600
+A small fragment of a magic stone.
+
+D, small_small_magic_stone, Small Magic Stone Fragment, multi, 750, 1000
+A small fragment of a magic stone.
+
+D, medium_small_magic_stone, Medium Magic Stone Fragment, multi, 1100, 1250
+A small fragment of a magic stone.
+
+D, large_small_magic_stone, Large Magic Stone Fragment, multi, 1350, 1600
+A small fragment of a magic stone.
+
+D, huge_tiny_magic_stone, Huge Magic Stone Fragment, multi, 1750, 2000
+A small fragment of a magic stone.

@@ -1,0 +1,18 @@
+<DungeonResult>:
+    Label:
+        font_name: 'Precious'
+        font_size: root.height * 0.1
+        size_hint: 0.5, 0.2
+        pos_hint: {'top': 1}
+        text: root.win_message
+        color: 0, 0, 0, 1
+    AsyncImage:
+        source: root.image_source
+        allow_stretch: True
+        size_hint: 0.563, 1
+        pos_hint: {'right': 1, 'top': 1}
+    PPCHoverPathButton:
+        path: 'buttons/click_to_continue'
+        on_release: root.goto_dungeon_main()
+        size_hint: 0.3, 0.0762
+        pos_hint: {'right': 1}

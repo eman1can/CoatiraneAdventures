@@ -1,0 +1,114 @@
+Smithing
+~
+As a diety of blacksmithing, you are more attractive to adventurers interested in blacksmithing, you find it easier to create masterworks, find materials for your equipment, and get better prices when buying and selling equipment.
+
++30% chance to recruit an adventurer who is a blacksmith
++30% luck for equipment materials
+-30% of equipment prices
++30% revenue when selling equipment
++30% chance for a great success when blacksmithing
+~
++smith recruitment; +smithing; +item revenue
+-
+Medicine
+~
+As a diety of medicine, you are more attrative to adventurers interested in healing, find it easier to craft healing tinctures, and adventurers with your blessing are better at healing.
+
++30% chance to recruit a healer
++30% magic for all Healers
++30% healing potion effectiveness
++30% chance for a great success when crafting healing potions
+~
++healer recruitment; +healer magic; +healing potions
+-
+Battle
+~
+As a diety of battle, you are more attractive to adventurers with a thirst for battle, find it easier to create weapons of battle, and adventurers with your blessing are stronger.
+
++30% chance to recruit a physical attack or magical attack adventurer
++30% strength or magic to all adventurers
++30% chance for a great success when crafting weapons
+~
++attack recruitment; +attack stats; +weapons
+-
+Potions
+~
+As a diety of potions, you are more attractive to adventurers interested in crafting, find it easier to find potion materials, and all potions you make are more effective.
+
++30% chance to recruit an adventurer who is a crafter
++30% luck for potions materials
++15% potion effectiveness
++30% chance for a great success when crafting potions
+~
++crafter recruitment; +potions
+-
+Home
+~
+As a diety of the home, you are more attractive to all adventurers, and adventurers with your blessing grow faster and find it easier to cooperate.
+
++30% chance for a successful recruitment
++30% faster adventurer growth
++300% faster familiarity bonus growth
++300% familiarity bonus effectiveness
+~
++recruitment; +growth; +familiarity bonus
+-
+Broken
+~
+As a diety of the Broken, you are more attractive to female adventurers, and female adventurers with your blessing grow faster and stronger.
+
++30% chance to recruit a female adventurer
++30% stats for female adventurers
++30% faster female adventurer growth
+~
++female recruitment; +female stats; +female growth
+-
+Wisdom
+~
+As a diety of wisdom, you are more attractive to magical adventurers, and adventurers with your blessing grow faster and find it easier to access rare skills.
+
++30% chance to recruit an magical attack adventurer or healer
++30% faster adventurer growth
++30% chance for an adventurer to get a rare skill
+~
++magical,healing recruitment; +growth; +rare skills
+-
+Weather
+~
+As a diety of weather, you are more attractive to wind and thunder aligned adventurers, wind and thunder aligned adventurers with your blessing grow stronger, and wind and thunder is more effective under your watch.
+
++30% chance to recruit a thunder or wind adventurer
++30% stats for thunder and wind adventurers
++30% chance for a great success when crafting thunder or wind aligned items
+~
++thunder,wind recruitment; +thunder,wind stats
+-
+Nature
+~
+As a diety of nature, you are more attractive to earth and water aligned adventurers, earth and water aligned adventurers with your blessing grow stronger, and earth and water is more effective under your watch.
+
++30% chance to recruit a earth or water adventurer
++30% stats for earth and water adventurers
++30% chance for a great success when crafting earth or water aligned items
+~
++earth,water recruitment; +earth,water stats
+-
+Light
+~
+As a diety of light, you are more attractive to light and fire aligned adventurers, light and fire aligned adventurers with your blessing grow stronger, and light and fire is more effective under your watch.
+
++30% chance to recruit a light or Fire adventurer
++30% stats for light and fire adventurers
++30% chance for a great success when crafting light or fire aligned items
+~
++light,fire recruitment; +light,fire stats
+-
+Darkness
+~
+As a diety of darkness, you are more attractive to dark aligned adventurers, dark aligned adventurers with your blessing grow stronger, and darkness is more effective under your watch.
+
++30% chance to recruit a dark adventurer
++30% stats for dark adventurers
++30% chance for a great success when crafting dark aligned items
+~
++dark recruitment; +dark stats

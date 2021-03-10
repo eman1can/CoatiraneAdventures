@@ -1,0 +1,240 @@
+<DisplayEquipmentSlot>:
+    Image:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+#    Label:
+#        id: label
+#        text: str(root.slot_name).capitalize()
+#        color: root.color
+#        font_name: root.font
+#        size: self.texture_size
+#        size_hint: app.get_dkey('eqs.lbl s_h')
+#        font_size: app.get_dkey('eqs.lbl fs', root.height)
+#        pos_hint: app.get_dkey('eqs.lbl p_h')
+    PPCHoverPathButton:
+        id: detail_equip
+        opacity: 0
+        collision_source: 'buttons/equipment.collision.png'
+        size_hint: app.get_dkey('deqs.butt s_h')
+        pos_hint: app.get_dkey('deqs.butt p_h')
+        on_release: print('touched' + str(root.slot_name))
+    Label:
+        id: label_equip
+        text: 'Not equipped' if root.item is None else root.item.get_name().capitalize()
+        color: root.color
+        font_name: root.font
+        size_hint: app.get_dkey('deqs.lble.one s_h') if root.item is None else app.get_dkey('deqs.lble.two s_h')
+        font_size: app.get_dkey('deqs.lble fs', root.height)
+        pos_hint: app.get_dkey('deqs.lble.one p_h') if root.item is None else app.get_dkey('deqs.lble.two p_h')
+    Image:
+        id: image_equip
+        source: 'items/equipment/empty.png' if root.item is None else 'items/equipment/' + root.item.get_id() + '.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deqs.imge s_h')
+        pos_hint: app.get_dkey('deqs.imge p_h')
+    DurabilityBar:
+        max: 100 if root.item is None else root.item.get_durability()
+        value: 0 if root.item is None else root.item.get_durability_current()
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deqs.dbb s_h')
+        pos_hint: app.get_dkey('deqs.dbb p_h')
+
+
+<DetailEquipmentSlot>:
+    Image:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+    Label:
+        id: slot_name
+        text: '[b]' + str(root.slot_name).capitalize() + '[/b]'
+        markup: True
+        font_name: 'Gabriola'
+        font_size: app.get_dkey('deteqs.lbl fs', self.height)
+        color: app.get_dkey('deteqs.lbl c')
+        size_hint: app.get_dkey('deteqs.lbl s_h')
+        width: self.texture_size[0]
+        pos_hint: app.get_dkey('deteqs.lbl p_h')
+    Image:
+        id: type
+        source: '' if root.item is None else 'screens/equip/' + root.item.get_type() + 'Attack_black.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deteqs.timg s_h')
+        pos_hint: app.get_dkey('deteqs.timg p_h')
+    Image:
+        id: element
+        source: '' if root.item is None else 'screens/attributes/' + root.item.get_element() + '.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deteqs.eimg s_h')
+        pos_hint: app.get_dkey('deteqs.eimg p_h')
+    Image:
+        id: rank
+        source: '' if root.item is None else 'screens/stats/' + root.item.get_rank() + '.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deteqs.rimg s_h')
+        pos_hint: app.get_dkey('deteqs.rimg p_h')
+        allow_stretch: True
+    Image:
+        id: background_slot
+        source: root.slot_source
+        size_hint: app.get_dkey('deteqs.sltbg s_h')
+        pos_hint: app.get_dkey('deteqs.sltbg p_h')
+        allow_stretch: True
+        keep_ratio: False
+    PPCHoverPathButton:
+        id: detail_equip
+        collision_source: 'buttons/equipment.collision.png'
+        size_hint: app.get_dkey('deteqs.butt s_h')
+        pos_hint: app.get_dkey('deteqs.butt p_h')
+        opacity: 0
+        on_release: print('touched' + root.slot_name)
+    Label:
+        text: 'Not Equipped' if root.item is None else str(root.item.get_name()).capitalize()
+        font_name: 'Gabriola'
+        font_size: app.get_dkey('deteqs.lble fs', root.height)
+        color: app.get_dkey('deteqs.lble c')
+        size_hint: app.get_dkey('deteqs.lble.one s_h') if root.item is None else app.get_dkey('deteqs.lble.two s_h')
+        pos_hint: app.get_dkey('deteqs.lble.one p_h') if root.item is None else app.get_dkey('deteqs.lble.two p_h')
+    Image:
+        source: 'items/equipment/empty.png' if root.item is None else 'items/equipment/' + root.item.get_id() + '.png'
+        source: 'items/equipment/empty.png' if root.item is None else 'items/equipment/' + root.item.get_id() + '.png'
+        opacity: 0 if root.item is None else 1
+        size_hint: app.get_dkey('deteqs.imge s_h')
+        pos_hint: app.get_dkey('deteqs.imge p_h')
+    Label:
+        text: 'Durability:  0/0\nScore:           0\nValue:          0' if root.item is None else 'Durability:  ' + str(root.item.get_durability_current()) + '/' + str(root.item.get_durability()) + '\nScore:           ' + str(root.item.get_score()) + '\nValue:          ' + str(root.item.get_value())
+        halign: 'left'
+        valign: 'top'
+        font_name: 'Gabriola'
+        font_size: app.get_dkey('deteqs.lbls fs', root.height)
+        color: app.get_dkey('deteqs.lbls c')
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: app.get_dkey('deteqs.lbls p_h')
+    ScrollView:
+        do_scroll_x: False
+        do_scroll_y: True
+        size_hint: app.get_dkey('deteqs.lbg s_h')
+        pos_hint: app.get_dkey('deteqs.lbg p_h')
+        GridLayout:
+            cols: 2
+            size_hint_y: None
+            orientation: 'vertical'
+            height: self.minimum_height
+            Image:
+                id: patk
+                source: 'screens/equip/PhysicalAttack_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_phyatk())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+            Image:
+                id: matk
+                source: 'screens/equip/MagicalAttack_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_magatk())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+            Image:
+                id: def
+                source: 'screens/equip/Defense_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_defense())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+            Image:
+                id: health
+                source: 'screens/equip/Health_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_health())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+            Image:
+                id: mana
+                source: 'screens/equip/Mana_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_mana())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+            Image:
+                id: strength
+                source: 'screens/equip/Str_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_strength())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+            Image:
+                id: magic
+                source: 'screens/equip/Mag_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_magic())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+            Image:
+                id: endurance
+                source: 'screens/equip/End_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_endurance())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+            Image:
+                id: dexerity
+                source: 'screens/equip/Dex_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_dexterity())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+            Image:
+                id: agility
+                source: 'screens/equip/Agi_black.png'
+                size_hint: app.get_dkey('deteqs.lstimg s_h')
+                height: app.get_dkey('deteqs.lstimg h', root.height)
+            Label:
+                text: '0' if root.item is None else str(root.item.get_agility())
+                color: app.get_dkey('deteqs.lstimg c')
+                font_name: 'Gabriola'
+    Image:
+        source: root.list_source
+        size_hint: app.get_dkey('deteqs.lbg s_h')
+        pos_hint: app.get_dkey('deteqs.lbg p_h')
+        allow_stretch: True
+        keep_ratio: False
+
+
+<DurabilityBar>:
+    Image:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+        keep_ratio: False
+        opacity: root.opacity
+    StencilView:
+        id: clip
+        size_hint: root.value / float(root.max), 1
+        Image:
+            id: foreground
+            source: root.foreground_source
+            allow_stretch: True
+            size_hint: None, None
+            size: root.size
+            keep_ratio: False
+            opacity: root.opacity

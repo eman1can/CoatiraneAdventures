@@ -1,0 +1,141 @@
+<AbilityStatBox>:
+    Image:
+        id: background
+        source: root.background_source
+        allow_stretch: True
+        keep_ratio: False
+    Label:
+        id: strength_label
+        text: 'Strength'
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.str.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    Image:
+        id: strength_image
+        source: root.strength_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.str.img p_h')
+    Label:
+        id: strength_label_number
+        text: str(round(root.strength, 2))
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.str.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)
+    Label:
+        id: magic_label
+        text: 'Magic'
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.mag.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    Image:
+        id: magic_image
+        source: root.magic_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.mag.img p_h')
+    Label:
+        id: magic_label_number
+        text: str(round(root.magic, 2))
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.mag.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)
+    Label:
+        id: endurance_label
+        text: 'Endurance'
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.end.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    Image:
+        id: endurance_image
+        source: root.endurance_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.end.img p_h')
+    Label:
+        id: endurance_label_number
+        text: str(round(root.endurance, 2))
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.end.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)
+    Label:
+        id: dexterity_label
+        text: 'Dexterity'
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.dex.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    Image:
+        id: dexterity_image
+        source: root.dexterity_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.dex.img p_h')
+    Label:
+        id: dexterity_label_number
+        text: str(round(root.dexterity, 2))
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.dex.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)
+    Label:
+        id: agility_label
+        text: 'Agility'
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        size_hint: app.get_dkey('asb.lbl s_h')
+        pos_hint: app.get_dkey('asb.agi.lbl p_h')
+        font_size: app.get_dkey('asb.lbl fs', root.height)
+    Image:
+        id: agility_image
+        source: root.agility_path
+        allow_stretch: True
+        size_hint: app.get_dkey('asb.img s_h')
+        pos_hint: app.get_dkey('asb.agi.img p_h')
+    Label:
+        id: agility_label_number
+        text: str(round(root.agility, 2))
+        color: root.color
+        outline_width: 1
+        outline_color: 0, 0, 0, 1
+        font_name: root.font
+        width: self.texture_size[0]
+        size_hint: app.get_dkey('asb.num s_h')
+        pos_hint: app.get_dkey('asb.agi.num p_h')
+        font_size: app.get_dkey('asb.num fs', root.height)

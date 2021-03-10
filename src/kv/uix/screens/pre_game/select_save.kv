@@ -1,0 +1,172 @@
+<SelectSaveScreen>:
+    name: 'save_select'
+    PPCHoverPathButton:
+        id: back_button
+        path: 'buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    Label:
+        id: title
+        text: 'Select Save'
+        font_name: 'Precious'
+        font_size: '60pt' #'fonts.main_title'
+        size_hint: 0.75, 0.1
+        pos_hint: {'center_x': 0.5, 'top': 0.9}
+        color: 0, 0, 0, 1
+        canvas:
+            Color:
+                rgba: 0, 0, 0, 1
+            Line:
+                width: 1
+                points: self.x, self.y, self.right, self.y
+    SaveSlot:
+        id: save_slot_1
+        size_hint: 0.7, 0.2
+        pos_hint: {'center_x': 0.5, 'center_y': 0.625}
+        title: 'Save Slot 1'
+        on_release: root.load_save(1)
+    SaveSlot:
+        id: save_slot_2
+        size_hint: 0.7, 0.2
+        pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+        title: 'Save Slot 2'
+        on_release: root.load_save(2)
+    SaveSlot:
+        id: save_slot_3
+        size_hint: 0.7, 0.2
+        pos_hint: {'center_x': 0.5, 'center_y': 0.175}
+        title: 'Save Slot 3'
+        on_release: root.load_save(3)
+
+<GameInfoLabel@Label>:
+    font_name: 'Gabriola'
+    font_size: '25pt' # 'fonts.medium_body'
+
+<SaveSlot>:
+    path: 'buttons/save_slot'
+    canvas:
+#        Color:
+#            rgba: 1, 1, 1, 1
+#        Rectangle:
+#            size: self.size
+#            pos: self.pos
+        Color:
+            rgba: 0, 0, 0, 1
+        Line:
+            width: 2
+            points: self.x + self.width * 0.2, self.y + self.height * 0.1, self.x + self.width * 0.2, self.y + self.height * 0.9
+    RelativeLayout:
+        size: self.parent.size
+        pos: self.parent.pos
+        GameInfoLabel:
+            text: root.title
+            font_size: '40pt'
+            size_hint: (None, 0.25) if version.text != '' else (None, 1)
+            width: self.texture_size[0]
+            color: 0, 0, 0, 1
+            pos_hint: {'x': 0.025, 'center_y': 0.75}
+        GameInfoLabel:
+            id: version
+            size_hint: None, 0.25
+            width: self.texture_size[0]
+            pos_hint: {'x': 0.025, 'center_y': 0.375}
+            color: 0, 0, 0, 1
+            opacity: 0 if self.text == '' else 1
+        GameInfoLabel:
+            id: time
+            size_hint: None, 0.25
+            width: self.texture_size[0]
+            pos_hint: {'x': 0.025, 'center_y': 0.2}
+            color: 0, 0, 0, 1
+            opacity: 0 if self.text == '' else 1
+        Image:
+            id: symbol
+            size_hint: 0.145, 0.9
+            pos_hint: {'x': 0.208, 'top': 0.95}
+            opacity: 0 if self.source is None else 1
+        Image:
+            id: gender_symbol
+            size_hint: 0.0429, 0.267
+            pos_hint: {'x': 0.361, 'top': 0.9}
+            opacity: 0 if self.source is None else 1
+        Image:
+            id: domain_symbol
+            size_hint: 0.0429, 0.267
+            pos_hint: {'x': 0.361, 'top': 0.583}
+            opacity: 0 if self.source is None else 1
+        GameInfoLabel:
+            id: name
+            text: ''
+            font_size: '50pt'
+            size_hint: None, 0.267
+            width: self.texture_size[0]
+            pos_hint: {'x': 0.4119, 'top': 0.9}
+            color:  0, 0, 0, 1
+            opacity: 0 if self.text == '' else 1
+        GameInfoLabel:
+            id: domain_name
+            text: ''
+            font_size: '50pt'
+            size_hint: None, 0.267
+            width: self.texture_size[0]
+            pos_hint: {'x': 0.4119, 'top': 0.583}
+            color: 0, 0, 0, 1
+            opacity: 0 if self.text == '' else 1
+        GameInfoLabel:
+            id: new_game
+            text: 'Start a New Game'
+            font_size: '50pt'
+            size_hint: 0.8, 1
+            pos_hint: {'right': 1}
+            color: 0, 0, 0, 1
+            opacity: 1 if rank.text == '' else 0
+        GameInfoLabel:
+            id: rank
+            size_hint: None, 0.267
+            width: self.texture_size[0]
+            pos_hint: {'x': 0.361, 'y': 0.05}
+            color: 0, 0, 0, 1
+            opacity: 0 if self.text == '' else 1
+        GameInfoLabel:
+            id: varenth
+            size_hint: None, 0.267
+            width: self.texture_size[0]
+            color: 0, 0, 0, 1
+            pos_hint: {'x': 0.584, 'top': 0.95}
+            opacity: 0 if self.text == '' else 1
+        GameInfoLabel:
+            id: chars
+            size_hint: None, 0.267
+            width: self.texture_size[0]
+            color: 0, 0, 0, 1
+            pos_hint: {'x': 0.584, 'center_y': 0.5}
+            opacity: 0 if self.text == '' else 1
+        GameInfoLabel:
+            id: quests
+            size_hint: None, 0.25
+            width: self.texture_size[0]
+            color: 0, 0, 0, 1
+            pos_hint: {'x': 0.584, 'y': 0.05}
+            opacity: 0 if self.text == '' else 1
+        GameInfoLabel:
+            id: floor
+            size_hint: None, 0.267
+            width: self.texture_size[0]
+            color: 0, 0, 0, 1
+            pos_hint: {'x': 0.792, 'top': 0.95}
+            opacity: 0 if self.text == '' else 1
+        GameInfoLabel:
+            id: score
+            size_hint: None, 0.267
+            width: self.texture_size[0]
+            color: 0, 0, 0, 1
+            pos_hint: {'x': 0.792, 'center_y': 0.5}
+            opacity: 0 if self.text == '' else 1
+        GameInfoLabel:
+            id: skill
+            size_hint: None, 0.267
+            width: self.texture_size[0]
+            color: 0, 0, 0, 1
+            pos_hint: {'x': 0.792, 'y': 0.05}
+            opacity: 0 if self.text == '' else 1

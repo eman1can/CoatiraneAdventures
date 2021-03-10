@@ -1,0 +1,73 @@
+#:import SinglePreview uix.screens.character_display.single_preview.SinglePreview
+#:import RecyclePreview uix.screens.character_display.scroll_preview.RecyclePreview
+
+<CharacterSelector>:
+    name: 'select_char'
+    Image:
+        id: overlay
+        source: 'backgrounds/select_char_overlay.png'
+    Image:
+        id: number_icon
+        source: 'screens/stats/icon.png'
+        size: app.get_dkey('cs.ni s_h', root.width, root.height)
+        pos: app.get_dkey('cs.ni pos', root.width, root.height)
+    PPCHoverPathButton:
+        id: back
+        path: 'buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    PPCHoverPathButton:
+        id: sort
+        path: 'buttons/long_stat'
+        font_size: app.get_dkey('cs.bs fs', root.height)
+        size_hint: app.get_dkey('cs.bs s_h')
+        pos_hint: app.get_dkey('cs.bs.s p_h')
+        on_release: root.on_sort()
+    PPCHoverPathButton:
+        id: filter
+        path: 'buttons/long_stat'
+        text: 'Filter'
+        font_size: app.get_dkey('cs.bs fs', root.height)
+        size_hint: app.get_dkey('cs.bs s_h')
+        pos_hint: app.get_dkey('cs.bs.f p_h')
+        on_release: root.on_filter()
+    PPCHoverPathToggleButton:
+        id: switch_display
+        path: 'buttons/long_stat'
+        text: 'Switch Display'
+        font_size: app.get_dkey('cs.bs fs', root.height)
+        size_hint: app.get_dkey('cs.bs s_h')
+        pos_hint: app.get_dkey('cs.bs.sd p_h')
+        on_release: root.on_scroll() if self.state.endswith('normal') else root.on_grid()
+        #toggle_enabled: True
+        #on_toggle_up: root.on_scroll()
+        #on_toggle_down: root.on_grid()
+    Label:
+        id: number
+        font_name: 'Precious.ttf'
+        text: str(root.character_num)
+        color: app.get_dkey('cs.nl c')
+        font_size: app.get_dkey('cs.nl fs', root.height)
+        size_hint: app.get_dkey('cs.nl s_h')
+        pos_hint: app.get_dkey('cs.nl p_h')
+    Label:
+        id: no_chars
+        font_name: 'Gabriola.ttf'
+        text: 'No Characters to Display'
+        color: 0, 0, 0, 1
+        font_size: root.height * 0.1
+        opacity: 0 if multi is None else 0 if root.character_num > 0 else 1
+        pos_hint: {'y': 0, 'right': 1}
+        size_hint_x: 1 if root.has_left is None else 0.85
+        size_hint_y: 0.85
+    SinglePreview:
+        id: single
+        size_hint: (0.15, 0.85) if root.has_left else(0, 0.85)
+        opacity: 1 if root.has_left else 0
+        is_support: root.is_support
+    RecyclePreview:
+        id: multi
+        size_hint: (0.85, 0.85) if root.has_left else (1, 0.85)
+        pos_hint: {'right': 1}
+        #is_support: root.is_support

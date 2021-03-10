@@ -1,0 +1,26 @@
+#:import SquareCharacterPreview uix.screens.character_display.square_preview.SquareCharacterPreview
+#:import FilledCharacterPreview uix.screens.character_display.filled_preview.FilledCharacterPreview
+
+<ScrollPreview>:
+    id: layout
+    rows: 1
+    default_size: app.get_dkey('scrp ds', app.width)
+    default_size_hint: app.get_dkey('scrp ds_h')
+    size_hint_x: None
+    width: self.minimum_width
+    orientation: 'tb-lr'
+    spacing: app.get_dkey('scrp spa')
+    padding: app.get_dkey('scrp pad')
+
+<GridPreview>:
+    id: layout
+    cols: 8
+    default_size_hint: app.get_dkey('grdp ds_h')
+    col_default_width: (self.width - self.padding[0] * 2 - self.spacing[0] * 7) / 8
+    row_default_height: (self.width - self.padding[0] * 2 - self.spacing[0] * 7) / 8
+#    default_size: app.get_dkey('grdp ds', app.width)
+    size_hint_y: None
+    height: self.minimum_height
+    orientation: 'lr-tb'
+    spacing: app.get_dkey('grdp spa', self.width)
+    padding: app.get_dkey('grdp pad', self.width)
