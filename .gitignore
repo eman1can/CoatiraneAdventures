@@ -14,3 +14,6 @@ venv/
 kivy-kivent-e22f871/
 kivy/
 save/logs
+res/characters
+res/enemies
+res/lwf
