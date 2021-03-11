@@ -1,5 +1,6 @@
 __all__ = ('CALoader',)
 
+from kivy.resources import resource_find
 from kivy.storage.jsonstore import JsonStore
 from kivy.uix.widget import Widget
 from kivy.properties import ListProperty
@@ -31,13 +32,13 @@ class CALoader(Widget):
     messages = ListProperty([])
 
     def __init__(self, program_type, **kwargs):
-        Builder.load_file('kv/loading_screen.kv')
+        Builder.load_file(resource_find('loading_screen.kv'))
         self.program_type = program_type
         self.layers = {'skills': {}, 'abilities': {}, 'enemies': {}, 'families': {}, 'chars': {}, 'floors': {}, 'shop_items': {}, 'drop_items': {}, 'save': None}
         super().__init__(**kwargs)
 
     def load_base_values(self):
-        file = open("../save/loading_" + self.program_type + ".txt", "r")
+        file = open(resource_find('data/loading_' + self.program_type + '.txt'), "r")
         index = 0
         for x in file:
             if index == 0:
@@ -119,7 +120,7 @@ class CALoader(Widget):
             triggers = []
             if isfile:
                 delimiters = ['\n', '\n', '\n', '#', '\n', '\n', '#\n', '\n\n', '\n']
-                file = open(filename, 'r', encoding='utf-8')
+                file = open(resource_find(filename), 'r', encoding='utf-8')
                 if file.mode == 'r':
                     data = file.read()
                     lines = data.split(delimiters[self.curr_values[CURRENT_INDEX]])
@@ -139,12 +140,13 @@ class CALoader(Widget):
 
         triggers = [
             Clock.create_trigger(lambda dt: load_block(load_save_chunk, False, f"{save_slot}", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
-            Clock.create_trigger(lambda dt: load_block(load_move_chunk, True, f"../save/char_load_data/{self.program_type}/SA.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
-            Clock.create_trigger(lambda dt: load_block(load_enemy_chunk, True, f"../save/enemy_load_data/{self.program_type}/Enemies.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
-            Clock.create_trigger(lambda dt: load_block(load_family_chunk, True, f"../save/family_load_data/{self.program_type}/Families.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
-            Clock.create_trigger(lambda dt: load_block(load_char_chunk, True, f"../save/char_load_data/{self.program_type}/CharacterDefinitions.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
-            Clock.create_trigger(lambda dt: load_block(load_floor_chunk, True, f"../save/floor_load_data/{self.program_type}/Floors.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
-            Clock.create_trigger(lambda dt: load_block(load_shop_item_chunk, True, f"../save/shop_load_data/{self.program_type}/items.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
+            Clock.create_trigger(lambda dt: load_block(load_move_chunk, True, f"data/char_load_data/{self.program_type}/SA.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
+            Clock.create_trigger(lambda dt: load_block(load_enemy_chunk, True, f"data/enemy_load_data/{self.program_type}/Enemies.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
+            Clock.create_trigger(lambda dt: load_block(load_family_chunk, True, f"data/family_load_data/{self.program_type}/Families.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
+            Clock.create_trigger(lambda dt: load_block(load_char_chunk, True, f"data/char_load_data/{self.program_type}/CharacterDefinitions.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(
+                loader)])),
+            Clock.create_trigger(lambda dt: load_block(load_floor_chunk, True, f"data/floor_load_data/{self.program_type}/Floors.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
+            Clock.create_trigger(lambda dt: load_block(load_shop_item_chunk, True, f"data/shop_load_data/{self.program_type}/items.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
             Clock.create_trigger(lambda dt: load_block(load_screen_chunk, False, "", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)]))
         ]
         loader = GameLoader(triggers)

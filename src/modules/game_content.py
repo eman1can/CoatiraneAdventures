@@ -4,7 +4,7 @@ __all__ = ('GameContent',)
 from game.battle_character import create_battle_character
 from game.floor_data import FloorData
 from refs import Refs
-from src.spine.skeleton.skeletonloader import SkeletonLoader
+# from src.spine.skeleton.skeletonloader import SkeletonLoader
 
 # Standard Library Imports
 import random
@@ -26,7 +26,7 @@ class GameContent:
         self._program_type = program_type
 
         self._skeleton_scale = 0.325
-        self._skel_loader = SkeletonLoader()
+        # self._skel_loader = SkeletonLoader()
 
         self._current_floor = 0
         self._floor_data = None

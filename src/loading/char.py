@@ -2,6 +2,7 @@
 from game.character import Character
 from game.rank import Rank
 from game.skill import Skill
+from kivy.resources import resource_find
 
 CHAR_ATTACK_TYPE = 0
 CHAR_TYPE = 1
@@ -38,13 +39,14 @@ def load_char_chunk(line, loader, program_type, callbacks):
         for index in range(len(values)):
             values[index] = values[index].strip()
 
-        try:
-            ranks = Rank.load_ranks("../save/char_load_data/" + program_type + "/grids/" + values[CHAR_ID] + ".txt")
-        except FileNotFoundError:
-            ranks = Rank.load_ranks("../save/char_load_data/" + program_type + "/grids/base.txt")
+        path = resource_find('data/char_load_data/' + program_type + '/grids/' + values[CHAR_ID] + '.txt')
+        if path:
+            ranks = Rank.load_ranks(path)
+        else:
+            ranks = Rank.load_ranks(resource_find('data/char_load_data/' + program_type + '/grids/base.txt'))
         # ranks = [CHAR_UNLOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED]
-        res_path = '../res/characters/' + values[CHAR_ID] + '/' + values[CHAR_ID]
-        skel_path = '../res/characters/' + values[CHAR_ID] + '/' + values[CHAR_SKEL_ID] + '.skel'
+        res_path = 'res/characters/' + values[CHAR_ID] + '/' + values[CHAR_ID]
+        skel_path = 'res/characters/' + values[CHAR_ID] + '/' + values[CHAR_SKEL_ID] + '.skel'
         skills = []
         if values[CHAR_ATTACK_TYPE] == 'A':
             skills.append(int(values[CHAR_BASE_MOVE]))

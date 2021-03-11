@@ -1,11 +1,11 @@
-from kivy.graphics.context_instructions import Scale, Translate, Color, MatrixInstruction, PushMatrix, PopMatrix
+from kivy.graphics.context_instructions import Color, MatrixInstruction, PopMatrix, PushMatrix, Scale, Translate
 from kivy.graphics.transformation import Matrix
-from kivy.graphics.vertex_instructions import Rectangle, Ellipse
+from kivy.graphics.vertex_instructions import Ellipse, Rectangle
 
-from src.lwf.core.format.bitmap.ex import FormatBitmapEx
-from src.lwf.core.data import Data
-from src.lwf.core.renderer import IRendererFactory
 from kivy.core.image import Image
+from src.lwf.core.data import Data
+from src.lwf.core.format.bitmap.ex import FormatBitmapEx
+from src.lwf.core.renderer import IRendererFactory
 
 
 class ResourceCache:

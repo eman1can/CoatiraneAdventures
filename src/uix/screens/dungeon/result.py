@@ -1,17 +1,16 @@
 # Project Imports
-from refs import Refs
-
-# UIX Imports
-from uix.modules.screen import Screen
+# Standard Library Imports
+import random
 
 # Kivy Imports
 from kivy.properties import StringProperty
 
-# Standard Library Imports
-import random
-
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
+# UIX Imports
+from uix.modules.screen import Screen
+
 load_kv(__name__)
 
 

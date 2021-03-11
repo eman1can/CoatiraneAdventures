@@ -24,7 +24,7 @@ Builder.load_string("""
     background_active: ''
     background_color: 0, 0, 0, 1
     foreground_color: 1, 1, 1, 1
-    font_name: 'Fantasques.otf'
+    font_name: 'Fantasque'
     global_font_size: str(int(self.width * 15 / 1706)) + 'pt'
     font_size: self.global_font_size
     markup: True
@@ -75,7 +75,7 @@ class Console(TextInput):
         return self._current_screen
 
     def on_display_text(self, *args):
-        self.text = f'{self.display_text}{CURSOR}{self.current_text}'\
+        self.text = f'{self.display_text}{CURSOR}{self.current_text}'
 
     def on_current_text(self, *args):
         self.text = f'{self.display_text}{CURSOR}{self.current_text}'
@@ -84,7 +84,7 @@ class Console(TextInput):
         if self.error_text == "":
             self.text = f'{self.display_text}{CURSOR}{self.current_text}'
         else:
-            self.text = f'{self.display_text}\n\n{CURSOR}{self.current_text}'
+            self.text = f'{self.display_text}\n{self.error_text}\n{CURSOR}{self.current_text}'
             Clock.schedule_once(self.clear_error_text, 0.5)
 
     def clear_error_text(self, *args):
@@ -177,8 +177,8 @@ class Console(TextInput):
     def on_text_validate(self):
         if self._current_screen == 'game_loading':
             return
-        if self.current_text in self.get_options():
-            self.execute_action(self.get_options()[self.current_text])
+        if self.current_text.strip() in self.get_options():
+            self.execute_action(self.get_options()[self.current_text.strip()])
             self.current_text = ""
         else:
             if self._current_screen == 'intro_domain_name':
@@ -223,6 +223,7 @@ class Console(TextInput):
             screen_name = self._back_list.pop()
             self._current_screen = screen_name
         else:
+            print(self._current_screen, screen_name, self._back_list)
             if self._current_screen is not None and self._current_screen != screen_name:
                 for whitelist_name in ['new_name', 'save_select', 'intro_domain', 'intro_select', 'town_main', 'dungeon_main', 'shop']:
                     if self._current_screen.startswith(whitelist_name):
@@ -255,34 +256,34 @@ class Console(TextInput):
         elif action == 'exit_game':
             Refs.app.stop()
         elif action.startswith('new_game_'):
-            self._game_info['save_slot'] = int(action[-1])
+            self.memory.game_info['save_slot'] = int(action[-1])
             self.set_screen('intro_domain_name')
         elif action == 'intro_domain_gender':
-            self._game_info['name'] = self.current_text.strip()
+            self.memory.game_info['name'] = self.current_text.strip()
             self.current_text = ""
             self.set_screen('intro_domain_gender')
         elif action.startswith('gender_'):
-            self._game_info['gender'] = action[len('gender_'):]
+            self.memory.game_info['gender'] = action[len('gender_'):]
             self.set_screen('intro_domain')
         elif action.startswith('domain_'):
             if action.endswith('next'):
-                self._current_domain += 1
+                self.memory.current_domain += 1
                 self.set_screen('intro_domain')
                 return
             elif action.endswith('prev'):
-                self._current_domain -= 1
+                self.memory.current_domain -= 1
                 self.set_screen('intro_domain')
                 return
-            self._game_info['domain'] = action[len('domain_'):]
+            self.memory.game_info['domain'] = action[len('domain_'):]
             self.set_screen('intro_select')
         elif action.startswith('select_'):
             if action.endswith('ais'):
                 choice = 0
             else:
                 choice = 1
-            create_new_save(self._game_info['save_slot'], self._game_info['name'], self._game_info['gender'], None, self._game_info['domain'], choice)
+            create_new_save(self.memory.game_info['save_slot'], self.memory.game_info['name'], self.memory.game_info['gender'], None, self.memory.game_info['domain'], choice)
             self.set_screen('game_loading')
-            Refs.app.start_loading(self, self._game_info['save_slot'])
+            Refs.app.start_loading(self, self.memory.game_info['save_slot'])
         elif action.startswith('load_game'):
             self.set_screen('game_loading')
             Refs.app.start_loading(self, int(action[-1]))

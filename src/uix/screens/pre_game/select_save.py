@@ -1,20 +1,16 @@
 # Project Imports
+# Kivy Imports
+from kivy.properties import StringProperty
+
+from game.save_load import load_save_info
 from kivy.uix.buttonversions import HoverPathButton
-
-from game.save_load import SAVE_SLOT_1, SAVE_SLOT_2, SAVE_SLOT_3, load_save_info
+# KV Import
+from loading.kv_loader import load_kv
 from refs import Refs
-
 # UIX Imports
 from uix.modules.screen import Screen
 
 # Standard Library Imports
-from os.path import exists
-
-# Kivy Imports
-from kivy.properties import StringProperty
-
-# KV Import
-from loading.kv_loader import load_kv
 load_kv(__name__)
 
 

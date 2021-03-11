@@ -1,10 +1,11 @@
 # Internal Imports
 # External Imports
 # import random
-from kivy import Config
-# from kivy.graphics.instructions import RenderContext
-
 from src.lwf.kivy.node import LWFNode
+
+from kivy import Config
+
+# from kivy.graphics.instructions import RenderContext
 
 Config.set('graphics', 'width', 1706)
 Config.set('graphics', 'height', 960)

@@ -1,9 +1,10 @@
 # Kivy Imports
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import ObjectProperty, StringProperty, ListProperty, NumericProperty
+from kivy.properties import ListProperty, NumericProperty, ObjectProperty, StringProperty
 
+from kivy.uix.relativelayout import RelativeLayout
 # KV Import
 from loading.kv_loader import load_kv
+
 load_kv(__name__)
 
 

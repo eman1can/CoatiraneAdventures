@@ -1,7 +1,13 @@
 __all__ = ('GAME_VERSION', 'PROGRAM_TYPE',)
 
-from os import environ, getcwd
-environ['KIVY_HOME'] = getcwd()[:getcwd().rindex('\\')] + '/save/'
+from os import environ, getcwd, path
+import sys
+if hasattr(sys, '_MEIPASS'):
+    base_path = path.join(sys._MEIPASS)
+else:
+    base_path = getcwd()
+environ['KIVY_HOME'] = base_path + '/data/'
+print(environ['KIVY_HOME'])
 
 from kivy.config import Config
 first_open = Config.get('kivy', 'first_open')
@@ -42,11 +48,11 @@ GAME_VERSION = Config.get('coatiraneadventures', 'version')
 PROGRAM_TYPE = Config.get('coatiraneadventures', 'type')
 
 from kivy.resources import resource_add_path
-resource_add_path(Config.get('paths', 'kv'))
-resource_add_path(Config.get('paths', 'font'))
-resource_add_path(Config.get('paths', 'icon'))
-resource_add_path(Config.get('paths', 'splash'))
-resource_add_path(Config.get('paths', 'sound'))
-resource_add_path(Config.get('paths', 'uix'))
-resource_add_path(Config.get('paths', 'characters'))
-resource_add_path(Config.get('paths', 'enemies'))
+resource_add_path(base_path + '\\' + Config.get('paths', 'kv'))
+resource_add_path(base_path + '\\' + Config.get('paths', 'font'))
+resource_add_path(base_path + '\\' + Config.get('paths', 'icon'))
+resource_add_path(base_path + '\\' + Config.get('paths', 'splash'))
+resource_add_path(base_path + '\\' + Config.get('paths', 'sound'))
+resource_add_path(base_path + '\\' + Config.get('paths', 'uix'))
+resource_add_path(base_path + '\\' + Config.get('paths', 'characters'))
+resource_add_path(base_path + '\\' + Config.get('paths', 'enemies'))

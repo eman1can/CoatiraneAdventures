@@ -17,3 +17,6 @@ save/logs
 res/characters
 res/enemies
 res/lwf
+releases/
+tools/Create Release/build
+data/logs

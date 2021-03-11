@@ -40,49 +40,48 @@ def save_select(console):
 
 
 def intro_domain_name(console):
-    display_text = '\n\t0: cancel\n\n\tOh almighty Deity, bless us with your name.\n'
+    display_text = f'\n\t{OPT_C}0:{END_OPT_C} cancel\n\n\tOh almighty Deity, bless us with your name.\n'
     _options = {'0': 'back'}
     return display_text, _options
 
 
 def intro_domain_gender(console):
-    display_text = f'\n\t0: back\n\n\tOh almighty {console.memory.game_info["name"]}, what is your gender?\n'
-    display_text += '\n\t1: God\n\t2: Goddess\n\t3: Goddex\n'
+    display_text = f'\n\t{OPT_C}0:{END_OPT_C} back\n\n\tOh almighty {console.memory.game_info["name"]}, what is your gender?\n'
+    display_text += f'\n\t{OPT_C}1:{END_OPT_C} God\n\t{OPT_C}2:{END_OPT_C} Goddess\n\t{OPT_C}3:{END_OPT_C} Goddex\n'
     _options = {'0': 'back', '1': 'gender_male', '2': 'gender_female', '3': 'gender_neither'}
     return display_text, _options
 
 
 def intro_domain(console):
-    display_text = f'\n\t0: back\n\n\tOh almighty {console.memory.game_info["name"]}, what is your domain?\n'
+    display_text = f'\n\t{OPT_C}0:{END_OPT_C} back\n\n\tOh almighty {console.memory.game_info["name"]}, what is your domain?\n'
     _options = {'0': 'back'}
     if console.memory.domains is None:
         console.memory.domains = load_domains(Refs.gc.get_program_type())
 
     if console.memory.current_domain == -1:
-        # print('-1 →', len(_domains) - 1)
         console.memory.current_domain = len(console.memory.domains) - 1
     if console.memory.current_domain == len(console.memory.domains):
-        # print(len(console.memory.domains), '→ 0')
         console.memory.current_domain = 0
 
     desc = console.memory.domains[console.memory.current_domain].get_large_description().replace('\n', '\n\t\t')
-    display_text += f'\n\t{1}: {console.memory.domains[console.memory.current_domain].title}\n\t\t{desc}\n'
-    _options[str(1)] = f'domain_{console.memory.domains[console.memory.current_domain].title}'
-    display_text += f'\n\n\t< {2} - {console.memory.domains[console.memory.current_domain - 1].title} | {console.memory.domains[len(console.memory.domains) % (console.memory.current_domain + 1)].title} - {3} >\n'
-    _options[str(2)] = 'domain_prev'
-    _options[str(3)] = 'domain_next'
+    display_text += f'\n\t{OPT_C}1:{END_OPT_C} {console.memory.domains[console.memory.current_domain].title}\n\t\t{desc}\n'
+    _options['1'] = f'domain_{console.memory.domains[console.memory.current_domain].title}'
+    display_text += f'\n\n\t←────── {OPT_C}2{END_OPT_C} {console.memory.domains[console.memory.current_domain - 1].title} | {console.memory.domains[len(console.memory.domains) % (console.memory.current_domain + 1)].title} {OPT_C}3{END_OPT_C} ' \
+                    f'──────→\n'
+    _options['2'] = 'domain_prev'
+    _options['3'] = 'domain_next'
     return display_text, _options
 
 
 def intro_select(console):
-    display_text = f'\n\t0: back\n\n\tOh almighty {console.memory.game_info["name"]}, you have two adventurers interested in your fledgling family.\n\tYou only have the finances to support yourself and one adventurer. Which one do you choose?\n'
+    display_text = f'\n\t{OPT_C}0:{END_OPT_C} back\n\n\tOh almighty {console.memory.game_info["name"]}, you have two adventurers interested in your fledgling family.\n\tYou only have the finances to support yourself and one adventurer. Which one do you choose?\n'
     _options = {'0': 'back'}
 
-    with open(f'../save/char_load_data/{Refs.gc.get_program_type()}/CharacterDefinitions.txt', 'r') as file:
+    with open(f'data/char_load_data/{Refs.gc.get_program_type()}/CharacterDefinitions.txt', 'r') as file:
         ais = file.readline().split(',')
         bell = file.readline().split(',')
 
-    display_text += '\n\t1: Ais Wallenstein'
+    display_text += f'\n\t{OPT_C}1:{END_OPT_C} Ais Wallenstein'
 
     def print_char_stuff(char):
         string = f'\n\t\t{ATTACK_TYPE_INDEX_TO_STRING[int(char[1].strip())]} - {ELEMENT_INDEX_TO_STRING[int(char[2].strip())]}'
@@ -96,7 +95,7 @@ def intro_select(console):
         return string
 
     display_text += print_char_stuff(ais)
-    display_text += '\n\t2: Bell Cranel'
+    display_text += f'\n\t{OPT_C}2:{END_OPT_C} Bell Cranel'
     display_text += print_char_stuff(bell)
     _options['1'] = 'select_ais'
     _options['2'] = 'select_bell'

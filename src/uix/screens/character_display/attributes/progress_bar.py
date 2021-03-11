@@ -1,5 +1,6 @@
 # Kivy Imports
 from kivy.properties import NumericProperty
+
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget

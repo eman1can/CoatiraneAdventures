@@ -1,12 +1,10 @@
 __all__ = ('Button',)
 
-from .iobject import IObject
-from ..format import Object as ObjectType
-from ..type import Matrix
-from ..tools import Utility
-
 from .button_event_handlers import ButtonEventHandlers
-from ..format import ButtonCondition as BC
+from .iobject import IObject
+from ..format import ButtonCondition as BC, Object as ObjectType
+from ..tools import Utility
+from ..type import Matrix
 
 
 class Button(IObject):

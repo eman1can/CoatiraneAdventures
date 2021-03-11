@@ -1,5 +1,4 @@
 from game.domain import Domain
-from game.family import Family
 
 
 def load_family_chunk(line, loader, program_type, callbacks):
@@ -14,7 +13,7 @@ def load_family_chunk(line, loader, program_type, callbacks):
 
 
 def load_domains(program_type):
-    path = f"../save/family_load_data/{program_type}/Domains.txt"
+    path = f'data/family_load_data/{program_type}/Domains.txt'
     file_string = ""
     with open(path, 'r') as file:
         for line in file:

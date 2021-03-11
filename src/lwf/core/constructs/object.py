@@ -1,8 +1,8 @@
 __all__ = ('Object',)
 
 from ..format import Object as ObjectType
-from ..type import Matrix, ColorTransform
 from ..tools import Utility
+from ..type import ColorTransform, Matrix
 
 
 class Object:

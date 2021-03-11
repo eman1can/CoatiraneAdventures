@@ -1,17 +1,16 @@
 # Project Imports
-from refs import Refs
+# Kivy Imports
+from kivy.properties import BooleanProperty, DictProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
 
+from kivy.uix.relativelayout import RelativeLayout
+# KV Import
+from loading.kv_loader import load_kv
+from refs import Refs
 # UIX Imports
 from uix.modules.screen import Screen
 from uix.modules.star import Star
+
 # from uix.screens.character_display.heart_indicator import HeartIndicator
-
-# Kivy Imports
-from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty, StringProperty, ListProperty, DictProperty
-from kivy.uix.relativelayout import RelativeLayout
-
-# KV Import
-from loading.kv_loader import load_kv
 load_kv(__name__)
 
 

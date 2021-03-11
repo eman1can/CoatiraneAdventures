@@ -1,15 +1,13 @@
 # Project Imports
-from refs import Refs
-
-# UIX Imports
-from uix.modules.screen import Screen
-
 # Kivy Imports
-from kivy.properties import DictProperty, ListProperty, StringProperty, ObjectProperty
-
+from kivy.properties import DictProperty, ListProperty, ObjectProperty, StringProperty
 
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
+# UIX Imports
+from uix.modules.screen import Screen
+
 load_kv(__name__)
 
 

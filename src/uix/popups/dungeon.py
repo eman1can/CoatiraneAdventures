@@ -1,11 +1,11 @@
 # UIX Imports
-from uix.popups.view import View
-
 # Kivy Imports
 from kivy.properties import BooleanProperty, NumericProperty, StringProperty
 
 # KV Import
 from loading.kv_loader import load_kv
+from uix.popups.view import View
+
 load_kv(__name__)
 
 

@@ -1,3 +1,4 @@
+import os
 from os.path import exists
 from time import strftime, localtime, time
 
@@ -6,7 +7,7 @@ from kivy.storage.jsonstore import JsonStore
 from loading.config_loader import GAME_VERSION
 from game.skill import RANKS
 
-SAVE_PATH = '../save/saves/'
+SAVE_PATH = os.path.expanduser('~/Saved Games/Coatirane Adventures/saves/')
 SAVE_SLOT_1_INFO = f'{SAVE_PATH}save_game_1_info.json'
 SAVE_SLOT_1 = f'{SAVE_PATH}save_game_1.dat'
 SAVE_SLOT_2_INFO = f'{SAVE_PATH}save_game_2_info.json'
@@ -25,6 +26,9 @@ def get_info_and_path(save_slot):
 
 
 def load_save_info(save_slot):
+    print(SAVE_PATH)
+    print(SAVE_SLOT_1)
+    print(os.listdir(SAVE_PATH))
     save_info, save_path = get_info_and_path(save_slot)
     if exists(save_info):
         return JsonStore(save_info)
@@ -88,7 +92,7 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_file['inventory'] = {}
     save_file['map_data'] = {}
     save_file['varenth'] = starting_varenth
-    save_file['parties'] = [[None for _ in range(16)] for _ in range(10)]
+    save_file['parties'] = [0] + [[None for _ in range(16)] for _ in range(10)]
 
     # - Obtained Characters (all, s, & a)
     # - Character Rank Info and Growth, Grid Progress

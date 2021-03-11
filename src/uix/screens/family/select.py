@@ -1,9 +1,9 @@
 # UIX Imports
 from game.save_load import create_new_save
-from uix.modules.screen import Screen
-
 # KV Import
 from loading.kv_loader import load_kv
+from uix.modules.screen import Screen
+
 load_kv(__name__)
 
 

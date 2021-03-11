@@ -1,16 +1,15 @@
 # Project Imports
-from refs import Refs
-
-# UIX Imports
-from uix.screens.character_display.attributes.status_board.slot import CustomSlot
-from uix.popups.status_board import SBAbilityUnlock, SBSkillUnlock
-
 # Kivy Imports
-from kivy.properties import ObjectProperty, BooleanProperty, NumericProperty, ListProperty, StringProperty
-from kivy.uix.relativelayout import RelativeLayout
+from kivy.properties import BooleanProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
 
+from kivy.uix.relativelayout import RelativeLayout
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
+from uix.popups.status_board import SBAbilityUnlock, SBSkillUnlock
+# UIX Imports
+from uix.screens.character_display.attributes.status_board.slot import CustomSlot
+
 load_kv(__name__)
 
 

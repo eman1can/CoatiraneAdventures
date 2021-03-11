@@ -1,17 +1,16 @@
+from kivy.properties import BooleanProperty, NumericProperty
+
 from kivy.uix.behaviors import FocusBehavior
+from kivy.uix.image import Image
 from kivy.uix.recyclegridlayout import RecycleGridLayout
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.togglebutton import ToggleButton
-
+# KV Import
+from loading.kv_loader import load_kv
 from refs import Refs
 from uix.modules.screen import Screen
 
-from kivy.properties import BooleanProperty, NumericProperty
-from kivy.uix.image import Image
-
-# KV Import
-from loading.kv_loader import load_kv
 load_kv(__name__)
 
 

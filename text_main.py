@@ -1,10 +1,11 @@
 # Project imports
-from loading.config_loader import GAME_VERSION, PROGRAM_TYPE  # import must be first
+from loading.config_loader import GAME_VERSION, PROGRAM_TYPE  # Must be first
 from kivy.uix.scrollview import ScrollView
 from loading.base_text import TextCALoader
 from modules.game_content import GameContent
 from refs import Refs
 from text.console import Console
+import os, sys
 
 # Kivy Imports
 from kivy.app import App
@@ -12,6 +13,7 @@ from kivy import Logger
 from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.utils import platform
+from kivy.resources import resource_add_path, resource_find
 from kivy.uix.relativelayout import RelativeLayout
 
 
@@ -56,7 +58,7 @@ ClickableScrollView:
         id: label
         size_hint: None, None
         size: self.texture_size
-        font_name: 'Fantasques.otf'
+        font_name: 'Fantasque'
         font_size: str(int(root.width / 0.35 * 15 / 1706)) + 'pt'
         line_height: 1.15
         markup: True
@@ -85,7 +87,9 @@ ClickableScrollView:
 
 
 if __name__ == "__main__":
+    if hasattr(sys, '_MEIPASS'):
+        resource_add_path(os.path.join(sys._MEIPASS))
     game = CoatiraneAdventures()
     game.run()
     del game
-    quit()
+    sys.exit()

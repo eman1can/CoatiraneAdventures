@@ -1,6 +1,6 @@
 __all__ = ('Property',)
 
-from math import radians, cos, sin
+from math import cos, radians, sin
 
 from ..type import ColorTransform, Matrix
 

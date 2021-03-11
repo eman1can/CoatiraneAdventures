@@ -1,10 +1,9 @@
 __all__ = ('Root',)
 
+# Kivy Imports
+from kivy.uix.screenmanager import FadeTransition, ScreenManager
 # Project Imports
 from lists import SCREEN_LIST, SCREEN_NON_WHITELIST, SCREEN_WHITELIST
-
-# Kivy Imports
-from kivy.uix.screenmanager import ScreenManager, FadeTransition
 
 
 class Root(ScreenManager):

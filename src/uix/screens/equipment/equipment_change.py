@@ -1,15 +1,15 @@
 # UIX Imports
-from refs import Refs
-from uix.modules.screen import Screen
+from kivy.properties import NumericProperty, ObjectProperty
 
 # Kivy Imports
 from kivy.animation import Animation
-from kivy.properties import ObjectProperty, NumericProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.relativelayout import RelativeLayout
-
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
+from uix.modules.screen import Screen
+
 load_kv(__name__)
 
 

@@ -3,8 +3,8 @@ from game.battle_entity import BattleEntity
 
 # Change character instance to a battle character
 from game.status_effect import AGILITY, DEFENSE, DEXTERITY, ENDURANCE, MAGIC, MAGICAL_ATTACK, PHYSICAL_ATTACK, STRENGTH
-from spine.animation.animationstate import AnimationState
-from spine.animation.animationstatedata import AnimationStateData
+# from spine.animation.animationstate import AnimationState
+# from spine.animation.animationstatedata import AnimationStateData
 
 
 def create_battle_character(character, support):
@@ -55,17 +55,17 @@ class BattleCharacter(BattleEntity):
             return 'idleBattle'
         return 'idle_side'
 
-    def load_skeleton(self, loader):
-        self._skeleton = loader.load_skeleton(self._character.get_skeleton_path(), False, 0.125)
-        self._skeleton.setWidth(self._skeleton.getData().getWidth() * 0.125)
-        self._skeleton.setHeight(self._skeleton.getData().getHeight() * 0.125)
-        data = AnimationStateData(self._skeleton.getData())
-        data.setDefaultMix(0.25)
-        self._animation_state = AnimationState(data)
-        self._skeleton.setSkin(self._skeleton.getData().getSkins()[0].getName())
-        self.set_animation_idle(loop=True)
-        self.reset_battle_effects()
-        return self._animation_state, self._skeleton
+    # def load_skeleton(self, loader):
+    #     self._skeleton = loader.load_skeleton(self._character.get_skeleton_path(), False, 0.125)
+    #     self._skeleton.setWidth(self._skeleton.getData().getWidth() * 0.125)
+    #     self._skeleton.setHeight(self._skeleton.getData().getHeight() * 0.125)
+    #     data = AnimationStateData(self._skeleton.getData())
+    #     data.setDefaultMix(0.25)
+    #     self._animation_state = AnimationState(data)
+    #     self._skeleton.setSkin(self._skeleton.getData().getSkins()[0].getName())
+    #     self.set_animation_idle(loop=True)
+    #     self.reset_battle_effects()
+    #     return self._animation_state, self._skeleton
 
     def reset_battle_effects(self):
         self._status_effects = {}

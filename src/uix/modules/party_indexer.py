@@ -1,9 +1,10 @@
 # Kivy Imports
 from kivy.properties import ListProperty
-from kivy.uix.relativelayout import RelativeLayout
 
+from kivy.uix.relativelayout import RelativeLayout
 # KV Import
 from loading.kv_loader import load_kv
+
 load_kv(__name__)
 
 FULL_PATH = 'buttons/party_full.png'

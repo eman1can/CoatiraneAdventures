@@ -2,21 +2,21 @@ __all__ = ('Movie',)
 
 from math import floor
 
-from .iobject import IObject
-from .button import Button
-from .graphic import Graphic
 from .bitmap import Bitmap
+from .bitmap_clip import BitmapClip
 from .bitmap_ex import BitmapEx
-from .text import Text
+from .button import Button
+from .container import LWFContainer
+from .graphic import Graphic
+from .iobject import IObject
+from .movie_event_handlers import MovieEventHandlers
 from .particle import Particle
 from .program_object import ProgramObject
 from .property import Property
-from .container import LWFContainer
-from .bitmap_clip import BitmapClip
-from .movie_event_handlers import MovieEventHandlers
-from ..format import Object as ObjectType, Constant, MovieClipEvent as ClipEvent, Control as ControlType
-from ..type import Matrix, ColorTransform, Bounds, Point
+from .text import Text
+from ..format import Constant, Control as ControlType, MovieClipEvent as ClipEvent, Object as ObjectType
 from ..tools import Utility
+from ..type import Bounds, ColorTransform, Matrix, Point
 
 
 class LabelData:

@@ -1,31 +1,29 @@
 # Project Imports
+# Standard Library Imports
+import random
+
+from kivy.graphics.instructions import InstructionGroup
+from kivy.properties import BooleanProperty, BoundedNumericProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
+
 from game import skill
+# Kivy Imports
+from kivy.animation import Animation
+from kivy.clock import Clock
+from kivy.core.window import Window
+from kivy.uix.button import Button
+from kivy.uix.image import Image
+from kivy.uix.label import Label
+from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.widget import Widget
+# KV Import
+from loading.kv_loader import load_kv
 from refs import Refs
 from spine.animation.animationstate import AnimationState, AnimationStateAdapter
 from spine.animation.animationstatedata import AnimationStateData
 from spine.skeleton.skeletonrenderer import SkeletonRenderer
-
 # UIX Imports
 from uix.modules.screen import Screen
 
-# Kivy Imports
-from kivy.animation import Animation
-from kivy.core.window import Window
-from kivy.app import App
-from kivy.clock import Clock
-from kivy.graphics.instructions import InstructionGroup
-from kivy.properties import NumericProperty, ObjectProperty, BooleanProperty, StringProperty, BoundedNumericProperty, ListProperty
-from kivy.uix.button import Button
-from kivy.uix.image import Image
-from kivy.uix.label import Label
-from kivy.uix.widget import Widget
-from kivy.uix.relativelayout import RelativeLayout
-
-# Standard Library Imports
-import random
-
-# KV Import
-from loading.kv_loader import load_kv
 load_kv(__name__)
 
 

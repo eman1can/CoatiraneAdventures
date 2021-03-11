@@ -1,15 +1,15 @@
 # UIX Imports
-from refs import Refs
-from uix.modules.screen import Screen
-from uix.screens.character_display.attributes.status_board.page import GridWidget
-from uix.popups.status_board import SBUnlockAll, SlotConfirm
+from kivy.properties import BooleanProperty, ListProperty, ObjectProperty, StringProperty
 
 # Kivy Imports
 from kivy.uix.widget import Widget
-from kivy.properties import ObjectProperty, ListProperty, StringProperty, NumericProperty, BooleanProperty
-
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
+from uix.modules.screen import Screen
+from uix.popups.status_board import SBUnlockAll, SlotConfirm
+from uix.screens.character_display.attributes.status_board.page import GridWidget
+
 load_kv(__name__)
 
 

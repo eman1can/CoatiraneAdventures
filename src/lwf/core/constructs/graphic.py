@@ -1,10 +1,10 @@
 __all__ = ('Graphic',)
 
-from .object import Object
 from .bitmap import Bitmap
 from .bitmap_ex import BitmapEx
+from .object import Object
 from .text import Text
-from ..format import Object as ObjectType, GraphicObject as GraphicType
+from ..format import GraphicObject as GraphicType, Object as ObjectType
 
 
 class Graphic(Object):

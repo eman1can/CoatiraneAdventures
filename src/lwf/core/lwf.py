@@ -1,12 +1,12 @@
 __all__ = ('LWF',)
 
-from math import ceil
 from datetime import datetime
+from math import ceil
 
-from .constructs import Property, Movie, MovieEventHandlers, ButtonEventHandlers, Animation
+from .constructs import Animation, ButtonEventHandlers, Movie, MovieEventHandlers, Property
 from .format import Constant
 from .tools import Utility
-from .type import Matrix, ColorTransform
+from .type import ColorTransform, Matrix
 
 
 class LWF:

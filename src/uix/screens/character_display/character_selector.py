@@ -1,13 +1,13 @@
 # UIX Imports
-from refs import Refs
-from uix.modules.screen import Screen
+from kivy.properties import BooleanProperty, NumericProperty
 
 # Kivy Imports
 from kivy.clock import Clock
-from kivy.properties import BooleanProperty, NumericProperty
-
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
+from uix.modules.screen import Screen
+
 load_kv(__name__)
 
 

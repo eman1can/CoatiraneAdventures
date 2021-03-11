@@ -1,6 +1,6 @@
 __all__ = ('BitmapClip',)
 
-from math import radians, cos, sin
+from math import cos, radians, sin
 
 from .bitmap import Bitmap
 from ..type import Matrix

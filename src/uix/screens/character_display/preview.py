@@ -1,13 +1,12 @@
 # Project Imports
-from refs import Refs
+# Kivy Imports
+from kivy.properties import BooleanProperty, NumericProperty, ObjectProperty
 
+from kivy.uix.screenmanager import ScreenManager
+from refs import Refs
 # UIX Imports
 from uix.screens.character_display.empty_preview import EmptyCharacterPreviewScreen
 from uix.screens.character_display.filled_preview import FilledCharacterPreviewScreen
-
-# Kivy Imports
-from kivy.properties import BooleanProperty, ObjectProperty, NumericProperty
-from kivy.uix.screenmanager import ScreenManager
 
 
 class CharacterPreview(ScreenManager):

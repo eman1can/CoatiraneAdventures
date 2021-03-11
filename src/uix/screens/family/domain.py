@@ -1,9 +1,9 @@
 from loading.family import load_domains
+# KV Import
+from loading.kv_loader import load_kv
 from refs import Refs
 from uix.modules.screen import Screen
 
-# KV Import
-from loading.kv_loader import load_kv
 load_kv(__name__)
 
 
