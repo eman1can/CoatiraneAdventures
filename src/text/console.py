@@ -1,18 +1,15 @@
-from game.save_load import create_new_save, load_save_info
-from game.skill import ATTACK_TYPE_INDEX_TO_STRING, ELEMENT_INDEX_TO_STRING
+from game.save_load import create_new_save
 from kivy.base import EventLoop
 from kivy.clock import Clock
-from kivy.input.providers.mouse import MouseMotionEvent
 from kivy.lang.builder import Builder
 from kivy.properties import StringProperty
 from kivy.uix.textinput import CutBuffer, TextInput
-from loading.family import load_domains
 from refs import Refs
 from text.memory import Memory
 from text.screens.dungeon_main import dungeon_main, dungeon_main_confirm
 from text.screens.new_game import game_loading, intro_domain, intro_domain_gender, intro_domain_name, intro_select, new_game, save_select
 from text.screens.select_char import select_screen_char
-from text.screens.shop import do_transaction, purchase_item, shop
+from text.screens.shop import do_transaction, shop
 from text.screens.town import crafting_main, inventory_main, quests_main, tavern_main, town_main
 from text.screens.dungeon_battle import dungeon_battle, dungeon_battle_action, dungeon_result
 
