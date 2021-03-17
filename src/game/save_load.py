@@ -153,7 +153,7 @@ def save_game(save_slot, game_content):
         'score':  score,
         'skills': skill_level
     }
-    save_file['time'] = game_content.get_calendar.get_int_time()
+    save_file['time'] = game_content.get_calendar().get_int_time()
     save_file['housing'] = {}
     housing = game_content.get_housing()
     save_file['housing']['id'] = housing.get_id()

@@ -40,7 +40,7 @@ class Calendar:
         self._time += 1
         if self._callback is not None:
             self._callback()
-        if Refs.gc.get_last_save_time() - self.get_int_time() > 900:
+        if self._time - Refs.gc.get_last_save_time() > 180:
             Refs.gc.save_game()
             Refs.app.log('Auto Save Game')
 
