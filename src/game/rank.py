@@ -35,6 +35,9 @@ class Rank(SMEAD, HMPMD):
     def get_board(self):
         return self._board
 
+    def get_growth(self):
+        return self._rank_growth
+
     def get_index(self):
         return self._index
 

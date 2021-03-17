@@ -68,7 +68,6 @@ def load_enemy_chunk(chunk, loader, program_type, callbacks):
     skills, skill_chances = get_skill_data(values, loader)
     for x in range(ENEMY_HEALTH_MIN, ENEMY_ENDURANCE_MAX+1):
         values[x] = int(values[x])
-    print(values)
     enemy = Enemy(values[ENEMY_ID], values[ENEMY_NAME], values[ENEMY_SKEL_ID], program_type, values[ENEMY_ATTACK_TYPE],
                   values[ENEMY_HEALTH_MIN], values[ENEMY_HEALTH_MAX], values[ENEMY_STRENGTH_MIN], values[ENEMY_STRENGTH_MAX],
                   values[ENEMY_MAGIC_MIN], values[ENEMY_MAGIC_MAX], values[ENEMY_AGILITY_MIN], values[ENEMY_AGILITY_MAX],

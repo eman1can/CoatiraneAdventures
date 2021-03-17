@@ -23,6 +23,9 @@ class Board(SMEAD):
         super().refresh_stats()
         self.update_unlocked()
 
+    def get_count(self):
+        return self._strength_count + self._magic_count + self._endurance_count + self._agility_count + self._dexterity_count
+
     def update_unlocked(self):
         self._all_unlocked = True
         for unlocked in self._unlocked:

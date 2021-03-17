@@ -7,7 +7,6 @@ from game.entity import Entity
 
 class BattleEnemy(BattleEntity, Entity):
     def __init__(self, level, id, name, skeleton_path, attack_type, health, mana, strength, magic, endurance, dexterity, agility, element, moves, move_chances):
-        print(strength, magic, endurance, dexterity, agility)
         Entity.__init__(self, name, skeleton_path, health, mana, strength, magic, endurance, strength, magic, endurance, dexterity, agility, element, moves)
         BattleEntity.__init__(self)
         self._level = level

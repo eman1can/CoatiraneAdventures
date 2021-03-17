@@ -15,11 +15,11 @@ class Settings(SettingsWithSidebar):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         settings_config = ConfigParser()
-        settings_config.read('../save/settings.ini')
+        settings_config.read('data/settings.ini')
         if platform == 'win':
-            self.add_json_panel('General', settings_config, '../save/settings/general.json')
+            self.add_json_panel('General', settings_config, 'data/settings/general.json')
         elif platform == 'android':
-            self.add_json_panel('General', settings_config, '../save/settings/general_android.json')
+            self.add_json_panel('General', settings_config, 'data/settings/general_android.json')
 
     def on_config_change(self, config, section, key, value):
         app = App.get_running_app()

@@ -69,7 +69,7 @@ ELEMENT_EARTH = 5
 ELEMENT_LIGHT = 6
 ELEMENT_DARK = 7
 ELEMENTS = [ELEMENT_NONE, ELEMENT_WATER, ELEMENT_FIRE, ELEMENT_THUNDER, ELEMENT_WIND, ELEMENT_EARTH, ELEMENT_LIGHT, ELEMENT_DARK]
-ELEMENT_INDEX_TO_STRING = ['', 'Water', 'Fire', 'Thunder', 'Wind', 'Earth', 'Light', 'Dark']
+ELEMENT_INDEX_TO_STRING = ['None', 'Water', 'Fire', 'Thunder', 'Wind', 'Earth', 'Light', 'Dark']
 
 
 class Skill:

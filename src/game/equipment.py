@@ -2,6 +2,23 @@ from game.hmpmd import HMPMD
 from game.smead import SMEAD
 
 
+class EquipmentPattern:
+    def __init__(self, name, description, one_handed, material_list):
+        self._name = name
+        self._description = description
+        self._one_handed = one_handed
+        self._material_list = material_list
+
+    def get_name(self):
+        return self._name
+
+    def get_description(self):
+        return self._description
+
+    def is_one_handed(self):
+        return self._one_handed
+
+
 class Equipment(SMEAD, HMPMD):
     def __init__(self, name, equipment_id, equipment_type, element, rank, values):
         HMPMD.__init__(self, values[0], values[1], values[2], values[3], values[4])

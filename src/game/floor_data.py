@@ -323,7 +323,8 @@ class FloorData:
         for index, adventurer in enumerate(self._adventurers):
             if not adventurer.is_dead():
                 adventurers.append(adventurer)
-                supporters.append(self._supporters[index])
+                if index < len(supporters):
+                    supporters.append(self._supporters[index])
         self._battle_data = BattleData(adventurers, supporters, self._special_amount)
         self._battle_data.set_state('start')
         self._battle_data.set_enemies(self._floor.generate_enemies())

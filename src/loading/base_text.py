@@ -24,6 +24,8 @@ class TextCALoader(CALoader):
         pass
 
     def update_outer(self):
+        if self.curr_values[CURRENT_INDEX] == self.max_values[CURRENT_INDEX] + 1:
+            self._console.update_calendar_callback()
         self._console.set_loading_progress('outer', 'Loading Data', self.curr_values[CURRENT_INDEX], self.max_values[CURRENT_INDEX])
         self.update_inner()
 

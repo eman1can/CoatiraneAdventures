@@ -1,8 +1,6 @@
-from refs import Refs
+from refs import END_OPT_C, OPT_C, Refs
 
 BOX_WIDTH = 13
-OPT_C = '[color=#CA353E]'
-END_OPT_C = '[/color]'
 
 
 def create_bar(left, right, middle, divider):
@@ -119,7 +117,7 @@ def dungeon_main(console):
         _options['1'] = 'dungeon_confirm_up'
     if Refs.gc.can_descend():
         _options['2'] = 'dungeon_confirm_down'
-    _options['3'] = 'inventory_main'
+    _options['3'] = 'inventory0page'
     _options['4'] = 'gear_main'
     _options['5'] = 'dungeon_main_prev'
     _options['6'] = 'dungeon_main_next'

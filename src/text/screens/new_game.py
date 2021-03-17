@@ -1,11 +1,7 @@
 from game.save_load import load_save_info
 from game.skill import ATTACK_TYPE_INDEX_TO_STRING, ELEMENT_INDEX_TO_STRING
 from loading.family import load_domains
-from refs import Refs
-
-
-OPT_C = '[color=#CA353E]'
-END_OPT_C = '[/color]'
+from refs import END_OPT_C, OPT_C, Refs
 
 
 def new_game(console):
@@ -66,7 +62,7 @@ def intro_domain(console):
     desc = console.memory.domains[console.memory.current_domain].get_large_description().replace('\n', '\n\t\t')
     display_text += f'\n\t{OPT_C}1:{END_OPT_C} {console.memory.domains[console.memory.current_domain].title}\n\t\t{desc}\n'
     _options['1'] = f'domain_{console.memory.domains[console.memory.current_domain].title}'
-    display_text += f'\n\n\t←────── {OPT_C}2{END_OPT_C} {console.memory.domains[console.memory.current_domain - 1].title} | {console.memory.domains[len(console.memory.domains) % (console.memory.current_domain + 1)].title} {OPT_C}3{END_OPT_C} ' \
+    display_text += f'\n\n\t←────── {OPT_C}2{END_OPT_C} {console.memory.domains[console.memory.current_domain - 1].title} | {console.memory.domains[len(console.memory.domains) % (console.memory.current_domain + 2)].title} {OPT_C}3{END_OPT_C} ' \
                     f'──────→\n'
     _options['2'] = 'domain_prev'
     _options['3'] = 'domain_next'
@@ -85,12 +81,12 @@ def intro_select(console):
 
     def print_char_stuff(char):
         string = f'\n\t\t{ATTACK_TYPE_INDEX_TO_STRING[int(char[1].strip())]} - {ELEMENT_INDEX_TO_STRING[int(char[2].strip())]}'
-        string += f'\n\t\tHealth - {char[3].strip()}'
-        string += f'\n\t\tMana - {char[4].strip()}'
-        string += f'\n\t\tStrength - {char[5].strip()}'
-        string += f'\n\t\tMagic - {char[6].strip()}'
+        string += f'\n\t\tHealth    - {char[3].strip()}'
+        string += f'\n\t\tMana      - {char[4].strip()}'
+        string += f'\n\t\tStrength  - {char[5].strip()}'
+        string += f'\n\t\tMagic     - {char[6].strip()}'
         string += f'\n\t\tEndurance - {char[7].strip()}'
-        string += f'\n\t\tAgility - {char[8].strip()}'
+        string += f'\n\t\tAgility   - {char[8].strip()}'
         string += f'\n\t\tDexterity - {char[9].strip()}\n'
         return string
 
@@ -100,6 +96,19 @@ def intro_select(console):
     _options['1'] = 'select_ais'
     _options['2'] = 'select_bell'
     return display_text, _options
+
+
+def intro_news(console):
+    chosen_char = Refs.gc.get_obtained_characters(False)[0]
+    display_text = f'\n\tWelcome {Refs.gc.get_name()} to the town of Coatirane!'
+    display_text += f'\n\n\t{chosen_char.get_name()} is excited to be a part of your budding family!'
+    display_text += f'\n\tYou have decided to pool your money and have 3000 Varenth.'
+    display_text += f'\n\tAdventure into the dungeon with {chosen_char.get_name()} to get more money!'
+    display_text += '\n\n\tYou talked to a friend and they have set you up in a small two room flat and paid the housing bills for 36 days.'
+    display_text += '\n\tIt will cost 50,000 Varenth to rent the two room flat for 36 days after your current pay runs out.'
+    display_text += '\n\tGood luck in your adventures!\n'
+    display_text += f'\n\t{OPT_C}0:{END_OPT_C} Continue\n'
+    return display_text, {'0': 'town_main'}
 
 
 def game_loading(console):

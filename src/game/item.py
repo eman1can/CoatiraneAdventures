@@ -15,6 +15,9 @@ class Item:
     def get_id(self):
         return self._id
 
+    def get_name(self):
+        return self._name
+
     def is_single(self):
         return self._purchase_type == 'single'
 
@@ -41,6 +44,12 @@ class Item:
         return self._name, self._description, self._price
 
     def get_price(self):
+        return self._price
+
+    def get_min_price(self):
+        return self._price
+
+    def get_max_price(self):
         return self._price
 
     def get_category(self):

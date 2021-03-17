@@ -7,7 +7,6 @@ if hasattr(sys, '_MEIPASS'):
 else:
     base_path = getcwd()
 environ['KIVY_HOME'] = base_path + '/data/'
-print(environ['KIVY_HOME'])
 
 from kivy.config import Config
 first_open = Config.get('kivy', 'first_open')

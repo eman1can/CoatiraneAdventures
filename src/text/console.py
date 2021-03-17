@@ -1,3 +1,6 @@
+from random import choices, randint
+
+from game.housing import Housing
 from game.save_load import create_new_save
 from kivy.base import EventLoop
 from kivy.clock import Clock
@@ -6,11 +9,14 @@ from kivy.properties import StringProperty
 from kivy.uix.textinput import CutBuffer, TextInput
 from refs import Refs
 from text.memory import Memory
+from text.screens.crafting import crafting_main
 from text.screens.dungeon_main import dungeon_main, dungeon_main_confirm
-from text.screens.new_game import game_loading, intro_domain, intro_domain_gender, intro_domain_name, intro_select, new_game, save_select
+from text.screens.housing import housing_browse, housing_buy, housing_main, housing_rent
+from text.screens.inventory import inventory
+from text.screens.new_game import game_loading, intro_domain, intro_domain_gender, intro_domain_name, intro_news, intro_select, new_game, save_select
 from text.screens.select_char import select_screen_char
 from text.screens.shop import do_transaction, shop
-from text.screens.town import crafting_main, inventory_main, quests_main, tavern_main, town_main
+from text.screens.town import profile_main, quests_main, tavern_main, tavern_recruit, tavern_recruit_show, tavern_relax, town_main
 from text.screens.dungeon_battle import dungeon_battle, dungeon_battle_action, dungeon_result
 
 TEST_TEXT = 'Level 1 Goblin entered the battle!\nLevel 1 Goblin entered the battle!\nLevel 1 Goblin entered the battle!\nLevel 1 Goblin entered the battle!\nAis Wallenstein joined the battle!\nLexi Buhr joined the battle!\nSofi joined' \
@@ -31,8 +37,6 @@ Builder.load_string("""
 """)
 
 CURSOR = '\n\t>> '
-OPT_C = '[color=#CA353E]'
-END_OPT_C = '[/color]'
 
 
 class Console(TextInput):
@@ -46,7 +50,7 @@ class Console(TextInput):
         self._options = {}
         self._back_list = []
         self._current_screen = None
-        # Clock.schedule_once(lambda dt: self.grab_focus, 0.5)
+        self.error_time = 0.5
         self.memory = Memory()
         self.memory.game_info = {}
         self.memory.loading_progress = {}
@@ -62,14 +66,9 @@ class Console(TextInput):
 
     def on_global_font_size(self, *args):
         self.set_screen('new_game')
-    #     print('Global Font Size: ', self.global_font_size)
 
     def get_global_font_size(self):
         return int(self.global_font_size[:-2])
-
-    # def grab_focus(self):
-    #     self.focus = True
-        # self.ids.console_log.text = TEST_TEXT
 
     def get_current_screen(self):
         return self._current_screen
@@ -81,14 +80,15 @@ class Console(TextInput):
         self.text = f'{self.display_text}{CURSOR}{self.current_text}'
 
     def on_error_text(self, *args):
-        if self.error_text == "":
+        if self.error_text == '':
             self.text = f'{self.display_text}{CURSOR}{self.current_text}'
         else:
-            self.text = f'{self.display_text}\n{self.error_text}\n{CURSOR}{self.current_text}'
-            Clock.schedule_once(self.clear_error_text, 0.5)
+            self.text = f'{self.display_text}\n\t{self.error_text}\n{CURSOR}{self.current_text}'
+            Clock.schedule_once(self.clear_error_text, self.error_time)
 
     def clear_error_text(self, *args):
-        self.error_text = ""
+        self.error_time = 0.5
+        self.error_text = ''
 
     def on_touch_down(self, touch):
         if self.disabled:
@@ -146,7 +146,7 @@ class Console(TextInput):
         self._long_touch_pos = touch.pos
         self._long_touch_ev = Clock.schedule_once(self.long_touch, .5)
 
-        self.cursor = self.get_cursor_from_xy(*touch_pos)
+        # self.cursor = self.get_cursor_from_xy(*touch_pos)
         if not self._selection_touch:
             self.cancel_selection()
             self._selection_touch = touch
@@ -169,7 +169,7 @@ class Console(TextInput):
                 self._selection_touch = None
             return False
         if self._selection_touch is touch:
-            self.cursor = self.get_cursor_from_xy(touch.x, touch.y)
+            # self.cursor = self.get_cursor_from_xy(touch.x, touch.y)
             self._selection_to = self.cursor_index()
             self._update_selection()
             return True
@@ -177,9 +177,10 @@ class Console(TextInput):
     def on_text_validate(self):
         if self._current_screen == 'game_loading':
             return
-        if self.current_text.strip() in self.get_options():
-            self.execute_action(self.get_options()[self.current_text.strip()])
+        option = self.current_text.strip()
+        if option in self.get_options():
             self.current_text = ""
+            self.execute_action(self.get_options()[option])
         else:
             if self._current_screen == 'intro_domain_name':
                 self.execute_action('intro_domain_gender')
@@ -219,21 +220,23 @@ class Console(TextInput):
     # Screen manager options
     def set_screen(self, screen_name):
         if screen_name == 'back':
-            print(screen_name, '←', self._back_list)
             screen_name = self._back_list.pop()
             self._current_screen = screen_name
         else:
-            print(self._current_screen, screen_name, self._back_list)
             if self._current_screen is not None and self._current_screen != screen_name:
-                for whitelist_name in ['new_name', 'save_select', 'intro_domain', 'intro_select', 'town_main', 'dungeon_main', 'shop']:
-                    if self._current_screen.startswith(whitelist_name):
-                        self._back_list.append(self._current_screen)
+                if len(self._back_list) == 0 or self._back_list[-1] != self._current_screen:
+                # for whitelist_name in ['new_name', 'save_select', 'intro_domain', 'intro_select', 'town_main', 'dungeon_main', 'shop', 'tavern_main', 'inventory']:
+                #     if self._current_screen.startswith(whitelist_name) and ('page' not in self._current_screen or '0page' in self._current_screen):
+                    self._back_list.append(self._current_screen)
         self._current_screen = screen_name
+        # if len(self._back_list) > 0:
+        #     if self._current_screen == self._back_list[-1]:
+        #         self._back_list.pop()
 
-        names = ['new_game', 'save_select', 'intro_domain_name', 'intro_domain_gender', 'intro_domain', 'intro_select', 'game_loading', 'town_main', 'tavern_main', 'shop', 'quests_main', 'crafting_main', 'inventory_main', 'dungeon_main',
-                 'select_screen_char', 'dungeon_confirm', 'dungeon_battle', 'dungeon_result']
-        screens = [new_game, save_select, intro_domain_name, intro_domain_gender, intro_domain, intro_select, game_loading, town_main, tavern_main, shop, quests_main, crafting_main, inventory_main, dungeon_main, select_screen_char,
-                   dungeon_main_confirm, dungeon_battle, dungeon_result]
+        names = ['new_game', 'save_select', 'intro_domain_name', 'intro_domain_gender', 'intro_domain', 'intro_select', 'game_loading', 'town_main', 'tavern_main', 'shop', 'quests_main', 'crafting_main', 'inventory', 'dungeon_main',
+                 'select_screen_char', 'dungeon_confirm', 'dungeon_battle', 'dungeon_result', 'tavern_recruit_show', 'tavern_recruit', 'tavern_relax', 'intro_news', 'profile_main', 'housing_main', 'housing_browse', 'housing_rent', 'housing_buy']
+        screens = [new_game, save_select, intro_domain_name, intro_domain_gender, intro_domain, intro_select, game_loading, town_main, tavern_main, shop, quests_main, crafting_main, inventory, dungeon_main, select_screen_char,
+                   dungeon_main_confirm, dungeon_battle, dungeon_result, tavern_recruit_show, tavern_recruit, tavern_relax, intro_news, profile_main, housing_main, housing_browse, housing_rent, housing_buy]
         for index, screen in enumerate(names):
             if screen_name.startswith(screen):
                 self.display_text, self._options = screens[index](self)
@@ -244,6 +247,12 @@ class Console(TextInput):
         # print(type, label, value, max)
         self.memory.loading_progress[label] = (value, max)
         self.set_screen('game_loading')
+
+    def update_calendar_callback(self):
+        Refs.gc.set_calendar_callback(self._refresh)
+
+    def _refresh(self):
+        self.set_screen(self._current_screen)
 
     def get_options(self):
         return self._options
@@ -258,6 +267,10 @@ class Console(TextInput):
         elif action.startswith('new_game_'):
             self.memory.game_info['save_slot'] = int(action[-1])
             self.set_screen('intro_domain_name')
+        elif action == 'goto_new_game':
+            self.memory.loading_progress = {}
+            Refs.app.reset_laoder()
+            self.set_screen('new_game')
         elif action == 'intro_domain_gender':
             self.memory.game_info['name'] = self.current_text.strip()
             self.current_text = ""
@@ -283,10 +296,10 @@ class Console(TextInput):
                 choice = 1
             create_new_save(self.memory.game_info['save_slot'], self.memory.game_info['name'], self.memory.game_info['gender'], None, self.memory.game_info['domain'], choice)
             self.set_screen('game_loading')
-            Refs.app.start_loading(self, self.memory.game_info['save_slot'])
+            Refs.app.start_loading(self, self.memory.game_info['save_slot'], 'intro_news')
         elif action.startswith('load_game'):
             self.set_screen('game_loading')
-            Refs.app.start_loading(self, int(action[-1]))
+            Refs.app.start_loading(self, int(action[-1]), 'town_main')
         elif action.startswith('dungeon_main_'):
             index = 0
             if action.endswith('next'):
@@ -324,18 +337,77 @@ class Console(TextInput):
         elif action.startswith('dungeon_battle'):
             dungeon_battle_action(self, action)
         elif action.startswith('shop') and 'confirm' in action:
-            screen_data, item_id = action[len('purchase_'):].split('#')
-            screen_name, count = screen_data.split('_confirm')
-            # shop_general_confirm1#shovel_weak
-            # → shop_general
-            do_transaction(item_id, int(count), 'sell' in screen_name)
-            self.set_screen(screen_name)
+            screen_data, item_id = action.split('#')
+            screen_data, count = screen_data.split('_confirm')
+            screen_name, page_num = screen_data.split('_page')
+            if not do_transaction(item_id, int(count), 'sell' in screen_name):
+                self.error_text = 'Not enough Money!'
+                return
+            self.set_screen(screen_name + f'_page{page_num}')
+        elif action == 'save_game':
+            Refs.gc.save_game()
+        elif action == 'crafting_main':
+            if Refs.gc.is_crafting_locked():
+                self.error_time = 2.5
+                self.error_text = 'You need an adventurer with the crafting perk.'
+            else:
+                self.set_screen(action)
+        elif action == 'crafting_potions':
+            if Refs.gc.is_potion_crafting_locked():
+                self.error_time = 2.5
+                self.error_text = 'You need an adventurer with the potion crafting perk.'
+            else:
+                self.set_screen(action)
+        elif action == 'crafting_blacksmithing':
+            if Refs.gc.is_blacksmithing_locked():
+                self.error_time = 2.5
+                self.error_text = 'You need an adventurer with the blacksmithing perk.'
+            else:
+                self.set_screen(action)
+        elif action == 'tavern_main':
+            if Refs.gc.is_tavern_locked():
+                self.error_time = 2.5
+                self.error_text = 'You need at least 20k Varenth and Renown of H to visit the tavern.'
+            else:
+                self.set_screen(action)
+        elif action == 'tavern_recruit_start':
+            cost = 25000
+            if cost > Refs.gc.get_varenth():
+                self.error_time = 2.5
+                self.error_text = 'You don\'t have that much money!'
+            else:
+                Refs.gc.update_varenth(-cost)
+                success = randint(1, 99) < 33
+                if success:
+                    chars = Refs.gc.get_non_obtained_characters()
+                    count = choices([x for x in range(len(chars))], [len(chars) - x for x in range(len(chars))])[0]
+                    # Change to choose characters based on a recruitment weight
+                    recruited = choices(chars, k=count)
+                    string = ''
+                    for char in recruited:
+                        string += char.get_id() + '#'
+                else:
+                    string = 'failure#'
+                self.set_screen(f'tavern_recruit_show#{string[:-1]}')
+        elif action == 'housing_pay_bill':
+            if not Refs.gc.get_housing().pay_bill():
+                self.error_time = 2.5
+                self.error_text = 'You don\'t have enough money to cover the payment!'
+            self.set_screen('housing_main')
+        elif action.startswith('housing_rent') and 'confirm' in action:
+            housing = Refs.gc['housing'][action[len('housing_rent'):-len('confirm')]]
+            if not Housing.rent_housing(Refs.gc.get_housing(), housing):
+                self.set_screen('housing_main')
+            else:
+                self.error_time = 2.5
+                self.error_text = 'You don\'t have enough money to cover the first payment!'
+        elif action.startswith('housing_buy') and 'confirm' in action:
+            housing_name, down_payment = action.split('#')
+            housing = Refs.gc['housing'][housing_name[len('housing_buy'):-len('confirm')]]
+            if not Housing.buy_housing(Refs.gc.get_housing(), housing, int(down_payment)):
+                self.set_screen('housing_main')
+            else:
+                self.error_time = 2.5
+                self.error_text = 'You don\'t have that much money!'
         else:
             self.set_screen(action)
-
-    # More Gamey functions
-    def on_start_game(self):
-        pass
-
-    def on_load_game(self):
-        pass

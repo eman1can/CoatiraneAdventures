@@ -48,11 +48,13 @@ class Floor:
 
         self._map = Map(floor_map, list(floor_data.keys()), path_data)
 
+    def get_id(self):
+        return self._floor_id
+
     def get_score(self):
         # Floor 1 rec score should be ~ 7
         score = 0
         for enemy in self._enemies:
-            print(enemy.get_id(), enemy.get_score())
             score += enemy.get_score()
         return round(score, 0)
 
@@ -154,17 +156,33 @@ class Map:
         self._nodes = nodes
         self._path_nodes = path_nodes
 
+        self._entrance = path_nodes[0]
+        self._exit = path_nodes[-1]
+
+        self._current = None
+        self._current_prev_color = None
+        self._safe_zones = []
+
         # Current map progress
         self._explored = {}
         for node in self._nodes:
             self._explored[node] = False
-        self._current_map = MapData().create_from_explored_array(self._full_map, self._explored)
+        self.update_explored()
 
-        self._entrance = path_nodes[0]
-        self._exit = path_nodes[-1]
-        self._current = None
-        self._current_prev_color = None
-        self._safe_zones = []
+    def update_explored(self, explored=None):
+        if explored is not None:
+            for node, shown in explored.items():
+                nx, ny = node[1:-1].split(', ')
+                self._explored[(int(nx), int(ny))] = shown
+        self._current_map = MapData().create_from_explored_array(self._full_map, self._explored)
+        if self._explored[self._entrance]:
+            self.color_entrance()
+        if self._explored[self._exit]:
+            self.color_exit()
+            self.color_path()
+
+    def get_explored(self):
+        return self._explored
 
     def color_entrance(self):
         self.color_node(self._entrance, ENTRANCE_COLOR)
@@ -179,7 +197,6 @@ class Map:
             else:
                 self.color_node(self._current, None)
         self._current_prev_color = self._has_color(node)
-        print(node, self._current_prev_color, '→', CURRENT_COLOR)
         if self._current_prev_color:
             self.modify_color(node, CURRENT_COLOR)
         else:
@@ -246,6 +263,10 @@ class Map:
         self.color_entrance()
         self.color_exit()
 
+    def color_path(self):
+        for node in self._path_nodes:
+            self.color_node(node, PATH_COLOR)
+
     def unlock_full_map(self):
         for node in self._nodes:
             self.show_node(node)
@@ -262,6 +283,7 @@ class Map:
                 self.color_entrance()
             if node == self._exit:
                 self.color_exit()
+                self.color_path()
             return True
         return False
 

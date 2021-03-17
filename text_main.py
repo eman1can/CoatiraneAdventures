@@ -5,7 +5,13 @@ from loading.base_text import TextCALoader
 from modules.game_content import GameContent
 from refs import Refs
 from text.console import Console
-import os, sys
+
+# Standard Library Imports
+import os
+import sys
+
+# UIX Imports
+from uix.settings import Settings
 
 # Kivy Imports
 from kivy.app import App
@@ -39,6 +45,10 @@ class CoatiraneAdventures(App):
         self._loader = TextCALoader(PROGRAM_TYPE)
         self._loader.load_base_values()
         self.scroll_widget = None
+        self.use_kivy_settings = False
+        self._end_screen = None
+
+        self.settings_cls = Settings
 
         super().__init__(**kwargs)
 
@@ -65,19 +75,23 @@ ClickableScrollView:
         color: 1, 1, 1, 1
 """)
         self.scroll_widget.opacity = 0
-        print(self.scroll_widget.ids.label.font_size)
         self.scroll_widget.ids.label.text = ''
         layout.add_widget(self.scroll_widget)
         return layout
 
-    def start_loading(self, console, save_slot):
+    def start_loading(self, console, save_slot, finish_screen):
         self.log('Starting background loader')
         self._loader.load_game(console, save_slot)
+        Refs.gc.set_save_slot(save_slot)
+        self._end_screen = finish_screen
         self._console = console
+
+    def reset_laoder(self):
+        self._loader.reset()
 
     def finished_loading(self):
         self.log('Finished Loading')
-        self._console.set_screen('town_main')
+        self._console.set_screen(self._end_screen)
 
     def close_window(self, *args):
         self.log('Save Game')

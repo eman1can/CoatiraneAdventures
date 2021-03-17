@@ -1,7 +1,7 @@
 from game.domain import Domain
 
 
-def load_family_chunk(line, loader, program_type, callbacks):
+def load_family_chunk(chunk, loader, program_type, callbacks):
     # Need to flush out WHAT a family actually is before this will take shape.
     # Will most likely be families of friends that this person has encountered?
     #   That data would be better kept in a database though.

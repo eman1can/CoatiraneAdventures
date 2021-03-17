@@ -295,7 +295,9 @@ RelativeLayout:
             cols: root.maze_size
             rows: root.maze_size
             default_size_hint: None, None
-            default_size: root.height / root.maze_size, root.height / root.maze_size
+            default_size: root.height / min(root.maze_size, 30), root.height / min(root.maze_size, 30)
+            size_hint: (1, 1) if root.maze_size < 30 else (None, None)
+            size: self.minimum_size
 
 <MazeTile>:
     Button:

@@ -1,115 +1,36 @@
-from math import ceil
+from math import ceil, floor
 
-from refs import Refs
+from refs import END_OPT_C, OPT_C, Refs
 from text.screens.town import get_town_header
 
-OPT_C = '[color=#CA353E]'
-END_OPT_C = '[/color]'
 
-
-# def shop_main(console):
-#     display_text = get_town_header()
-#     display_text += '\n\tWelcome to the Guild Shopping District where you can find anything you need!\n\tWhere you you like to browse today?\n'
-#     display_text += f'\n\t{OPT_C}1:{END_OPT_C} General Goods'
-#     display_text += f'\n\t{OPT_C}2:{END_OPT_C} Monster Drops'
-#     display_text += f'\n\t{OPT_C}3:{END_OPT_C} Ingredients'
-#     display_text += f'\n\t{OPT_C}4:{END_OPT_C} Potions & Medicines'
-#     display_text += f'\n\t{OPT_C}5:{END_OPT_C} Equipment'
-#     display_text += f'\n\t{OPT_C}6:{END_OPT_C} Home Supplies'
-#     display_text += f'\n\t{OPT_C}7:{END_OPT_C} Other?'
-#     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Leave the market\n'
-#     _options = {'0': 'back',
-#                 '1': 'shop_general',
-#                 '2': 'shop_monster_drops'}
-#     return display_text, _options
-
-
-def get_item_string(item, index, current_text, page_name):
+def get_item_string(item, index, current_text, page_name, page_num):
     if item.is_single():
         # Single item string
         name, desc, price = item.get_display()
         if Refs.gc.in_inventory(item.get_id()):
             return f'\n\t[s]{OPT_C}{index}:{END_OPT_C} {name}[/s] - Already purchased\n', None
         elif item.is_unlocked():
-            return f'\n\t{OPT_C}{index}:{END_OPT_C} {name}\n\t\t- ' + desc.replace('\n', '\n\t\t- ') + f'\n\t{current_text}: {price}V\n', f'{page_name}_confirm1#{item.get_id()}'
+            return f'\n\t{OPT_C}{index}:{END_OPT_C} {name}\n\t\t- ' + desc.replace('\n', '\n\t\t- ') + f'\n\t{current_text}: {price}V\n', f'{page_name}_page{page_num}_confirm1#{item.get_id()}'
         return '', None
     else:
         # Multi item item string
-        count = Refs.gc.get_inventory_count(item.get_id())
         name, desc, min_price, max_price = item.get_display()
-        return f'\n\t{OPT_C}{index}:{END_OPT_C} {name}\n\t\t- ' + desc.replace('\n', '\n\t\t- ') + f'\n\t{current_text}: {min_price}V\n\tIn Inventory: {count}\n', f'{page_name}_{max(int(count / 2), 1)}#{item.get_id()}'
-
-# def shop_general(console):
-#     display_text = get_town_header()
-#     display_text += '\n\tWelcome to the Guild Shopping District where you can find anything you need!\n\tWhat would you like to purchase?\n'
-#     _options = {'0': 'back'}
-#
-#     # Get valid items from Refs
-#     items = Refs.gc.get_shop_items('general')
-#     display_text += f'\n\t{OPT_C}1:{END_OPT_C} Floor Maps\n'
-#     _options['1'] = 'shop_floor_maps'
-#     item_string, item_options = get_item_string('shop_general', items, index=2)
-#     display_text += item_string
-#     _options.update(item_options)
-#     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} back\n'
-#     return display_text, _options
-
-    """
-    Compass
-    - Have trouble getting lost? Buy a compass and never get lost again!
-    - Cost: 500 Varenth
-    Pocket Watch
-    - Keep losing track of time? Buy a watch and always know the time!
-    - Cost: 500 Varenth
-    Harvesting Knife
-    - An essential tool for collecting all manner of items in the dungeon!
-    - Warning: May not work on Monsters Level 5 and below
-    Pickaxe
-    - An essential tool for harvesting straight from the dungeon!
-    - Warning: May not work on items Level 12 and below
-    Shovel
-    - An essential tool for harvesting straight from the dungeon!
-    - Warning: May not work on items Level 12 and below
-    Axe
-    - An essential tool for harvesting straight from the dungeon!
-    - Warning: May not work on items Level 12 and below
-
-    Floor Maps:
-    Welcome to the map shop! As an extension of the guild, we have all the latest maps available!
-    Which floor are you interested in?
-
-    Floor 1
-    Floor 2
-    Floor 3
-    Floor 4
-    Floor 5
-    <- ->
-
-    Welcome to the map shop! As an extension of the guild, we have all the latest maps available!
-    Which map type are you interested in?
-
-    Main Path
-    - A detailed map to get you to the second floor. 
-    - Cost: 500 Varenth
-    Full Map
-    - A detail map of the entire first floor!
-    - Cost: 1000 Varenth
-    Resource Map
-    - Only available for those who have the full first floor map
-    - Shows the most common resource location on the first floor from the past week
-    - Cost: 1000 
-    """
+        if 'sell' in page_name:
+            count = Refs.gc.get_inventory_count(item.get_id())
+        else:
+            count = min(floor(Refs.gc.get_varenth() / max_price), 50)
+        return f'\n\t{OPT_C}{index}:{END_OPT_C} {name}\n\t\t- ' + desc.replace('\n', '\n\t\t- ') + f'\n\t{current_text}: {min_price}V\n\tIn Inventory: {count}\n', f'{page_name}_page{page_num}_{max(int(count / 2), 1)}#{item.get_id()}'
 
 
-
-def item_page_list(option_index, page_name, page_num, item_list, fail_text, current_text):
+def item_page_list(option_index, page_name, page_num, item_list, fail_text, current_text, item_string_function=get_item_string):
     display_text, _options = '', {}
 
     arrow_text = ''
     if len(item_list) > 5:
         # We want to enable pages of items...
         left = page_num != 0
-        right = page_num != ceil(len(item_list) / 5)
+        right = page_num != ceil(len(item_list) / 5) - 1
 
         left_string = f'{OPT_C}{option_index}{END_OPT_C} Prev Page'
         right_string = f'Next Page {OPT_C}{option_index + 1}{END_OPT_C}'
@@ -133,12 +54,12 @@ def item_page_list(option_index, page_name, page_num, item_list, fail_text, curr
 
     for item in item_list:
         # Get item display string if it exists
-        item_text, item_option = get_item_string(item, option_index, current_text, page_name)
+        item_text, item_option = item_string_function(item, option_index, current_text, page_name, page_num)
 
         display_text += item_text
         if item_option is not None:
-            _options[str(option_index)] = item_option
-        option_index += 1
+            _options.update(item_option)
+        option_index += len(item_option)
 
     display_text += arrow_text
 
@@ -146,16 +67,21 @@ def item_page_list(option_index, page_name, page_num, item_list, fail_text, curr
 
 
 def item_transaction(item_count, item_id, page_name, current_text, future_text):
-    count = Refs.gc.get_inventory_count(item_id)
     item = Refs.gc.get_drop_item(item_id)
+    if 'sell' in page_name:
+        count = Refs.gc.get_inventory_count(item_id)
+    else:
+        count = min(floor(Refs.gc.get_varenth() / item.get_max_price()), 50)
     _options = {}
 
     display_text = f'\n\t{current_text}: {item.get_min_price()}V\n'
-    display_text += '\n\t' + f'{int(item_count)}'.center(17) + f'\n\t 1  ←───────→ ' + f'{count}'.center(3) + '\n\n'
+    arrow_string = f'\n\t 1  ←───────→ {count}'
+    display_text += f'{int(item_count)}'.center(len(arrow_string))
+    display_text += f'\n\t{arrow_string}\n\n'
     display_text += f'\n\t{future_text}: {int(item_count) * item.get_min_price()}V\n'
 
     option_index = 1
-    for (threshold, new_number, option_string) in [(count, count, 'All'), (int(count / 2), int(count / 2), 'Half'), (1, 1, 'One'), (count, int(item_count) + 1, 'More'), (1, int(item_count) - 1, 'Less')]:
+    for (threshold, new_number, option_string) in [(count, count, 'All'), (max(int(count / 2), 1), max(int(count / 2), 1), 'Half'), (1, 1, 'One'), (count, int(item_count) + 1, 'More'), (1, int(item_count) - 1, 'Less')]:
         if int(item_count) == threshold:
             display_text += f'\n\t[s]{OPT_C}{option_index}:{END_OPT_C} {option_string}[/s]'
         else:
@@ -177,12 +103,6 @@ def bspage_list(sub_categories, page_name, id_to_string):
             _options[str(option_index)] = f'shop_{sub_category}_{type}0page'
             option_index += 1
     return display_text, _options
-# sub_text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {page_to_string[bspage]}'
-# if bspage in item_lists.keys():
-#     sub_options[str(option_index)] = f'shop_{bspage}0page'
-# else:
-#     sub_options[str(option_index)] = f'shop_{bspage}'
-# option_index += 1
 
 
 def shop(console):
@@ -272,7 +192,7 @@ def shop(console):
                 sub_options.update(ip_options)
 
             # If ends with page, then we have a list of items
-            if current_screen_name.endswith('page'):
+            if 'page' in current_screen_name and '#' not in current_screen_name:
                 # Divide page links from lists
                 if sub_text != '':
                     sub_text += '\n'
@@ -288,6 +208,7 @@ def shop(console):
                     item_list = Refs.gc.get_owned_items(item_list)
 
                 # Page with a list in it
+                print(current_screen_name)
                 page_num = int(current_screen_name[len(f'shop_{page}'):-len('page')])
 
                 if 'buy' in page:
@@ -308,9 +229,21 @@ def shop(console):
                 sub_options.update(ip_options)
             # If there is a # in the string, then we have a item transaction screen
             if '#' in current_screen_name:
-                pass
                 # Item transaction screen
+                if 'sell' in current_screen_name:
+                    page += '_sell'
+                    page_type = 'sell'
+                else:
+                    page += '_buy'
+                    page_type = 'buy'
+
+                page_data, item_id = current_screen_name[len(f'shop_{page}_page'):].split('#')
+                page_num, item_count = page_data.split('_')
+                sub_header = texts[f'{page_type}_start'].format(Refs.gc.get_drop_item(item_id).get_name())
+                sub_text, sub_options = item_transaction(item_count, item_id, f'shop_{page}{page_num}page', texts[f'{page_type}_current'], texts[f'{page_type}_future'])
             break
+
+    # shop_category_pagex_count#item_id
     # Add paged shop lists
     # for category, sub_categories in bscategories.items():
     #     # List sub categories
@@ -339,15 +272,12 @@ def shop(console):
     #                         sub_header = texts[f'{type}_start'].format(category_to_string[sub_category])
     #                         sub_text, sub_options = item_page_list(current_screen_name, item_list, sub_page_name, texts[f'{type}_fail'].format(category_to_string[sub_category]), texts[f'{type}_current'])
     #                     else:
-    #                         item_count, item_id = current_screen_name[len(sub_page_name + '_'):].split('#')
-    #                         sub_header = f'How many {Refs.gc.get_drop_item(item_id).get_name()} would you like to {type}?\n'
-    #                         sub_text, sub_options = item_transaction(item_count, item_id, sub_page_name, texts[f'{type}_current'], texts[f'{type}_future'])
+
 
     display_text += header
     display_text += sub_header
     display_text += sub_text
     _options.update(sub_options)
-    print(sub_options)
 
     if current_screen_name == 'shop_main':
         display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Leave the market\n'
@@ -358,9 +288,12 @@ def shop(console):
 
 def do_transaction(item_id, count, selling):
     item = Refs.gc.get_shop_item(item_id)
+    if item is None:
+        item = Refs.gc.get_drop_item(item_id)
     if not selling:
         # Check if we have enough money
-        if item.get_price() > Refs.gc.get_varenth():
+        print(item.get_name(), item.get_max_price(), ' - ', Refs.gc.get_varenth())
+        if item.get_max_price() > Refs.gc.get_varenth():
             return False
 
     # Adjust inventory
@@ -371,9 +304,9 @@ def do_transaction(item_id, count, selling):
 
     # Adjust Varenth
     if selling:
-        Refs.gc.update_varenth(item.get_price() * count)
+        Refs.gc.update_varenth(item.get_min_price() * count)
     else:
-        Refs.gc.update_varenth(-item.get_price() * count)
+        Refs.gc.update_varenth(-item.get_max_price() * count)
 
     # If map, update map data
     if item_id.startswith('full_map') and not Refs.gc.in_inventory('path_' + item_id[len('full_'):]):

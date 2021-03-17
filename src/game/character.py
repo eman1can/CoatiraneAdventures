@@ -169,6 +169,9 @@ class Character(Entity):
             index = self._rank
         return self._ranks[index - 1]
 
+    def get_ranks(self):
+        return self._ranks
+
     def rank_up(self):
         if self._rank < MAX_RANK:
             self._rank += 1

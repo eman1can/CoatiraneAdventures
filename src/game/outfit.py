@@ -6,6 +6,7 @@ class Outfit(HMPMD, SMEAD):
     def __init__(self, **kwargs):
         # Definitions
         self.weapon = None  # type: Equipment or None
+        self.off_hand_weapon = None  # type: Equipment or None
         self.necklace = None  # type: Equipment or None
         self.ring = None  # type: Equipment or None
         self.helmet = None  # type: Equipment or None
@@ -14,8 +15,8 @@ class Outfit(HMPMD, SMEAD):
         self.chest = None  # type: Equipment or None
         self.grieves = None  # type: Equipment or None
         self.boots = None  # type: Equipment or None
-        self.items = [self.weapon, self.necklace, self.ring, self.helmet, self.vambraces, self.gloves, self.chest, self.grieves, self.boots]  # type: list[Equipment or None]
-        self.types = ['weapon', 'necklace', 'ring', 'helmet', 'vambraces', 'gloves', 'chest', 'grieves', 'boots']  # type: list[str]
+        self.items = [self.weapon, self.off_hand_weapon, self.necklace, self.ring, self.helmet, self.vambraces, self.gloves, self.chest, self.grieves, self.boots]  # type: list[Equipment or None]
+        self.types = ['weapon', 'off hand weapon', 'necklace', 'ring', 'helmet', 'vambraces', 'gloves', 'chest', 'grieves', 'boots']  # type: list[str]
 
         SMEAD.__init__(self, 0, 0, 0, 0, 0)
         HMPMD.__init__(self, 0, 0, 0, 0, 0)

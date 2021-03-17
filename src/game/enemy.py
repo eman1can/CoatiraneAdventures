@@ -39,7 +39,6 @@ class Enemy:
 
     def generate_drop(self):
         drops = []
-        print(randint(1, 100), self._crystal_chance * 100)
         if randint(1, 100) <= self._crystal_chance * 100:
             drops += choices(list(self._crystal_drops.keys()), list(self._crystal_drops.values()))
         drops += choices(list(self._optional_drops.keys()), list(self._optional_drops.values()), k=choices([1, 2, 3], [3, 2, 1])[0])

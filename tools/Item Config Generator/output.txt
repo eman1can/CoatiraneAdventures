@@ -1,0 +1,845 @@
+# Goblin
+# Found on Floors 1, 2, 3, 4, and 5
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Fang
+
+# Kobold
+# Found on Floors 1, 2, 3, 4, 5, 6, and 7
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, and Hide
+
+# Jack Bird
+# Found on Floors 1, 2, and 3
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Egg, Hide, and Meat
+
+# Dungeon Lizard
+# Found on Floors 4, 5, 6, and 7
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, Scale, and Tongue
+
+# Frog Shooter
+# Found on Floors 6#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale and Tongue
+
+# War Shadow
+# Found on Floors 7, 8, and 9
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw
+
+# Killer Ant
+# Found on Floors 7, 8, 9, and 10
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale and Blood
+
+# Purple Moth
+# Found on Floors 8, 9, 10, and 11
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Wing and Venom
+
+# Needle Rabbit
+# Found on Floors 16, 17, 21, 22, 23, and 26
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide, Meat, and Horn
+
+# Blue Papilio
+# Found on Floors 9, 10, 11, and 12
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Wing and Venom
+
+# Orc
+# Found on Floors 7, 8, and 9
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide
+
+# Imp
+# Found on Floors 8, 9, 11, 12, 16, 17, 18, 19, and 20
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, and Hide
+
+# Bad Bat
+# Found on Floors 10 and 11
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Wing
+
+# Hard Armored
+# Found on Floors 10, 11, 12, 13, and 14
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Scale
+
+# Infant Dragon
+# Found on Floors 12 and 13
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, Scale, Meat, and Blood
+
+# Silverback
+# Found on Floors 12, 13, and 14
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide
+
+# Black Wyvern
+# Found on Floors 13, 14, 15, and 16
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang, Scale, and Venom
+
+# Wyvern
+# Found on Floors 14, 15, 16, 17, 18, and 19
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, and Scale
+
+# Crystal Mantis
+# Found on Floors 15, 16, 17, and 18
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Wing
+
+# Lamia Mormos
+# Found on Floors 17, 18, 19, and 20
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Scale
+
+# Hellhound
+# Found on Floors 15, 16, 17, 18, 19, and 20
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Hide
+
+# Almiraj
+# Found on Floors 17, 19, and 20
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Hide
+
+# Dungeon Worm
+# Found on Floors 21, 22, 23, 24, and 25
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Venom
+
+# Minotaur
+# Found on Floors 20, 21, 22, 23, 24, and 25
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, and Hide
+
+# Lygerfang
+# Found on Floors 21, 22, 23, 24, 25, and 26
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Hide
+
+# Bugbear
+# Found on Floors 21, 22, and 26
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Hide
+
+# Battle Boar
+# Found on Floors 24, 25, and 26
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, and Hide
+
+# Lizardman
+# Found on Floors 23, 26, 27, 28, and 29
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Scale
+
+# Firebird
+# Found on Floors 26, 27, 28, and 29
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Wing
+
+# Vouivre
+# Found on Floors 28, 29, and 30
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, Egg, and Scale
+
+# Mad Beetle
+# Found on Floors 27, 28, 29, 30, 31, and 32
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale and Wing
+
+# Mammoth Fool
+# Found on Floors 28, 29, 30, 31, 32, 33, and 34
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Hide
+
+# Dark Fungus
+# Found on Floors 30, 31, 32, 33, 34, 35, and 36
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Venom
+
+# Gun Libellula
+# Found on Floors 33, 34, 35, 36, 37, and 38
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Wing
+
+# Sword Stag
+# Found on Floors 35, 36, 37, and 38
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Horn
+
+# Troll
+# Found on Floors 40, 41, and 42
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide
+
+# Deadly Hornet
+# Found on Floors 27, 31, 32, 33, and 34
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale, Wing, and Venom
+
+# Bloody Hive
+# Found on Floors 27, 31, 32, 33, and 34
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Blood and Venom
+
+# Green Dragon
+# Found on Floors 30, 35, 36, 37, 38, and 39
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, and Scale
+
+# Hobgoblin
+# Found on Floors 21, 22, 23, 35, 36, 38, and 39
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Fang
+
+# Viscum
+# Found on Floors 37, 38, and 39
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Venom
+
+# Moss Huge
+# Found on Floors 37, 38, and 39
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Hide
+
+# Metal Rabbit
+# Found on Floors 14, 15, 24, 25, 28, 29, 37, and 39
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide
+
+# Poison Vermis
+# Found on Floors 19, 20, 26, and 39
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Venom
+
+# Raider Fish
+# Found on Floors 40, 41, 42, 43, 44, 45, and 46
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Scale
+
+# Harpy
+# Found on Floors 42, 43, 44, and 45
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Wing
+
+# Siren
+# Found on Floors 44, 45, 46, 47, and 48
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, and Wing
+
+# Blue Crab
+# Found on Floors 40, 41, 42, 43, 44, 45, 46, and 47
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Scale, and Meat
+
+# Aqua Serpent
+# Found on Floors 41, 42, 43, 47, and 48
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale and Wing
+
+# Crystal Turtle
+# Found on Floors 41, 46, and 48
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale
+
+# Devil Mosquito
+# Found on Floors 40, 44, 45, and 46
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Wing
+
+# Light Quartz
+# Found on Floors 47 and 48
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Meat
+
+# Crystaroth Urchin
+# Found on Floors 40, 41, 42, and 43
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang, Horn, and Venom
+
+# Iguazu
+# Found on Floors 44, 45, 46, 47, and 48
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Wing and Horn
+
+# Mermaid
+# Found on Floors 44, 45, 46, 47, and 48
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale and Blood
+
+# Merman
+# Found on Floors 45, 46, 47, and 48
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale
+
+# Kelpie
+# Found on Floors 43, 44, 45, and 46
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Wing
+
+# Afanc
+# Found on Floors 40, 41, 42, and 43
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Fang, and Meat
+
+# Dodora
+# Found on Floors 44, 45, 46, 47, and 48
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Scale, and Venom
+
+# Lamia
+# Found on Floors 40, 41, 42, and 43
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Scale
+
+# Voltimeria
+# Found on Floors 43, 44, 45, 46, 47, and 48
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale
+
+# Bloodsaurus
+# Found on Floors 49, 50, and 51
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang, Scale, and Meat
+
+# Power Bull
+# Found on Floors 52, 53, and 54
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Horn
+
+# Grand Treant
+# Found on Floors 49, 50, 55, and 56
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide
+
+# Worm Well
+# Found on Floors 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, and 60
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang, Scale, and Venom
+
+# Spartoi
+# Found on Floors 49, 50, 51, 52, and 53
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw
+
+# Barbarian
+# Found on Floors 52, 53, 54, 55, 56, and 57
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Meat
+
+# Lizardman Elite
+# Found on Floors 54, 55, 56, 57, 58, 59, and 60
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw and Scale
+
+# Obsidian Soldier
+# Found on Floors 57, 58, 59, and 60
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale
+
+# Skull Sheep
+# Found on Floors 51, 52, and 53
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Horn
+
+# Loup Garou
+# Found on Floors 49, 50, and 51
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Hide
+
+# Peluda
+# Found on Floors 54, 55, and 56
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale, Horn, and Venom
+
+# Flame Rock
+# Found on Floors 21, 22, 23, 51, 52, and 53
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Egg
+
+# Fomoire
+# Found on Floors 54, 55, 56, 57, 58, and 59
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Horn
+
+# Black Rhino
+# Found on Floors 49, 50, 51, and 52
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Horn
+
+# Deformis Spider
+# Found on Floors 55, 56, and 57
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Claw, Hide, and Blood
+
+# Cadmus
+# Found on Floors 57, 58, 59, and 60
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale
+
+# Venom Scorpion
+# Found on Floors 49, 50, 53, and 54
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale and Venom
+
+# Thunder Snake
+# Found on Floors 58, 59, and 60
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Scale
+
+# Silver Worm
+# Found on Floors 57, 58, 59, and 60
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Scale
+
+# Ill Wyvern
+# Found on Floors 51, 52, and 53
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale and Wing
+
+# Valgang Dragon
+# Found on Floors 54, 55, 56, 58, 59, and 60
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Scale
+
+# Titan Alm
+# Found on Floors 49, 50, 51, and 52
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Meat
+
+# Unicorn
+# Found on Floors 32, 33, 34, 35, 37, and 39
+#
+# Type: 
+# Hardness: (hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide, Blood, and Horn
+
+# Dungeon Fly
+# Found on Floors 24, 25, 27, 30, 31, and 36
+#
+# Type: 
+# Hardness: None(hard), None(soft)
+# Defining Effect: None
+# Sub Effect: None
+# Drops: Wing
+
+# Ogre
+# Found on Floors 35, 36, and 38
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Meat
+
+# Gargoyle
+# Found on Floors 49, 50, 51, and 53
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale
+
+# Gryphon
+# Found on Floors 32, 33, 34, 55, and 56
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide
+
+# Arachne
+# Found on Floors 27, 28, 29, 30, and 31
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide and Venom
+
+# Hippogriff
+# Found on Floors 57, 58, 59, and 60
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide
+
+# Armarosaurus
+# Found on Floors 18, 24, 25, 49, 50, and 52
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Scale
+
+# Old Bison
+# Found on Floors 21, 22, 53, 54, 55, and 56
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide
+
+# Ape
+# Found on Floors 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, and 60
+#
+# Type: 
+# Hardness: None(hard), (soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Hide
+
+# Vulture
+# Found on Floors 40, 41, 42, and 43
+#
+# Type: 
+# Hardness: (hard), None(soft)
+# Defining Effect: 
+# Sub Effect: 
+# Drops: Fang and Tongue
+

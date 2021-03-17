@@ -1,8 +1,10 @@
 __all__ = ('GameContent',)
 
 # Project Imports
+from game.calendar import Calendar
 from game.battle_character import create_battle_character
 from game.floor_data import FloorData
+from game.save_load import save_game
 from refs import Refs
 # from src.spine.skeleton.skeletonloader import SkeletonLoader
 
@@ -20,7 +22,9 @@ class GameContent:
         self._parties = None
 
         self._tavern_locked = False
-        self._crafting_locked = True
+        self._crafting_locked = False
+        self._potion_crafting_locked = False
+        self._blacksmithing_locked = False
 
         self._data = None
         self._program_type = program_type
@@ -30,14 +34,33 @@ class GameContent:
 
         self._current_floor = 0
         self._floor_data = None
+        self._save_slot = None
+
+        self._calendar = None
+        self._current_housing = None
 
         self._name = ''
         self._domain = ''
+        self._domain_object = None
+        self._gender = ''
+        self._symbol = ''
+        self._quests = 0
         self._skill_level = 0
         self._inventory = None
         self._varenth = 0
         self._renown = ''
+        self._last_save_time = 0
         self._lowest_floor = 0  # 0 = Surface
+
+    @staticmethod
+    def format_number(number):
+        string = ''
+        for index, char in enumerate(reversed(str(number))):
+            if index % 3 == 0 and index != 0:
+                string = ',' + string
+            string = char + string
+        return string
+
 
     def get_item_data(self, item_id):
         if item_id in self._data['shop_items']:
@@ -45,7 +68,7 @@ class GameContent:
         else:
             return self._data['drop_items'][item_id]
 
-    def update_data(self, save_data):  # inventory, lowest_floor):
+    def update_data(self, save_data):
         self._inventory = {}
         for item_id, count in save_data['inventory'].items():
             self._inventory[item_id] = self.get_item_data(item_id)
@@ -54,8 +77,60 @@ class GameContent:
         self._varenth = save_data['varenth']
         self._skill_level = save_data['family']['skills']
         self._name = save_data['family']['name']
+        self._symbol = save_data['family']['symbol']
+        self._gender = save_data['family']['gender']
         self._domain = save_data['family']['domain']
         self._renown = save_data['family']['rank']
+        self._last_save_time = save_data['time']
+        self._calendar = Calendar(save_data['time'])
+
+        housing_id = save_data['housing']['id']
+        self._current_housing = self._data['housing'][housing_id]
+        housing_type = save_data['housing']['type']
+        bill_due = save_data['housing']['bill_due']
+        bill_count = save_data['housing']['bill_count']
+        if housing_type == 'rent':
+            self._current_housing.set_data(housing_type, bill_due, bill_count)
+        else:
+            bill_cost = save_data['housing']['bill_cost']
+            self._current_housing.set_data(housing_type, bill_due, bill_count, bill_cost)
+        self._current_housing.set_installed(save_data['housing']['installed_features'])
+        # TODO: Set locks based on save data
+        # Load map data into floors
+        for floor_id in save_data['map_data']:
+            self._data['floors'][int(floor_id)].get_floor_map().update_explored(save_data['map_data'][floor_id])
+
+    def set_current_housing(self, housing):
+        self._current_housing = housing
+
+    def get_last_save_time(self):
+        return self._last_save_time
+
+    def set_domains(self, domain_list):
+        self._domains = domain_list
+        for domain in self._domains:
+            if domain.get_title() == self._domain:
+                self._domain_object = domain
+                break
+
+    def get_domain_info(self):
+        return self._domain_object
+
+    def set_save_slot(self, save_slot):
+        self._save_slot = save_slot
+
+    def save_game(self):
+        self._last_save_time = self._calendar.get_int_time()
+        save_game(self._save_slot, self)
+
+    def get_time(self):
+        return self._calendar.get_time()
+
+    def get_calendar(self):
+        return self._calendar
+
+    def set_calendar_callback(self, callback):
+        self._calendar.set_callback(callback)
 
     def update_lowest_floor(self, floor_num):
         if floor_num > self._lowest_floor:
@@ -64,11 +139,32 @@ class GameContent:
     def get_lowest_floor(self):
         return self._lowest_floor
 
+    def get_housing(self):
+        return self._current_housing
+
+    def get_housing_options(self):
+        return list(self._data['housing'].values())
+
     def get_varenth(self):
         return self._varenth
 
     def get_name(self):
         return self._name
+
+    def get_gender(self):
+        return self._gender
+
+    def get_symbol(self):
+        return self._symbol
+
+    def get_score(self):
+        score = 0
+        for character in self._data['chars'].values():
+            score += character.get_score()
+        return score
+
+    def get_quests(self):
+        return self._quests
 
     def get_skill_level(self):
         return self._skill_level
@@ -105,7 +201,7 @@ class GameContent:
             self._parties = cp
 
     def initialize(self, loader):
-        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'shop_items', 'drop_items']
+        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'shop_items', 'drop_items', 'housing']
         self._data = {}
         for key in keys:
             self._data[key] = loader.get(key)
@@ -154,8 +250,21 @@ class GameContent:
                 chars.append(list(self._data['chars'].values())[char_index])
         return chars
 
+    def get_obtained_character_indexes(self, support):
+        if support:
+            return self._obtained_characters_s
+        else:
+            return self._obtained_characters_a
+
     def get_all_obtained_character_indexes(self):
         return self._obtained_characters
+
+    def get_non_obtained_characters(self):
+        chars = []
+        for char in self._data['chars'].values():
+            if char.get_index() not in self._obtained_characters:
+                chars.append(char)
+        return chars
 
     def obtain_character(self, char_index, is_support):
         if is_support:
@@ -191,8 +300,18 @@ class GameContent:
     def is_crafting_locked(self):
         return self._crafting_locked
 
-    def get_lowest_floor(self):
-        return self._lowest_floor
+    def is_potion_crafting_locked(self):
+        return self._potion_crafting_locked
+
+    def is_blacksmithing_locked(self):
+        return self._blacksmithing_locked
+
+    def get_inventory_list(self):
+        items = []
+        for item_id, item in self._inventory.items():
+            if not item_id.endswith('count'):
+                items.append(item)
+        return items
 
     def in_inventory(self, item_id):
         return item_id in self._inventory
@@ -240,7 +359,6 @@ class GameContent:
 
     def remove_from_inventory(self, item_id, count=1):
         if item_id not in self._inventory:
-            print(item_id, 'not in inventory')
             return
         else:
             self._inventory[f'{item_id}_count'] -= count
@@ -249,7 +367,6 @@ class GameContent:
                 self._inventory.pop(f'{item_id}_count')
 
     def get_shop_items(self, category):
-        print('Get Item List', category)
         items = []
         for item in self._data['shop_items'].values():
             if item.get_category() == category and item.is_unlocked():
@@ -257,10 +374,14 @@ class GameContent:
         return items
 
     def get_shop_item(self, item_id):
-        return self._data['shop_items'][item_id]
+        if item_id in self._data['shop_items']:
+            return self._data['shop_items'][item_id]
+        return None
 
     def get_drop_item(self, item_id):
-        return self._data['drop_items'][item_id]
+        if item_id in self._data['drop_items']:
+            return self._data['drop_items'][item_id]
+        return None
 
     def get_owned_items(self, item_list):
         remove = []

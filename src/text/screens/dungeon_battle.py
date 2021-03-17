@@ -1,14 +1,8 @@
 from random import randint
 
 from game.floor_data import DIRECTIONS_FROM_STRING, E, N, S, W
-from refs import Refs
+from refs import BLUE_C, END_OPT_C, OPT_C, RED_C, Refs, SEA_FOAM_C
 
-
-OPT_C = '[color=#CA353E]'
-HEALTH_C = '[color=#FF0000]'
-MANA_C = '[color=#0000FF]'
-SPECIAL_C = '[color=#64FAD4]'
-END_OPT_C = '[/color]'
 COUNT_TO_STRING = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
 
 
@@ -87,8 +81,8 @@ def get_tunnel_descriptions(floor_data):
         if compass:
             display_string += f'\n\t{OPT_C}{numbers[direction]}:{END_OPT_C} Proceed {direction}, {floor_data.get_basic_direction(direction)} down the hallway.'
         else:
-            display_string += f'\n\t{OPT_C}{numbers[direction]}:{END_OPT_C} Proceed {floor_data.get_basic_direction(direction)} down the hallway.'
-        _options[str(numbers[direction])] = f'dungeon_battle_{direction}'
+            display_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Proceed {floor_data.get_basic_direction(direction)} down the hallway.'
+        _options[str(option_index)] = f'dungeon_battle_{direction}'
         option_index += 1
 
     # Get map and display it
@@ -108,7 +102,9 @@ def get_tunnel_descriptions(floor_data):
     return display_string, _options
 
 
-def get_extra_actions(floor_data):
+def get_extra_actions(option_index, floor_data):
+    text, options = '', {}
+    text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Inventory'
     return '\n', {}
     # To be able to
     # To be able to inspect the walls, the player needs to have a pickaxe in their inventory.
@@ -162,11 +158,11 @@ def get_battle_display(floor_data):
         if enemy.is_dead():
             enemy_rows.append((f'[s]{name}[/s]', len(name)))
             enemy_rows.append((f'[s]{level}[/s]', len(level)))
-            enemy_rows.append((f'[s]{HEALTH_C}{health_string}{END_OPT_C}[/s]', len(health_string)))
+            enemy_rows.append((f'[s]{RED_C}{health_string}{END_OPT_C}[/s]', len(health_string)))
         else:
             enemy_rows.append((name, len(name)))
             enemy_rows.append((level, len(level)))
-            enemy_rows.append((f'{HEALTH_C}{health_string}{END_OPT_C}', len(health_string)))
+            enemy_rows.append((f'{RED_C}{health_string}{END_OPT_C}', len(health_string)))
         enemy_rows.append(('', 0))
         enemy_rows.append(('', 0))
 
@@ -209,13 +205,13 @@ def get_battle_display(floor_data):
             else:
                 character_rows.append((f'{name}', len(name)))
         if character.is_dead():
-            character_rows.append((f'[s]{HEALTH_C}{health_string}{END_OPT_C}[/s]', 20))
-            character_rows.append((f'[s]{MANA_C}{mana_string}{END_OPT_C}[/s]', 20))
+            character_rows.append((f'[s]{RED_C}{health_string}{END_OPT_C}[/s]', 20))
+            character_rows.append((f'[s]{BLUE_C}{mana_string}{END_OPT_C}[/s]', 20))
             character_rows.append(('', 0))
             character_rows.append((f'[s]{skill_name}[/s]', len(skill_name)))
         else:
-            character_rows.append((f'{HEALTH_C}{health_string}{END_OPT_C}', 20))
-            character_rows.append((f'{MANA_C}{mana_string}{END_OPT_C}', 20))
+            character_rows.append((f'{RED_C}{health_string}{END_OPT_C}', 20))
+            character_rows.append((f'{BLUE_C}{mana_string}{END_OPT_C}', 20))
             character_rows.append(('', 0))
             character_rows.append((skill_name, len(skill_name)))
         character_rows.append(('', 0))
@@ -247,7 +243,7 @@ def get_battle_display(floor_data):
             special_string += '='
         else:
             special_string += ' '
-    screen_string += f'\t{SPECIAL_C}[b][{special_string}] {battle_data.get_special_count()}[/b]{END_OPT_C}\n\n'
+    screen_string += f'\t{SEA_FOAM_C}[b][{special_string}] {battle_data.get_special_count()}[/b]{END_OPT_C}\n\n'
 
     for index in range(max(len(enemy_rows), len(character_rows), len(effect_rows))):
         screen_string += '\t'
@@ -303,7 +299,7 @@ def get_battle_display(floor_data):
             option_index += 1
     else:
         _options['0'] = 'dungeon_battle_encounter_attack'
-        _options[str(option_index)] = 'dungeon_battle_encounter_inventory'
+        _options[str(option_index)] = 'inventory0page'
         screen_string += f'\n\t{OPT_C}{0}:{END_OPT_C} Attack'
         screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Inventory'
     screen_string += '\n'
@@ -339,7 +335,7 @@ def dungeon_battle(console):
 
     if not floor_data.is_in_encounter():
         display_string, _options = get_tunnel_descriptions(floor_data)
-        tool_string, tool_options = get_extra_actions(floor_data)
+        tool_string, tool_options = get_extra_actions(len(_options), floor_data)
         _options.update(tool_options)
         return display_string + tool_string, _options
     else:

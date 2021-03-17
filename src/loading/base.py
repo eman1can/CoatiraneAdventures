@@ -11,6 +11,7 @@ from loading.char import load_char_chunk
 from loading.data import load_screen_chunk
 from loading.enemy import load_enemy_chunk
 from loading.family import load_family_chunk
+from loading.housing import load_housing_chunk
 from loading.floor import load_floor_chunk
 from loading.move import load_move_chunk
 from loading.save import load_save_chunk
@@ -34,7 +35,7 @@ class CALoader(Widget):
     def __init__(self, program_type, **kwargs):
         Builder.load_file(resource_find('loading_screen.kv'))
         self.program_type = program_type
-        self.layers = {'skills': {}, 'abilities': {}, 'enemies': {}, 'families': {}, 'chars': {}, 'floors': {}, 'shop_items': {}, 'drop_items': {}, 'save': None}
+        self.layers = {'skills': {}, 'abilities': {}, 'enemies': {}, 'families': {}, 'chars': {}, 'floors': {}, 'shop_items': {}, 'drop_items': {}, 'save': None, 'housing': {}}
         super().__init__(**kwargs)
 
     def load_base_values(self):
@@ -59,6 +60,13 @@ class CALoader(Widget):
         self.ids.outer_progress.value = self.curr_values[CURRENT_INDEX]
         self.ids.inner_progress.max = self.max_values[self.curr_values[CURRENT_INDEX]]
         self.ids.inner_progress.value = self.curr_values[self.curr_values[CURRENT_INDEX]]
+
+    def reset(self):
+        self.curr_values = []
+        self.layers = {'skills': {}, 'abilities': {}, 'enemies': {}, 'families': {}, 'chars': {}, 'floors': {}, 'shop_items': {}, 'drop_items': {}, 'save': None, 'housing': {}}
+        self.messages = []
+        self.max_values = []
+        self.load_base_values()
 
     def show_bars(self):
         self.ids.outer_progress.opacity = OPAQUE
@@ -119,14 +127,13 @@ class CALoader(Widget):
         def load_block(block_loader, isfile, filename, callbacks):
             triggers = []
             if isfile:
-                delimiters = ['\n', '\n', '\n', '#', '\n', '\n', '#\n', '\n\n', '\n']
+                delimiters = ['\n', '\n', '\n', '#', '\n', '#\n', '\n', '#\n', '\n\n', '\n']
                 file = open(resource_find(filename), 'r', encoding='utf-8')
                 if file.mode == 'r':
                     data = file.read()
                     lines = data.split(delimiters[self.curr_values[CURRENT_INDEX]])
                     if len(lines) != self.max_values[self.curr_values[CURRENT_INDEX]]:
-                        print(self.max_values[self.curr_values[CURRENT_INDEX]], 'is wrong!')
-                        raise Exception("Wrong initialization numbers!")
+                        raise Exception(f"Wrong initialization numbers! {filename} {delimiters[self.curr_values[CURRENT_INDEX]]} {len(lines)} != {self.max_values[self.curr_values[CURRENT_INDEX]]}")
                 else:
                     raise Exception(f"Failed to open {filename}!")
 
@@ -143,6 +150,7 @@ class CALoader(Widget):
             Clock.create_trigger(lambda dt: load_block(load_move_chunk, True, f"data/char_load_data/{self.program_type}/SA.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
             Clock.create_trigger(lambda dt: load_block(load_enemy_chunk, True, f"data/enemy_load_data/{self.program_type}/Enemies.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
             Clock.create_trigger(lambda dt: load_block(load_family_chunk, True, f"data/family_load_data/{self.program_type}/Families.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
+            Clock.create_trigger(lambda dt: load_block(load_housing_chunk, True, f"data/family_load_data/{self.program_type}/Housing.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),
             Clock.create_trigger(lambda dt: load_block(load_char_chunk, True, f"data/char_load_data/{self.program_type}/CharacterDefinitions.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(
                 loader)])),
             Clock.create_trigger(lambda dt: load_block(load_floor_chunk, True, f"data/floor_load_data/{self.program_type}/Floors.txt", [self.increase_total, loader.inc_triggers, lambda: loader.start(), lambda: self.done_loading(loader)])),

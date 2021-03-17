@@ -26,9 +26,6 @@ def get_info_and_path(save_slot):
 
 
 def load_save_info(save_slot):
-    print(SAVE_PATH)
-    print(SAVE_SLOT_1)
-    print(os.listdir(SAVE_PATH))
     save_info, save_path = get_info_and_path(save_slot)
     if exists(save_info):
         return JsonStore(save_info)
@@ -60,6 +57,7 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
         'score': starting_score,
         'skills': starting_skills
     }
+    save_file['time'] = 60914
     save_file['lowest_floor'] = starting_floor
     save_file['obtained_characters'] = [choice]
     save_file['obtained_characters_a'] = [choice]
@@ -126,8 +124,81 @@ def save_header(info_slot, name, gender, domain, symbol, rank, varenth, chars_co
     info['skill_level'] = skill_level
 
 
-def save_game():
-    pass
+def save_game(save_slot, game_content):
+    save_info, save_path = get_info_and_path(save_slot)
+
+    name = game_content.get_name()
+    gender = game_content.get_gender()
+    domain = game_content.get_domain()
+    symbol = game_content.get_symbol()
+    rank = game_content.get_renown()
+    varenth = game_content.get_varenth()
+    char_count = len(game_content.get_all_obtained_character_indexes())
+    quest_count = game_content.get_quests()
+    lowest_floor = game_content.get_lowest_floor()
+    score = game_content.get_score()
+    skill_level = game_content.get_skill_level()
+
+    save_header(save_info, name, gender, domain, symbol, rank, varenth, char_count, quest_count, lowest_floor, score, skill_level)
+
+    save_file = JsonStore(save_path)
+    save_file['family'] = {
+        'name':   name,
+        'gender': gender,
+        'domain': domain,
+        'symbol': symbol,
+        'rank':   rank,
+        'chars':  char_count,
+        'quests': quest_count,
+        'score':  score,
+        'skills': skill_level
+    }
+    save_file['time'] = game_content.get_calendar.get_int_time()
+    save_file['housing'] = {}
+    housing = game_content.get_housing()
+    save_file['housing']['id'] = housing.get_id()
+    save_file['housing']['type'] = 'rent' if housing.is_renting() else 'buy'
+    save_file['housing']['installed_features'] = housing.get_installed_features()
+    save_file['housing']['bill_due'] = housing.get_bill_due_int_time()
+    save_file['housing']['bill_count'] = housing.get_bill_count()
+    if not housing.is_renting():
+        save_file['housing']['bill_cost'] = housing.get_bill_cost(True)
+    save_file['lowest_floor'] = lowest_floor
+    save_file['obtained_characters'] = game_content.get_all_obtained_character_indexes()
+    save_file['obtained_characters_a'] = game_content.get_obtained_character_indexes(False)
+    save_file['obtained_characters_s'] = game_content.get_obtained_character_indexes(True)
+    character_development = {}
+    for character in game_content['chars'].values():
+        char_develop = {'ranks': {}, 'equipment': [], 'abilities': [], 'familiarities': []}
+        char_develop['ranks']['unlocked'] = [rank.is_unlocked() for rank in character.get_ranks()]
+        char_develop['ranks']['broken'] = [rank.is_broken() for rank in character.get_ranks()]
+        char_develop['ranks']['boards'] = [[rank.get_board().get_unlocked(tile) for tile in range(rank.get_board().get_count())] for rank in character.get_ranks()]
+        char_develop['ranks']['growth'] = [rank.get_growth().get_stats() for rank in character.get_ranks()]
+        character_development[str(character.get_index())] = char_develop
+    save_file['equipment'] = []
+
+    inventory = {}
+    for item in game_content.get_inventory_list():
+        inventory[item.get_id()] = game_content.get_inventory_count(item.get_id())
+    save_file['inventory'] = inventory
+    save_file['map_data'] = {}
+    for floor in game_content['floors'].values():
+        explored_jsoned = {}
+        explored = floor.get_floor_map().get_explored()
+        for node, shown in explored.items():
+            explored_jsoned[str(node)] = shown
+        save_file['map_data'][str(floor.get_id())] = explored_jsoned
+
+    save_file['varenth'] = varenth
+    parties = [game_content.get_current_party_index()]
+    for index in range(10):
+        parties.append([])
+        for char in game_content.get_party(index):
+            if char is None:
+                parties[-1].append(None)
+            else:
+                parties[-1].append(char.get_index())
+    save_file['parties'] = parties
     # Save the info to the disk
     # Save the actual game info to the disk
     # - Obtained Characters (all, s, & a)
