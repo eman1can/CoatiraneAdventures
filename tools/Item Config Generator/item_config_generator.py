@@ -1,455 +1,104 @@
 from random import choices, randint
+from time import time
+
+from pandas import DataFrame, ExcelWriter
+import numpy as np
 
 compass = 'S, compass, Compass, general, single, 375\nnone\nHave trouble getting lost? Buy a compass and never get lost again!'
 pocket_watch = 'S, pocket_watch, Pocket Watch, general, single, 375\nnone\nKeep losing track of time? Buy a watch and always know the time!'
 
 tool_types = ['harvesting_knife', 'pickaxe', 'shovel', 'axe']
-soft_materials = ['cloth', 'padded', 'leather', 'hardened_leather']
-hard_materials = ['tin', 'copper', 'bronze', 'iron', 'steel', 'platinum', 'titanium', 'hardened_steel', 'tungsten', 'tungsten_carbide', 'dark steel', 'mithril', 'meteoric_iron', 'adamantite', 'golanthium', 'trinium']
+soft_materials = ['Cloth 0.5', 'Padded 0.75', 'Leather 1', 'Hardened Leather 1.5']
+hard_materials = [
+    'Tin 1.5',
+    'Copper 3.0',
+    'Iron 4.5',
+    'Platinum 4.0-4.5',
+    'Titanium 6.0',
+    'Tungsten 7.5',
+    'Meteoric Iron 10.5-11.0',
+    'Golanthium 13.0-15.0']
+
+alloy_hard_materials = [
+    'Bronze 3.0',
+    'Steel 4.0-4.5',
+    'Hardened Steel 7.0-8.0',
+    'Tungsten Carbide 8.5-9.0',
+    'Dark Steel 9.0-9.5',
+    'Mithril 9.5-10.5',
+    'Adamantite 11.0-13.0',
+    'Trinium 15.0-16.0']
+
+gems = [
+    'Spinel 7.5-8.0',
+    'Opal 5.5-6.0',
+    'Onyx 6.5-7.0',
+    'Agate 6.5-7.0',
+    'Emerald 7.5-8.0',
+    'Garnet 6.5-7.5',
+    'Danburite 7.0-7.5',
+    'Diopside 5.5-6.5',
+    'Chrysoberyl 8.5',
+    'Chrysocolla 2.5-3.5',
+    'Sapphire 9.0',
+    'Topaz 8.0',
+    'Zircon 7.5',
+    'Ruby 9.0',
+    'Citrine 7.0',
+    'Fluorite 4.0',
+    'Garnet 6.5-7.5',
+    'Amethyst 7.0',
+    'Ametrine 7.0',
+    'Ammolite 3.5-4.5',
+    'Andesine 6.0-6.5',
+    'Apatite 5.0',
+    'Aquamarine 7.5-8.0',
+    'Beryl 7.5-8.0',
+    'Aventurine 6.5',
+    'Azurite 3.5-4.0',
+    'Zoisite 6.0-7.0',
+    'Bixbite 7.5-8.0',
+    'Blizzard Stone 6.0-7.0',
+    'Bloodstone 7.0',
+    'Goshenite 7.5-8.0',
+    'Kyanite 4.5-7.0',
+    'Heliodor 7.5-8.0',
+    'Hessonite 6.5-7.5',
+    'Indraneelam 6.0',
+    'Iolite 7.0-7.5',
+    'Jade 6.0-7.0',
+    'Jasper 6.5-7.0',
+    'Neelam 9.0',
+    'Kunzite 6.5-7.0',
+    'Labradorite 6.0-6.5',
+    'Lapis Lazuli 5.0-5.5',
+    'Quartz 7.0',
+    'Malachite 3.5-4.0',
+    'Moonstone 6.0-6.5',
+    'Morganite 7.5-8.0',
+    'Obsidian 5.0-6.0',
+    'Padparadscha 9.0',
+    'Peridot 6.5-7.0',
+    'Turquoise 5.0-6.0',
+    'Petalite 6.5',
+    'Prehnite 6.0-6.5',
+    'Rhodochrosite 3.5-4.0',
+    'Rhodonite 5.5-6.0',
+    'Rutilated Quartz 7.0',
+    'Sang-E-Maryam 8.6',
+    'Serpentine 3.0-6.0',
+    'Sodalite 5.5-6.0',
+    'Spectrolite 6.5',
+    'Spessartite 7.0',
+    'Sunstone 6.0-6.5',
+    'Taaffeite 8.5',
+    'Tanzanite 6-6.5',
+    'Tiger eye 7.0',
+    'Titanite 5.0-5.5',
+    'Tsavorite 7.0-7.5',
+    'Zoisite 6.0-6.5']
 
 magic_stone_types = ['tiny', 'small', 'medium', 'regular', 'large', 'huge']
-
-"""
-When a monster is killed:
-- Non-havesting items dropped (Such as Egg)
-- Use harvesting knife:
-  - Magic Stones
-  - Harvest Drops
-    - Might consume items such as vials (for blood, venom), container (meat, tongue) 
-  - Falna
-
-On a floor, every time you move there is a 15% chance to have an encounter.
-On specific nodes for each monster, the chance for that monster appearing is increased 10%, and all other monsters are reduced in equal amounts. On a node, monsters are 15% stronger, and encounters have a 25% chance to happen.
-When mining/digging/chopping at the dungeon, there is a 5% chance to get a resource (1-2 units), and the resource is either a random gem, or a metal with the hardness corresponding to the floor. When mining/digging/chopping on a resource node, there is an 85% chance to get the corresponding resource. (2-10 units)
-A tile that has a safe zone node has to made into a safe zone, and then will have a 0% encounter chance and allow for rest for 5 movement turns.
-When using a material that has a hardness lower than the resource, success is reduced by 10% for every 1 hardness below. For every 1 hardness above a resource type, increase yield by 5% and increase chance of success by 5%.
-
-When crafting an item, whatever equipment you are trying to craft will have a material unit amount for each type of material needed, and the higher the hardness of the ingredients, the higher the item stats.
-An item can have up to three materials for the main material, and a main materials for the other requirements.
-Each material will give effects to the resulting item.
-The current softest (hard)material is tin at 1.5 hardness. The current hardest (hard)material is Trinium at 15.0-16.0 hardness.
-
-Ex: Longsword
- - 15 Units hard material
- - 2 Units soft material
- 
- - 10 Units Bronze (Hardness 3.0)
- - 2.5 Units Unicorn Horn (Hardness 3.5)
- - 2.5 Units Goblin Fang (Hardness 2.0)
- - 2 Units Imp Hide
-
-    Hardness:
-     Max: (3.0 * 10 + 3.5 * 2.5 + 2.0 * 2.5) / 15 = 2.9
-     Min: (3.0 * 10 + 3.5 * 2.5 + 2.0 * 2.5) / 15 = 2.9
-     Random from 2.9 → 2.9
-    Effects:
-        Element: Normal (Bronze - Defining)
-        - Ailment Resist 100% (Unicorn Horn - Sub)
-        - 10% Chance to inflict weak sickness (Goblin Fang - Sub)
-        - 10% Chance to attack with dark element (Imp Hide - Sub)
-
-Ex: Dagger
- - 5 Units hard material
- - 1 Unit soft material
- 
- - 3 Units Goblin Fang (Hardness 2.0)
- - 1 Unit Titanium (Hardness 6.0)
- - 1 Unit Siren Fang (Hardness 5.5)
- 
-    Hardness:
-    Max: (2.0 * 3 + 6.0 * 1 + 5.5 * 1) / 5 = 3.5
-    Min: (2.0 * 3 + 6.0 * 1 + 5.5 * 1) / 5 = 3.5
-    Random from 3.5 → 3.5
-    Effects:
-        Element: Dark (Goblin Fang - Defining)
-        - 50% Chance to inflict strong sickness (Goblin Fang - Defining)
-        - 10% Chance to inflict daze (Siren Fang - Sub)
-"""
-
-# List of current materials (soft) (natural)
-# Cloth 0.5
-# Padded 0.75
-# Leather 1.0
-# Hardened Leather 1.5
-#
-# List of current materials (hard) (natural)
-# Tin 1.5
-# Cadmium 2.0
-# Coal 2.0-2.5
-# Zinc 2.5
-# Silver 2.5-3.0
-# Copper 3.0
-# Iron 4.5
-# Platinum 4.0-4.5
-# Titanium 6.0
-# Tungsten 7.5
-# Meteoric Iron 10.5-11.0
-# Golanthium 13.0-15.0
-#
-# Item weight = Hardness * item units
-# Weight limit = Str * 5
-# Ex. A adventurer with Str. 4 can carry total equipment worth
-# 20 weight units.
-# For every 2.5 weights units above weight limit, reduce stats by 5%
-
-# List of current materials (hard) (alloys)
-# Bronze 3.0
-# - 2 units copper
-# - 1 units tin
-# → 2 units bronze
-# Defining Effect (weapon): Elemental Boost Damage +100%
-# Defining Effect (armor): Elemental Resist +50%
-# Sub Effect (weapon): Elemental Boost Damage +50%
-# Sub Effect (armor): Elemental Resist +15%
-# Steel 5.0-5.5
-# - 3 units iron
-# - 2 units coal
-# → 2 units steel
-# Defining Effect: Durability +100%
-# Sub Effect: Durability +50%
-# Hardened Steel 7.0-8.0
-# - 5 units iron
-# - 3 units coal
-# - 2 units titanium
-# → 5 units hardened steel
-# Defining Effect: End. +100% (Item only)
-# Sub Effect: End. +25%
-# Tungsten Carbide 8.5-9.0
-# - 2 units tungsten
-# - 2 units coal
-# → 2 units tungsten carbide
-# Defining Effect: All equipment weight reduced by half.
-# Sub Effect: All equipment weight reduced by a quarter.
-# Dark Steel 9.0-9.5
-# - 2 units hardened steel
-# - 2 units tungsten carbide
-# → 2 units dark steel
-# Defining Effect: Increase Dark Atk. Dmg. by 100%. Dark Resist 100%.
-# Sub Effect: Increase Dark Atk. Dmg. by 25%. Increase Dark Resist by 25%.
-# Mithril 9.5-10.5
-# - 2 units silver
-# - 2 units dark steel
-# → 2 units mithril
-# Defining Effect: Mag. +50%
-# Sub Effect: Mag. +50% (Item Only)
-# Adamantite 11.0-13.0
-# - 2 units mithril
-# - 2 units meteoric iron
-# → 2 units adamantite
-# Defining Effect: Increase power level by 2 when using skill. (Can only happen once) Ex. Lo → High, High → Super
-# Sub Effect: Increase power level by 1 when using skill. (Can only happen once) Ex. Lo → Mid, Mid → High
-# Trinium 15.0-16.0
-# - 2 units Adamantite
-# - 2 units golanthium
-# → 2 units Trinium
-# Defining Effect: All Stats +25%
-# Sub Effect: All Stats +25% (Item Only)
-
-# Chrysocolla 2.5-3.5
-# Serpentine 3.0-6.0
-# Azurite 3.5-4.0
-# Malachite 3.5-4.0
-# Rhodochrosite 3.5-4.0
-# Ammolite 3.5-4.5
-# Fluorite 4.0
-# Kyanite 4.5-7.0
-# Apatite 5.0
-# Lapis Lazuli 5.0-5.5
-# Titanite 5.0-5.5
-# Obsidian 5.0-6.0
-# Turquoise 5.0-6.0
-# Opal 5.5-6.0
-# Rhodonite 5.5-6.0
-# Sodalite 5.5-6.0
-# Diopside 5.5-6.5
-# Tanzanite 6-6.5
-# Indraneelam 6.0
-# Andesine 6.0-6.5
-# Labradorite 6.0-6.5
-# Moonstone 6.0-6.5
-# Prehnite 6.0-6.5
-# Sunstone 6.0-6.5
-# Zoisite 6.0-6.5
-# Blizzard Stone 6.0-7.0
-# Jade 6.0-7.0
-# Zoisite 6.0-7.0
-# Aventurine 6.5
-# Petalite 6.5
-# Spectrolite 6.5
-# Agate 6.5-7.0
-# Jasper 6.5-7.0
-# Kunzite 6.5-7.0
-# Onyx 6.5-7.0
-# Peridot 6.5-7.0
-# Garnet 6.5-7.5
-# Garnet 6.5-7.5
-# Hessonite 6.5-7.5
-# Amethyst 7.0
-# Ametrine 7.0
-# Bloodstone 7.0
-# Citrine 7.0
-# Quartz 7.0
-# Rutilated Quartz 7.0
-# Spessartite 7.0
-# eye 7.0 Tiger
-# Danburite 7.0-7.5
-# Iolite 7.0-7.5
-# Tsavorite 7.0-7.5
-# Zircon 7.5
-# Aquamarine 7.5-8.0
-# Beryl 7.5-8.0
-# Bixbite 7.5-8.0
-# Emerald 7.5-8.0
-# Goshenite 7.5-8.0
-# Heliodor 7.5-8.0
-# Morganite 7.5-8.0
-# Spinel 7.5-8.0
-# Topaz 8.0
-# Chrysoberyl 8.5
-# Taaffeite 8.5
-# Sang-E-Maryam 8.6
-# Neelam 9.0
-# Padparadscha 9.0
-# Ruby 9.0
-# Sapphire 9.0
-
-
-
-
-# Floor Hardness (What hardness you need to mine / dig (Mining is 60%(ore)/40%(gem), Digging is 40%(ore)/60%(gem)))
-# Floor 1 → Hardness 1.0
-#    - None
-#
-# Floor 2 → Hardness 1.0
-#    - None
-#
-# Floor 3 → Hardness 1.5
-#    - None
-#
-# Floor 4 → Hardness 1.5
-#    - None
-#
-# Floor 5 → Hardness 2.0
-#    - Tin
-#
-# Floor 6 → Hardness 2.0
-#    - Tin
-#
-# Floor 7 → Hardness 2.5
-#    - Cadmium, Tin, Coal
-#
-# Floor 8 → Hardness 3.0
-#    - Zinc, Cadmium, Tin, Silver, Coal
-#    - Chrysocolla
-#
-# Floor 9 → Hardness 3.0
-#    - Zinc, Cadmium, Tin, Silver, Coal
-#    - Chrysocolla
-#
-# Floor 10 → Hardness 3.0
-#    - Zinc, Cadmium, Tin, Silver, Coal
-#    - Chrysocolla
-#
-# Floor 11 → Hardness 3.5
-#    - Zinc, Cadmium, Silver, Coal, Copper
-#    - Serpentine, Chrysocolla
-#
-# Floor 12 → Hardness 3.5
-#    - Zinc, Cadmium, Silver, Coal, Copper
-#    - Serpentine, Chrysocolla
-#
-# Floor 13 → Hardness 3.5
-#    - Zinc, Cadmium, Silver, Coal, Copper
-#    - Serpentine, Chrysocolla
-#
-# Floor 14 → Hardness 4.0
-#    - Zinc, Silver, Coal, Copper
-#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Chrysocolla
-#
-# Floor 15 → Hardness 4.5
-#    - Platinum, Silver, Copper
-#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Chrysocolla, Fluorite
-#
-# Floor 16 → Hardness 4.5
-#    - Platinum, Silver, Copper
-#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Chrysocolla, Fluorite
-#
-# Floor 17 → Hardness 5.0
-#    - Platinum, Iron
-#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Kyanite, Chrysocolla, Fluorite
-#
-# Floor 18 → Hardness 5.0
-#    - Platinum, Iron
-#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Kyanite, Chrysocolla, Fluorite
-#
-# Floor 19 → Hardness 5.5
-#    - Platinum, Iron
-#    - Malachite, Apatite, Azurite, Lapis Lazuli, Turquoise, Ammolite, Serpentine, Obsidian, Titanite, Rhodochrosite, Kyanite, Chrysocolla, Fluorite
-#
-# Floor 20 → Hardness 5.5
-#    - Platinum, Iron
-#    - Malachite, Apatite, Azurite, Lapis Lazuli, Turquoise, Ammolite, Serpentine, Obsidian, Titanite, Rhodochrosite, Kyanite, Chrysocolla, Fluorite
-#
-# Floor 21 → Hardness 6.0
-#    - Platinum, Iron
-#    - Malachite, Apatite, Azurite, Lapis Lazuli, Turquoise, Diopside, Ammolite, Rhodonite, Serpentine, Obsidian, Titanite, Rhodochrosite, Kyanite, Chrysocolla, Opal, Sodalite, Fluorite
-#
-# Floor 22 → Hardness 6.0
-#    - Platinum, Iron
-#    - Malachite, Apatite, Azurite, Lapis Lazuli, Turquoise, Diopside, Ammolite, Rhodonite, Serpentine, Obsidian, Titanite, Rhodochrosite, Kyanite, Chrysocolla, Opal, Sodalite, Fluorite
-#
-# Floor 23 → Hardness 6.5
-#    - Titanium
-#    - Malachite, Tanzanite, Prehnite, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Fluorite, Azurite, Lapis Lazuli, Diopside, Obsidian, Chrysocolla, Opal, Blizzard Stone, Turquoise, Sunstone, Moonstone, Zoisite
-#
-# Floor 24 → Hardness 6.5
-#    - Titanium
-#    - Malachite, Tanzanite, Prehnite, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Fluorite, Azurite, Lapis Lazuli, Diopside, Obsidian, Chrysocolla, Opal, Blizzard Stone, Turquoise, Sunstone, Moonstone, Zoisite
-#
-# Floor 25 → Hardness 7.0
-#    - Titanium
-#    - Malachite, Tanzanite, Prehnite, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Onyx, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Spectrolite, Obsidian, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Petalite, Moonstone, Zoisite, Agate, Kunzite
-#
-# Floor 26 → Hardness 7.0
-#    - Titanium
-#    - Malachite, Tanzanite, Prehnite, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Onyx, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Spectrolite, Obsidian, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Petalite, Moonstone, Zoisite, Agate, Kunzite
-#
-# Floor 27 → Hardness 7.0
-#    - Titanium
-#    - Malachite, Tanzanite, Prehnite, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Onyx, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Spectrolite, Obsidian, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Petalite, Moonstone, Zoisite, Agate, Kunzite
-#
-# Floor 28 → Hardness 7.5
-#    - Titanium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Andesine, Rhodonite, Iolite, Onyx, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Tsavorite, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 29 → Hardness 7.5
-#    - Titanium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Andesine, Rhodonite, Iolite, Onyx, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Tsavorite, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 30 → Hardness 7.5
-#    - Titanium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Andesine, Rhodonite, Iolite, Onyx, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Tsavorite, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 31 → Hardness 8.0
-#    - Tungsten
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 32 → Hardness 8.0
-#    - Tungsten
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 33 → Hardness 8.0
-#    - Tungsten
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 34 → Hardness 8.5
-#    - Tungsten
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 35 → Hardness 8.5
-#    - Tungsten
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 36 → Hardness 8.5
-#    - Tungsten
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 37 → Hardness 9.0
-#    - Tungsten
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 38 → Hardness 9.0
-#    - Tungsten
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 39 → Hardness 9.0
-#    - Tungsten
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 40 → Hardness 9.5
-#    -
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 41 → Hardness 9.5
-#    -
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 42 → Hardness 9.5
-#    -
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 43 → Hardness 10.0
-#    -
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 44 → Hardness 10.5
-#    -
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 45 → Hardness 11.0
-#    - Meteoric Iron
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 46 → Hardness 11.5
-#    - Meteoric Iron
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 47 → Hardness 12.0
-#    - Meteoric Iron
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 48 → Hardness 12.5
-#    - Meteoric Iron
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 49 → Hardness 13.0
-#    -
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 50 → Hardness 13.0
-#    -
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 51 → Hardness 13.5
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 52 → Hardness 13.5
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 53 → Hardness 14.0
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 54 → Hardness 14.0
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 55 → Hardness 14.5
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 56 → Hardness 14.5
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 57 → Hardness 15.0
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 58 → Hardness 15.0
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 59 → Hardness 15.5
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-#
-# Floor 60 → Hardness 16.0
-#    - Golanthium
-#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
-
 
 # Unit conversion is for crafting only, but should be reflected in prices too.
 
@@ -472,8 +121,6 @@ print(f'{len(magic_stones)} Magic Stones.')
 # All enemy shit
 ENCOUNTER_CHANCE = 0.15
 
-gems = ['']
-
 floor_ids = [f'floor_{x + 1}' for x in range(60)]
 floor_sizes = [13, 14, 17, 18, 18, 19, 19, 20, 21,  21,
                22, 22, 23, 24, 24, 25, 26, 26, 27,  27,
@@ -483,6 +130,7 @@ floor_sizes = [13, 14, 17, 18, 18, 19, 19, 20, 21,  21,
                59, 61, 64, 66, 68, 71, 73, 75, 78,  80,
                82, 85, 87, 89, 92, 94, 96, 99, 101, 103]
 map_types = ['path_map', 'full_map', 'safe_zone_map']
+
 enemies = ['goblin', 'kobold', 'jack_bird', 'dungeon_lizard', 'frog_shooter', 'war_shadow', 'killer_ant', 'purple_moth', 'needle_rabbit', 'blue_papilio',
            'orc', 'imp', 'bad_bat', 'hard_armored', 'infant_dragon', 'silverback', 'black_wyvern', 'wyvern', 'crystal_mantis', 'lamia mormos', 'hellhound',
            'almiraj', 'dungeon_worm', 'minotaur', 'lygerfang', 'bugbear', 'battle_boar', 'lizardman', 'firebird', 'vouivre',
@@ -493,7 +141,6 @@ enemies = ['goblin', 'kobold', 'jack_bird', 'dungeon_lizard', 'frog_shooter', 'w
            'obsidian_soldier', 'skull_sheep', 'loup_garou', 'peluda', 'flame_rock', 'fomoire', 'black_rhino', 'deformis_spider', 'cadmus',
            'venom_scorpion', 'thunder_snake', 'silver_worm', 'ill_wyvern', 'valgang_dragon', 'titan_alm', 'unicorn', 'dungeon_fly', 'ogre',
            'gargoyle', 'gryphon', 'arachne', 'hippogriff', 'armarosaurus', 'old_bison', 'ape', 'vulture']
-
 
 floor_spawns = {'floor_1': {'goblin': 1, 'kobold': 2, 'jack_bird': 5},
                 'floor_2': {'goblin': 1, 'kobold': 1, 'jack_bird': 5},
@@ -765,48 +412,174 @@ drop_types = {
     }
 }
 
-print('There are', len(enemies), 'monsters')
+non_natural_hard_materials = []
+non_natural_soft_materials = []
+monster_types = {}
 
-file = open('output.txt', 'w', encoding='utf-8')
-for index, enemy in enumerate(enemies):
-    file.write('# ' + enemy.replace('_', ' ').title() + '\n')
-    floors = []
-    for floor, spawns in floor_spawns.items():
-        if enemy in spawns.keys():
-            floors.append(floor[6:])
-    file.write(f'# Found on Floors {floors[0]}')
-    for floor in floors[1:-1]:
-        file.write(', ' + floor)
-    if len(floors) > 1:
-        if len(floors) > 2:
-            file.write(',')
-        file.write(f' and {floors[-1]}' + '\n')
-    drops = []
-    for drop, drop_type, in drop_types.items():
-        if enemy in drop_type:
-            drops.append(drop.title())
-    file.write('#' + '\n')
-    file.write('# Type: ' + '\n')
-    hard = soft = False
-    for hard_type in ['Fang', 'Claw', 'Scale', 'Horn']:
-        if hard_type in drops:
-            hard = True
-    for soft_type in ['Hide']:
-        if soft_type in drops:
-            soft = True
-    file.write(f'# Hardness: {"" if hard else None}(hard), {"" if soft else None}(soft)' + '\n')
-    file.write(f'# Defining Effect: {"" if (hard or soft) else None}' + '\n')
-    file.write(f'# Sub Effect: {"" if (hard or soft) else None}' + '\n')
-
-    file.write(f'# Drops: {drops[0]}')
-    for drop in drops[1:-1]:
-        file.write(', ' + drop)
-    if len(drops) > 1:
-        if len(drops) > 2:
-            file.write(',')
-        file.write(f' and {drops[-1]}')
-    file.write('\n\n')
+file = open('monster_list.txt', 'r', encoding='utf-8')
+monster_list = file.read().split('\n\n')
 file.close()
+
+file = open('natural_materials.txt', 'r', encoding='utf-8')
+material_list = file.read().split('\n\n')
+file.close()
+natural_materials_found = {}
+gems_found = {}
+floor_hardnesses = {}
+for floor in material_list:
+    name, material_string, gem_string = floor.split('\n')
+    floor_id, hardness = name.split(' → Hardness ')
+    floor_hardnesses[floor_id[len('Floor '):]] = float(hardness)
+    material_list = material_string[len('   - '):].split(', ')
+    gem_list = gem_string[len('   - '):].split(', ')
+    for material in material_list:
+        if material not in natural_materials_found:
+            natural_materials_found[material] = []
+        natural_materials_found[material].append(int(floor_id[len('Floor '):]))
+    for gem in gem_list:
+        if gem not in gems_found:
+            gems_found[gem] = []
+        gems_found[gem].append(int(floor_id[len('Floor '):]))
+
+element_counts = {
+    'None': 0,
+    'Earth': 0,
+    'Water': 0,
+    'Fire': 0,
+    'Thunder': 0,
+    'Wind': 0,
+    'Light': 0,
+    'Dark': 0
+}
+total_elements = 0
+
+materials_found = {}
+
+for monster in monster_list:
+    lines = monster.split('\n')
+    name = lines[0]
+    found = lines[1]
+    found_list = found[len('Found on Floor '):].strip().split(', ')
+    if name == 'Frog Shooter':
+        print(found_list, found)
+    for index in range(len(found_list)):
+        if 'and' in found_list[index]:
+            found_list[index] = found_list[index][4:]
+    description = lines[2]
+    elements_string = lines[3][len('Type: '):]
+    if ',' in elements_string:
+        elements = elements_string.split(', ')
+    else:
+        elements = [elements_string]
+    monster_types[name] = elements
+    for element in elements:
+        element_counts[element] += 1
+        total_elements += 1
+    hardnesses = lines[4][len('Hardness: '):]
+    hard, soft = hardnesses.split(', ')
+    hard = hard[:-len('(hard)')]
+    soft = soft[:-len('(soft)')]
+    for material_type, monster_list in drop_types.items():
+        if name.lower().replace(' ', '_') in monster_list:
+            if material_type in ['hide']:
+                if floor_hardnesses[found_list[0]] == floor_hardnesses[found_list[-1]]:
+                    soft = f'{floor_hardnesses[found_list[0]] * 2 / 3}'
+                else:
+                    soft = f'{floor_hardnesses[found_list[0]] * 2 / 3}-{floor_hardnesses[found_list[-1]] * 2 / 3}'
+                # if soft != 'None' and soft != '':
+                materials_found[f'{name} {material_type.title()}'] = found_list
+                non_natural_soft_materials.append(f'{name} {material_type.title()} {soft}')
+                # else:
+                #     print('Error', name, 'soft')
+            elif material_type in ['fang', 'claw', 'scale', 'horn']:
+                # if hard != 'None' and hard != '':
+                materials_found[f'{name} {material_type.title()}'] = found_list
+                if floor_hardnesses[found_list[0]] == floor_hardnesses[found_list[-1]]:
+                    hard = f'{floor_hardnesses[found_list[0]]}'
+                else:
+                    hard = f'{floor_hardnesses[found_list[0]]}-{floor_hardnesses[found_list[-1]]}'
+                non_natural_hard_materials.append(f'{name} {material_type.title()} {hard}')
+                # else:
+                #     print('Error', name, 'hard')
+print('Total Elements:', total_elements)
+for element, element_count in element_counts.items():
+    print(element, element_count, '-', str(round(element_count / total_elements * 100, 2)) + '%')
+
+
+class Material:
+    def __init__(self, string):
+        space_index = string.rindex(' ')
+        self.full_string = string[:space_index]
+        self.string = string[space_index + 1:]
+
+    def get_numbers(self):
+        if '-' in self.string:
+            mi, ma = self.string.split('-')
+            return float(mi), float(ma)
+        else:
+            return float(self.string), float(self.string)
+
+    def __gt__(self, other):
+        min_self, max_self = self.get_numbers()
+        min_other, max_other = other.get_numbers()
+        return min_other < min_self
+
+    def __eq__(self, other):
+        return self.string == other.string
+
+    def __lt__(self, other):
+        min_self, max_self = self.get_numbers()
+        min_other, max_other = other.get_numbers()
+        return min_other > min_self
+
+    def __str__(self):
+        return self.string + ' ' + self.full_string
+
+    def __hash__(self):
+        return self.string.__hash__()
+materials_found.update(natural_materials_found)
+materials_found.update(gems_found)
+
+
+natural_hard_materials_by_hardness = []
+for material in hard_materials:
+    natural_hard_materials_by_hardness.append(Material(material))
+
+alloy_hard_materials_by_hardness = []
+for material in alloy_hard_materials:
+    alloy_hard_materials_by_hardness.append(Material(material))
+
+monster_hard_materials_by_hardness = []
+for material in non_natural_hard_materials:
+    monster_hard_materials_by_hardness.append(Material(material))
+
+hard_materials_by_hardness = natural_hard_materials_by_hardness + alloy_hard_materials_by_hardness + monster_hard_materials_by_hardness
+
+natural_soft_materials_by_hardness = []
+for material in soft_materials:
+    natural_soft_materials_by_hardness.append(Material(material))
+
+monster_soft_materials_by_hardness = []
+for material in non_natural_soft_materials:
+    monster_soft_materials_by_hardness.append(Material(material))
+
+soft_materials_by_hardness = natural_soft_materials_by_hardness + monster_soft_materials_by_hardness
+
+gems_by_hardness = []
+for material in gems:
+    gems_by_hardness.append(Material(material))
+
+all_materials_by_hardness = hard_materials_by_hardness + soft_materials_by_hardness + gems_by_hardness
+
+natural_hard_materials_by_hardness.sort()
+alloy_hard_materials_by_hardness.sort()
+monster_hard_materials_by_hardness.sort()
+hard_materials_by_hardness.sort()
+natural_soft_materials_by_hardness.sort()
+monster_soft_materials_by_hardness.sort()
+soft_materials_by_hardness.sort()
+gems_by_hardness.sort()
+all_materials_by_hardness.sort()
 
 # Generate Common items
 common_items = []
@@ -858,152 +631,6 @@ for floor in floor_ids:
 # Generate Potions
 
 # Generate Equipment
-
-# Weapon and off-hand weapon types
-# Dagger - 1 hand
-# 5 units hard material
-# 1 unit soft material
-# A small dagger that allows for swift attacks at short range.
-
-# Knuckleduster - 1 hand
-# 5 units hard material
-# For those who like to punch things
-
-# Wood handled Axe - 1 hand
-# 5 units hard material
-# 5 units wood
-# 2 units soft material
-# An axe, good for chopping up your enemies!
-
-# Wood handled Spear - 2 hand
-# 5 units hard material
-# 10 units wood
-# 5 units soft material
-# A big spear, good for poking.
-
-# Wood handled Pike - 2 hand
-# 5 units hard material
-# 15 units wood
-# 5 units soft material
-# A big, big, big spear, good for poking.
-
-# Wood handled Halberd. - 2 hand
-# 10 units hard material
-# 10 units wood
-# 5 unist soft material
-# Love baby between a spear and an axe
-
-# Curved Dagger - 1 hand
-# 6 units hard material
-# 1 unit soft material
-# The tool of assassins
-
-# Claws - 1 hand
-# 6 units hard material
-# 2 units soft material
-# You must like to slash things.
-
-# Kukri - 1 hand
-# 8 units hard material
-# 2 units soft material
-# Curved, long daggers. *slice*
-
-# Cutlass - 1 hand
-# 10 units hard material
-# 2 units soft material
-# A curved sword.
-
-# Short Sword - 1 hand
-# 10 units hard material
-# 1 unit soft material
-# A normal, everyday short sword.
-
-# Short Staff - 1 hand
-# 10 units hard material
-# 5 units soft material
-# 5 units gems
-# A shorter and weaker staff
-
-# Rapier - 2 hand
-# 15 units hard material
-# 1 unit soft material
-# Pokity, poke, poke
-
-# Mace - 1 hand
-# 10 units hard material
-# 2 units soft material
-# Good for smacking things.
-
-# Axe - 1 hand
-# 10 units hard material
-# 2 units soft material
-# An axe, good for chopping up your enemies!
-
-# Spear - 2 hand
-# 15 units hard material
-# 5 units soft material
-# A big spear, good for poking.
-
-# Staff - 2 hand
-# 15 units hard material
-# 5 units soft material
-# 10 units gems
-# Exploosssiiooonnn
-
-# Pike - 2 hand
-# 20 units hard material
-# 5 units soft material
-# A big, big, big spear, good for poking.
-
-# Halberd. - 2 hand
-# 20 units hard material
-# 5 unist soft material
-# Love baby between a spear and an axe
-
-# Longsword - 2 hand
-# 15 units hard material
-# 2 units soft material
-# A normal, everyday sword, that's longer than a short sword.
-
-# Katana - 1 hand
-# 15 units hard material
-# 2 units soft material
-# A long, curved sword.
-
-# Broadsword - 2 hand
-# 20 units hard material
-# 3 units soft material
-# A large broadsword that allows you to bash your enemies.
-
-# Giant Axe
-# 30 units hard material
-# 5 units soft material
-# Even better for chopping.
-
-# Double-ended broadsword - 2 hand
-# 50 units hard material
-# 5 units soft material
-# An absolute beast of a sword.
-
-# Double-headed Giant Axe
-# 50 units hard material
-# 5 units soft material
-# An absolute beast of an axe, best for chopping heads.
-
-# Hammer - 2 hand
-# 30 units hard material
-# 5 units soft material
-# A giant hammer than allows you to pulverize your enemies.
-
-# Double-headed Hammer - 2 hand
-# 50 units hard material
-# 5 units soft material
-# A giant hammer than allows you to pulverize your enemies.
-
-# Generate Home Supplies
-# Forge
-# Blacksmithing tools
-
 
 # Generate unique items (undine cloth, etc.)
 
@@ -1066,7 +693,7 @@ def simulate_ecounters(floor_spawn_rarities, drop_rarities, guarrenteed):
                     drop_count_totals[enemy][drop_name[drop_name.index(' ') + 1:]] = 0
                     drop_counts[f'{enemy} Level {boost + 1}'][drop_name] = 0
     # Do 1 million encounters
-    for x in range(1000000):
+    for x in range(1000):
         # Choose a random number of enemies to spawn
         count = choices([1, 2, 3, 4, 5], [5, 4, 3, 2, 1], k=1)[0]
         spawn_count_total += count
@@ -1111,6 +738,9 @@ for floor_id in list(floor_spawns.keys()):
             level_name = f'{name} Level {new_rarity + 1 - rarity}'
             floors[floor_id][new_rarity].append(level_name)
 
+floor_data = {}
+start_time = time()
+last_time = start_time
 for floor_id, spawn_rarities in floors.items():
     drop_rarities = {}
     guarrenteed = {}
@@ -1132,23 +762,183 @@ for floor_id, spawn_rarities in floors.items():
                     for new_rarity in range(rarity, 6):
                         drop_rarities[name][boost][new_rarity].append(f'{1 + new_rarity - 1 + boost} {name} {drop_type.title()}')
     spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters = simulate_ecounters(spawn_rarities, drop_rarities, guarrenteed)
+    # floor_num = int(floor_id.split('_')[1])
+    floor_data[floor_id.title().replace('_', ' ')] = {}
+    floor_data[floor_id.title().replace('_', ' ')]['spawn_count_total'] = spawn_count_total
+    floor_data[floor_id.title().replace('_', ' ')]['spawn_counts'] = spawn_counts
+    floor_data[floor_id.title().replace('_', ' ')]['spawn_count_totals'] = spawn_count_totals
+    floor_data[floor_id.title().replace('_', ' ')]['drop_counts'] = drop_counts
+    floor_data[floor_id.title().replace('_', ' ')]['drop_count_totals'] = drop_count_totals
+    floor_data[floor_id.title().replace('_', ' ')]['first_encounters'] = first_encounters
 
-    print(floor_id.title().replace('_', ' ') + ':')
-    for name, count in spawn_count_totals.items():
-        print('\t' + name, str(round(count / spawn_count_total * 100, 2)) + '%', '-', first_encounters[name])
-        if name in guarrenteed:
-            for drop_item in guarrenteed[name]:
-                print('\t\t' + drop_item[2:], str(round(drop_count_totals[drop_item[2:]] / count * 100, 2)) + '%', '/', str(round(drop_count_totals[drop_item[2:]] / spawn_count_total * 100, 2)) + '%')
-        for drop_item, drop_count in sorted(drop_count_totals[name].items()):
-            print('\t\t' + drop_item, str(round(drop_count / count * 100, 2)) + '%', '/', str(round(drop_count / spawn_count_total * 100, 2)) + '%')
-    print()
-    for name, count in spawn_counts.items():
-        print('\t' + name, str(round(count / spawn_count_total * 100, 2)) + '%')
-        if name[:-8] in guarrenteed:
-            for drop_item in guarrenteed[name[:-8]]:
-                print('\t\t' + drop_item, str(round(drop_count_totals[drop_item[2:]] / count * 100, 2)) + '%', '/', str(round(drop_count_totals[drop_item[2:]] / spawn_count_total * 100, 2)) + '%')
-        for drop_item, drop_count in sorted(drop_counts[name].items()):
-            print('\t\t' + drop_item, str(round(drop_count / count * 100, 2)) + '%', '/', str(round(drop_count / spawn_count_total * 100, 2)) + '%')
-    print('\n')
+    # print(floor_id.title().replace('_', ' ') + ':')
+    current_time = time()
+    print(floor_id.title().replace('_', ' '), f'took {round(current_time - last_time, 2)} - currently {round(current_time - start_time, 2)}')
+    last_time = current_time
+    # for name, count in spawn_count_totals.items():
+    #     print('\t' + name, str(round(count / spawn_count_total * 100, 2)) + '%', '-', first_encounters[name])
+    #     if name in guarrenteed:
+    #         for drop_item in guarrenteed[name]:
+    #             print('\t\t' + drop_item[2:], str(round(drop_count_totals[drop_item[2:]] / count * 100, 2)) + '%', '/', str(round(drop_count_totals[drop_item[2:]] / spawn_count_total * 100, 2)) + '%')
+    #     for drop_item, drop_count in sorted(drop_count_totals[name].items()):
+    #         print('\t\t' + drop_item, str(round(drop_count / count * 100, 2)) + '%', '/', str(round(drop_count / spawn_count_total * 100, 2)) + '%')
+    # print()
+    # for name, count in spawn_counts.items():
+    #     print('\t' + name, str(round(count / spawn_count_total * 100, 2)) + '%')
+    #     if name[:-8] in guarrenteed:
+    #         for drop_item in guarrenteed[name[:-8]]:
+    #             print('\t\t' + drop_item, str(round(drop_count_totals[drop_item[2:]] / count * 100, 2)) + '%', '/', str(round(drop_count_totals[drop_item[2:]] / spawn_count_total * 100, 2)) + '%')
+    #     for drop_item, drop_count in sorted(drop_counts[name].items()):
+    #         print('\t\t' + drop_item, str(round(drop_count / count * 100, 2)) + '%', '/', str(round(drop_count / spawn_count_total * 100, 2)) + '%')
+    # print('\n')
+
+def char_string_to_index(string):
+    if len(string) > 1:
+        return (char_string_to_index(string[:-1]) + 1) * 26 + (ord(string[-1]) - 65)
+    return ord(string[-1]) - 65
+
+def index_to_char_string(index):
+    if index > 25:
+        return index_to_char_string(int(index / 26) - 1) + chr((index % 26) + 65)
+    return chr(index + 65)
+
+def get_next(string):
+    if string[-1] != 'Z':
+        return string[:-1] + chr(ord(string[-1]) + 1)
+    elif len(string) > 1:
+        # String has another to increment
+        return get_next(string[:-1]) + 'A'
+    else:
+        return 'AA'
 
 
+def char_range(start, end):
+    start_index = char_string_to_index(start.upper())
+    end_index = char_string_to_index(end.upper())
+
+    current = start.upper()
+    for x in range(start_index, end_index):
+        yield current
+        current = get_next(current)
+
+# Make Spawn Rate vs Floor data frame
+floor_spawn_rates_data = {}
+for monster in enemies:
+    name = monster.replace('_', ' ').title()
+    floor_spawn_rates_data[name] = []
+    for floor in floor_data.values():
+        if name in floor['spawn_count_totals']:
+            floor_spawn_rates_data[name].append(floor['spawn_count_totals'][name] / floor['spawn_count_total'])
+        else:
+            floor_spawn_rates_data[name].append(np.nan)
+
+floor_spawn_rates_data['Totals'] = []
+for floor in floor_data.values():
+    floor_spawn_rates_data['Totals'].append(floor['spawn_count_total'])
+
+
+# Material Hardness Data
+def create_hardness_data(hardness_array):
+    hardness_data = {}
+    for index, material in enumerate(hardness_array):
+        array = []
+        min_hardness, max_hardness = material.get_numbers()
+        for x in range(0, 16 * 4 + 1):
+            if x / 4 >= min_hardness and x / 4 <= max_hardness:
+                array.append(index + 1)
+            else:
+                array.append(np.nan)
+        hardness_data[material.full_string] = array
+    return hardness_data
+
+
+def create_hardness_data_frame(hardness_data):
+    return DataFrame(data=hardness_data, index=[x / 4 for x in range(0, 16 * 4 + 1)], columns=hardness_data.keys())
+
+
+hardness_types = {
+    'Hard Materials (Natural)': natural_hard_materials_by_hardness,
+    'Hard Materials (Alloys)': alloy_hard_materials_by_hardness,
+    'Hard Materials (Monster)': monster_hard_materials_by_hardness,
+    'All Hard Materials': hard_materials_by_hardness,
+    'Soft Materials (Natural)': natural_soft_materials_by_hardness,
+    'Soft Materials (Monster)': monster_soft_materials_by_hardness,
+    'All Soft Materials' : soft_materials_by_hardness,
+    'Gems': gems_by_hardness,
+    'All Materials': all_materials_by_hardness
+}
+
+hardness_datas = {}
+for hardness_type, hardness_array in hardness_types.items():
+    hardness_datas[hardness_type] = create_hardness_data(hardness_array)
+
+floor_spawn_rates = DataFrame(data=floor_spawn_rates_data, index=list(floor_data.keys()), columns=floor_spawn_rates_data.keys())
+
+hardness_dataframes = {}
+for hardness_type, hardness_data in hardness_datas.items():
+    hardness_dataframes[hardness_type] = create_hardness_data_frame(hardness_data)
+
+
+with ExcelWriter('output.xlsx') as writer:
+    floor_spawn_rates.to_excel(writer, sheet_name='Spawn Rates')
+    for hardness_type, hardness_dataframe in hardness_dataframes.items():
+        hardness_dataframe.to_excel(writer, sheet_name=hardness_type)
+    floor_spawn_rates_sheet = writer.sheets['Spawn Rates']
+    hardness_sheets = {}
+    for hardness_type in hardness_dataframes.keys():
+        hardness_sheets[hardness_type] = writer.sheets[hardness_type]
+
+    # Create Monster Spawn Rate Charts
+    chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
+    log_chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
+    for char_index in char_range('B', index_to_char_string(len(enemies) + 2)):
+        if char_string_to_index(char_index) != len(enemies) + 1:
+            name = (enemies)[char_string_to_index(char_index) - 1].replace('_', ' ').title()
+            chart.add_series({
+                'name': ['Spawn Rates', 0, char_string_to_index(char_index)],
+                'categories': ['Spawn Rates', 1, 0, len(floor_data) + 1, 0],
+                'values': ['Spawn Rates', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],
+                'marker': {'type': 'circle'}
+            })
+            log_chart.add_series({
+                'name':       ['Spawn Rates', 0, char_string_to_index(char_index)],
+                'categories': ['Spawn Rates', 1, 0, len(floor_data) + 1, 0],
+                'values':     ['Spawn Rates', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],
+                'marker':     {'type': 'circle'}
+            })
+    chart.set_title({'name': 'Monster Spawn Rates by Floor'})
+    log_chart.set_title({'name': 'Monster Spawn Rates by Floor'})
+    chart.show_blanks_as('span')
+    log_chart.show_blanks_as('span')
+    chart.set_legend({'position': 'top'})
+    log_chart.set_legend({'position': 'bottom'})
+    chart.set_x_axis({'name': 'Floors'})
+    log_chart.set_x_axis({'name': 'Floors'})
+    chart.set_y_axis({'name': 'Spawn Percent', 'major_gridlines': {'visible': False}, 'max': 1, 'log_base': 2})
+    log_chart.set_y_axis({'name': 'Spawn Percent', 'major_gridlines': {'visible': False}, 'max': 1})
+    chart.set_size({'width': 2560, 'height': 1440})
+    log_chart.set_size({'width': 2560, 'height': 1440})
+    floor_spawn_rates_sheet.insert_chart(f'A{len(floor_data) + 2}', chart)
+    floor_spawn_rates_sheet.insert_chart(f'A134', log_chart)
+
+    # Create Material Hardness Charts
+    def create_material_hardness_chart(hardness_sheet, sheet_name, hardness_data):
+        chart = writer.book.add_chart({'type': 'line'})
+        for char_index in char_range('B', index_to_char_string(len(hardness_data.keys()) + 1)):
+            chart.add_series({
+                'name':       [sheet_name, 0, char_string_to_index(char_index)],
+                'categories': [sheet_name, 1, 0, 16 * 4 + 1, 0],
+                'values':     [sheet_name, 1, char_string_to_index(char_index), 16 * 4 + 1, char_string_to_index(char_index)],
+                'marker':     {'type': 'circle'},
+                'line':       {'width': 5}
+            })
+        chart.set_title({'name': f'{sheet_name} Hardnesses'})
+        chart.set_legend({'position': 'bottom'})
+        chart.set_drop_lines()
+        chart.set_x_axis({'name': 'Hardness', 'min': 0, 'max': 16, 'interval': 0.25})
+        chart.set_y_axis({'name': 'Materials'})
+        chart.set_size({'width': 1920, 'height': 1080})
+        hardness_sheet.insert_chart(f'A67', chart)
+    for hardness_type, hardness_sheet in hardness_sheets.items():
+        create_material_hardness_chart(hardness_sheet, hardness_type, hardness_datas[hardness_type])
+print('Done')
