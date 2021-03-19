@@ -1,5 +1,6 @@
 from game.battle_character import create_battle_character
 from game.battle_data import BattleData
+from game.floor import ENTRANCE, EXIT
 from refs import Refs
 
 N, S, E, W = 1, 2, 4, 8  # 0001 0010 0100 1000
@@ -16,27 +17,26 @@ DIR_INDEX = {N: 0, E: 1, S: 2, W: 3}
 class FloorData:
     def __init__(self, descend, current_floor):
         # Set the current floor and direction. Get the according spot in the node map.
-        self._floor_id = current_floor
-        self._current_node = None
-        self._last_node = None
-        self._current_direction = None
-        self._last_direction = None
         self._floor = Refs.gc['floors'][current_floor]
-        if descend:
-            # Grab the entrance as the current node and grab any map data depending on inventory
-            self._current_node = self._floor.get_entrance()
-        else:
-            # Grab the exit as the current node and grab any map data depending on inventory
-            self._current_node = self._floor.get_exit()
-        # The only direction for the entrance and exit will always be the direction we are facing.
-        # We would also be facing the direction of our progression
-        # or the opposite of the direction we arrive at a node
-        self._current_direction = self.get_node_options(self._current_node)
 
+        # Check generated nodes
+        # - If generated nodes are out of date, generate new ones
+        node_data = Refs.gc.load_floor_node_data(self._floor)
+        print(node_data)
+        self._floor.get_map().update_markers(node_data)
+
+        # Keep track of which NEW nodes we have found
         self._explored = []
-        if self._floor.get_floor_map().show_node(self._current_node):
-            self._explored.append(self._current_node)
-        self._floor.get_floor_map().set_current(self._current_node)
+        # Initialize the floor map route tables and current node
+        found = self._floor.get_map().set_start(descend)
+        if found:
+            self._explored.append(self._floor.get_map().get_current_node())
+
+        # Set the directions we are facing
+        self._current_direction = self._floor.get_map().get_directions()
+        self._last_direction = None
+
+        self._activated_safe_zones = {}
 
         self._in_encounter = False
         self._battle_data = None
@@ -48,8 +48,12 @@ class FloorData:
         self._killed_monsters = {}
         self._generate_characters()
 
-    def get_id(self):
-        return self._floor_id
+    # Basic getter functions
+    def get_floor(self):
+        return self._floor
+
+    def get_characters(self):
+        return self._adventurers
 
     def get_explored(self):
         return self._explored
@@ -57,20 +61,15 @@ class FloorData:
     def get_increases(self):
         return self._increases
 
-    def clear_current(self):
-        self._floor.get_floor_map().clear_current()
-
-    def get_node_options(self, node):
-        return self._floor.get_node(node)
-
     def get_gained_items(self):
         return self._gained_items
 
     def get_killed(self):
         return self._killed_monsters
 
+    # Movement functions
     def get_directions(self):
-        options = self.get_node_options(self._current_node)
+        options = self._floor.get_map().get_directions()
         directions = []
         for direction in DIRECTIONS:
             if options & direction == direction:
@@ -82,219 +81,219 @@ class FloorData:
             ['forwards', 'rightwards', 'backwards', 'leftwards'],
             ['leftwards', 'forwards', 'rightwards', 'backwards'],
             ['backwards', 'leftwards', 'forwards', 'rightwards'],
-            ['rightwards', 'backwards', 'leftwards', 'forwards']
-        ]
+            ['rightwards', 'backwards', 'leftwards', 'forwards']]
         return directions[DIR_INDEX[self._current_direction]][DIR_INDEX[DIRECTIONS_FROM_STRING[direction]]]
 
-    def at_entrance(self):
-        return self._current_node == self._floor.get_entrance()
+    def is_activated_safe_zone(self):
+        return self._floor.get_map().get_current_node() in self._activated_safe_zones.keys()
 
-    def at_exit(self):
-        return self._current_node == self._floor.get_exit()
+    def activate_safe_zone(self):
+        self._activated_safe_zones[self._floor.get_map().get_current_node()] = 5
 
-    def get_next_node_in_path(self, node):
-        index = self._floor.get_node_path_index(node)
-        if index == -1:
-            return None
-        else:
-            return self._floor.get_node_by_index(index + 1)
+    def decrease_safe_zones(self):
+        remove_keys = []
+        for key in self._activated_safe_zones.keys():
+            self._activated_safe_zones[key] -= 1
+            if self._activated_safe_zones[key] == 0:
+                remove_keys.append(key)
+        for key in remove_keys:
+            self._activated_safe_zones.pop(key)
 
     def progress_by_direction(self, direction):
-        x, y = COORDS[direction]
+        dx, dy = COORDS[direction]
+        x, y = self._floor.get_map().get_current_node()
+        next_node = (x + dx, y + dy)
+
         self._last_direction = self._current_direction
         self._current_direction = direction
-        next_node = (self._current_node[0] + x, self._current_node[1] + y)
 
         # Do map exploration
-        if self._floor.get_floor_map().show_node(next_node):
+        if self._floor.get_map().set_current_node(next_node):
             self._explored.append(next_node)
-        self._floor.get_floor_map().set_current(next_node)
 
-        if next_node not in self._floor.get_nodes():
-            raise Exception('Invalid progression!')
-        self._last_node = self._current_node
-        self._current_node = next_node
+        # Detract from safe zone times
+        self.decrease_safe_zones()
 
-    def get_current_node(self):
-        return self._current_node
+        # Progress Character stamina. Check for incapacitation.
+        for character in self._adventurers:
+            character.walk()
 
-    def get_map(self):
-        return self._floor.get_floor_map().get_map()
-
-    def hide_node(self, node):
-        self._floor.get_floor_map().hide_node(node)
+        for character in self._adventurers:
+            print(character.get_name(), 'Stamina is', character.get_stamina())
 
     def get_descriptions(self):
-        if self._last_node is None:
-            return f'{self.get_node_description(self._current_node, True)} The hallway stretches into the distance.'
-        return f'{self.get_node_description(self._last_node, True)} {self.get_node_description(self._current_node)}'
+        last_node, current_node = self._floor.get_map().get_saved_nodes()
+        if last_node is None:
+            return f'{self.get_starting_node_description()} The hallway stretches into the distance.'
+        return f'{self.get_last_node_description(last_node)} {self.get_node_description(current_node)}'
 
     def get_last_direction(self):
         return STRING_DIRECTIONS[self._last_direction]
 
-    def get_node_description(self, node, last=False):
-        char = self._floor.get_map_char(node)
-        compass = False
+    def get_starting_node_description(self):
+        if self._floor.get_map().is_marker(ENTRANCE):
+            return f'You emerge from the stairs to the {INDEX_TO_STRING[self._floor.get_id()]} floor.'
+        return f'You emerge from the stairs to the {INDEX_TO_STRING[self._floor.get_id() + 1]} floor.'
 
-        if last:
-            if self._last_node is None:
-                if node == self._floor.get_entrance():
-                    return f'You emerge from the stairs to the {INDEX_TO_STRING[self._floor_id]} floor.'
-                elif node == self._floor.get_exit():
-                    return f'You emerge from the stairs to the {INDEX_TO_STRING[self._floor_id + 1]} floor.'
-            else:
-                # Get the direction that we may have turned
-                if self._last_direction == self._current_direction:
-                    if not compass:
-                        if char in ['┼', '├', '┤', '┬', '┴']:
-                            return 'You continue forward through the intersection and down the hallway.'
-                        else:
-                            return 'You continue down the hallway.'
-                    else:
-                        if char in ['┼', '├', '┤', '┬', '┴']:
-                            return f'You continue {STRING_DIRECTIONS[self._current_direction]} through the intersection and down the hallway.'
-                        else:
-                            return f'You continue {STRING_DIRECTIONS[self._current_direction]} down the hallway.'
-                elif self._last_direction == OPPOSITE[self._current_direction]:
-                    # This means that we turned around.
-                    if node in ['╵', '╷', '╶', '╴']:
-                        return 'You turn back from the dead end and backtrack down the hallway.'
-                    else:
-                        return 'You backtrack down the hallway.'
+    def get_last_node_description(self, node):
+        char = self._floor.get_map().get_node_char(node)
+        compass = Refs.gc.in_inventory('compass')
+        # Get the direction that we may have turned
+        if self._last_direction == self._current_direction:
+            if not compass:
+                if char in ['┼', '├', '┤', '┬', '┴']:
+                    return 'You continue forward through the intersection and down the hallway.'
                 else:
-                    if not compass:
-                        if self._last_direction == S and self._current_direction == E or self._last_direction == E and self._current_direction == N or self._last_direction == N and self._current_direction == W or self._last_direction == W and \
-                                self._current_direction == S:
-                            return 'You turn left and continue down the ensuing hallway.'
-                        if self._last_direction == S and self._current_direction == W or self._last_direction == W and self._current_direction == N or self._last_direction == N and self._current_direction == E or self._last_direction == E and \
-                                self._current_direction == S:
-                            return 'You turn right and continue down the ensuing hallway.'
-                    else:
-                        return f'You turn {STRING_DIRECTIONS[self._current_direction]} and continue down the hallway.'
-                return 'Unknown Last Path'
+                    return 'You continue down the hallway.'
+            else:
+                if char in ['┼', '├', '┤', '┬', '┴']:
+                    return f'You continue {STRING_DIRECTIONS[self._current_direction]} through the intersection and down the hallway.'
+                else:
+                    return f'You continue {STRING_DIRECTIONS[self._current_direction]} down the hallway.'
+        elif self._last_direction == OPPOSITE[self._current_direction]:
+            # This means that we turned around.
+            if node in ['╵', '╷', '╶', '╴']:
+                return 'You turn back from the dead end and backtrack down the hallway.'
+            else:
+                return 'You backtrack down the hallway.'
         else:
-            if node == self._floor.get_entrance():
-                return f'You encounter the stairs to the {INDEX_TO_STRING[self._floor_id]} floor.'
-            elif node == self._floor.get_exit():
-                return f'You encounter the stairs to the {INDEX_TO_STRING[self._floor_id + 1]} floor.'
-            elif char == '┼':
-                return 'The tunnel branches into three directions. To the left, right, and forward.'
-            elif char == '│':
-                return 'The tunnel extends into the distance.'
-            elif char == '─':
-                return 'The tunnel extends into the distance.'
-            elif char == '┌':
-                if self._current_direction == W:
-                    if not compass:
-                        return 'The tunnel curves to the left.'
-                    else:
-                        return 'The tunnel curves to the South.'
-                else:
-                    if not compass:
-                        return 'The tunnel curves to the right.'
-                    else:
-                        return 'The tunnel curves to the East.'
-            elif char == '┐':
-                if self._current_direction == E:
-                    if not compass:
-                        return 'The tunnel curves to the right.'
-                    else:
-                        return 'The tunnel curves to the South.'
-                else:
-                    if not compass:
-                        return 'The tunnel curves to the left.'
-                    else:
-                        return 'The tunnel curves to the West.'
-            elif char == '└':
-                if self._current_direction == S:
-                    if not compass:
-                        return 'The tunnel curves to the left.'
-                    else:
-                        return 'The tunnel curves to the East.'
-                else:
-                    if not compass:
-                        return 'The tunnel curves to the right.'
-                    else:
-                        return 'The tunnel curves to the North.'
-            elif char == '┘':
-                if self._current_direction == E:
-                    if not compass:
-                        return 'The tunnel curves to the left.'
-                    else:
-                        return 'The tunnel curves to the North.'
-                else:
-                    if not compass:
-                        return 'The tunnel curves to the right.'
-                    else:
-                        return 'The tunnel curves to the West.'
-            elif char == '├':
-                if self._current_direction == N:
-                    if not compass:
-                        return 'The tunnel continues forward and branches to the right.'
-                    else:
-                        return 'The tunnel continues North and branches to the East.'
-                elif self._current_direction == S:
-                    if not compass:
-                        return 'The tunnel continues forward and branches to the left.'
-                    else:
-                        return 'The tunnel continues South and branches to the East.'
-                else:
-                    if not compass:
-                        return 'The tunnel ends and branches to the left and right.'
-                    else:
-                        return 'The tunnel ends and branches to the North and South.'
-            elif char == '┤':
-                if self._current_direction == N:
-                    if not compass:
-                        return 'The tunnel continues forward and branches to the left.'
-                    else:
-                        return 'The tunnel continues North and branches to the West.'
-                elif self._current_direction == S:
-                    if not compass:
-                        return 'The tunnel continues forward and branches to the right.'
-                    else:
-                        return 'The tunnel continues South and branches to the West.'
-                else:
-                    if not compass:
-                        return 'The tunnel ends and branches to the left and right.'
-                    else:
-                        return 'The tunnel ends and branches to the North and South.'
-            elif char == '┬':
-                if self._current_direction == E:
-                    if not compass:
-                        return 'The tunnel continues forward and branches to the right.'
-                    else:
-                        return 'The tunnel continues East and branches to the South.'
-                elif self._current_direction == W:
-                    if not compass:
-                        return 'The tunnel continues forward and branches to the left.'
-                    else:
-                        return 'The tunnel continues West and branches to the South.'
-                else:
-                    if not compass:
-                        return 'The tunnel ends and branches to the left and right.'
-                    else:
-                        return 'The tunnel ends and branches to the East and West.'
-            elif char == '┴':
-                if self._current_direction == E:
-                    if not compass:
-                        return 'The tunnel continues forward and branches to the left.'
-                    else:
-                        return 'The tunnel continues East and branches to the North.'
-                elif self._current_direction == W:
-                    if not compass:
-                        return 'The tunnel continues forward and branches to the right.'
-                    else:
-                        return 'The tunnel continues West and branches to the North.'
-                else:
-                    if not compass:
-                        return 'The tunnel ends and branches to the left and right.'
-                    else:
-                        return 'The tunnel ends and branches to the East and West.'
-            elif char == '╵' or char == '╷' or char == '╶' or char == '╴':
-                return 'The tunnel ends in a dead end.'
+            if not compass:
+                if self._last_direction == S and self._current_direction == E or self._last_direction == E and self._current_direction == N or self._last_direction == N and self._current_direction == W or self._last_direction == W and \
+                        self._current_direction == S:
+                    return 'You turn left and continue down the ensuing hallway.'
+                if self._last_direction == S and self._current_direction == W or self._last_direction == W and self._current_direction == N or self._last_direction == N and self._current_direction == E or self._last_direction == E and \
+                        self._current_direction == S:
+                    return 'You turn right and continue down the ensuing hallway.'
             else:
-                return 'Unknown current path'
+                return f'You turn {STRING_DIRECTIONS[self._current_direction]} and continue down the hallway.'
+        return 'Unknown Last Path'
+
+    def get_node_description(self, node):
+        char = self._floor.get_map().get_node_char(node)
+        compass = Refs.gc.in_inventory('compass')
+
+        if self._floor.get_map().is_marker(ENTRANCE):
+            return f'You encounter the stairs to the {INDEX_TO_STRING[self._floor.get_id()]} floor.'
+        elif self._floor.get_map().is_marker(EXIT):
+            return f'You encounter the stairs to the {INDEX_TO_STRING[self._floor.get_id() + 1]} floor.'
+        elif char == '┼':
+            return 'The tunnel branches into three directions. To the left, right, and forward.'
+        elif char == '│':
+            return 'The tunnel extends into the distance.'
+        elif char == '─':
+            return 'The tunnel extends into the distance.'
+        elif char == '┌':
+            if self._current_direction == W:
+                if not compass:
+                    return 'The tunnel curves to the left.'
+                else:
+                    return 'The tunnel curves to the South.'
+            else:
+                if not compass:
+                    return 'The tunnel curves to the right.'
+                else:
+                    return 'The tunnel curves to the East.'
+        elif char == '┐':
+            if self._current_direction == E:
+                if not compass:
+                    return 'The tunnel curves to the right.'
+                else:
+                    return 'The tunnel curves to the South.'
+            else:
+                if not compass:
+                    return 'The tunnel curves to the left.'
+                else:
+                    return 'The tunnel curves to the West.'
+        elif char == '└':
+            if self._current_direction == S:
+                if not compass:
+                    return 'The tunnel curves to the left.'
+                else:
+                    return 'The tunnel curves to the East.'
+            else:
+                if not compass:
+                    return 'The tunnel curves to the right.'
+                else:
+                    return 'The tunnel curves to the North.'
+        elif char == '┘':
+            if self._current_direction == E:
+                if not compass:
+                    return 'The tunnel curves to the left.'
+                else:
+                    return 'The tunnel curves to the North.'
+            else:
+                if not compass:
+                    return 'The tunnel curves to the right.'
+                else:
+                    return 'The tunnel curves to the West.'
+        elif char == '├':
+            if self._current_direction == N:
+                if not compass:
+                    return 'The tunnel continues forward and branches to the right.'
+                else:
+                    return 'The tunnel continues North and branches to the East.'
+            elif self._current_direction == S:
+                if not compass:
+                    return 'The tunnel continues forward and branches to the left.'
+                else:
+                    return 'The tunnel continues South and branches to the East.'
+            else:
+                if not compass:
+                    return 'The tunnel ends and branches to the left and right.'
+                else:
+                    return 'The tunnel ends and branches to the North and South.'
+        elif char == '┤':
+            if self._current_direction == N:
+                if not compass:
+                    return 'The tunnel continues forward and branches to the left.'
+                else:
+                    return 'The tunnel continues North and branches to the West.'
+            elif self._current_direction == S:
+                if not compass:
+                    return 'The tunnel continues forward and branches to the right.'
+                else:
+                    return 'The tunnel continues South and branches to the West.'
+            else:
+                if not compass:
+                    return 'The tunnel ends and branches to the left and right.'
+                else:
+                    return 'The tunnel ends and branches to the North and South.'
+        elif char == '┬':
+            if self._current_direction == E:
+                if not compass:
+                    return 'The tunnel continues forward and branches to the right.'
+                else:
+                    return 'The tunnel continues East and branches to the South.'
+            elif self._current_direction == W:
+                if not compass:
+                    return 'The tunnel continues forward and branches to the left.'
+                else:
+                    return 'The tunnel continues West and branches to the South.'
+            else:
+                if not compass:
+                    return 'The tunnel ends and branches to the left and right.'
+                else:
+                    return 'The tunnel ends and branches to the East and West.'
+        elif char == '┴':
+            if self._current_direction == E:
+                if not compass:
+                    return 'The tunnel continues forward and branches to the left.'
+                else:
+                    return 'The tunnel continues East and branches to the North.'
+            elif self._current_direction == W:
+                if not compass:
+                    return 'The tunnel continues forward and branches to the right.'
+                else:
+                    return 'The tunnel continues West and branches to the North.'
+            else:
+                if not compass:
+                    return 'The tunnel ends and branches to the left and right.'
+                else:
+                    return 'The tunnel ends and branches to the East and West.'
+        elif char == '╵' or char == '╷' or char == '╶' or char == '╴':
+            return 'The tunnel ends in a dead end.'
+        else:
+            return 'Unknown current path'
 
     def is_in_encounter(self):
         return self._in_encounter

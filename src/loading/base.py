@@ -30,7 +30,7 @@ STARTING_CURRENT_INDEX = 0
 OPAQUE = 1
 
 LOADING_LAYERS = ['skills', 'abilities', 'enemies', 'families', 'chars', 'floors', 'shop_items', 'drop_items', 'save', 'housing', 'materials', 'crafting_recipes']
-LOADING_SECTIONS = ['Game Data', 'Skills and Abilities', 'Enemies', 'Families', 'Housing Options', 'Materials', 'Crafting Recipes', 'Chars', 'Floors', 'Shop Items', 'Game Data']
+LOADING_SECTIONS = ['Game Data', 'Skills and Abilities', 'Enemies', 'Families', 'Housing Options', 'Materials', 'Crafting Recipes', 'Chars', 'Floors', 'Items', 'Game Data']
 LOADING_FUNCTIONS = [load_save_chunk, load_move_chunk, load_enemy_chunk, load_family_chunk, load_housing_chunk, load_material_chunk, load_crafting_recipe_chunk, load_char_chunk, load_floor_chunk, load_shop_item_chunk, load_screen_chunk]
 LOADING_FILES = [False] + [True for _ in range(len(LOADING_FUNCTIONS) - 2)] + [False]
 LOADING_FILENAMES = [

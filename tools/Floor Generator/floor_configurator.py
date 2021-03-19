@@ -346,8 +346,9 @@ MARKERS = {
     'Entrance': '#0000FF',
     'Exit': '#FF0000',
     'Safe Zone': '#FEDE00',
-    'Iron Spawn': '#FF5733',
-    'Goblin Spawn': '#91CA75'
+    'Goblin Spawn': '#91CA75',
+    'Kobold Spawn': '#75AC19',
+    'Jack Bird Spawn': '#FECA34'
 }
 PATH_COLOR = '#DA8FBE'
 
@@ -439,14 +440,16 @@ class MazePreview(RelativeLayout):
         node_dict = load_dict(file.readline()[:-1])
         path_array = load_array(file.readline()[:-1])
         marker_lists = {}
-        for marker_name, marker_list in self.marker_lists.items():
-            if marker_name == 'Entrance':
-                marker_lists[marker_name] = [path_array[0]]
-            elif marker_name == 'Exit':
-                marker_lists[marker_name] = [path_array[-1]]
-            else:
-                marker_lists[marker_name] = load_array(file.readline()[:-1])
-        box = get_box_from_string(file.read())
+        marker_lists['Entrance'] = [path_array[0]]
+        marker_lists['Exit'] = [path_array[-1]]
+        line = file.readline()
+        not_map = not line.startswith('┌')
+        while not_map:
+            marker_name, marker_list = line[:-1].split('#')
+            marker_lists[marker_name] = load_array(marker_list)
+            line = file.readline()
+            not_map = not line.startswith('┌')
+        box = get_box_from_string(line + file.read())
         file.close()
         self.nodes = node_dict
         self.path_nodes = path_array

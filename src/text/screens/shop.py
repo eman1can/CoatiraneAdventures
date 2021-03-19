@@ -58,8 +58,8 @@ def item_page_list(option_index, page_name, page_num, item_list, fail_text, curr
 
         display_text += item_text
         if item_option is not None:
-            _options.update(item_option)
-        option_index += len(item_option)
+            _options[str(option_index)] = item_option
+        option_index += 1
 
     display_text += arrow_text
 

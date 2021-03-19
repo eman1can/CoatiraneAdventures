@@ -1,9 +1,11 @@
 from random import randint
 
+from game.floor import ENTRANCE, EXIT, SAFE_ZONES
 from game.floor_data import DIRECTIONS_FROM_STRING, E, N, S, W
 from refs import BLUE_C, END_OPT_C, OPT_C, RED_C, Refs, SEA_FOAM_C
 
 COUNT_TO_STRING = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
+DIRECTION_TO_INDEX = {'North': 8, 'East': 6, 'South': 2, 'West': 4}
 
 
 def get_plain_size(string):
@@ -42,10 +44,9 @@ def rjust(string, length, size):
 
 
 def get_tunnel_descriptions(floor_data):
+    floor_map = floor_data.get_floor().get_map()
     facing, options = floor_data.get_directions()
-    display_string = ''
-    option_index = 0
-    _options = {}
+    display_string, option_index, _options = '', 0, {}
 
     compass = Refs.gc.in_inventory('compass')
 
@@ -65,72 +66,77 @@ def get_tunnel_descriptions(floor_data):
     display_string += '\n\tWhat do you choose to do?'
 
     # Ascend or descend
-    if floor_data.at_exit():
+    if floor_map.is_marker(EXIT):
         display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Descend to the next floor'
         _options[str(option_index)] = 'dungeon_battle_descend'
         option_index += 1
-    elif floor_data.at_entrance():
+    elif floor_map.is_marker(ENTRANCE):
         display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Turn back and ascend.'
         _options[str(option_index)] = 'dungeon_battle_ascend'
         option_index += 1
 
     # Walk in different directions
     display_string += '\n'
-    numbers = {'North': 8, 'East': 6, 'South': 2, 'West': 4}
+
     for direction in options:
         if compass:
-            display_string += f'\n\t{OPT_C}{numbers[direction]}:{END_OPT_C} Proceed {direction}, {floor_data.get_basic_direction(direction)} down the hallway.'
+            display_string += f'\n\t{OPT_C}{DIRECTION_TO_INDEX[direction]}:{END_OPT_C} Proceed {direction}, {floor_data.get_basic_direction(direction)} down the hallway.'
+            _options[str(DIRECTION_TO_INDEX[direction])] = f'dungeon_battle_{direction}'
         else:
             display_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Proceed {floor_data.get_basic_direction(direction)} down the hallway.'
-        _options[str(option_index)] = f'dungeon_battle_{direction}'
+            _options[str(option_index)] = f'dungeon_battle_{direction}'
         option_index += 1
-
-    # Get map and display it
-    map_rows = floor_data.get_map().get_rows(floor_data.get_current_node())
-    display_string_rows = display_string.split('\n')
-    display_string = ''
-    for x in range(len(display_string_rows)):
-        if x < len(map_rows):
-            row = display_string_rows[x].replace('\t', '    ')
-            display_string += ljust(row, get_plain_size(row), 140) + '[font=CourierNew]' + map_rows[x] + '[/font]'
-        else:
-            display_string += display_string_rows[x]
-    if len(display_string_rows) < len(map_rows):
-        for x in range(len(display_string_rows), len(map_rows)):
-            display_string += ljust('', 0, 140) + '[font=CourierNew]' + map_rows[x] + '[/font]'
 
     return display_string, _options
 
 
-def get_extra_actions(option_index, floor_data):
+def get_extra_actions(global_options, floor_data):
     text, options = '', {}
-    text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Inventory'
-    return '\n', {}
-    # To be able to
-    # To be able to inspect the walls, the player needs to have a pickaxe in their inventory.
-    # To be able to inspect the environment, the player needs to have able adventurers and the appropriate equipment.
-    # For a node that is made of stone or dirt, the player requires a shovel.
-    # For a node that is wood based, the player requires an axe
-    # For a node that is plant based, the player requires a harvesting dagger
-    # For a node that is liquid based, the player requires a container
-    # For a node that is loose, such as small plants or dropped resources, the player only needs able adventurers.
 
-    # To be able to undertake an action, at least one adventurer needs to have > 25% health
-    # For every adventurer that is above 25% health, a randomized health decrease from 5-10,
-    # will be instituted to be distributed among every able adventurer.
+    option_index = 0
+    while str(option_index) in global_options:
+        option_index += 1
 
-    # pickaxe = False
-    # shovel = False
-    # adventurers_able = False
-    # if adventurers_able:
-    #     if pickaxe:
-    #         display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Inspect the dungeon walls. (Mine for resource)'
-    #         _options[str(option_index)] = 'dungeon_battle_mine'
-    #         option_index += 1
-    #     if shovel:
-    #         display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Inspect the dungeon environment. (Dig and Scrounge for resource)'
-    #         _options[str(option_index)] = 'dungeon_battle_mine'
-    #         option_index += 1
+    adventurers_able = False
+    for character in floor_data.get_characters():
+        if character.can_take_action():
+            adventurers_able = True
+    pickaxe = False  # Refs.gc.has_pickaxe()
+    shovel = False  # Refs.gc.has_shovel()
+    if adventurers_able:
+        if pickaxe:
+            text += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Inspect the dungeon walls. (Mine for resource)'
+            options[str(option_index)] = 'dungeon_battle_mine'
+            option_index += 1
+            while str(option_index) in global_options:
+                option_index += 1
+        if shovel:
+            text += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Inspect the dungeon environment. (Dig and Scrounge for resource)'
+            options[str(option_index)] = 'dungeon_battle_dig'
+            option_index += 1
+            while str(option_index) in global_options:
+                option_index += 1
+
+    # Detect if we are in a safe zone. If we are in a save zone, add option to create a safe zone.
+    # If we are in a made safe zone, then add option for rest
+    safe_zone = floor_data.get_floor().get_map().is_marker(SAFE_ZONES)
+    activated_safe_zone = floor_data.is_activated_safe_zone()
+    if safe_zone and not activated_safe_zone:
+        text += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Create Safe Zone'
+        options[str(option_index)] = 'dungeon_battle_create_safe_zone'
+        option_index += 1
+        while str(option_index) in global_options:
+            option_index += 1
+    if activated_safe_zone:
+        text += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Rest'
+        options[str(option_index)] = 'dungeon_battle_rest'
+        option_index += 1
+        while str(option_index) in global_options:
+            option_index += 1
+
+    text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Inventory\n'
+    options[str(option_index)] = 'inventory_battle'
+    return text, options
 
 
 def get_battle_display(floor_data):
@@ -335,9 +341,32 @@ def dungeon_battle(console):
 
     if not floor_data.is_in_encounter():
         display_string, _options = get_tunnel_descriptions(floor_data)
-        tool_string, tool_options = get_extra_actions(len(_options), floor_data)
+        tool_string, tool_options = get_extra_actions(_options, floor_data)
+        display_string += tool_string
         _options.update(tool_options)
-        return display_string + tool_string, _options
+
+        option_index = 0
+        while str(option_index) in _options:
+            option_index += 1
+
+        # Get map and display it
+        map_rows = floor_data.get_floor().get_map().get_rows()
+        display_string_rows = display_string.split('\n')
+        display_string = ''
+        for x in range(len(display_string_rows)):
+            if x < len(map_rows):
+                row = display_string_rows[x].replace('\t', '    ')
+                display_string += ljust(row, get_plain_size(row), 140) + '[font=CourierNew]' + map_rows[x] + '\n'
+            else:
+                display_string += display_string_rows[x] + '\n'
+        if len(display_string_rows) < len(map_rows):
+            for x in range(len(display_string_rows), len(map_rows)):
+                display_string += ljust('', 0, 140) + '[font=CourierNew]' + map_rows[x] + '\n'
+            display_string += ljust('', 0, 140) + f'       {OPT_C}{option_index}:{END_OPT_C} Map Options'
+        else:
+            display_string += ljust('', 0, 140) + f'       {OPT_C}{option_index}:{END_OPT_C} Map Options'
+        _options[str(option_index)] = 'dungeon_battle_map_options'
+        return display_string, _options
     else:
         display_string = '\n\t' + floor_data.get_descriptions()
         _options = {}
@@ -504,13 +533,13 @@ def dungeon_battle_action(console, action):
     action = action[len('dungeon_battle_'):]
     if action.startswith('start'):
         Refs.gc.set_next_floor(bool(action[6:]))
+        Refs.gc.save_game()
     if action == 'ascend':
-        floor_data = Refs.gc.get_floor_data()
+        Refs.gc.get_floor_data().get_floor().get_map().clear_current_node()
         # Keep items in inventory
         # Keep items used
         # Keep exploration
         # Clear the current value on the map
-        floor_data.clear_current()
         console.set_screen('dungeon_result_ascend')
         return
     elif action == 'descend':
@@ -528,9 +557,10 @@ def dungeon_battle_action(console, action):
         # Remove gained status points from characters
         # Add back used items to inventory
         # Remove explored map data
+        floor_map = floor_data.get_floor().get_map()
         for node in floor_data.get_explored():
-            floor_data.hide_node(node)
-        floor_data.clear_current()
+            floor_map.hide_node(node)
+        floor_map.clear_current_node()
         console.set_screen('dungeon_main')
         return
     elif action == 'North' or action == 'East' or action == 'South' or action == 'West':
@@ -542,8 +572,8 @@ def dungeon_battle_action(console, action):
         # I want people to encounter maybe 5-6 roaving hordes of monsters.
         # Therefore, a 0.15% Chance is decent, I think
 
-        if randint(1, 100) <= 15:
-            floor_data.generate_encounter()
+        # if randint(1, 100) <= 15:
+        #     floor_data.generate_encounter()
 
     elif action.startswith('encounter'):
         action = action[len('encounter_'):]
@@ -574,5 +604,42 @@ def dungeon_battle_action(console, action):
                     skill_index += 1
                 battle_data.get_characters()[int(character_index)].select_skill(skill_index)
                 battle_data.set_state('battle')
+    elif action == 'create_safe_zone':
+        floor_data = Refs.gc.get_floor_data()
+        floor_data.activate_safe_zone()
 
+        # Random character takes the action
+        index = randint(0, len(floor_data.get_characters()) - 1)
+        character = floor_data.get_characters()[index]
+        character.take_action()
+    elif action == 'rest':
+        floor_data = Refs.gc.get_floor_data()
+        for character in floor_data.get_characters():
+            character.rest()
+        floor_data.decrease_safe_zones()
+    elif action == 'mine':
+        floor_data = Refs.gc.get_floor_data()
+        index = randint(0, len(floor_data.get_characters()) - 1)
+        character = floor_data.get_characters()[index]
+        character.take_action()
+        console.set_screen(f'dungeon_mine_result_{character.get_id()}')
+        return
+    elif action == 'dig':
+        floor_data = Refs.gc.get_floor_data()
+        index = randint(0, len(floor_data.get_characters()) - 1)
+        character = floor_data.get_characters()[index]
+        character.take_action()
+        console.set_screen(f'dungeon_dig_result_{character.get_id()}')
+        return
+    elif action == 'map_options':
+        console.set_screen('map_options')
+        return
     console.set_screen('dungeon_battle')
+
+
+def dungeon_mine_result(console):
+    display_string, _options = '', {}
+    character_id = console.get_current_screen()[len('dungeon_mine_result_'):]
+    character = Refs.gc.get_char_by_id(character_id)
+
+    display_string += '\n\t' + character.get_name() + ' mined as hard as they could '

@@ -1,5 +1,6 @@
-import os
-from os.path import exists
+from os import mkdir
+from os.path import exists, expanduser
+from random import randint
 from time import strftime, localtime, time
 
 from kivy.storage.jsonstore import JsonStore
@@ -7,14 +8,20 @@ from kivy.storage.jsonstore import JsonStore
 from loading.config_loader import GAME_VERSION
 from game.skill import RANKS
 
-SAVE_PATH = os.path.expanduser('~/Saved Games/Coatirane Adventures/saves/')
-SAVE_SLOT_1_INFO = f'{SAVE_PATH}save_game_1_info.json'
-SAVE_SLOT_1 = f'{SAVE_PATH}save_game_1.dat'
-SAVE_SLOT_2_INFO = f'{SAVE_PATH}save_game_2_info.json'
-SAVE_SLOT_2 = f'{SAVE_PATH}save_game_2.dat'
-SAVE_SLOT_3_INFO = f'{SAVE_PATH}save_game_3_info.json'
-SAVE_SLOT_3 = f'{SAVE_PATH}save_game_3.dat'
+SAVE_PATH = expanduser('~/Saved Games/Coatirane Adventures/saves/')
+SAVE_SLOT_1_PATH = f'{SAVE_PATH}/save1/'
+SAVE_SLOT_2_PATH = f'{SAVE_PATH}/save2/'
+SAVE_SLOT_3_PATH = f'{SAVE_PATH}/save3/'
+SAVE_SLOT_1_INFO = f'{SAVE_SLOT_1_PATH}save_game_1_info.json'
+SAVE_SLOT_1 = f'{SAVE_SLOT_1_PATH}save_game_1.dat'
+SAVE_SLOT_2_INFO = f'{SAVE_SLOT_2_PATH}save_game_2_info.json'
+SAVE_SLOT_2 = f'{SAVE_SLOT_2_PATH}save_game_2.dat'
+SAVE_SLOT_3_INFO = f'{SAVE_SLOT_3_PATH}save_game_3_info.json'
+SAVE_SLOT_3 = f'{SAVE_SLOT_3_PATH}save_game_3.dat'
+FLOOR_DATA_SAVE_PATH = '/floor_data/'
+SAVE_PATHS = [SAVE_SLOT_1_PATH, SAVE_SLOT_2_PATH, SAVE_SLOT_3_PATH]
 
+SECONDS_IN_WEEK = 60 * 60 * 24 * 7
 
 def get_info_and_path(save_slot):
     if save_slot == 1:
@@ -58,6 +65,12 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
         'skills': starting_skills
     }
     save_file['time'] = 60914
+    save_file['housing'] = {}
+    save_file['housing']['id'] = 'two_room_flat'
+    save_file['housing']['type'] = 'rent'
+    save_file['housing']['installed_features'] = []
+    save_file['housing']['bill_due'] = 114914
+    save_file['housing']['bill_count'] = 1
     save_file['lowest_floor'] = starting_floor
     save_file['obtained_characters'] = [choice]
     save_file['obtained_characters_a'] = [choice]
@@ -96,6 +109,10 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_file['map_data'] = {}
     save_file['varenth'] = starting_varenth
     save_file['parties'] = [0] + [[None for _ in range(16)] for _ in range(10)]
+    save_file['map_data'] = {}
+    for floor in range(60):
+        explored_jsoned = {}
+        save_file['map_data'][str(floor)] = explored_jsoned
 
     # - Obtained Characters (all, s, & a)
     # - Character Rank Info and Growth, Grid Progress
@@ -131,6 +148,9 @@ def save_header(info_slot, name, gender, domain, symbol, rank, varenth, chars_co
 
 def save_game(save_slot, game_content):
     save_info, save_path = get_info_and_path(save_slot)
+
+    if not exists(save_path):
+        mkdir(save_path)
 
     name = game_content.get_name()
     gender = game_content.get_gender()
@@ -194,9 +214,10 @@ def save_game(save_slot, game_content):
     save_file['map_data'] = {}
     for floor in game_content['floors'].values():
         explored_jsoned = {}
-        explored = floor.get_floor_map().get_explored()
-        for node, shown in explored.items():
-            explored_jsoned[str(node)] = shown
+        explored = floor.get_map().get_explored()
+        print(explored.keys())
+        # for node, shown in explored.items():
+        #     explored_jsoned[str(node)] = shown
         save_file['map_data'][str(floor.get_id())] = explored_jsoned
 
     save_file['varenth'] = varenth
@@ -233,3 +254,70 @@ def load_game(save_slot):
         return None
 
     return JsonStore(save_path)
+
+
+def get_random_node(size):
+    return randint(0, size-1), randint(0, size-1)
+
+
+def get_arrays(json_data):
+    node_data = {}
+    for marker in json_data.store_keys():
+        if marker == 'save_time':
+            continue
+        node_data[marker] = []
+        for node in json_data.get(marker):
+            node_data[marker].append(tuple(node))
+    return node_data
+
+
+def generate_data(file_path, floor):
+    data = JsonStore(file_path)
+    size = floor.get_map().get_size()
+
+    node_amount = int(size * size / 20)
+
+    generated_nodes = []
+    # Blacklist entrance, exit and safe zones
+    for marker_type, routes in floor.get_markers().items():
+        if marker_type in ['exit', 'entrance', 'safe_zones']:
+            generated_nodes += routes
+
+    node_lists = {}
+    # Generate nodes for every resource
+    for resource in floor.get_resources():
+        node_lists[resource] = []
+        for index in range(node_amount):
+            node = get_random_node(size)
+            while node in generated_nodes:
+                node = get_random_node(size)
+            generated_nodes.append(node)
+            node_lists[resource].append(node)
+
+    # Generate nodes for every enemy
+    for enemy in floor.get_enemies():
+        node_lists[enemy.get_id()] = []
+        for index in range(node_amount):
+            node = get_random_node(size)
+            while node in generated_nodes:
+                node = get_random_node(size)
+            generated_nodes.append(node)
+            node_lists[enemy.get_id()].append(node)
+    for node_type, node_list in node_lists.items():
+        data[node_type] = node_list
+    data['save_time'] = time()
+    return get_arrays(data)
+
+
+def load_floor_data(save_slot, floor):
+    path = SAVE_PATHS[save_slot - 1] + FLOOR_DATA_SAVE_PATH
+    if not exists(path):
+        mkdir(path)
+    file_path = path + str(floor.get_id()) + '.json'
+    if not exists(file_path):
+        return generate_data(file_path, floor)
+    else:
+        data = JsonStore(file_path)
+        if time() - data.get('save_time') > SECONDS_IN_WEEK:
+            return generate_data(file_path, floor)
+        return get_arrays(data)

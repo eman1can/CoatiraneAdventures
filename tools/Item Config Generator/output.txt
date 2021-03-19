@@ -1,63 +1,93 @@
 D, tiny_strength_falna, Strength Falna, multi, 0, 0
 A gem found in monsters that can be used to grow strength in an adventurer.
+
 D, tiny_magic_falna, Magic Falna, multi, 0, 0
 A gem found in monsters that can be used to grow magic in an adventurer.
+
 D, tiny_endurance_falna, Endurance Falna, multi, 0, 0
 A gem found in monsters that can be used to grow endurance in an adventurer.
+
 D, tiny_dexterity_falna, Dexterity Falna, multi, 0, 0
 A gem found in monsters that can be used to grow dexterity in an adventurer.
+
 D, tiny_agility_falna, Agility Falna, multi, 0, 0
 A gem found in monsters that can be used to grow agility in an adventurer.
+
 D, small_strength_falna, Strength Falna, multi, 0, 0
 A gem found in monsters that can be used to grow strength in an adventurer.
+
 D, small_magic_falna, Magic Falna, multi, 0, 0
 A gem found in monsters that can be used to grow magic in an adventurer.
+
 D, small_endurance_falna, Endurance Falna, multi, 0, 0
 A gem found in monsters that can be used to grow endurance in an adventurer.
+
 D, small_dexterity_falna, Dexterity Falna, multi, 0, 0
 A gem found in monsters that can be used to grow dexterity in an adventurer.
+
 D, small_agility_falna, Agility Falna, multi, 0, 0
 A gem found in monsters that can be used to grow agility in an adventurer.
+
 D, medium_strength_falna, Strength Falna, multi, 0, 0
 A gem found in monsters that can be used to grow strength in an adventurer.
+
 D, medium_magic_falna, Magic Falna, multi, 0, 0
 A gem found in monsters that can be used to grow magic in an adventurer.
+
 D, medium_endurance_falna, Endurance Falna, multi, 0, 0
 A gem found in monsters that can be used to grow endurance in an adventurer.
+
 D, medium_dexterity_falna, Dexterity Falna, multi, 0, 0
 A gem found in monsters that can be used to grow dexterity in an adventurer.
+
 D, medium_agility_falna, Agility Falna, multi, 0, 0
 A gem found in monsters that can be used to grow agility in an adventurer.
+
 D, regular_strength_falna, Strength Falna, multi, 0, 0
 A gem found in monsters that can be used to grow strength in an adventurer.
+
 D, regular_magic_falna, Magic Falna, multi, 0, 0
 A gem found in monsters that can be used to grow magic in an adventurer.
+
 D, regular_endurance_falna, Endurance Falna, multi, 0, 0
 A gem found in monsters that can be used to grow endurance in an adventurer.
+
 D, regular_dexterity_falna, Dexterity Falna, multi, 0, 0
 A gem found in monsters that can be used to grow dexterity in an adventurer.
+
 D, regular_agility_falna, Agility Falna, multi, 0, 0
 A gem found in monsters that can be used to grow agility in an adventurer.
+
 D, large_strength_falna, Strength Falna, multi, 0, 0
 A gem found in monsters that can be used to grow strength in an adventurer.
+
 D, large_magic_falna, Magic Falna, multi, 0, 0
 A gem found in monsters that can be used to grow magic in an adventurer.
+
 D, large_endurance_falna, Endurance Falna, multi, 0, 0
 A gem found in monsters that can be used to grow endurance in an adventurer.
+
 D, large_dexterity_falna, Dexterity Falna, multi, 0, 0
 A gem found in monsters that can be used to grow dexterity in an adventurer.
+
 D, large_agility_falna, Agility Falna, multi, 0, 0
 A gem found in monsters that can be used to grow agility in an adventurer.
+
 D, huge_strength_falna, Strength Falna, multi, 0, 0
 A gem found in monsters that can be used to grow strength in an adventurer.
+
 D, huge_magic_falna, Magic Falna, multi, 0, 0
 A gem found in monsters that can be used to grow magic in an adventurer.
+
 D, huge_endurance_falna, Endurance Falna, multi, 0, 0
 A gem found in monsters that can be used to grow endurance in an adventurer.
+
 D, huge_dexterity_falna, Dexterity Falna, multi, 0, 0
 A gem found in monsters that can be used to grow dexterity in an adventurer.
+
 D, huge_agility_falna, Agility Falna, multi, 0, 0
 A gem found in monsters that can be used to grow agility in an adventurer.
+
 D, raw_goblin_claw, Raw Goblin Claw, multi, 100, 250
 A raw Goblin Claw.
 

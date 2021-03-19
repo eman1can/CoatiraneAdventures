@@ -73,7 +73,7 @@ def intro_select(console):
     display_text = f'\n\t{OPT_C}0:{END_OPT_C} back\n\n\tOh almighty {console.memory.game_info["name"]}, you have two adventurers interested in your fledgling family.\n\tYou only have the finances to support yourself and one adventurer. Which one do you choose?\n'
     _options = {'0': 'back'}
 
-    with open(f'data/char_load_data/{Refs.gc.get_program_type()}/CharacterDefinitions.txt', 'r') as file:
+    with open(f'data/{Refs.gc.get_program_type()}/CharacterDefinitions.txt', 'r') as file:
         ais = file.readline().split(',')
         bell = file.readline().split(',')
 

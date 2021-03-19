@@ -9,6 +9,7 @@ from kivy.properties import StringProperty
 from kivy.uix.textinput import CutBuffer, TextInput
 from refs import Refs
 from text.memory import Memory
+from text.screens.map_options import map_options
 from text.screens.change_equip import change_equip_main
 from text.screens.character_attribute_screen import character_attribute_main
 from text.screens.crafting import crafting_main
@@ -76,6 +77,9 @@ class Console(TextInput):
 
     def get_current_screen(self):
         return self._current_screen
+
+    def get_last_screen(self):
+        return self._back_list[-1]
 
     def on_display_text(self, *args):
         self.text = f'{self.display_text}{CURSOR}{self.current_text}'
@@ -239,10 +243,10 @@ class Console(TextInput):
 
         names = ['new_game', 'save_select', 'intro_domain_name', 'intro_domain_gender', 'intro_domain', 'intro_select', 'game_loading', 'town_main', 'tavern_main', 'shop', 'quests_main', 'crafting_main', 'inventory', 'dungeon_main',
                  'select_screen_char', 'dungeon_confirm', 'dungeon_battle', 'dungeon_result', 'tavern_recruit_show', 'tavern_recruit', 'tavern_relax', 'intro_news', 'profile_main', 'housing_main', 'housing_browse', 'housing_rent', 'housing_buy',
-                 'character_attribute_main', 'status_board_main', 'status_board_unlock', 'status_board_view_falna', 'change_equip_main', 'gear_main']
+                 'character_attribute_main', 'status_board_main', 'status_board_unlock', 'status_board_view_falna', 'change_equip_main', 'gear_main', 'map_options']
         screens = [new_game, save_select, intro_domain_name, intro_domain_gender, intro_domain, intro_select, game_loading, town_main, tavern_main, shop, quests_main, crafting_main, inventory, dungeon_main, select_screen_char,
                    dungeon_main_confirm, dungeon_battle, dungeon_result, tavern_recruit_show, tavern_recruit, tavern_relax, intro_news, profile_main, housing_main, housing_browse, housing_rent, housing_buy, character_attribute_main,
-                   status_board_main, status_board_unlock, status_board_view_falna, change_equip_main, gear_main]
+                   status_board_main, status_board_unlock, status_board_view_falna, change_equip_main, gear_main, map_options]
         for index, screen in enumerate(names):
             if screen_name.startswith(screen):
                 self.display_text, self._options = screens[index](self)
@@ -258,6 +262,7 @@ class Console(TextInput):
         Refs.gc.set_calendar_callback(self._refresh)
 
     def _refresh(self):
+        return
         if self._current_screen is None:
             return
         self.set_screen(self._current_screen)
@@ -351,7 +356,7 @@ class Console(TextInput):
             if not do_transaction(item_id, int(count), 'sell' in screen_name):
                 self.error_text = 'Not enough Money!'
                 return
-            self.set_screen(screen_name + f'_page{page_num}')
+            self.set_screen(screen_name + f'{page_num}page')
         elif action == 'save_game':
             Refs.gc.save_game()
         elif action == 'crafting_main':
@@ -436,5 +441,22 @@ class Console(TextInput):
             for tile_index in tile_list.split('_'):
                 board.unlock_index(int(tile_index))
             self.set_screen(f'status_board_main_{character_id}_{rank_index}')
+        elif action.startswith('map_options_'):
+            action = action[len('map_options_'):]
+            floor_map = Refs.gc.get_floor_data().get_floor().get_map()
+
+            if action.startswith('toggle'):
+                active = action.endswith('True')
+                active_length = 5 if active else 6
+                layer = action[len('toggle_'):-active_length]
+                floor_map.set_layer_active(layer, active)
+                self.set_screen('map_options')
+                return
+            elif action.startswith('change_destination_'):
+                path = action[len('change_destination_'):]
+                floor_map.set_current_path(path)
+                self.set_screen('map_options')
+                return
+            self.set_screen('map_options_' + action)
         else:
             self.set_screen(action)

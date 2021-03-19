@@ -4,7 +4,7 @@ __all__ = ('GameContent',)
 from game.calendar import Calendar
 from game.battle_character import create_battle_character
 from game.floor_data import FloorData
-from game.save_load import save_game
+from game.save_load import load_floor_data, save_game
 from refs import Refs
 # from src.spine.skeleton.skeletonloader import SkeletonLoader
 
@@ -98,7 +98,7 @@ class GameContent:
         # TODO: Set locks based on save data
         # Load map data into floors
         for floor_id in save_data['map_data']:
-            self._data['floors'][int(floor_id)].get_floor_map().update_explored(save_data['map_data'][floor_id])
+            self._data['floors'][int(floor_id)].get_map().create_current_map(save_data['map_data'][floor_id])
 
     def set_current_housing(self, housing):
         self._current_housing = housing
@@ -439,6 +439,9 @@ class GameContent:
     def can_descend(self):
         return True
 
+    def load_floor_node_data(self, floor):
+        return load_floor_data(self._save_slot, floor)
+
     """
     Name: Familiarity Bonus
     A bonus value that goes from 0-100
@@ -507,9 +510,8 @@ class GameContent:
         return random.choices([0.95, 0.96, 0.97, 0.98, 0.99, 1, 1.1, 1.2, 1.3, 1.4, 1.5], k=1)[0]
 
     """
-        Can be 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.5, 2.75, 3, 3.5, 3.75, 4, 4.75
-        Randomizes the output values for attack and agility
-        """
-
+    Can be 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.5, 2.75, 3, 3.5, 3.75, 4, 4.75
+    Randomizes the output values for the critical
+    """
     def get_random_critical_modifier(self):
         return random.choices([1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.5, 2.75, 3, 3.5, 3.75, 4, 4.75], k=1)[0]

@@ -1,3 +1,5 @@
+from random import randint
+
 from game.battle_entity import BattleEntity
 
 
@@ -25,9 +27,24 @@ class BattleCharacter(BattleEntity):
         super().__init__()
         self._bhealth = self._character.get_health()
         self._bmana = self._character.get_mana()
+        self._stamina = 100
 
-    # def rollback(self):
-    #     self.__class__ = Character
+    def take_action(self):
+        # Taking an action reduces stamina by 3 - 10
+        self._stamina -= randint(3, 10)
+
+    def walk(self):
+        # Walking reduces stamina by 1 - 5
+        self._stamina -= randint(1, 3)
+
+    def rest(self):
+        self._stamina += randint(20, 30)
+
+    def can_take_action(self):
+        return self._stamina > 25
+
+    def get_stamina(self):
+        return self._stamina
 
     def c(self):
         return self._character
