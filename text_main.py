@@ -52,6 +52,7 @@ class CoatiraneAdventures(App):
 
         super().__init__(**kwargs)
 
+
     def log(self, message, level='info'):
         Logger.log({'info': 20, 'warn': 30, 'debug': 10, 'error': 40}[level], f"CoatiraneAdventures: {message}")
 
@@ -86,7 +87,7 @@ ClickableScrollView:
         self._end_screen = finish_screen
         self._console = console
 
-    def reset_laoder(self):
+    def reset_loader(self):
         self._loader.reset()
 
     def finished_loading(self):

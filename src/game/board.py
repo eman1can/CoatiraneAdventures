@@ -26,6 +26,12 @@ class Board(SMEAD):
     def get_count(self):
         return self._strength_count + self._magic_count + self._endurance_count + self._agility_count + self._dexterity_count
 
+    def get_counts(self):
+        return self._strength_count, self._magic_count, self._endurance_count, self._agility_count, self._dexterity_count
+
+    def get_values(self):
+        return self._strength, self._magic, self._endurance, self._agility, self._dexterity
+
     def update_unlocked(self):
         self._all_unlocked = True
         for unlocked in self._unlocked:
@@ -41,9 +47,11 @@ class Board(SMEAD):
         for index in range(len(self._unlocked)):
             if not self._unlocked[index]:
                 self._unlocked[index] = True
+        self.refresh_stats()
 
     def unlock_index(self, index):
         self._unlocked[index] = True
+        self.refresh_stats()
 
     def update_strength(self):
         sc = len([x for x in self._unlocked[:self._strength_count] if x])

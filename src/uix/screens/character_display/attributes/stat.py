@@ -45,6 +45,6 @@ class StatBox(RelativeLayout):
             return
         self.health = self.char.get_health()
         self.mana = self.char.get_mana()
-        self.phy_attack = self.char.get_phyatk()
-        self.mag_attack = self.char.get_magatk()
+        self.phy_attack = self.char.get_physical_attack()
+        self.mag_attack = self.char.get_magical_attack()
         self.defense = self.char.get_defense()

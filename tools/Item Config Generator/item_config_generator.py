@@ -99,8 +99,15 @@ gems = [
     'Zoisite 6.0-6.5']
 
 magic_stone_types = ['tiny', 'small', 'medium', 'regular', 'large', 'huge']
+falna_types = ['strength', 'magic', 'endurance', 'dexterity', 'agility']
+# D, small_strength_falna, Strength Falna, multi, 0, 0
+# A gem found in monsters that can be used to grow strength in an adventurer.
 
-# Unit conversion is for crafting only, but should be reflected in prices too.
+# Generate Falna Types
+falnas = []
+for stone_type in magic_stone_types:
+    for falna_type in falna_types:
+        falnas.append(f'D, {stone_type}_{falna_type}_falna, {falna_type.capitalize()} Falna, multi, 0, 0\nA gem found in monsters that can be used to grow {falna_type} in an adventurer.')
 
 # Generate Magic Stone Types
 magic_stone_text = {'tiny': 'sliver', 'small': 'fragment', 'medium': 'chunk', 'regular': '', 'large': 'crystal', 'huge': 'cluster'}
@@ -129,6 +136,19 @@ floor_sizes = [13, 14, 17, 18, 18, 19, 19, 20, 21,  21,
                41, 43, 45, 47, 49, 51, 53, 55, 57,  57,
                59, 61, 64, 66, 68, 71, 73, 75, 78,  80,
                82, 85, 87, 89, 92, 94, 96, 99, 101, 103]
+visit_times = [0 for _ in range(60)]
+# Visit every floor in turn, until we reach the last
+# Assume that one every floor, we touch each node 1.5 times during original visit and 0.5 times thereafter
+
+for visit in range(25):  # Assume it takes us an average of 10 explorations to beat a floor
+    for floor in range(60):
+        for sub_floor in range(floor):
+            visit_times[sub_floor] += 2 + 0.5 * (floor_sizes[sub_floor] * floor_sizes[sub_floor])
+        visit_times[floor] += 1 + 1.5 * (floor_sizes[floor] * floor_sizes[floor])
+encounters = []
+for traveled_nodes in visit_times:
+    encounters.append(traveled_nodes * 0.15)
+
 map_types = ['path_map', 'full_map', 'safe_zone_map']
 
 enemies = ['goblin', 'kobold', 'jack_bird', 'dungeon_lizard', 'frog_shooter', 'war_shadow', 'killer_ant', 'purple_moth', 'needle_rabbit', 'blue_papilio',
@@ -412,6 +432,15 @@ drop_types = {
     }
 }
 
+# Convert drop types into by enemy list
+enemy_drops = {}
+for drop_type, drop_list in drop_types.items():
+    for enemy_name, drop_rarity in drop_list.items():
+        if enemy_name not in enemy_drops:
+            enemy_drops[enemy_name] = {}
+        enemy_drops[enemy_name][drop_type] = drop_rarity
+
+# Get and sort all materials
 non_natural_hard_materials = []
 non_natural_soft_materials = []
 monster_types = {}
@@ -537,6 +566,8 @@ class Material:
 
     def __hash__(self):
         return self.string.__hash__()
+
+
 materials_found.update(natural_materials_found)
 materials_found.update(gems_found)
 
@@ -580,6 +611,97 @@ monster_soft_materials_by_hardness.sort()
 soft_materials_by_hardness.sort()
 gems_by_hardness.sort()
 all_materials_by_hardness.sort()
+
+# Write material list to output
+if False:
+    with open('output.txt', 'w', encoding='utf-8') as file:
+        def write_material(material_type, material, preraw, has_raw, sufraw, prepro, sufpro):
+            material_name = material.full_string
+            material_id = material.full_string.replace(' ', '_').lower()
+            min_hardness, max_hardness = material.get_numbers()
+            file.write(f'{material_type}, {material_id}, {material_name}, {round(min_hardness, 2)}, {round(max_hardness, 2)}\n')
+            if has_raw:
+                file.write(f'{preraw}{material_id}{sufraw}#{prepro}{material_id}{sufpro}\n')
+            else:
+                file.write(f'none#{prepro}{material_id}{sufpro}\n')
+            file.write(f'none\nnone\n#\n')
+        # Natural Soft Materials
+        for material in natural_soft_materials_by_hardness:
+            write_material('soft', material, 'raw_', True, '', '', '_processed')
+        # Monster Soft Materials
+        for material in monster_soft_materials_by_hardness:
+            write_material('soft', material, 'raw_', True, '', '', '_processed')
+        # Natural Hard Materials
+        for material in natural_hard_materials_by_hardness:
+            write_material('hard', material, '', True, '_ore', '', '_ingot')
+        # Alloy Hard Materials
+        for material in alloy_hard_materials_by_hardness:
+            write_material('hard', material, '', False, '', '', '_ingot')
+        # Monster Hard Materials
+        for material in monster_hard_materials_by_hardness:
+            write_material('hard', material, 'raw_', True, '', '', '_ingot')
+        # Gems
+        for material in gems_by_hardness:
+            write_material('hard', material, 'raw_', True, '', 'processed_', '')
+
+# Write drops and materials to item output
+if True:
+    with open('output.txt', 'w', encoding='utf-8') as file:
+        def write_item(type, id, name, min_price, max_price, description, sell_type='multi'):
+            if type == 'drop':
+                file.write(f'D, {id}, {name}, {sell_type}, {min_price}, {max_price}\n')
+            else:
+                file.write(f'I, {id}, {name}, {sell_type}, {min_price}, {max_price}\n')
+            file.write(f'{description}\n')
+            file.write(f'\n')
+        # Write Falna
+        for falna in falnas:
+            file.write(falna + '\n')
+        # Write Hard, Soft Monster Drops & Other Monster Items
+        for enemy, drop_list in enemy_drops.items():
+            for drop in drop_list:
+                name = enemy.replace('_', ' ').title()
+                if drop in ['hide']:
+                    write_item('drop', f'raw_{enemy}_{drop}', f'Raw {name} {drop.title()}', 100, 250, f'A raw {name} {drop.title()}.')  # Soft
+                    write_item('drop', f'{enemy}_{drop}_processed', f'Processed {name} {drop.title()}', 100, 250, f'A processed {name} {drop.title()}.')  # Soft
+                elif drop in ['fang', 'claw', 'scale', 'horn']:
+                    write_item('drop', f'raw_{enemy}_{drop}', f'Raw {name} {drop.title()}', 100, 250, f'A raw {name} {drop.title()}.')  # Hard
+                    write_item('drop', f'{enemy}_{drop}_ingot', f'{name} {drop.title()} Ingot', 100, 250, f'A {name} {drop.title()} Ingot.')  # Hard
+                else:
+                    write_item('drop', f'{enemy}_{drop}', f'{name} {drop.title()}', 100, 250, f'A {name} {drop.title()}.')  # Other
+        # Write Natural Soft, Hard, Alloys
+        for material in natural_soft_materials_by_hardness:
+            identifier = material.full_string.replace(' ', '_').lower()
+            write_item('item', f'raw_{identifier}', f'Raw {material.full_string}', 100, 250, f'Raw {material.full_string}.')
+            write_item('item', f'{identifier}_processed', f'Processed {material.full_string}', 100, 250, f'Processed {material.full_string}.')
+        for material in natural_hard_materials_by_hardness:
+            identifier = material.full_string.replace(' ', '_').lower()
+            write_item('item', f'{identifier}_ore', f'{material.full_string} Ore', 100, 250, f'A piece of {material.full_string} Ore.')
+            write_item('item', f'{identifier}_ingot', f'{material.full_string} Ingot', 100, 250, f'A {material.full_string} Ingot.')
+        for material in alloy_hard_materials_by_hardness:
+            identifier = material.full_string.replace(' ', '_').lower()
+            write_item('item', f'{identifier}_ingot', f'{material.full_string} Ingot', 100, 250, f'A {material.full_string} Ingot.')
+        for material in gems_by_hardness:
+            identifier = material.full_string.replace(' ', '_').lower()
+            write_item('item', f'raw_{identifier}', f'Raw {material.full_string}', 100, 250, f'A Raw {material.full_string} Gem.')
+            write_item('item', f'processed_{identifier}', f'Processed {material.full_string}', 100, 250, f'A Processed {material.full_string} Gem.')
+        # Write Exploration equipment w/ Natural & Alloys
+        for material in natural_hard_materials_by_hardness + alloy_hard_materials_by_hardness:
+            for item_type in ['harvesting_knife', 'pickaxe', 'shovel']:
+                description = {
+                    'harvesting_knife': 'An essential tool for collecting all manner of items in the dungeon!',
+                    'pickaxe': 'An essential tool for hacking away at the dungeon!',
+                    'shovel': 'An essential tool for moving everything from one side to the other.'
+                }[item_type]
+                identifier = material.full_string.replace(' ', '_').lower()
+                item_name = item_type.replace('_', ' ').title()
+                file.write(f'S, {identifier}_{item_type}, {material.full_string} {item_name}, equipment, single, 500\n')
+                file.write('none\n')
+                file.write(f'{description}\n')
+                file.write(f'\n')
+        # Write magic stones!
+        for magic_stone in magic_stones:
+            file.write(magic_stone + '\n')
 
 # Generate Common items
 common_items = []
@@ -626,7 +748,6 @@ for floor in floor_ids:
 # Generate woods
 
 # Generate Ingredients
-#- Vials
 
 # Generate Potions
 
@@ -640,305 +761,282 @@ for floor in floor_ids:
 rarities = [1, 2, 3, 4, 5]
 rarities_weights = [1 / (2 ** rarities[x]) for x in range(5)]
 
-enemy_drops = {}
-for drop_type, drop_list in drop_types.items():
-    for enemy_name, drop_rarity in drop_list.items():
-        if enemy_name not in enemy_drops:
-            enemy_drops[enemy_name] = {}
-        enemy_drops[enemy_name][drop_type] = drop_rarity
+# Do Spawn Percentages and Excel output
+if False:
+    def get_drop_item(drop_rarities):
+        drop_list = drop_rarities[choices(rarities, rarities_weights, k=1)[0]]
+        if len(drop_list) > 0:
+            item = drop_list[randint(0, len(drop_list) - 1)]
+            if item is None:
+                return [None]
+            # item_count = int(item[:item.index(' ')])
+            # if item_count > 4:
+            #     enemy_name, item_name = item[item.index(' ') + 1:item.rindex(' ')], item[item.rindex(' ') + 1:]
+            #     enemy_id = enemy_name.replace(' ', '_').lower()
+            #     replace_count = randint(0, item_count - 4)
+            #     if replace_count > 0 and len(enemy_drops[enemy_id]) > 1:
+            #         first_item = f'{item_count - replace_count} {enemy_name} {item_name}'
+            #         new_item = None
+            #         while new_item is None:
+            #             print(enemy_drops[enemy_id])
+            #             new_item = list(enemy_drops[enemy_id].keys())[randint(0, len(enemy_drops[enemy_id].keys()))]
+            #             if new_item == item_name.lower():
+            #                 new_item = None
+            #         second_item = f'{replace_count} {enemy_name} {new_item.title()}'
+            #         return [first_item, second_item]
+            return [item]
+        return [None]
 
 
-def get_drop_item(drop_rarities):
-    drop_list = drop_rarities[choices(rarities, rarities_weights, k=1)[0]]
-    if len(drop_list) > 0:
-        item = drop_list[randint(0, len(drop_list) - 1)]
-        if item is None:
-            return [None]
-        # item_count = int(item[:item.index(' ')])
-        # if item_count > 4:
-        #     enemy_name, item_name = item[item.index(' ') + 1:item.rindex(' ')], item[item.rindex(' ') + 1:]
-        #     enemy_id = enemy_name.replace(' ', '_').lower()
-        #     replace_count = randint(0, item_count - 4)
-        #     if replace_count > 0 and len(enemy_drops[enemy_id]) > 1:
-        #         first_item = f'{item_count - replace_count} {enemy_name} {item_name}'
-        #         new_item = None
-        #         while new_item is None:
-        #             print(enemy_drops[enemy_id])
-        #             new_item = list(enemy_drops[enemy_id].keys())[randint(0, len(enemy_drops[enemy_id].keys()))]
-        #             if new_item == item_name.lower():
-        #                 new_item = None
-        #         second_item = f'{replace_count} {enemy_name} {new_item.title()}'
-        #         return [first_item, second_item]
-        return [item]
-    return [None]
+    def simulate_ecounters(floor_index, floor_spawn_rarities, drop_rarities, guarrenteed):
+        spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters = 0, {}, {}, {}, {}, {}
+        # Set all counters to 0
+        for enemy, boost_list in drop_rarities.items():
+            spawn_count_totals[enemy] = 0
+            drop_count_totals[enemy] = {}
+            first_encounters[enemy] = None
+            if enemy in guarrenteed:
+                for drop_item in guarrenteed[enemy]:
+                    drop_count_totals[drop_item[2:]] = 0
+            for boost, rarity_list in boost_list.items():
+                spawn_counts[f'{enemy} Level {boost + 1}'] = 0
+                drop_counts[f'{enemy} Level {boost + 1}'] = {}
+                for drop_list in rarity_list.values():
+                    for drop_name in drop_list:
+                        if drop_name is None:
+                            continue
+                        drop_count_totals[enemy][drop_name[drop_name.index(' ') + 1:]] = 0
+                        drop_counts[f'{enemy} Level {boost + 1}'][drop_name] = 0
+        # Do 1 million encounters
+        for x in range(int(encounters[floor_index])):
+            # Choose a random number of enemies to spawn
+            count = choices([1, 2, 3, 4, 5], [5, 4, 3, 2, 1], k=1)[0]
+            spawn_count_total += count
+
+            # Choose rarities to spawn
+            spawn = choices(rarities, rarities_weights, k=count)
+            for rarity in spawn:
+                # From the spawn rarity list, choose a random enemy to spawn
+                if len(floor_spawn_rarities[rarity]) > 0:
+                    name = floor_spawn_rarities[rarity][randint(0, len(floor_spawn_rarities[rarity]) - 1)]
+
+                    # Individual counts
+                    spawn_counts[name] += 1
+
+                    # Total counts
+                    total_name = name[:-8]
+                    spawn_count_totals[total_name] += 1
+
+                    if not first_encounters[total_name]:
+                        first_encounters[total_name] = x
+
+                    # Drop Item
+                    boost = int(name[name.rindex(' ') + 1:]) - 1
+                    dropped_item_list = get_drop_item(drop_rarities[total_name][boost])
+                    for dropped_item in dropped_item_list:
+                        if dropped_item is not None:
+                            drop_counts[name][str(dropped_item)] += 1
+                            drop_count_totals[total_name][str(dropped_item)[str(dropped_item).index(' ') + 1:]] += 1
+                    if total_name in guarrenteed:
+                        for drop_item in guarrenteed[total_name]:
+                            drop_count_totals[drop_item[2:]] += 1
+        return spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters
 
 
-def simulate_ecounters(floor_spawn_rarities, drop_rarities, guarrenteed):
-    spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters = 0, {}, {}, {}, {}, {}
-    # Set all counters to 0
-    for enemy, boost_list in drop_rarities.items():
-        spawn_count_totals[enemy] = 0
-        drop_count_totals[enemy] = {}
-        first_encounters[enemy] = None
-        if enemy in guarrenteed:
-            for drop_item in guarrenteed[enemy]:
-                drop_count_totals[drop_item[2:]] = 0
-        for boost, rarity_list in boost_list.items():
-            spawn_counts[f'{enemy} Level {boost + 1}'] = 0
-            drop_counts[f'{enemy} Level {boost + 1}'] = {}
-            for drop_list in rarity_list.values():
-                for drop_name in drop_list:
-                    if drop_name is None:
-                        continue
-                    drop_count_totals[enemy][drop_name[drop_name.index(' ') + 1:]] = 0
-                    drop_counts[f'{enemy} Level {boost + 1}'][drop_name] = 0
-    # Do 1 million encounters
-    for x in range(1000):
-        # Choose a random number of enemies to spawn
-        count = choices([1, 2, 3, 4, 5], [5, 4, 3, 2, 1], k=1)[0]
-        spawn_count_total += count
+    floors = {}
+    # Make the dictionary of the spawn rarities
+    for floor_id in list(floor_spawns.keys()):
+        floors[floor_id] = {1: [], 2: [], 3: [], 4: [], 5: []}
+        for enemy, rarity in floor_spawns[floor_id].items():
+            name = enemy.replace("_", " ").title()
+            for new_rarity in range(rarity, 6):
+                level_name = f'{name} Level {new_rarity + 1 - rarity}'
+                floors[floor_id][new_rarity].append(level_name)
 
-        # Choose rarities to spawn
-        spawn = choices(rarities, rarities_weights, k=count)
-        for rarity in spawn:
-            # From the spawn rarity list, choose a random enemy to spawn
-            if len(floor_spawn_rarities[rarity]) > 0:
-                name = floor_spawn_rarities[rarity][randint(0, len(floor_spawn_rarities[rarity]) - 1)]
+    floor_data = {}
+    start_time = time()
+    last_time = start_time
+    for floor_id, spawn_rarities in floors.items():
+        drop_rarities = {}
+        guarrenteed = {}
+        for spawn_list in spawn_rarities.values():
+            for enemy in spawn_list:
+                name, boost = enemy[:-8], int(enemy[-1]) - 1
+                if name not in drop_rarities:
+                    drop_rarities[name] = {}
+                if boost not in drop_rarities[name]:
+                    drop_rarities[name][boost] = {1: [None], 2: [], 3: [], 4: [], 5: []}
+                for drop_type, drop_list in drop_types.items():
+                    if name.lower().replace(" ", "_") in drop_list.keys():
+                        rarity = drop_list[name.lower().replace(" ", "_")]
+                        if rarity == 0:
+                            if name not in guarrenteed:
+                                guarrenteed[name] = []
+                            guarrenteed[name].append(f'1 {name} {drop_type.title()}')
+                            continue
+                        for new_rarity in range(rarity, 6):
+                            drop_rarities[name][boost][new_rarity].append(f'{1 + new_rarity - 1 + boost} {name} {drop_type.title()}')
+        spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters = simulate_ecounters(int(floor_id.split('_')[1]) - 1, spawn_rarities, drop_rarities, guarrenteed)
+        floor_data[floor_id.title().replace('_', ' ')] = {}
+        floor_data[floor_id.title().replace('_', ' ')]['spawn_count_total'] = spawn_count_total
+        floor_data[floor_id.title().replace('_', ' ')]['spawn_counts'] = spawn_counts
+        floor_data[floor_id.title().replace('_', ' ')]['spawn_count_totals'] = spawn_count_totals
+        floor_data[floor_id.title().replace('_', ' ')]['drop_counts'] = drop_counts
+        floor_data[floor_id.title().replace('_', ' ')]['drop_count_totals'] = drop_count_totals
+        floor_data[floor_id.title().replace('_', ' ')]['first_encounters'] = first_encounters
 
-                # Individual counts
-                spawn_counts[name] += 1
+        current_time = time()
+        print(floor_id.title().replace('_', ' '), f'took {round(current_time - last_time, 2)} - currently {round(current_time - start_time, 2)}')
+        last_time = current_time
 
-                # Total counts
-                total_name = name[:-8]
-                spawn_count_totals[total_name] += 1
+    def char_string_to_index(string):
+        if len(string) > 1:
+            return (char_string_to_index(string[:-1]) + 1) * 26 + (ord(string[-1]) - 65)
+        return ord(string[-1]) - 65
 
-                if not first_encounters[total_name]:
-                    first_encounters[total_name] = x
+    def index_to_char_string(index):
+        if index > 25:
+            return index_to_char_string(int(index / 26) - 1) + chr((index % 26) + 65)
+        return chr(index + 65)
 
-                # Drop Item
-                boost = int(name[name.rindex(' ') + 1:]) - 1
-                dropped_item_list = get_drop_item(drop_rarities[total_name][boost])
-                for dropped_item in dropped_item_list:
-                    if dropped_item is not None:
-                        drop_counts[name][str(dropped_item)] += 1
-                        drop_count_totals[total_name][str(dropped_item)[str(dropped_item).index(' ') + 1:]] += 1
-                if total_name in guarrenteed:
-                    for drop_item in guarrenteed[total_name]:
-                        drop_count_totals[drop_item[2:]] += 1
-    return spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters
-
-
-floors = {}
-# Make the dictionary of the spawn rarities
-for floor_id in list(floor_spawns.keys()):
-    floors[floor_id] = {1: [], 2: [], 3: [], 4: [], 5: []}
-    for enemy, rarity in floor_spawns[floor_id].items():
-        name = enemy.replace("_", " ").title()
-        for new_rarity in range(rarity, 6):
-            level_name = f'{name} Level {new_rarity + 1 - rarity}'
-            floors[floor_id][new_rarity].append(level_name)
-
-floor_data = {}
-start_time = time()
-last_time = start_time
-for floor_id, spawn_rarities in floors.items():
-    drop_rarities = {}
-    guarrenteed = {}
-    for spawn_list in spawn_rarities.values():
-        for enemy in spawn_list:
-            name, boost = enemy[:-8], int(enemy[-1]) - 1
-            if name not in drop_rarities:
-                drop_rarities[name] = {}
-            if boost not in drop_rarities[name]:
-                drop_rarities[name][boost] = {1: [None], 2: [], 3: [], 4: [], 5: []}
-            for drop_type, drop_list in drop_types.items():
-                if name.lower().replace(" ", "_") in drop_list.keys():
-                    rarity = drop_list[name.lower().replace(" ", "_")]
-                    if rarity == 0:
-                        if name not in guarrenteed:
-                            guarrenteed[name] = []
-                        guarrenteed[name].append(f'1 {name} {drop_type.title()}')
-                        continue
-                    for new_rarity in range(rarity, 6):
-                        drop_rarities[name][boost][new_rarity].append(f'{1 + new_rarity - 1 + boost} {name} {drop_type.title()}')
-    spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters = simulate_ecounters(spawn_rarities, drop_rarities, guarrenteed)
-    # floor_num = int(floor_id.split('_')[1])
-    floor_data[floor_id.title().replace('_', ' ')] = {}
-    floor_data[floor_id.title().replace('_', ' ')]['spawn_count_total'] = spawn_count_total
-    floor_data[floor_id.title().replace('_', ' ')]['spawn_counts'] = spawn_counts
-    floor_data[floor_id.title().replace('_', ' ')]['spawn_count_totals'] = spawn_count_totals
-    floor_data[floor_id.title().replace('_', ' ')]['drop_counts'] = drop_counts
-    floor_data[floor_id.title().replace('_', ' ')]['drop_count_totals'] = drop_count_totals
-    floor_data[floor_id.title().replace('_', ' ')]['first_encounters'] = first_encounters
-
-    # print(floor_id.title().replace('_', ' ') + ':')
-    current_time = time()
-    print(floor_id.title().replace('_', ' '), f'took {round(current_time - last_time, 2)} - currently {round(current_time - start_time, 2)}')
-    last_time = current_time
-    # for name, count in spawn_count_totals.items():
-    #     print('\t' + name, str(round(count / spawn_count_total * 100, 2)) + '%', '-', first_encounters[name])
-    #     if name in guarrenteed:
-    #         for drop_item in guarrenteed[name]:
-    #             print('\t\t' + drop_item[2:], str(round(drop_count_totals[drop_item[2:]] / count * 100, 2)) + '%', '/', str(round(drop_count_totals[drop_item[2:]] / spawn_count_total * 100, 2)) + '%')
-    #     for drop_item, drop_count in sorted(drop_count_totals[name].items()):
-    #         print('\t\t' + drop_item, str(round(drop_count / count * 100, 2)) + '%', '/', str(round(drop_count / spawn_count_total * 100, 2)) + '%')
-    # print()
-    # for name, count in spawn_counts.items():
-    #     print('\t' + name, str(round(count / spawn_count_total * 100, 2)) + '%')
-    #     if name[:-8] in guarrenteed:
-    #         for drop_item in guarrenteed[name[:-8]]:
-    #             print('\t\t' + drop_item, str(round(drop_count_totals[drop_item[2:]] / count * 100, 2)) + '%', '/', str(round(drop_count_totals[drop_item[2:]] / spawn_count_total * 100, 2)) + '%')
-    #     for drop_item, drop_count in sorted(drop_counts[name].items()):
-    #         print('\t\t' + drop_item, str(round(drop_count / count * 100, 2)) + '%', '/', str(round(drop_count / spawn_count_total * 100, 2)) + '%')
-    # print('\n')
-
-def char_string_to_index(string):
-    if len(string) > 1:
-        return (char_string_to_index(string[:-1]) + 1) * 26 + (ord(string[-1]) - 65)
-    return ord(string[-1]) - 65
-
-def index_to_char_string(index):
-    if index > 25:
-        return index_to_char_string(int(index / 26) - 1) + chr((index % 26) + 65)
-    return chr(index + 65)
-
-def get_next(string):
-    if string[-1] != 'Z':
-        return string[:-1] + chr(ord(string[-1]) + 1)
-    elif len(string) > 1:
-        # String has another to increment
-        return get_next(string[:-1]) + 'A'
-    else:
-        return 'AA'
-
-
-def char_range(start, end):
-    start_index = char_string_to_index(start.upper())
-    end_index = char_string_to_index(end.upper())
-
-    current = start.upper()
-    for x in range(start_index, end_index):
-        yield current
-        current = get_next(current)
-
-# Make Spawn Rate vs Floor data frame
-floor_spawn_rates_data = {}
-for monster in enemies:
-    name = monster.replace('_', ' ').title()
-    floor_spawn_rates_data[name] = []
-    for floor in floor_data.values():
-        if name in floor['spawn_count_totals']:
-            floor_spawn_rates_data[name].append(floor['spawn_count_totals'][name] / floor['spawn_count_total'])
+    def get_next(string):
+        if string[-1] != 'Z':
+            return string[:-1] + chr(ord(string[-1]) + 1)
+        elif len(string) > 1:
+            # String has another to increment
+            return get_next(string[:-1]) + 'A'
         else:
-            floor_spawn_rates_data[name].append(np.nan)
-
-floor_spawn_rates_data['Totals'] = []
-for floor in floor_data.values():
-    floor_spawn_rates_data['Totals'].append(floor['spawn_count_total'])
+            return 'AA'
 
 
-# Material Hardness Data
-def create_hardness_data(hardness_array):
-    hardness_data = {}
-    for index, material in enumerate(hardness_array):
-        array = []
-        min_hardness, max_hardness = material.get_numbers()
-        for x in range(0, 16 * 4 + 1):
-            if x / 4 >= min_hardness and x / 4 <= max_hardness:
-                array.append(index + 1)
+    def char_range(start, end):
+        start_index = char_string_to_index(start.upper())
+        end_index = char_string_to_index(end.upper())
+
+        current = start.upper()
+        for x in range(start_index, end_index):
+            yield current
+            current = get_next(current)
+
+    # Make Spawn Rate vs Floor data frame
+    floor_spawn_rates_data = {}
+    for monster in enemies:
+        name = monster.replace('_', ' ').title()
+        floor_spawn_rates_data[name] = []
+        for floor in floor_data.values():
+            if name in floor['spawn_count_totals']:
+                floor_spawn_rates_data[name].append(floor['spawn_count_totals'][name] / floor['spawn_count_total'])
             else:
-                array.append(np.nan)
-        hardness_data[material.full_string] = array
-    return hardness_data
+                floor_spawn_rates_data[name].append(np.nan)
+
+    floor_spawn_rates_data['Totals'] = []
+    for floor in floor_data.values():
+        floor_spawn_rates_data['Totals'].append(floor['spawn_count_total'])
 
 
-def create_hardness_data_frame(hardness_data):
-    return DataFrame(data=hardness_data, index=[x / 4 for x in range(0, 16 * 4 + 1)], columns=hardness_data.keys())
+    # Material Hardness Data
+    def create_hardness_data(hardness_array):
+        hardness_data = {}
+        for index, material in enumerate(hardness_array):
+            array = []
+            min_hardness, max_hardness = material.get_numbers()
+            for x in range(0, 16 * 4 + 1):
+                if x / 4 >= min_hardness and x / 4 <= max_hardness:
+                    array.append(index + 1)
+                else:
+                    array.append(np.nan)
+            hardness_data[material.full_string] = array
+        return hardness_data
 
 
-hardness_types = {
-    'Hard Materials (Natural)': natural_hard_materials_by_hardness,
-    'Hard Materials (Alloys)': alloy_hard_materials_by_hardness,
-    'Hard Materials (Monster)': monster_hard_materials_by_hardness,
-    'All Hard Materials': hard_materials_by_hardness,
-    'Soft Materials (Natural)': natural_soft_materials_by_hardness,
-    'Soft Materials (Monster)': monster_soft_materials_by_hardness,
-    'All Soft Materials' : soft_materials_by_hardness,
-    'Gems': gems_by_hardness,
-    'All Materials': all_materials_by_hardness
-}
-
-hardness_datas = {}
-for hardness_type, hardness_array in hardness_types.items():
-    hardness_datas[hardness_type] = create_hardness_data(hardness_array)
-
-floor_spawn_rates = DataFrame(data=floor_spawn_rates_data, index=list(floor_data.keys()), columns=floor_spawn_rates_data.keys())
-
-hardness_dataframes = {}
-for hardness_type, hardness_data in hardness_datas.items():
-    hardness_dataframes[hardness_type] = create_hardness_data_frame(hardness_data)
+    def create_hardness_data_frame(hardness_data):
+        return DataFrame(data=hardness_data, index=[x / 4 for x in range(0, 16 * 4 + 1)], columns=hardness_data.keys())
 
 
-with ExcelWriter('output.xlsx') as writer:
-    floor_spawn_rates.to_excel(writer, sheet_name='Spawn Rates')
-    for hardness_type, hardness_dataframe in hardness_dataframes.items():
-        hardness_dataframe.to_excel(writer, sheet_name=hardness_type)
-    floor_spawn_rates_sheet = writer.sheets['Spawn Rates']
-    hardness_sheets = {}
-    for hardness_type in hardness_dataframes.keys():
-        hardness_sheets[hardness_type] = writer.sheets[hardness_type]
+    hardness_types = {
+        'Hard Materials (Natural)': natural_hard_materials_by_hardness,
+        'Hard Materials (Alloys)': alloy_hard_materials_by_hardness,
+        'Hard Materials (Monster)': monster_hard_materials_by_hardness,
+        'All Hard Materials': hard_materials_by_hardness,
+        'Soft Materials (Natural)': natural_soft_materials_by_hardness,
+        'Soft Materials (Monster)': monster_soft_materials_by_hardness,
+        'All Soft Materials': soft_materials_by_hardness,
+        'Gems': gems_by_hardness,
+        'All Materials': all_materials_by_hardness
+    }
 
-    # Create Monster Spawn Rate Charts
-    chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
-    log_chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
-    for char_index in char_range('B', index_to_char_string(len(enemies) + 2)):
-        if char_string_to_index(char_index) != len(enemies) + 1:
-            name = (enemies)[char_string_to_index(char_index) - 1].replace('_', ' ').title()
-            chart.add_series({
-                'name': ['Spawn Rates', 0, char_string_to_index(char_index)],
-                'categories': ['Spawn Rates', 1, 0, len(floor_data) + 1, 0],
-                'values': ['Spawn Rates', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],
-                'marker': {'type': 'circle'}
-            })
-            log_chart.add_series({
-                'name':       ['Spawn Rates', 0, char_string_to_index(char_index)],
-                'categories': ['Spawn Rates', 1, 0, len(floor_data) + 1, 0],
-                'values':     ['Spawn Rates', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],
-                'marker':     {'type': 'circle'}
-            })
-    chart.set_title({'name': 'Monster Spawn Rates by Floor'})
-    log_chart.set_title({'name': 'Monster Spawn Rates by Floor'})
-    chart.show_blanks_as('span')
-    log_chart.show_blanks_as('span')
-    chart.set_legend({'position': 'top'})
-    log_chart.set_legend({'position': 'bottom'})
-    chart.set_x_axis({'name': 'Floors'})
-    log_chart.set_x_axis({'name': 'Floors'})
-    chart.set_y_axis({'name': 'Spawn Percent', 'major_gridlines': {'visible': False}, 'max': 1, 'log_base': 2})
-    log_chart.set_y_axis({'name': 'Spawn Percent', 'major_gridlines': {'visible': False}, 'max': 1})
-    chart.set_size({'width': 2560, 'height': 1440})
-    log_chart.set_size({'width': 2560, 'height': 1440})
-    floor_spawn_rates_sheet.insert_chart(f'A{len(floor_data) + 2}', chart)
-    floor_spawn_rates_sheet.insert_chart(f'A134', log_chart)
+    hardness_datas = {}
+    for hardness_type, hardness_array in hardness_types.items():
+        hardness_datas[hardness_type] = create_hardness_data(hardness_array)
 
-    # Create Material Hardness Charts
-    def create_material_hardness_chart(hardness_sheet, sheet_name, hardness_data):
-        chart = writer.book.add_chart({'type': 'line'})
-        for char_index in char_range('B', index_to_char_string(len(hardness_data.keys()) + 1)):
-            chart.add_series({
-                'name':       [sheet_name, 0, char_string_to_index(char_index)],
-                'categories': [sheet_name, 1, 0, 16 * 4 + 1, 0],
-                'values':     [sheet_name, 1, char_string_to_index(char_index), 16 * 4 + 1, char_string_to_index(char_index)],
-                'marker':     {'type': 'circle'},
-                'line':       {'width': 5}
-            })
-        chart.set_title({'name': f'{sheet_name} Hardnesses'})
-        chart.set_legend({'position': 'bottom'})
-        chart.set_drop_lines()
-        chart.set_x_axis({'name': 'Hardness', 'min': 0, 'max': 16, 'interval': 0.25})
-        chart.set_y_axis({'name': 'Materials'})
-        chart.set_size({'width': 1920, 'height': 1080})
-        hardness_sheet.insert_chart(f'A67', chart)
-    for hardness_type, hardness_sheet in hardness_sheets.items():
-        create_material_hardness_chart(hardness_sheet, hardness_type, hardness_datas[hardness_type])
+    floor_spawn_rates = DataFrame(data=floor_spawn_rates_data, index=list(floor_data.keys()), columns=floor_spawn_rates_data.keys())
+
+    hardness_dataframes = {}
+    for hardness_type, hardness_data in hardness_datas.items():
+        hardness_dataframes[hardness_type] = create_hardness_data_frame(hardness_data)
+
+
+    with ExcelWriter('output.xlsx') as writer:
+        floor_spawn_rates.to_excel(writer, sheet_name='Spawn Rates')
+        for hardness_type, hardness_dataframe in hardness_dataframes.items():
+            hardness_dataframe.to_excel(writer, sheet_name=hardness_type)
+        floor_spawn_rates_sheet = writer.sheets['Spawn Rates']
+        hardness_sheets = {}
+        for hardness_type in hardness_dataframes.keys():
+            hardness_sheets[hardness_type] = writer.sheets[hardness_type]
+
+        # Create Monster Spawn Rate Charts
+        chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
+        log_chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
+        for char_index in char_range('B', index_to_char_string(len(enemies) + 2)):
+            if char_string_to_index(char_index) != len(enemies) + 1:
+                name = (enemies)[char_string_to_index(char_index) - 1].replace('_', ' ').title()
+                chart.add_series({
+                    'name': ['Spawn Rates', 0, char_string_to_index(char_index)],
+                    'categories': ['Spawn Rates', 1, 0, len(floor_data) + 1, 0],
+                    'values': ['Spawn Rates', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],
+                    'marker': {'type': 'circle'}
+                })
+                log_chart.add_series({
+                    'name':       ['Spawn Rates', 0, char_string_to_index(char_index)],
+                    'categories': ['Spawn Rates', 1, 0, len(floor_data) + 1, 0],
+                    'values':     ['Spawn Rates', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],
+                    'marker':     {'type': 'circle'}
+                })
+        chart.set_title({'name': 'Monster Spawn Rates by Floor'})
+        log_chart.set_title({'name': 'Monster Spawn Rates by Floor'})
+        chart.show_blanks_as('span')
+        log_chart.show_blanks_as('span')
+        chart.set_legend({'position': 'top'})
+        log_chart.set_legend({'position': 'bottom'})
+        chart.set_x_axis({'name': 'Floors'})
+        log_chart.set_x_axis({'name': 'Floors'})
+        chart.set_y_axis({'name': 'Spawn Percent', 'major_gridlines': {'visible': False}, 'max': 1, 'log_base': 2})
+        log_chart.set_y_axis({'name': 'Spawn Percent', 'major_gridlines': {'visible': False}, 'max': 1})
+        chart.set_size({'width': 2560, 'height': 1440})
+        log_chart.set_size({'width': 2560, 'height': 1440})
+        floor_spawn_rates_sheet.insert_chart(f'A{len(floor_data) + 2}', chart)
+        floor_spawn_rates_sheet.insert_chart(f'A134', log_chart)
+
+        # Create Material Hardness Charts
+        def create_material_hardness_chart(hardness_sheet, sheet_name, hardness_data):
+            chart = writer.book.add_chart({'type': 'line'})
+            for char_index in char_range('B', index_to_char_string(len(hardness_data.keys()) + 1)):
+                chart.add_series({
+                    'name':       [sheet_name, 0, char_string_to_index(char_index)],
+                    'categories': [sheet_name, 1, 0, 16 * 4 + 1, 0],
+                    'values':     [sheet_name, 1, char_string_to_index(char_index), 16 * 4 + 1, char_string_to_index(char_index)],
+                    'marker':     {'type': 'circle'},
+                    'line':       {'width': 5}
+                })
+            chart.set_title({'name': f'{sheet_name} Hardnesses'})
+            chart.set_legend({'position': 'bottom'})
+            chart.set_drop_lines()
+            chart.set_x_axis({'name': 'Hardness', 'min': 0, 'max': 16, 'interval': 0.25})
+            chart.set_y_axis({'name': 'Materials'})
+            chart.set_size({'width': 1920, 'height': 1080})
+            hardness_sheet.insert_chart(f'A67', chart)
+        for hardness_type, hardness_sheet in hardness_sheets.items():
+            create_material_hardness_chart(hardness_sheet, hardness_type, hardness_datas[hardness_type])
 print('Done')
+quit(0)

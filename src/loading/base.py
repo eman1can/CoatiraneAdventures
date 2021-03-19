@@ -9,11 +9,13 @@ from kivy.event import EventDispatcher
 
 from loading.char import load_char_chunk
 from loading.config_loader import PROGRAM_TYPE
+from loading.crafting_recipe import load_crafting_recipe_chunk
 from loading.data import load_screen_chunk
 from loading.enemy import load_enemy_chunk
 from loading.family import load_family_chunk
 from loading.housing import load_housing_chunk
 from loading.floor import load_floor_chunk
+from loading.material import load_material_chunk
 from loading.move import load_move_chunk
 from loading.save import load_save_chunk
 from loading.shop import load_shop_item_chunk
@@ -27,21 +29,32 @@ STARTING_CURRENT_INDEX = 0
 
 OPAQUE = 1
 
-LOADING_LAYERS = ['skills', 'abilities', 'enemies', 'families', 'chars', 'floors', 'shop_items', 'drop_items', 'save', 'housing']
-LOADING_SECTIONS = ['Game Data', 'Skills and Abilities', 'Enemies', 'Families', 'Housing Options', 'Chars', 'Floors', 'Shop Items', 'Game Data']
-LOADING_FUNCTIONS = [load_save_chunk, load_move_chunk, load_enemy_chunk, load_family_chunk, load_housing_chunk, load_char_chunk, load_floor_chunk, load_shop_item_chunk, load_screen_chunk]
+LOADING_LAYERS = ['skills', 'abilities', 'enemies', 'families', 'chars', 'floors', 'shop_items', 'drop_items', 'save', 'housing', 'materials', 'crafting_recipes']
+LOADING_SECTIONS = ['Game Data', 'Skills and Abilities', 'Enemies', 'Families', 'Housing Options', 'Materials', 'Crafting Recipes', 'Chars', 'Floors', 'Shop Items', 'Game Data']
+LOADING_FUNCTIONS = [load_save_chunk, load_move_chunk, load_enemy_chunk, load_family_chunk, load_housing_chunk, load_material_chunk, load_crafting_recipe_chunk, load_char_chunk, load_floor_chunk, load_shop_item_chunk, load_screen_chunk]
 LOADING_FILES = [False] + [True for _ in range(len(LOADING_FUNCTIONS) - 2)] + [False]
 LOADING_FILENAMES = [
     f'',
-    f"data/char_load_data/{PROGRAM_TYPE}/SA.txt",
-    f"data/enemy_load_data/{PROGRAM_TYPE}/Enemies.txt",
-    f"data/family_load_data/{PROGRAM_TYPE}/Families.txt",
-    f"data/family_load_data/{PROGRAM_TYPE}/Housing.txt",
-    f"data/char_load_data/{PROGRAM_TYPE}/CharacterDefinitions.txt",
-    f"data/floor_load_data/{PROGRAM_TYPE}/Floors.txt",
-    f"data/shop_load_data/{PROGRAM_TYPE}/items.txt",
-    ""]
-DELIMITERS = ['\n', '\n', '\n', '#', '\n', '#\n', '\n', '#\n', '\n\n', '\n']
+    f"data/{PROGRAM_TYPE}/SA.txt",
+    f"data/{PROGRAM_TYPE}/Enemies.txt",
+    f"data/{PROGRAM_TYPE}/Families.txt",
+    f"data/{PROGRAM_TYPE}/Housing.txt",
+    f"data/{PROGRAM_TYPE}/Materials.txt",
+    f"data/{PROGRAM_TYPE}/CraftingRecipes.txt",
+    f"data/{PROGRAM_TYPE}/CharacterDefinitions.txt",
+    f"data/{PROGRAM_TYPE}/Floors.txt",
+    f"data/{PROGRAM_TYPE}/items.txt"]
+
+DELIMITERS = ['\n',    # Skills/Abilities
+              '#\n',   # Enemies
+              '\n',    # Familites
+              '#\n',   # Housing
+              '\n#\n', # Materials
+              '#\n',   # Crafting Recipes
+              '\n',    # Chars
+              '#\n',   # Floors
+              '\n\n']  # Shop Items
+
 
 class CALoader(Widget):
     max_values = ListProperty([])
@@ -55,26 +68,12 @@ class CALoader(Widget):
         super().__init__(**kwargs)
 
     def load_base_values(self):
-        # file = open(resource_find('data/loading_' + self.program_type + '.txt'), "r")
-        self.curr_values.append(len(LOADING_SECTIONS))
+        self.max_values.append(len(LOADING_SECTIONS))
         self.curr_values.append(STARTING_TOTAL_INDEX)
         for index in range(len(LOADING_SECTIONS)):
             self.messages.append(f'Loading {LOADING_SECTIONS[index]}')
             self.curr_values.append(STARTING_CURRENT_INDEX)
-        # index = 0
-        # for x in file:
-        #     if index == 0:
-        #         opt = x[:-1].split(',')
-        #         self.max_values.append(int(opt[CURRENT_INDEX]))
-        #         self.curr_values.append(STARTING_TOTAL_INDEX)
-        #         for y in range(STARTING_TOTAL_INDEX, int(opt[CURRENT_INDEX]) + STARTING_TOTAL_INDEX):
-        #             self.messages.append(opt[y])
-        #     else:
-        #         if x.startswith('#'):
-        #             break
-        #         self.max_values.append(int(x))
-        #         self.curr_values.append(STARTING_CURRENT_INDEX)
-        #     index += 1
+            self.max_values.append(1)
         self.ids.outer_progress.opacity = TRANSPARENT
         self.ids.inner_progress.opacity = TRANSPARENT
         self.ids.outer_progress.max = self.max_values[CURRENT_INDEX]
@@ -120,7 +119,7 @@ class CALoader(Widget):
             Refs.app.finished_loading()
 
     def load_ratios(self):
-        return JsonStore('uix/ratios.json')
+        return JsonStore(resource_find('src/uix/ratios.json'))
 
     def get(self, layer):
         return self.layers[layer]
@@ -148,24 +147,20 @@ class CALoader(Widget):
             block_triggers = []
 
             block_loader = LOADING_FUNCTIONS[trigger_index]
-            filename = LOADING_FILENAMES[trigger_index]
 
+            filename = None
             if trigger_index == 0:
                 filename = f'{save_slot}'
 
             if LOADING_FILES[trigger_index]:
-                file = open(resource_find(filename), 'r', encoding='utf-8')
-                if file.mode == 'r':
-                    data = file.read()
-                    lines = data.split(DELIMITERS[self.curr_values[CURRENT_INDEX]])
-                    if len(lines) != self.max_values[self.curr_values[CURRENT_INDEX]]:
-                        print('ERROR', len(lines), '!=', self.max_values[self.curr_values[CURRENT_INDEX]])
-                        # raise Exception(f"Wrong initialization numbers! {filename} {delimiters[self.curr_values[CURRENT_INDEX]]} {len(lines)} != {self.max_values[self.curr_values[CURRENT_INDEX]]}")
-                else:
-                    raise Exception(f"Failed to open {filename}!")
+                filename = LOADING_FILENAMES[trigger_index]
 
-                for line in lines:
-                    block_triggers.append(Clock.create_trigger(lambda dt, l=line: block_loader(l, self, self.program_type, [self.increase_current, sub_loader.inc_triggers, lambda: sub_loader.start(), lambda: finished_block(sub_loader, callbacks)])))
+                with open(resource_find(filename), 'r', encoding='utf-8') as file:
+                    chunks = file.read().split(DELIMITERS[self.curr_values[CURRENT_INDEX] - 2])
+                self.max_values[self.curr_values[CURRENT_INDEX]] = len(chunks)
+
+                for chunk in chunks:
+                    block_triggers.append(Clock.create_trigger(lambda dt, c=chunk: block_loader(c, self, self.program_type, [self.increase_current, sub_loader.inc_triggers, lambda: sub_loader.start(), lambda: finished_block(sub_loader, callbacks)])))
             else:
                 block_triggers.append(Clock.create_trigger(lambda dt: block_loader(self, self.program_type, filename, [self.increase_current, sub_loader.inc_triggers, lambda: sub_loader.start(), lambda: finished_block(sub_loader, callbacks)])))
             sub_loader = GameLoader(block_triggers)

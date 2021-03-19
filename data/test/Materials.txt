@@ -1,0 +1,1084 @@
+soft, cloth, Cloth, 0.5, 0.5
+raw_cloth#cloth_processed
+none
+none
+#
+soft, padded, Padded, 0.75, 0.75
+raw_padded#padded_processed
+none
+none
+#
+soft, leather, Leather, 1.0, 1.0
+raw_leather#leather_processed
+none
+none
+#
+soft, hardened_leather, Hardened Leather, 1.5, 1.5
+raw_hardened_leather#hardened_leather_processed
+none
+none
+#
+soft, kobold_hide, Kobold Hide, 0.67, 1.67
+raw_kobold_hide#kobold_hide_processed
+none
+none
+#
+soft, jack_bird_hide, Jack Bird Hide, 0.67, 1.0
+raw_jack_bird_hide#jack_bird_hide_processed
+none
+none
+#
+soft, orc_hide, Orc Hide, 1.67, 2.0
+raw_orc_hide#orc_hide_processed
+none
+none
+#
+soft, imp_hide, Imp Hide, 2.0, 3.67
+raw_imp_hide#imp_hide_processed
+none
+none
+#
+soft, silverback_hide, Silverback Hide, 2.33, 2.67
+raw_silverback_hide#silverback_hide_processed
+none
+none
+#
+soft, metal_rabbit_hide, Metal Rabbit Hide, 2.67, 6.0
+raw_metal_rabbit_hide#metal_rabbit_hide_processed
+none
+none
+#
+soft, needle_rabbit_hide, Needle Rabbit Hide, 3.0, 4.67
+raw_needle_rabbit_hide#needle_rabbit_hide_processed
+none
+none
+#
+soft, hellhound_hide, Hellhound Hide, 3.0, 3.67
+raw_hellhound_hide#hellhound_hide_processed
+none
+none
+#
+soft, almiraj_hide, Almiraj Hide, 3.33, 3.67
+raw_almiraj_hide#almiraj_hide_processed
+none
+none
+#
+soft, minotaur_hide, Minotaur Hide, 3.67, 4.67
+raw_minotaur_hide#minotaur_hide_processed
+none
+none
+#
+soft, lygerfang_hide, Lygerfang Hide, 4.0, 4.67
+raw_lygerfang_hide#lygerfang_hide_processed
+none
+none
+#
+soft, bugbear_hide, Bugbear Hide, 4.0, 4.67
+raw_bugbear_hide#bugbear_hide_processed
+none
+none
+#
+soft, old_bison_hide, Old Bison Hide, 4.0, 9.67
+raw_old_bison_hide#old_bison_hide_processed
+none
+none
+#
+soft, battle_boar_hide, Battle Boar Hide, 4.33, 4.67
+raw_battle_boar_hide#battle_boar_hide_processed
+none
+none
+#
+soft, arachne_hide, Arachne Hide, 4.67, 5.33
+raw_arachne_hide#arachne_hide_processed
+none
+none
+#
+soft, mammoth_fool_hide, Mammoth Fool Hide, 5.0, 5.67
+raw_mammoth_fool_hide#mammoth_fool_hide_processed
+none
+none
+#
+soft, unicorn_hide, Unicorn Hide, 5.33, 6.0
+raw_unicorn_hide#unicorn_hide_processed
+none
+none
+#
+soft, gryphon_hide, Gryphon Hide, 5.33, 9.67
+raw_gryphon_hide#gryphon_hide_processed
+none
+none
+#
+soft, sword_stag_hide, Sword Stag Hide, 5.67, 6.0
+raw_sword_stag_hide#sword_stag_hide_processed
+none
+none
+#
+soft, ogre_hide, Ogre Hide, 5.67, 6.0
+raw_ogre_hide#ogre_hide_processed
+none
+none
+#
+soft, troll_hide, Troll Hide, 6.33, 6.33
+raw_troll_hide#troll_hide_processed
+none
+none
+#
+soft, kelpie_hide, Kelpie Hide, 6.67, 7.67
+raw_kelpie_hide#kelpie_hide_processed
+none
+none
+#
+soft, grand_treant_hide, Grand Treant Hide, 8.67, 9.67
+raw_grand_treant_hide#grand_treant_hide_processed
+none
+none
+#
+soft, loup_garou_hide, Loup Garou Hide, 8.67, 9.0
+raw_loup_garou_hide#loup_garou_hide_processed
+none
+none
+#
+soft, black_rhino_hide, Black Rhino Hide, 8.67, 9.0
+raw_black_rhino_hide#black_rhino_hide_processed
+none
+none
+#
+soft, titan_alm_hide, Titan Alm Hide, 8.67, 9.0
+raw_titan_alm_hide#titan_alm_hide_processed
+none
+none
+#
+soft, ape_hide, Ape Hide, 8.67, 10.67
+raw_ape_hide#ape_hide_processed
+none
+none
+#
+soft, power_bull_hide, Power Bull Hide, 9.0, 9.33
+raw_power_bull_hide#power_bull_hide_processed
+none
+none
+#
+soft, barbarian_hide, Barbarian Hide, 9.0, 10.0
+raw_barbarian_hide#barbarian_hide_processed
+none
+none
+#
+soft, skull_sheep_hide, Skull Sheep Hide, 9.0, 9.33
+raw_skull_sheep_hide#skull_sheep_hide_processed
+none
+none
+#
+soft, fomoire_hide, Fomoire Hide, 9.33, 10.33
+raw_fomoire_hide#fomoire_hide_processed
+none
+none
+#
+soft, deformis_spider_hide, Deformis Spider Hide, 9.67, 10.0
+raw_deformis_spider_hide#deformis_spider_hide_processed
+none
+none
+#
+soft, hippogriff_hide, Hippogriff Hide, 10.0, 10.67
+raw_hippogriff_hide#hippogriff_hide_processed
+none
+none
+#
+hard, tin, Tin, 1.5, 1.5
+tin_ore#tin_ingot
+none
+none
+#
+hard, copper, Copper, 3.0, 3.0
+copper_ore#copper_ingot
+none
+none
+#
+hard, platinum, Platinum, 4.0, 4.5
+platinum_ore#platinum_ingot
+none
+none
+#
+hard, iron, Iron, 4.5, 4.5
+iron_ore#iron_ingot
+none
+none
+#
+hard, titanium, Titanium, 6.0, 6.0
+titanium_ore#titanium_ingot
+none
+none
+#
+hard, tungsten, Tungsten, 7.5, 7.5
+tungsten_ore#tungsten_ingot
+none
+none
+#
+hard, meteoric_iron, Meteoric Iron, 10.5, 11.0
+meteoric_iron_ore#meteoric_iron_ingot
+none
+none
+#
+hard, golanthium, Golanthium, 13.0, 15.0
+golanthium_ore#golanthium_ingot
+none
+none
+#
+hard, bronze, Bronze, 3.0, 3.0
+none#bronze_ingot
+none
+none
+#
+hard, steel, Steel, 4.0, 4.5
+none#steel_ingot
+none
+none
+#
+hard, hardened_steel, Hardened Steel, 7.0, 8.0
+none#hardened_steel_ingot
+none
+none
+#
+hard, tungsten_carbide, Tungsten Carbide, 8.5, 9.0
+none#tungsten_carbide_ingot
+none
+none
+#
+hard, dark_steel, Dark Steel, 9.0, 9.5
+none#dark_steel_ingot
+none
+none
+#
+hard, mithril, Mithril, 9.5, 10.5
+none#mithril_ingot
+none
+none
+#
+hard, adamantite, Adamantite, 11.0, 13.0
+none#adamantite_ingot
+none
+none
+#
+hard, trinium, Trinium, 15.0, 16.0
+none#trinium_ingot
+none
+none
+#
+hard, goblin_claw, Goblin Claw, 1.0, 2.0
+raw_goblin_claw#goblin_claw_ingot
+none
+none
+#
+hard, goblin_fang, Goblin Fang, 1.0, 2.0
+raw_goblin_fang#goblin_fang_ingot
+none
+none
+#
+hard, kobold_claw, Kobold Claw, 1.0, 2.5
+raw_kobold_claw#kobold_claw_ingot
+none
+none
+#
+hard, kobold_fang, Kobold Fang, 1.0, 2.5
+raw_kobold_fang#kobold_fang_ingot
+none
+none
+#
+hard, dungeon_lizard_claw, Dungeon Lizard Claw, 1.5, 2.5
+raw_dungeon_lizard_claw#dungeon_lizard_claw_ingot
+none
+none
+#
+hard, dungeon_lizard_fang, Dungeon Lizard Fang, 1.5, 2.5
+raw_dungeon_lizard_fang#dungeon_lizard_fang_ingot
+none
+none
+#
+hard, dungeon_lizard_scale, Dungeon Lizard Scale, 1.5, 2.5
+raw_dungeon_lizard_scale#dungeon_lizard_scale_ingot
+none
+none
+#
+hard, frog_shooter_scale, Frog Shooter Scale, 2.0, 2.0
+raw_frog_shooter_scale#frog_shooter_scale_ingot
+none
+none
+#
+hard, war_shadow_claw, War Shadow Claw, 2.5, 3.0
+raw_war_shadow_claw#war_shadow_claw_ingot
+none
+none
+#
+hard, killer_ant_scale, Killer Ant Scale, 2.5, 3.0
+raw_killer_ant_scale#killer_ant_scale_ingot
+none
+none
+#
+hard, imp_claw, Imp Claw, 3.0, 5.5
+raw_imp_claw#imp_claw_ingot
+none
+none
+#
+hard, imp_fang, Imp Fang, 3.0, 5.5
+raw_imp_fang#imp_fang_ingot
+none
+none
+#
+hard, hard_armored_claw, Hard Armored Claw, 3.0, 4.0
+raw_hard_armored_claw#hard_armored_claw_ingot
+none
+none
+#
+hard, hard_armored_scale, Hard Armored Scale, 3.0, 4.0
+raw_hard_armored_scale#hard_armored_scale_ingot
+none
+none
+#
+hard, infant_dragon_claw, Infant Dragon Claw, 3.5, 3.5
+raw_infant_dragon_claw#infant_dragon_claw_ingot
+none
+none
+#
+hard, infant_dragon_fang, Infant Dragon Fang, 3.5, 3.5
+raw_infant_dragon_fang#infant_dragon_fang_ingot
+none
+none
+#
+hard, infant_dragon_scale, Infant Dragon Scale, 3.5, 3.5
+raw_infant_dragon_scale#infant_dragon_scale_ingot
+none
+none
+#
+hard, black_wyvern_fang, Black Wyvern Fang, 3.5, 4.5
+raw_black_wyvern_fang#black_wyvern_fang_ingot
+none
+none
+#
+hard, black_wyvern_scale, Black Wyvern Scale, 3.5, 4.5
+raw_black_wyvern_scale#black_wyvern_scale_ingot
+none
+none
+#
+hard, wyvern_claw, Wyvern Claw, 4.0, 5.5
+raw_wyvern_claw#wyvern_claw_ingot
+none
+none
+#
+hard, wyvern_fang, Wyvern Fang, 4.0, 5.5
+raw_wyvern_fang#wyvern_fang_ingot
+none
+none
+#
+hard, wyvern_scale, Wyvern Scale, 4.0, 5.5
+raw_wyvern_scale#wyvern_scale_ingot
+none
+none
+#
+hard, needle_rabbit_horn, Needle Rabbit Horn, 4.5, 7.0
+raw_needle_rabbit_horn#needle_rabbit_horn_ingot
+none
+none
+#
+hard, hellhound_fang, Hellhound Fang, 4.5, 5.5
+raw_hellhound_fang#hellhound_fang_ingot
+none
+none
+#
+hard, almiraj_fang, Almiraj Fang, 5.0, 5.5
+raw_almiraj_fang#almiraj_fang_ingot
+none
+none
+#
+hard, armarosaurus_scale, Armarosaurus Scale, 5.0, 13.5
+raw_armarosaurus_scale#armarosaurus_scale_ingot
+none
+none
+#
+hard, minotaur_claw, Minotaur Claw, 5.5, 7.0
+raw_minotaur_claw#minotaur_claw_ingot
+none
+none
+#
+hard, minotaur_fang, Minotaur Fang, 5.5, 7.0
+raw_minotaur_fang#minotaur_fang_ingot
+none
+none
+#
+hard, dungeon_worm_fang, Dungeon Worm Fang, 6.0, 7.0
+raw_dungeon_worm_fang#dungeon_worm_fang_ingot
+none
+none
+#
+hard, lygerfang_fang, Lygerfang Fang, 6.0, 7.0
+raw_lygerfang_fang#lygerfang_fang_ingot
+none
+none
+#
+hard, bugbear_claw, Bugbear Claw, 6.0, 7.0
+raw_bugbear_claw#bugbear_claw_ingot
+none
+none
+#
+hard, hobgoblin_claw, Hobgoblin Claw, 6.0, 9.0
+raw_hobgoblin_claw#hobgoblin_claw_ingot
+none
+none
+#
+hard, hobgoblin_fang, Hobgoblin Fang, 6.0, 9.0
+raw_hobgoblin_fang#hobgoblin_fang_ingot
+none
+none
+#
+hard, battle_boar_claw, Battle Boar Claw, 6.5, 7.0
+raw_battle_boar_claw#battle_boar_claw_ingot
+none
+none
+#
+hard, battle_boar_fang, Battle Boar Fang, 6.5, 7.0
+raw_battle_boar_fang#battle_boar_fang_ingot
+none
+none
+#
+hard, lizardman_claw, Lizardman Claw, 6.5, 7.5
+raw_lizardman_claw#lizardman_claw_ingot
+none
+none
+#
+hard, lizardman_scale, Lizardman Scale, 6.5, 7.5
+raw_lizardman_scale#lizardman_scale_ingot
+none
+none
+#
+hard, mad_beetle_scale, Mad Beetle Scale, 7.0, 8.0
+raw_mad_beetle_scale#mad_beetle_scale_ingot
+none
+none
+#
+hard, deadly_hornet_scale, Deadly Hornet Scale, 7.0, 8.5
+raw_deadly_hornet_scale#deadly_hornet_scale_ingot
+none
+none
+#
+hard, vouivre_claw, Vouivre Claw, 7.5, 7.5
+raw_vouivre_claw#vouivre_claw_ingot
+none
+none
+#
+hard, vouivre_fang, Vouivre Fang, 7.5, 7.5
+raw_vouivre_fang#vouivre_fang_ingot
+none
+none
+#
+hard, vouivre_scale, Vouivre Scale, 7.5, 7.5
+raw_vouivre_scale#vouivre_scale_ingot
+none
+none
+#
+hard, mammoth_fool_fang, Mammoth Fool Fang, 7.5, 8.5
+raw_mammoth_fool_fang#mammoth_fool_fang_ingot
+none
+none
+#
+hard, green_dragon_claw, Green Dragon Claw, 7.5, 9.0
+raw_green_dragon_claw#green_dragon_claw_ingot
+none
+none
+#
+hard, green_dragon_fang, Green Dragon Fang, 7.5, 9.0
+raw_green_dragon_fang#green_dragon_fang_ingot
+none
+none
+#
+hard, green_dragon_scale, Green Dragon Scale, 7.5, 9.0
+raw_green_dragon_scale#green_dragon_scale_ingot
+none
+none
+#
+hard, unicorn_horn, Unicorn Horn, 8.0, 9.0
+raw_unicorn_horn#unicorn_horn_ingot
+none
+none
+#
+hard, sword_stag_horn, Sword Stag Horn, 8.5, 9.0
+raw_sword_stag_horn#sword_stag_horn_ingot
+none
+none
+#
+hard, raider_fish_fang, Raider Fish Fang, 9.5, 11.5
+raw_raider_fish_fang#raider_fish_fang_ingot
+none
+none
+#
+hard, raider_fish_scale, Raider Fish Scale, 9.5, 11.5
+raw_raider_fish_scale#raider_fish_scale_ingot
+none
+none
+#
+hard, harpy_claw, Harpy Claw, 9.5, 11.0
+raw_harpy_claw#harpy_claw_ingot
+none
+none
+#
+hard, blue_crab_claw, Blue Crab Claw, 9.5, 12.0
+raw_blue_crab_claw#blue_crab_claw_ingot
+none
+none
+#
+hard, blue_crab_scale, Blue Crab Scale, 9.5, 12.0
+raw_blue_crab_scale#blue_crab_scale_ingot
+none
+none
+#
+hard, aqua_serpent_scale, Aqua Serpent Scale, 9.5, 12.5
+raw_aqua_serpent_scale#aqua_serpent_scale_ingot
+none
+none
+#
+hard, crystal_turtle_scale, Crystal Turtle Scale, 9.5, 12.5
+raw_crystal_turtle_scale#crystal_turtle_scale_ingot
+none
+none
+#
+hard, devil_mosquito_fang, Devil Mosquito Fang, 9.5, 11.5
+raw_devil_mosquito_fang#devil_mosquito_fang_ingot
+none
+none
+#
+hard, crystaroth_urchin_fang, Crystaroth Urchin Fang, 9.5, 10.0
+raw_crystaroth_urchin_fang#crystaroth_urchin_fang_ingot
+none
+none
+#
+hard, crystaroth_urchin_horn, Crystaroth Urchin Horn, 9.5, 10.0
+raw_crystaroth_urchin_horn#crystaroth_urchin_horn_ingot
+none
+none
+#
+hard, afanc_claw, Afanc Claw, 9.5, 10.0
+raw_afanc_claw#afanc_claw_ingot
+none
+none
+#
+hard, afanc_fang, Afanc Fang, 9.5, 10.0
+raw_afanc_fang#afanc_fang_ingot
+none
+none
+#
+hard, lamia_claw, Lamia Claw, 9.5, 10.0
+raw_lamia_claw#lamia_claw_ingot
+none
+none
+#
+hard, lamia_scale, Lamia Scale, 9.5, 10.0
+raw_lamia_scale#lamia_scale_ingot
+none
+none
+#
+hard, vulture_fang, Vulture Fang, 9.5, 10.0
+raw_vulture_fang#vulture_fang_ingot
+none
+none
+#
+hard, voltimeria_scale, Voltimeria Scale, 10.0, 12.5
+raw_voltimeria_scale#voltimeria_scale_ingot
+none
+none
+#
+hard, siren_claw, Siren Claw, 10.5, 12.5
+raw_siren_claw#siren_claw_ingot
+none
+none
+#
+hard, siren_fang, Siren Fang, 10.5, 12.5
+raw_siren_fang#siren_fang_ingot
+none
+none
+#
+hard, iguazu_horn, Iguazu Horn, 10.5, 12.5
+raw_iguazu_horn#iguazu_horn_ingot
+none
+none
+#
+hard, mermaid_scale, Mermaid Scale, 10.5, 12.5
+raw_mermaid_scale#mermaid_scale_ingot
+none
+none
+#
+hard, dodora_claw, Dodora Claw, 10.5, 12.5
+raw_dodora_claw#dodora_claw_ingot
+none
+none
+#
+hard, dodora_scale, Dodora Scale, 10.5, 12.5
+raw_dodora_scale#dodora_scale_ingot
+none
+none
+#
+hard, merman_scale, Merman Scale, 11.0, 12.5
+raw_merman_scale#merman_scale_ingot
+none
+none
+#
+hard, bloodsaurus_fang, Bloodsaurus Fang, 13.0, 13.5
+raw_bloodsaurus_fang#bloodsaurus_fang_ingot
+none
+none
+#
+hard, bloodsaurus_scale, Bloodsaurus Scale, 13.0, 13.5
+raw_bloodsaurus_scale#bloodsaurus_scale_ingot
+none
+none
+#
+hard, worm_well_fang, Worm Well Fang, 13.0, 16.0
+raw_worm_well_fang#worm_well_fang_ingot
+none
+none
+#
+hard, worm_well_scale, Worm Well Scale, 13.0, 16.0
+raw_worm_well_scale#worm_well_scale_ingot
+none
+none
+#
+hard, spartoi_claw, Spartoi Claw, 13.0, 14.0
+raw_spartoi_claw#spartoi_claw_ingot
+none
+none
+#
+hard, loup_garou_fang, Loup Garou Fang, 13.0, 13.5
+raw_loup_garou_fang#loup_garou_fang_ingot
+none
+none
+#
+hard, black_rhino_horn, Black Rhino Horn, 13.0, 13.5
+raw_black_rhino_horn#black_rhino_horn_ingot
+none
+none
+#
+hard, venom_scorpion_scale, Venom Scorpion Scale, 13.0, 14.0
+raw_venom_scorpion_scale#venom_scorpion_scale_ingot
+none
+none
+#
+hard, gargoyle_scale, Gargoyle Scale, 13.0, 14.0
+raw_gargoyle_scale#gargoyle_scale_ingot
+none
+none
+#
+hard, power_bull_horn, Power Bull Horn, 13.5, 14.0
+raw_power_bull_horn#power_bull_horn_ingot
+none
+none
+#
+hard, skull_sheep_horn, Skull Sheep Horn, 13.5, 14.0
+raw_skull_sheep_horn#skull_sheep_horn_ingot
+none
+none
+#
+hard, ill_wyvern_scale, Ill Wyvern Scale, 13.5, 14.0
+raw_ill_wyvern_scale#ill_wyvern_scale_ingot
+none
+none
+#
+hard, lizardman_elite_claw, Lizardman Elite Claw, 14.0, 16.0
+raw_lizardman_elite_claw#lizardman_elite_claw_ingot
+none
+none
+#
+hard, lizardman_elite_scale, Lizardman Elite Scale, 14.0, 16.0
+raw_lizardman_elite_scale#lizardman_elite_scale_ingot
+none
+none
+#
+hard, peluda_scale, Peluda Scale, 14.0, 14.5
+raw_peluda_scale#peluda_scale_ingot
+none
+none
+#
+hard, peluda_horn, Peluda Horn, 14.0, 14.5
+raw_peluda_horn#peluda_horn_ingot
+none
+none
+#
+hard, fomoire_horn, Fomoire Horn, 14.0, 15.5
+raw_fomoire_horn#fomoire_horn_ingot
+none
+none
+#
+hard, valgang_dragon_fang, Valgang Dragon Fang, 14.0, 16.0
+raw_valgang_dragon_fang#valgang_dragon_fang_ingot
+none
+none
+#
+hard, valgang_dragon_scale, Valgang Dragon Scale, 14.0, 16.0
+raw_valgang_dragon_scale#valgang_dragon_scale_ingot
+none
+none
+#
+hard, deformis_spider_claw, Deformis Spider Claw, 14.5, 15.0
+raw_deformis_spider_claw#deformis_spider_claw_ingot
+none
+none
+#
+hard, obsidian_soldier_scale, Obsidian Soldier Scale, 15.0, 16.0
+raw_obsidian_soldier_scale#obsidian_soldier_scale_ingot
+none
+none
+#
+hard, cadmus_scale, Cadmus Scale, 15.0, 16.0
+raw_cadmus_scale#cadmus_scale_ingot
+none
+none
+#
+hard, thunder_snake_fang, Thunder Snake Fang, 15.0, 16.0
+raw_thunder_snake_fang#thunder_snake_fang_ingot
+none
+none
+#
+hard, thunder_snake_scale, Thunder Snake Scale, 15.0, 16.0
+raw_thunder_snake_scale#thunder_snake_scale_ingot
+none
+none
+#
+hard, silver_worm_fang, Silver Worm Fang, 15.0, 16.0
+raw_silver_worm_fang#silver_worm_fang_ingot
+none
+none
+#
+hard, silver_worm_scale, Silver Worm Scale, 15.0, 16.0
+raw_silver_worm_scale#silver_worm_scale_ingot
+none
+none
+#
+hard, chrysocolla, Chrysocolla, 2.5, 3.5
+raw_chrysocolla#processed_chrysocolla
+none
+none
+#
+hard, serpentine, Serpentine, 3.0, 6.0
+raw_serpentine#processed_serpentine
+none
+none
+#
+hard, ammolite, Ammolite, 3.5, 4.5
+raw_ammolite#processed_ammolite
+none
+none
+#
+hard, azurite, Azurite, 3.5, 4.0
+raw_azurite#processed_azurite
+none
+none
+#
+hard, malachite, Malachite, 3.5, 4.0
+raw_malachite#processed_malachite
+none
+none
+#
+hard, rhodochrosite, Rhodochrosite, 3.5, 4.0
+raw_rhodochrosite#processed_rhodochrosite
+none
+none
+#
+hard, fluorite, Fluorite, 4.0, 4.0
+raw_fluorite#processed_fluorite
+none
+none
+#
+hard, kyanite, Kyanite, 4.5, 7.0
+raw_kyanite#processed_kyanite
+none
+none
+#
+hard, apatite, Apatite, 5.0, 5.0
+raw_apatite#processed_apatite
+none
+none
+#
+hard, lapis_lazuli, Lapis Lazuli, 5.0, 5.5
+raw_lapis_lazuli#processed_lapis_lazuli
+none
+none
+#
+hard, obsidian, Obsidian, 5.0, 6.0
+raw_obsidian#processed_obsidian
+none
+none
+#
+hard, turquoise, Turquoise, 5.0, 6.0
+raw_turquoise#processed_turquoise
+none
+none
+#
+hard, titanite, Titanite, 5.0, 5.5
+raw_titanite#processed_titanite
+none
+none
+#
+hard, opal, Opal, 5.5, 6.0
+raw_opal#processed_opal
+none
+none
+#
+hard, diopside, Diopside, 5.5, 6.5
+raw_diopside#processed_diopside
+none
+none
+#
+hard, rhodonite, Rhodonite, 5.5, 6.0
+raw_rhodonite#processed_rhodonite
+none
+none
+#
+hard, sodalite, Sodalite, 5.5, 6.0
+raw_sodalite#processed_sodalite
+none
+none
+#
+hard, andesine, Andesine, 6.0, 6.5
+raw_andesine#processed_andesine
+none
+none
+#
+hard, zoisite, Zoisite, 6.0, 7.0
+raw_zoisite#processed_zoisite
+none
+none
+#
+hard, blizzard_stone, Blizzard Stone, 6.0, 7.0
+raw_blizzard_stone#processed_blizzard_stone
+none
+none
+#
+hard, indraneelam, Indraneelam, 6.0, 6.0
+raw_indraneelam#processed_indraneelam
+none
+none
+#
+hard, jade, Jade, 6.0, 7.0
+raw_jade#processed_jade
+none
+none
+#
+hard, labradorite, Labradorite, 6.0, 6.5
+raw_labradorite#processed_labradorite
+none
+none
+#
+hard, moonstone, Moonstone, 6.0, 6.5
+raw_moonstone#processed_moonstone
+none
+none
+#
+hard, prehnite, Prehnite, 6.0, 6.5
+raw_prehnite#processed_prehnite
+none
+none
+#
+hard, sunstone, Sunstone, 6.0, 6.5
+raw_sunstone#processed_sunstone
+none
+none
+#
+hard, tanzanite, Tanzanite, 6.0, 6.5
+raw_tanzanite#processed_tanzanite
+none
+none
+#
+hard, zoisite, Zoisite, 6.0, 6.5
+raw_zoisite#processed_zoisite
+none
+none
+#
+hard, onyx, Onyx, 6.5, 7.0
+raw_onyx#processed_onyx
+none
+none
+#
+hard, agate, Agate, 6.5, 7.0
+raw_agate#processed_agate
+none
+none
+#
+hard, garnet, Garnet, 6.5, 7.5
+raw_garnet#processed_garnet
+none
+none
+#
+hard, garnet, Garnet, 6.5, 7.5
+raw_garnet#processed_garnet
+none
+none
+#
+hard, aventurine, Aventurine, 6.5, 6.5
+raw_aventurine#processed_aventurine
+none
+none
+#
+hard, hessonite, Hessonite, 6.5, 7.5
+raw_hessonite#processed_hessonite
+none
+none
+#
+hard, jasper, Jasper, 6.5, 7.0
+raw_jasper#processed_jasper
+none
+none
+#
+hard, kunzite, Kunzite, 6.5, 7.0
+raw_kunzite#processed_kunzite
+none
+none
+#
+hard, peridot, Peridot, 6.5, 7.0
+raw_peridot#processed_peridot
+none
+none
+#
+hard, petalite, Petalite, 6.5, 6.5
+raw_petalite#processed_petalite
+none
+none
+#
+hard, spectrolite, Spectrolite, 6.5, 6.5
+raw_spectrolite#processed_spectrolite
+none
+none
+#
+hard, danburite, Danburite, 7.0, 7.5
+raw_danburite#processed_danburite
+none
+none
+#
+hard, citrine, Citrine, 7.0, 7.0
+raw_citrine#processed_citrine
+none
+none
+#
+hard, amethyst, Amethyst, 7.0, 7.0
+raw_amethyst#processed_amethyst
+none
+none
+#
+hard, ametrine, Ametrine, 7.0, 7.0
+raw_ametrine#processed_ametrine
+none
+none
+#
+hard, bloodstone, Bloodstone, 7.0, 7.0
+raw_bloodstone#processed_bloodstone
+none
+none
+#
+hard, iolite, Iolite, 7.0, 7.5
+raw_iolite#processed_iolite
+none
+none
+#
+hard, quartz, Quartz, 7.0, 7.0
+raw_quartz#processed_quartz
+none
+none
+#
+hard, rutilated_quartz, Rutilated Quartz, 7.0, 7.0
+raw_rutilated_quartz#processed_rutilated_quartz
+none
+none
+#
+hard, spessartite, Spessartite, 7.0, 7.0
+raw_spessartite#processed_spessartite
+none
+none
+#
+hard, tiger_eye, Tiger eye, 7.0, 7.0
+raw_tiger_eye#processed_tiger_eye
+none
+none
+#
+hard, tsavorite, Tsavorite, 7.0, 7.5
+raw_tsavorite#processed_tsavorite
+none
+none
+#
+hard, spinel, Spinel, 7.5, 8.0
+raw_spinel#processed_spinel
+none
+none
+#
+hard, emerald, Emerald, 7.5, 8.0
+raw_emerald#processed_emerald
+none
+none
+#
+hard, zircon, Zircon, 7.5, 7.5
+raw_zircon#processed_zircon
+none
+none
+#
+hard, aquamarine, Aquamarine, 7.5, 8.0
+raw_aquamarine#processed_aquamarine
+none
+none
+#
+hard, beryl, Beryl, 7.5, 8.0
+raw_beryl#processed_beryl
+none
+none
+#
+hard, bixbite, Bixbite, 7.5, 8.0
+raw_bixbite#processed_bixbite
+none
+none
+#
+hard, goshenite, Goshenite, 7.5, 8.0
+raw_goshenite#processed_goshenite
+none
+none
+#
+hard, heliodor, Heliodor, 7.5, 8.0
+raw_heliodor#processed_heliodor
+none
+none
+#
+hard, morganite, Morganite, 7.5, 8.0
+raw_morganite#processed_morganite
+none
+none
+#
+hard, topaz, Topaz, 8.0, 8.0
+raw_topaz#processed_topaz
+none
+none
+#
+hard, chrysoberyl, Chrysoberyl, 8.5, 8.5
+raw_chrysoberyl#processed_chrysoberyl
+none
+none
+#
+hard, taaffeite, Taaffeite, 8.5, 8.5
+raw_taaffeite#processed_taaffeite
+none
+none
+#
+hard, sang-e-maryam, Sang-E-Maryam, 8.6, 8.6
+raw_sang-e-maryam#processed_sang-e-maryam
+none
+none
+#
+hard, sapphire, Sapphire, 9.0, 9.0
+raw_sapphire#processed_sapphire
+none
+none
+#
+hard, ruby, Ruby, 9.0, 9.0
+raw_ruby#processed_ruby
+none
+none
+#
+hard, neelam, Neelam, 9.0, 9.0
+raw_neelam#processed_neelam
+none
+none
+#
+hard, padparadscha, Padparadscha, 9.0, 9.0
+raw_padparadscha#processed_padparadscha
+none
+none

@@ -19,7 +19,7 @@
         pos_hint: app.get_dkey('cas.ci p_h')
     Image:
         id: char_image
-        source: '' if root.char is None else root.char.full_image_source
+        source: '' if root.char is None else root.char.get_image('full')
         allow_stretch: True
         nocache: True
         size_hint: app.get_dkey('cas.ci s_h')
@@ -45,12 +45,12 @@
         pos_hint: app.get_dkey('cas.os p_h')
     StatInfoBox:
         id: persistent_layout
-        type_flag_source: '' if root.char is None else "screens/recruit/" + str(root.char.get_type()).lower() + "_flag.png"
-        element_flag_source: '' if root.char is None else "screens/attributes/" + root.char.get_element().lower() + "_flag.png"
-        element_flag_image_source: '' if root.char is None else "screens/attributes/" + root.char.get_element().lower() + ".png"
+        type_flag_source: '' if root.char is None else "screens/recruit/" + str(root.char.get_attack_type_string()).lower() + "_flag.png"
+        element_flag_source: '' if root.char is None else "screens/attributes/" + root.char.get_element_string().lower() + "_flag.png"
+        element_flag_image_source: '' if root.char is None else "screens/attributes/" + root.char.get_element_string().lower() + ".png"
         char_type: '' if root.char is None else 'Supporter' if root.char.is_support() else 'Adventurer'
-        char_stype: '' if root.char is None else str(root.char.get_type()) + " Type"
-        char_element: '' if root.char is None else str(root.char.get_element()).capitalize()
+        char_stype: '' if root.char is None else str(root.char.get_attack_type_string()) + " Type"
+        char_element: '' if root.char is None else str(root.char.get_element_string()).capitalize()
         char_display_name: '' if root.char is None else str(root.char.get_display_name())
         char_name: '' if root.char is None else str(root.char.get_name())
         skills_switch_text: root.skills_switch_text

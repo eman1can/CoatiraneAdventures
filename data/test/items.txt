@@ -1,63 +1,50 @@
-D, tiny_strength_falna, Strength Falna, multi, 0, 0
-A gem found in monsters that can be used to grow strength in an adventurer.
-D, tiny_magic_falna, Magic Falna, multi, 0, 0
-A gem found in monsters that can be used to grow magic in an adventurer.
-D, tiny_endurance_falna, Endurance Falna, multi, 0, 0
-A gem found in monsters that can be used to grow endurance in an adventurer.
-D, tiny_dexterity_falna, Dexterity Falna, multi, 0, 0
-A gem found in monsters that can be used to grow dexterity in an adventurer.
-D, tiny_agility_falna, Agility Falna, multi, 0, 0
-A gem found in monsters that can be used to grow agility in an adventurer.
+S, compass, Compass, general, single, 375
+none
+Have trouble getting lost? Buy a compass and never get lost again!
+
+S, pocket_watch, Pocket Watch, general, single, 375
+none
+Keep losing track of time? Buy a watch and always know the time!
+
+S, path_map_floor_1, Main Path, floor_1, single, 500
+none
+A detailed map to get you to the second floor.
+
+S, full_map_floor_1, Full Map, floor_1, single, 1500
+none
+A detailed map of the entire first floor!
+
+S, resource_map_floor_1, Resource Map, floor_1, single, 2500
+map_data, full_map_floor_1
+Shows the most common resource locations on the first floor from the past week.
+
+S, path_map_floor_2, Main Path, floor_2, single, 500
+none
+A detailed map to get you to the third floor.
+
+S, full_map_floor_2, Full Map, floor_2, single, 1500
+none
+A detailed map of the entire second floor!
+
+S, resource_map_floor_2, Resource Map, floor_2, single, 2500
+map_data, full_map_floor_2
+Shows the most common resource locations on the second floor from the past week.
+
+S, path_map_floor_3, Main Path, floor_3, single, 500
+none
+A detailed map to get you to the fourth floor.
+
+S, full_map_floor_3, Full Map, floor_3, single, 1500
+none
+A detailed map of the entire third floor!
+
+S, resource_map_floor_3, Resource Map, floor_3, single, 2500
+map_data, full_map_floor_3
+Shows the most common resource locations on the third floor from the past week.
+
 D, small_strength_falna, Strength Falna, multi, 0, 0
 A gem found in monsters that can be used to grow strength in an adventurer.
-D, small_magic_falna, Magic Falna, multi, 0, 0
-A gem found in monsters that can be used to grow magic in an adventurer.
-D, small_endurance_falna, Endurance Falna, multi, 0, 0
-A gem found in monsters that can be used to grow endurance in an adventurer.
-D, small_dexterity_falna, Dexterity Falna, multi, 0, 0
-A gem found in monsters that can be used to grow dexterity in an adventurer.
-D, small_agility_falna, Agility Falna, multi, 0, 0
-A gem found in monsters that can be used to grow agility in an adventurer.
-D, medium_strength_falna, Strength Falna, multi, 0, 0
-A gem found in monsters that can be used to grow strength in an adventurer.
-D, medium_magic_falna, Magic Falna, multi, 0, 0
-A gem found in monsters that can be used to grow magic in an adventurer.
-D, medium_endurance_falna, Endurance Falna, multi, 0, 0
-A gem found in monsters that can be used to grow endurance in an adventurer.
-D, medium_dexterity_falna, Dexterity Falna, multi, 0, 0
-A gem found in monsters that can be used to grow dexterity in an adventurer.
-D, medium_agility_falna, Agility Falna, multi, 0, 0
-A gem found in monsters that can be used to grow agility in an adventurer.
-D, regular_strength_falna, Strength Falna, multi, 0, 0
-A gem found in monsters that can be used to grow strength in an adventurer.
-D, regular_magic_falna, Magic Falna, multi, 0, 0
-A gem found in monsters that can be used to grow magic in an adventurer.
-D, regular_endurance_falna, Endurance Falna, multi, 0, 0
-A gem found in monsters that can be used to grow endurance in an adventurer.
-D, regular_dexterity_falna, Dexterity Falna, multi, 0, 0
-A gem found in monsters that can be used to grow dexterity in an adventurer.
-D, regular_agility_falna, Agility Falna, multi, 0, 0
-A gem found in monsters that can be used to grow agility in an adventurer.
-D, large_strength_falna, Strength Falna, multi, 0, 0
-A gem found in monsters that can be used to grow strength in an adventurer.
-D, large_magic_falna, Magic Falna, multi, 0, 0
-A gem found in monsters that can be used to grow magic in an adventurer.
-D, large_endurance_falna, Endurance Falna, multi, 0, 0
-A gem found in monsters that can be used to grow endurance in an adventurer.
-D, large_dexterity_falna, Dexterity Falna, multi, 0, 0
-A gem found in monsters that can be used to grow dexterity in an adventurer.
-D, large_agility_falna, Agility Falna, multi, 0, 0
-A gem found in monsters that can be used to grow agility in an adventurer.
-D, huge_strength_falna, Strength Falna, multi, 0, 0
-A gem found in monsters that can be used to grow strength in an adventurer.
-D, huge_magic_falna, Magic Falna, multi, 0, 0
-A gem found in monsters that can be used to grow magic in an adventurer.
-D, huge_endurance_falna, Endurance Falna, multi, 0, 0
-A gem found in monsters that can be used to grow endurance in an adventurer.
-D, huge_dexterity_falna, Dexterity Falna, multi, 0, 0
-A gem found in monsters that can be used to grow dexterity in an adventurer.
-D, huge_agility_falna, Agility Falna, multi, 0, 0
-A gem found in monsters that can be used to grow agility in an adventurer.
+
 D, raw_goblin_claw, Raw Goblin Claw, multi, 100, 250
 A raw Goblin Claw.
 
@@ -164,10 +151,10 @@ D, infant_dragon_scale_ingot, Infant Dragon Scale Ingot, multi, 100, 250
 A Infant Dragon Scale Ingot.
 
 D, infant_dragon_meat, Infant Dragon Meat, multi, 100, 250
-A Infant Dragon Meat.
+A piece of Infant Dragon Meat.
 
 D, infant_dragon_blood, Infant Dragon Blood, multi, 100, 250
-A Infant Dragon Blood.
+Infant Dragon Blood.
 
 D, raw_wyvern_claw, Raw Wyvern Claw, multi, 100, 250
 A raw Wyvern Claw.
@@ -272,7 +259,7 @@ D, vouivre_fang_ingot, Vouivre Fang Ingot, multi, 100, 250
 A Vouivre Fang Ingot.
 
 D, vouivre_egg, Vouivre Egg, multi, 100, 250
-A Vouivre Egg.
+A Vouivre's Tear.
 
 D, raw_vouivre_scale, Raw Vouivre Scale, multi, 100, 250
 A raw Vouivre Scale.
@@ -359,7 +346,7 @@ D, blue_crab_scale_ingot, Blue Crab Scale Ingot, multi, 100, 250
 A Blue Crab Scale Ingot.
 
 D, blue_crab_meat, Blue Crab Meat, multi, 100, 250
-A Blue Crab Meat.
+A piece of Blue Crab Meat.
 
 D, raw_afanc_claw, Raw Afanc Claw, multi, 100, 250
 A raw Afanc Claw.
@@ -374,7 +361,7 @@ D, afanc_fang_ingot, Afanc Fang Ingot, multi, 100, 250
 A Afanc Fang Ingot.
 
 D, afanc_meat, Afanc Meat, multi, 100, 250
-A Afanc Meat.
+A piece of Afanc Meat.
 
 D, raw_dodora_claw, Raw Dodora Claw, multi, 100, 250
 A raw Dodora Claw.
@@ -389,7 +376,7 @@ D, dodora_scale_ingot, Dodora Scale Ingot, multi, 100, 250
 A Dodora Scale Ingot.
 
 D, dodora_venom, Dodora Venom, multi, 100, 250
-A Dodora Venom.
+Dodora Venom.
 
 D, raw_lamia_claw, Raw Lamia Claw, multi, 100, 250
 A raw Lamia Claw.
@@ -434,7 +421,7 @@ D, deformis_spider_hide_processed, Processed Deformis Spider Hide, multi, 100, 2
 A processed Deformis Spider Hide.
 
 D, deformis_spider_blood, Deformis Spider Blood, multi, 100, 250
-A Deformis Spider Blood.
+Deformis Spider Blood.
 
 D, raw_black_wyvern_fang, Raw Black Wyvern Fang, multi, 100, 250
 A raw Black Wyvern Fang.
@@ -449,7 +436,7 @@ D, black_wyvern_scale_ingot, Black Wyvern Scale Ingot, multi, 100, 250
 A Black Wyvern Scale Ingot.
 
 D, black_wyvern_venom, Black Wyvern Venom, multi, 100, 250
-A Black Wyvern Venom.
+Black Wyvern Venom.
 
 D, raw_hellhound_fang, Raw Hellhound Fang, multi, 100, 250
 A raw Hellhound Fang.
@@ -482,7 +469,7 @@ D, dungeon_worm_fang_ingot, Dungeon Worm Fang Ingot, multi, 100, 250
 A Dungeon Worm Fang Ingot.
 
 D, dungeon_worm_venom, Dungeon Worm Venom, multi, 100, 250
-A Dungeon Worm Venom.
+Dungeon Worm Venom.
 
 D, raw_lygerfang_fang, Raw Lygerfang Fang, multi, 100, 250
 A raw Lygerfang Fang.
@@ -542,7 +529,7 @@ D, crystaroth_urchin_horn_ingot, Crystaroth Urchin Horn Ingot, multi, 100, 250
 A Crystaroth Urchin Horn Ingot.
 
 D, crystaroth_urchin_venom, Crystaroth Urchin Venom, multi, 100, 250
-A Crystaroth Urchin Venom.
+Crystaroth Urchin Venom.
 
 D, raw_bloodsaurus_fang, Raw Bloodsaurus Fang, multi, 100, 250
 A raw Bloodsaurus Fang.
@@ -557,7 +544,7 @@ D, bloodsaurus_scale_ingot, Bloodsaurus Scale Ingot, multi, 100, 250
 A Bloodsaurus Scale Ingot.
 
 D, bloodsaurus_meat, Bloodsaurus Meat, multi, 100, 250
-A Bloodsaurus Meat.
+A piece of Bloodsaurus Meat.
 
 D, raw_worm_well_fang, Raw Worm Well Fang, multi, 100, 250
 A raw Worm Well Fang.
@@ -572,7 +559,7 @@ D, worm_well_scale_ingot, Worm Well Scale Ingot, multi, 100, 250
 A Worm Well Scale Ingot.
 
 D, worm_well_venom, Worm Well Venom, multi, 100, 250
-A Worm Well Venom.
+Worm Well Venom.
 
 D, raw_loup_garou_fang, Raw Loup Garou Fang, multi, 100, 250
 A raw Loup Garou Fang.
@@ -641,7 +628,7 @@ D, jack_bird_hide_processed, Processed Jack Bird Hide, multi, 100, 250
 A processed Jack Bird Hide.
 
 D, jack_bird_meat, Jack Bird Meat, multi, 100, 250
-A Jack Bird Meat.
+A piece of Jack Bird Meat.
 
 D, flame_rock_egg, Flame Rock Egg, multi, 100, 250
 A Flame Rock Egg.
@@ -653,7 +640,7 @@ D, needle_rabbit_hide_processed, Processed Needle Rabbit Hide, multi, 100, 250
 A processed Needle Rabbit Hide.
 
 D, needle_rabbit_meat, Needle Rabbit Meat, multi, 100, 250
-A Needle Rabbit Meat.
+A piece of Needle Rabbit Meat.
 
 D, raw_needle_rabbit_horn, Raw Needle Rabbit Horn, multi, 100, 250
 A raw Needle Rabbit Horn.
@@ -737,7 +724,7 @@ D, barbarian_hide_processed, Processed Barbarian Hide, multi, 100, 250
 A processed Barbarian Hide.
 
 D, barbarian_meat, Barbarian Meat, multi, 100, 250
-A Barbarian Meat.
+A piece of Barbarian Meat.
 
 D, raw_skull_sheep_hide, Raw Skull Sheep Hide, multi, 100, 250
 A raw Skull Sheep Hide.
@@ -782,7 +769,7 @@ D, titan_alm_hide_processed, Processed Titan Alm Hide, multi, 100, 250
 A processed Titan Alm Hide.
 
 D, titan_alm_meat, Titan Alm Meat, multi, 100, 250
-A Titan Alm Meat.
+A piece of Titan Alm Bark.
 
 D, raw_unicorn_hide, Raw Unicorn Hide, multi, 100, 250
 A raw Unicorn Hide.
@@ -791,7 +778,7 @@ D, unicorn_hide_processed, Processed Unicorn Hide, multi, 100, 250
 A processed Unicorn Hide.
 
 D, unicorn_blood, Unicorn Blood, multi, 100, 250
-A Unicorn Blood.
+Unicorn Blood.
 
 D, raw_unicorn_horn, Raw Unicorn Horn, multi, 100, 250
 A raw Unicorn Horn.
@@ -806,7 +793,7 @@ D, ogre_hide_processed, Processed Ogre Hide, multi, 100, 250
 A processed Ogre Hide.
 
 D, ogre_meat, Ogre Meat, multi, 100, 250
-A Ogre Meat.
+A piece of Ogre Meat.
 
 D, raw_gryphon_hide, Raw Gryphon Hide, multi, 100, 250
 A raw Gryphon Hide.
@@ -821,7 +808,7 @@ D, arachne_hide_processed, Processed Arachne Hide, multi, 100, 250
 A processed Arachne Hide.
 
 D, arachne_venom, Arachne Venom, multi, 100, 250
-A Arachne Venom.
+Arachne Venom.
 
 D, raw_hippogriff_hide, Raw Hippogriff Hide, multi, 100, 250
 A raw Hippogriff Hide.
@@ -857,7 +844,7 @@ D, killer_ant_scale_ingot, Killer Ant Scale Ingot, multi, 100, 250
 A Killer Ant Scale Ingot.
 
 D, killer_ant_blood, Killer Ant Blood, multi, 100, 250
-A Killer Ant Blood.
+Killer Ant Blood.
 
 D, raw_mad_beetle_scale, Raw Mad Beetle Scale, multi, 100, 250
 A raw Mad Beetle Scale.
@@ -878,7 +865,7 @@ D, deadly_hornet_wing, Deadly Hornet Wing, multi, 100, 250
 A Deadly Hornet Wing.
 
 D, deadly_hornet_venom, Deadly Hornet Venom, multi, 100, 250
-A Deadly Hornet Venom.
+Deadly Hornet Venom.
 
 D, raw_aqua_serpent_scale, Raw Aqua Serpent Scale, multi, 100, 250
 A raw Aqua Serpent Scale.
@@ -902,7 +889,7 @@ D, mermaid_scale_ingot, Mermaid Scale Ingot, multi, 100, 250
 A Mermaid Scale Ingot.
 
 D, mermaid_blood, Mermaid Blood, multi, 100, 250
-A Mermaid Blood.
+Mermaid Blood.
 
 D, raw_merman_scale, Raw Merman Scale, multi, 100, 250
 A raw Merman Scale.
@@ -935,7 +922,7 @@ D, peluda_horn_ingot, Peluda Horn Ingot, multi, 100, 250
 A Peluda Horn Ingot.
 
 D, peluda_venom, Peluda Venom, multi, 100, 250
-A Peluda Venom.
+Peluda Venom.
 
 D, raw_cadmus_scale, Raw Cadmus Scale, multi, 100, 250
 A raw Cadmus Scale.
@@ -950,7 +937,7 @@ D, venom_scorpion_scale_ingot, Venom Scorpion Scale Ingot, multi, 100, 250
 A Venom Scorpion Scale Ingot.
 
 D, venom_scorpion_venom, Venom Scorpion Venom, multi, 100, 250
-A Venom Scorpion Venom.
+Venom Scorpion Venom.
 
 D, raw_ill_wyvern_scale, Raw Ill Wyvern Scale, multi, 100, 250
 A raw Ill Wyvern Scale.
@@ -977,13 +964,13 @@ D, purple_moth_wing, Purple Moth Wing, multi, 100, 250
 A Purple Moth Wing.
 
 D, purple_moth_venom, Purple Moth Venom, multi, 100, 250
-A Purple Moth Venom.
+Purple Moth Venom.
 
 D, blue_papilio_wing, Blue Papilio Wing, multi, 100, 250
 A Blue Papilio Wing.
 
 D, blue_papilio_venom, Blue Papilio Venom, multi, 100, 250
-A Blue Papilio Venom.
+Blue Papilio Venom.
 
 D, bad_bat_wing, Bad Bat Wing, multi, 100, 250
 A Bad Bat Wing.
@@ -1010,22 +997,22 @@ D, dungeon_fly_wing, Dungeon Fly Wing, multi, 100, 250
 A Dungeon Fly Wing.
 
 D, light_quartz_meat, Light Quartz Meat, multi, 100, 250
-A Light Quartz Meat.
+A chunk of Light Quartz.
 
 D, bloody_hive_blood, Bloody Hive Blood, multi, 100, 250
-A Bloody Hive Blood.
+Bloody Hive Blood.
 
 D, bloody_hive_venom, Bloody Hive Venom, multi, 100, 250
-A Bloody Hive Venom.
+Bloody Hive Venom.
 
 D, dark_fungus_venom, Dark Fungus Venom, multi, 100, 250
-A Dark Fungus Venom.
+Dark Fungus Venom.
 
 D, viscum_venom, Viscum Venom, multi, 100, 250
-A Viscum Venom.
+Viscum Venom.
 
 D, poison_vermis_venom, Poison Vermis Venom, multi, 100, 250
-A Poison Vermis Venom.
+Poison Vermis Venom.
 
 I, raw_cloth, Raw Cloth, multi, 100, 250
 Raw Cloth.
@@ -1824,4 +1811,3 @@ A large cluster of magic stones.
 
 D, huge_huge_magic_stone, Huge Magic Stone cluster, multi, 100, 200
 A huge cluster of magic stones.
-

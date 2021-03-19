@@ -6,7 +6,7 @@
         allow_stretch: True
     Image:
         id: char_image
-        source: '' if root.char is None else root.char.full_image_source
+        source: '' if root.char is None else root.char.get_image('full')
         allow_stretch: True
     PPCHoverPathButton:
         id: back_button

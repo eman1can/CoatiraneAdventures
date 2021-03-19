@@ -1,8 +1,7 @@
-from uix.popups.view import View
-
 # KV Import
 from uix.popups.view import View
 
+from loading.kv_loader import load_kv
 load_kv(__name__)
 
 

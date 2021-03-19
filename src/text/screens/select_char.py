@@ -1,6 +1,6 @@
 from game.character import CHARACTER_TYPE_INDEX_TO_STRING
 from game.skill import ATTACK_TYPE_INDEX_TO_STRING, ELEMENT_INDEX_TO_STRING
-from refs import Refs
+from refs import END_OPT_C, OPT_C, Refs
 from text.screens.dungeon_main import box_to_string
 
 BOX_WIDTH = 13
@@ -59,11 +59,11 @@ def create_box(size):
         # box.append('\t')
     box.append('\n\t│')
     if size == 0:
-        box.append('0'.center(BOX_WIDTH) + '│')
+        box.append(f'{OPT_C}' + '0'.center(BOX_WIDTH) + f'{END_OPT_C}│')
     else:
-        box.append('0'.center(BOX_WIDTH) + '│   │')
+        box.append(f'{OPT_C}' + '0'.center(BOX_WIDTH) + f'{END_OPT_C}│   │')
     for index in range(size):
-        box.append(f'{1 + index}'.center(BOX_WIDTH))
+        box.append(f'{OPT_C}' + f'{3 + index}'.center(BOX_WIDTH) + f'{END_OPT_C}')
         box.append('│')
     box.append('\n\t' + create_bar('└', '┘', '┴', '─', 1) + '   ' + create_bar('└', '┘', '┴', '─', size))
     # print(box)
@@ -96,17 +96,9 @@ def populate_box(box, single_char, party, size):
 def select_screen_char(console):
     char_id_and_index = console._current_screen[len('select_screen_char_'):]
     index = int(char_id_and_index[:char_id_and_index.index('_')])
-    single_char = Refs.gc.get_char_by_id(char_id_and_index[char_id_and_index.index('_') + 1:])
+    character_id = char_id_and_index[char_id_and_index.index('_') + 1:]
+    single_char = Refs.gc.get_char_by_id(character_id)
 
-    # single_char = None
-    # if char_id != 'none':
-    #     party = Refs.gc.get_current_party()
-    #     for pchar in party:
-    #         if pchar is None:
-    #             continue
-    #         if pchar.get_id() == char_id:
-    #             single_char = pchar
-    #             break
     obtained_chars = Refs.gc.get_obtained_characters(index >= 8)
     if single_char is not None:
         obtained_chars.remove(single_char)
@@ -123,10 +115,12 @@ def select_screen_char(console):
     display_text += box_to_string(populate_box(console.memory.select_box, single_char, obtained_chars, console.memory.select_box_size))
     _options = {'0': 'back'}
     if single_char is not None:
-        display_text += f'\n\n\t{console.memory.select_box_size + 1}: Remove character\n'
-        _options[str(console.memory.select_box_size + 1)] = f'set_char_{index}_none'
+        display_text += f'\n\n\t{OPT_C}1:{END_OPT_C} Remove character'
+        display_text += f'\n\t{OPT_C}2:{END_OPT_C} Character Attribute Screen\n'
+        _options['1'] = f'set_char_{index}_none'
+        _options['2'] = f'character_attribute_main_{character_id}'
     else:
         display_text += '\n'
     for char_index in range(len(obtained_chars)):
-        _options[str(char_index + 1)] = f'set_char_{index}_' + obtained_chars[char_index].get_id()
+        _options[str(char_index + 3)] = f'set_char_{index}_' + obtained_chars[char_index].get_id()
     return display_text, _options

@@ -7,14 +7,17 @@ class Outfit(HMPMD, SMEAD):
         # Definitions
         self.weapon = None  # type: Equipment or None
         self.off_hand_weapon = None  # type: Equipment or None
+
         self.necklace = None  # type: Equipment or None
         self.ring = None  # type: Equipment or None
+
         self.helmet = None  # type: Equipment or None
         self.vambraces = None  # type: Equipment or None
         self.gloves = None  # type: Equipment or None
         self.chest = None  # type: Equipment or None
         self.grieves = None  # type: Equipment or None
         self.boots = None  # type: Equipment or None
+
         self.items = [self.weapon, self.off_hand_weapon, self.necklace, self.ring, self.helmet, self.vambraces, self.gloves, self.chest, self.grieves, self.boots]  # type: list[Equipment or None]
         self.types = ['weapon', 'off hand weapon', 'necklace', 'ring', 'helmet', 'vambraces', 'gloves', 'chest', 'grieves', 'boots']  # type: list[str]
 

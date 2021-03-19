@@ -115,6 +115,8 @@ def shop(console):
              'dungeon_materials': [],
              'magic_stones': [],
              'monster_drops': [],
+             'raw_materials': [],
+             'processed_materials': [],
              'floor_maps': [f'floor_{floor_id}' for floor_id in range(1, min(len(Refs.gc['floors']), Refs.gc.get_lowest_floor()) + 1)]}
 
     # Header dsplay options
@@ -138,14 +140,18 @@ def shop(console):
                       'other': 'Other',
                       'floor_maps': 'Floor Maps',
                       'monster_drops': 'Monster Drop',
-                      'magic_stones':  'Magic Stone'}
+                      'magic_stones':  'Magic Stone',
+                      'raw_materials': 'Raw Materials',
+                      'processed_materials': 'Processed Materials'}
 
     # Sub categories that should have a Buy and Sell option listed
-    bspages = {'dungeon_materials': ['magic_stones', 'monster_drops']}
+    bspages = {'dungeon_materials': ['magic_stones', 'monster_drops', 'raw_materials', 'processed_materials']}
 
     item_lists = {'general': Refs.gc.get_shop_items,
                   'magic_stones': lambda category: Refs.gc.get_magic_stone_types(),
-                  'monster_drops': lambda category: Refs.gc.get_monster_drop_types()}
+                  'monster_drops': lambda category: Refs.gc.get_monster_drop_types(),
+                  'raw_materials': lambda category: Refs.gc.get_raw_materials(),
+                  'processed_materials': lambda category: Refs.gc.get_processed_materials()}
 
     for floor_id in range(1, min(len(Refs.gc['floors']), Refs.gc.get_lowest_floor()) + 1):
         pages[f'floor_{floor_id}'] = []

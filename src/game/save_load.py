@@ -81,6 +81,11 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
                 ],
                 'growth': [[0 for _ in range(7)] for _ in range(10)]
             },
+            'family': name,
+            'high_damage': 0,
+            'floor_depth': 0,
+            'monsters_slain': 0,
+            'people_slain': 0,
             'equipment': [],
             'abilities': [],
             'familiarities': []
@@ -174,6 +179,11 @@ def save_game(save_slot, game_content):
         char_develop['ranks']['broken'] = [rank.is_broken() for rank in character.get_ranks()]
         char_develop['ranks']['boards'] = [[rank.get_board().get_unlocked(tile) for tile in range(rank.get_board().get_count())] for rank in character.get_ranks()]
         char_develop['ranks']['growth'] = [rank.get_growth().get_stats() for rank in character.get_ranks()]
+        char_develop['family'] = character.get_family()
+        char_develop['high_damage'] = character.get_high_damage()
+        char_develop['floor_depth'] = character.get_floor_depth()
+        char_develop['monsters_slain'] = character.get_monsters_killed()
+        char_develop['people_slain'] = character.get_people_killed()
         character_development[str(character.get_index())] = char_develop
     save_file['equipment'] = []
 

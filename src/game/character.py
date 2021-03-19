@@ -1,6 +1,7 @@
 from game.entity import Entity
 from game.outfit import Outfit
 from game.rank import MAX_RANK
+from game.scale import Scale
 from game.skill import ATTACK_TYPE_INDEX_TO_STRING, ELEMENT_INDEX_TO_STRING
 
 PHYSICAL_ATTACK = 0
@@ -14,14 +15,15 @@ CHARACTER_TYPE_INDEX_TO_STRING = ['Physical', 'Magical', 'Hybrid', 'Defensive', 
 class Character(Entity):
     def __init__(self, name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, dexterity, agility, element, moves, **kwargs):
         # Values set by kwargs
-        self._display_name = ""
-        self._gender = ""  # Not yet implemented
-        self._race = ""  # Not yet implemented
+        self._display_name = ''
+        self._family = ''
+        self._gender = 'Female'  # Not yet implemented
+        self._race = 'Human'  # Not yet implemented
         self._high_damage = 0  # Not yet implemented
         self._lowest_floor = 0  # Not yet implemented
         self._monsters_slain = 0  # Not yet implemented
         self._people_slain = 0  # Not yet implemented
-        self._character_id = ""
+        self._character_id = ''
         self._is_support = False
         self._index = -1
 
@@ -63,6 +65,9 @@ class Character(Entity):
         self.refresh_stats()
 
     # Refresh and calculation functions
+
+    def set_family(self, name):
+        self._family = name
 
     def refresh_stats(self):
         super().refresh_stats()
@@ -113,6 +118,8 @@ class Character(Entity):
             return self._preview
         elif image_type == 'bust_up':
             return self._bust_up
+        else:
+            return self._full
 
     def is_support(self):
         return self._is_support
@@ -121,10 +128,13 @@ class Character(Entity):
         return self._attack_type
 
     def get_attack_type_string(self):
-        return ATTACK_TYPE_INDEX_TO_STRING[self._attack_type]
+        return CHARACTER_TYPE_INDEX_TO_STRING[self._attack_type]
 
     def get_index(self):
         return self._index
+
+    def get_family(self):
+        return self._family
 
     def get_race(self):
         return self._race
@@ -213,7 +223,7 @@ class Character(Entity):
                 physical_attack += rank.get_strength()
         self.physical_attack = physical_attack
 
-    def get_magical_attack(self,rank=0):
+    def get_magical_attack(self, rank=0):
         if rank > 0:
             return self.get_rank(rank).get_magic()
         return self.magical_attack
@@ -225,7 +235,7 @@ class Character(Entity):
                 magical_attack += rank.get_magic()
         self.magical_attack = magical_attack
 
-    def get_defense(self,rank=0):
+    def get_defense(self, rank=0):
         if rank > 0:
             return self.get_rank(rank).get_endurance()
         return self.defense
@@ -351,6 +361,59 @@ class Character(Entity):
     def increase_dexterity(self, delta):
         self.get_rank().increase_dexterity(delta)
         self.update_dexterity()
+
+    # Rank functions
+    def get_strength_rank_image(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_image_path(self.get_strength(rank), 100)
+        return Scale.get_scale_as_image_path(self.get_strength(), 1000)
+
+    def get_strength_rank(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_character(self.get_strength(rank), 100)
+        return Scale.get_scale_as_character(self.get_strength(), 1000)
+
+    def get_magic_rank_image(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_image_path(self.get_magic(rank), 100)
+        return Scale.get_scale_as_image_path(self.get_magic(), 1000)
+
+    def get_magic_rank(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_character(self.get_magic(rank), 100)
+        return Scale.get_scale_as_character(self.get_magic(), 1000)
+
+    def get_endurance_rank_image(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_image_path(self.get_endurance(rank), 100)
+        return Scale.get_scale_as_image_path(self.get_endurance(), 1000)
+
+    def get_endurance_rank(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_character(self.get_endurance(rank), 100)
+        return Scale.get_scale_as_character(self.get_endurance(), 1000)
+
+    def get_dexterity_rank_image(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_image_path(self.get_dexterity(rank), 100)
+        return Scale.get_scale_as_image_path(self.get_dexterity(), 1000)
+
+    def get_dexterity_rank(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_character(self.get_dexterity(rank), 100)
+        return Scale.get_scale_as_character(self.get_dexterity(), 1000)
+
+    def get_agility_rank_image(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_image_path(self.get_agility(rank), 100)
+        return Scale.get_scale_as_image_path(self.get_agility(), 1000)
+
+    def get_agility_rank(self, rank=0):
+        if rank > 1:
+            return Scale.get_scale_as_character(self.get_agility(rank), 100)
+        return Scale.get_scale_as_character(self.get_agility(), 1000)
+
+
 
     # Equipment functions
     def equip_equipment(self, slot, equipment):

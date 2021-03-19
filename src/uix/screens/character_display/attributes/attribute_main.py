@@ -91,16 +91,16 @@ class CharacterAttributeScreen(Screen):
         if f'star_{index}' in self.star_data:
             if self.star_data[f'star_{index}']['broken']:
                 return True
-            if character.get_rank(rank).broken:
+            if character.get_rank(rank).is_broken():
                 self.star_data[f'star_{index}']['broken'] = True
                 self.star_data[f'star_{index}']['source'] = 'screens/stats/rankbrk.png'
                 return True
-        if character.get_rank(rank).unlocked:
+        if character.get_rank(rank).is_unlocked():
             star = {'id': f'star_{index}',
                     'source': 'screens/stats/star.png',
                     'size_hint': Refs.app.get_dkey(f'cas.star_{index} s_h'),
                     'pos_hint': Refs.app.get_dkey(f'cas.star_{index} p_h')}
-            if character.get_rank(rank).broken:
+            if character.get_rank(rank).is_broken():
                 star['source'] = 'screens/stats/rankbrk.png'
                 star['broken'] = True
             else:
@@ -113,14 +113,14 @@ class CharacterAttributeScreen(Screen):
     def update_info(self):
         if self.char is None:
             return
-        self.family_name = str(self.char.get_familia().get_name()) + " Family"
+        self.family_name = str(self.char.get_family()) + " Family"
         self.score = "Score: " + str(self.char.get_score())
         self.floor_depth = "Floor Depth: " + str(self.char.get_floor_depth())
         self.race = "Race: " + str(self.char.get_race())
         self.worth = "Worth: " + str(self.char.get_worth())
         self.monsters_slain = "Monsters Slain: " + str(self.char.get_monsters_killed())
         self.gender = "Gender: " + str(self.char.get_gender())
-        self.high_dmg = "High Dmg.: " + str(self.char.get_high_dmg())
+        self.high_dmg = "High Dmg.: " + str(self.char.get_high_damage())
         self.people_slain = "People Slain: " + str(self.char.get_people_killed())
 
     def update_items(self):

@@ -9,13 +9,17 @@ from kivy.properties import StringProperty
 from kivy.uix.textinput import CutBuffer, TextInput
 from refs import Refs
 from text.memory import Memory
+from text.screens.change_equip import change_equip_main
+from text.screens.character_attribute_screen import character_attribute_main
 from text.screens.crafting import crafting_main
 from text.screens.dungeon_main import dungeon_main, dungeon_main_confirm
+from text.screens.gear import gear_main
 from text.screens.housing import housing_browse, housing_buy, housing_main, housing_rent
 from text.screens.inventory import inventory
 from text.screens.new_game import game_loading, intro_domain, intro_domain_gender, intro_domain_name, intro_news, intro_select, new_game, save_select
 from text.screens.select_char import select_screen_char
 from text.screens.shop import do_transaction, shop
+from text.screens.status_board import status_board_main, status_board_unlock, status_board_view_falna
 from text.screens.town import profile_main, quests_main, tavern_main, tavern_recruit, tavern_recruit_show, tavern_relax, town_main
 from text.screens.dungeon_battle import dungeon_battle, dungeon_battle_action, dungeon_result
 
@@ -65,7 +69,7 @@ class Console(TextInput):
         self.set_screen('new_game')
 
     def on_global_font_size(self, *args):
-        self.set_screen('new_game')
+        self._refresh()
 
     def get_global_font_size(self):
         return int(self.global_font_size[:-2])
@@ -234,9 +238,11 @@ class Console(TextInput):
         #         self._back_list.pop()
 
         names = ['new_game', 'save_select', 'intro_domain_name', 'intro_domain_gender', 'intro_domain', 'intro_select', 'game_loading', 'town_main', 'tavern_main', 'shop', 'quests_main', 'crafting_main', 'inventory', 'dungeon_main',
-                 'select_screen_char', 'dungeon_confirm', 'dungeon_battle', 'dungeon_result', 'tavern_recruit_show', 'tavern_recruit', 'tavern_relax', 'intro_news', 'profile_main', 'housing_main', 'housing_browse', 'housing_rent', 'housing_buy']
+                 'select_screen_char', 'dungeon_confirm', 'dungeon_battle', 'dungeon_result', 'tavern_recruit_show', 'tavern_recruit', 'tavern_relax', 'intro_news', 'profile_main', 'housing_main', 'housing_browse', 'housing_rent', 'housing_buy',
+                 'character_attribute_main', 'status_board_main', 'status_board_unlock', 'status_board_view_falna', 'change_equip_main', 'gear_main']
         screens = [new_game, save_select, intro_domain_name, intro_domain_gender, intro_domain, intro_select, game_loading, town_main, tavern_main, shop, quests_main, crafting_main, inventory, dungeon_main, select_screen_char,
-                   dungeon_main_confirm, dungeon_battle, dungeon_result, tavern_recruit_show, tavern_recruit, tavern_relax, intro_news, profile_main, housing_main, housing_browse, housing_rent, housing_buy]
+                   dungeon_main_confirm, dungeon_battle, dungeon_result, tavern_recruit_show, tavern_recruit, tavern_relax, intro_news, profile_main, housing_main, housing_browse, housing_rent, housing_buy, character_attribute_main,
+                   status_board_main, status_board_unlock, status_board_view_falna, change_equip_main, gear_main]
         for index, screen in enumerate(names):
             if screen_name.startswith(screen):
                 self.display_text, self._options = screens[index](self)
@@ -252,6 +258,8 @@ class Console(TextInput):
         Refs.gc.set_calendar_callback(self._refresh)
 
     def _refresh(self):
+        if self._current_screen is None:
+            return
         self.set_screen(self._current_screen)
 
     def get_options(self):
@@ -269,7 +277,7 @@ class Console(TextInput):
             self.set_screen('intro_domain_name')
         elif action == 'goto_new_game':
             self.memory.loading_progress = {}
-            Refs.app.reset_laoder()
+            Refs.app.reset_loader()
             self.set_screen('new_game')
         elif action == 'intro_domain_gender':
             self.memory.game_info['name'] = self.current_text.strip()
@@ -294,7 +302,7 @@ class Console(TextInput):
                 choice = 0
             else:
                 choice = 1
-            create_new_save(self.memory.game_info['save_slot'], self.memory.game_info['name'], self.memory.game_info['gender'], None, self.memory.game_info['domain'], choice)
+            create_new_save(self.memory.game_info['save_slot'], self.memory.game_info['name'], self.memory.game_info['gender'], 'symbol_1', self.memory.game_info['domain'], choice)
             self.set_screen('game_loading')
             Refs.app.start_loading(self, self.memory.game_info['save_slot'], 'intro_news')
         elif action.startswith('load_game'):
@@ -409,5 +417,24 @@ class Console(TextInput):
             else:
                 self.error_time = 2.5
                 self.error_text = 'You don\'t have that much money!'
+        elif action.startswith('status_board_unlock_confirm_'):
+            info_string = action[len('status_board_unlock_confirm_'):]
+            info_string, tile_list, character_id = info_string.split('#')
+            hsc, hmc, hec, hac, hdc, ftype, vcost, rank_index = info_string.split('_')
+            Refs.gc.update_varenth(-int(vcost))
+            if int(hsc) > 0:
+                Refs.gc.remove_from_inventory(f'{ftype}_strength_falna', int(hsc))
+            if int(hmc) > 0:
+                Refs.gc.remove_from_inventory(f'{ftype}_magic_falna', int(hmc))
+            if int(hec) > 0:
+                Refs.gc.remove_from_inventory(f'{ftype}_endurance_falna', int(hec))
+            if int(hac) > 0:
+                Refs.gc.remove_from_inventory(f'{ftype}_agility_falna', int(hac))
+            if int(hdc) > 0:
+                Refs.gc.remove_from_inventory(f'{ftype}_dexterity_falna', int(hdc))
+            board = Refs.gc.get_char_by_id(character_id).get_rank(rank_index).get_baord()
+            for tile_index in tile_list.split('_'):
+                board.unlock_index(int(tile_index))
+            self.set_screen(f'status_board_main_{character_id}_{rank_index}')
         else:
             self.set_screen(action)

@@ -13,9 +13,8 @@ def load_family_chunk(chunk, loader, program_type, callbacks):
 
 
 def load_domains(program_type):
-    path = f'data/family_load_data/{program_type}/Domains.txt'
     file_string = ""
-    with open(path, 'r') as file:
+    with open(f'data/{program_type}/Domains.txt', 'r') as file:
         for line in file:
             file_string += line
     domains = []

@@ -398,9 +398,9 @@ class MapData:
             else:
                 top = bottom - dy
 
-        print(x, y, rx, ry, radius)
-        print('TB', top, '→', bottom)
-        print('LR', left, '→', right)
+        # print(x, y, rx, ry, radius)
+        # print('TB', top, '→', bottom)
+        # print('LR', left, '→', right)
 
         string = '\n┌'
         for x in range(dx):
