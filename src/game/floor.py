@@ -153,6 +153,7 @@ class Map:
         self._map_data = None
         self._nodes = nodes
         self._path_nodes = path_nodes
+        self._map_radius = 5
 
         # Current Map Data
         self._current_node = None
@@ -226,6 +227,12 @@ class Map:
     def get_size(self):
         return self._size
 
+    def get_radius(self):
+        return self._map_radius
+
+    def set_radius(self, radius):
+        self._map_radius = radius
+
     def get_explored(self):
         return self._explored
 
@@ -290,8 +297,8 @@ class Map:
         self._current_prev_color = None
 
     # Get rows of map for output
-    def get_rows(self, radius=5):
-        return self._map_data.get_section(*self._current_node, radius)
+    def get_rows(self):
+        return self._map_data.get_section(*self._current_node, self._map_radius)
 
     # Used for getting data from map data
     def get_directions(self):
@@ -547,6 +554,7 @@ class MapData:
 
     # Will get the section of the visible map
     def get_section(self, x, y, radius):
+        radius = int(min((self._size - 1) / 2, radius))
         x, y = self._abs(x, y)
         rx, ry = radius * 2, radius
 
@@ -566,4 +574,4 @@ class MapData:
             else:
                 top = bottom - dy
 
-        return self._insert_colors(dx, top, bottom, left, right)
+        return self._insert_colors(dx, top, bottom, left, right), radius

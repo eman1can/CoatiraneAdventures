@@ -460,6 +460,11 @@ class Console(TextInput):
                 floor_map.set_current_path(path)
                 self.set_screen('map_options')
                 return
+            elif action.startswith('change_radius_'):
+                radius = action[len('change_radius_'):]
+                floor_map.set_radius(int(radius))
+                self.set_screen('map_options')
+                return
             self.set_screen('map_options_' + action)
         else:
             self.set_screen(action)

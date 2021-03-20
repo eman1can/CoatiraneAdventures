@@ -356,22 +356,24 @@ def dungeon_battle(console):
         floor_map = floor_data.get_floor().get_map()
         if floor_map.get_enabled():
             display_string_rows = (display_string + tool_string).split('\n')
-            map_rows = floor_map.get_rows()
+            map_rows, radius = floor_map.get_rows()
             display_string = ''
+
+            display_string_width = 140 - ((radius - 5) * 4)
 
             for x in range(len(display_string_rows)):
                 if x < len(map_rows):
                     row = display_string_rows[x].replace('\t', '    ')
-                    display_string += ljust(row, get_plain_size(row), 140) + '[font=CourierNew]' + map_rows[x] + '\n'
+                    display_string += ljust(row, get_plain_size(row), display_string_width) + '[font=CourierNew]' + map_rows[x] + '\n'
                 else:
                     display_string += display_string_rows[x] + '\n'
 
             if len(display_string_rows) < len(map_rows):
                 for x in range(len(display_string_rows), len(map_rows)):
-                    display_string += ljust('', 0, 140) + '[font=CourierNew]' + map_rows[x] + '\n'
-                display_string += ljust('', 0, 140) + f'       {OPT_C}{map_index}:{END_OPT_C} Map Options'
+                    display_string += ljust('', 0, display_string_width) + '[font=CourierNew]' + map_rows[x] + '\n'
+                display_string += ljust('', 0, display_string_width) + f'       {OPT_C}{map_index}:{END_OPT_C} Map Options'
             else:
-                display_string += ljust('', 0, 140) + f'       {OPT_C}{map_index}:{END_OPT_C} Map Options'
+                display_string += ljust('', 0, display_string_width) + f'       {OPT_C}{map_index}:{END_OPT_C} Map Options'
         else:
             display_string = display_string + f'\n\t{OPT_C}{map_index}:{END_OPT_C} Map Options\n' + tool_string
         _options[str(map_index)] = 'dungeon_battle_map_options'
