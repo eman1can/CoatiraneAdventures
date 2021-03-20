@@ -449,7 +449,10 @@ class Console(TextInput):
                 active = action.endswith('True')
                 active_length = 5 if active else 6
                 layer = action[len('toggle_'):-active_length]
-                floor_map.set_layer_active(layer, active)
+                if layer == 'map':
+                    floor_map.set_enabled(active)
+                else:
+                    floor_map.set_layer_active(layer, active)
                 self.set_screen('map_options')
                 return
             elif action.startswith('change_destination_'):

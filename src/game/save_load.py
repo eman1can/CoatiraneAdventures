@@ -213,12 +213,10 @@ def save_game(save_slot, game_content):
     save_file['inventory'] = inventory
     save_file['map_data'] = {}
     for floor in game_content['floors'].values():
-        explored_jsoned = {}
-        explored = floor.get_map().get_explored()
-        print(explored.keys())
-        # for node, shown in explored.items():
-        #     explored_jsoned[str(node)] = shown
-        save_file['map_data'][str(floor.get_id())] = explored_jsoned
+        explored_array = {}
+        for node, discovered in floor.get_map().get_explored().items():
+            explored_array[str(node)] = discovered
+        save_file['map_data'][str(floor.get_id())] = explored_array
 
     save_file['varenth'] = varenth
     parties = [game_content.get_current_party_index()]

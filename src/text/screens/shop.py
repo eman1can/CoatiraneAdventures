@@ -319,8 +319,8 @@ def do_transaction(item_id, count, selling):
         Refs.gc.add_to_inventory('path_' + item_id[len('full_'):])
     if item_id.startswith('path_map'):
         floor_id = int(item_id[len('path_map_floor_'):])
-        Refs.gc.get_floor(floor_id).get_floor_map().unlock_path_map()
+        Refs.gc.get_floor(floor_id).get_map().unlock_path_map()
     elif item_id.startswith('full_map'):
         floor_id = int(item_id[len('full_map_floor_'):])
-        Refs.gc.get_floor(floor_id).get_floor_map().unlock_full_map()
+        Refs.gc.get_floor(floor_id).get_map().unlock_full_map()
     return True

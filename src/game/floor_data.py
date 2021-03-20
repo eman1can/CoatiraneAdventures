@@ -9,6 +9,8 @@ COORDS = {W: (-1, 0), N: (0, -1), E: (1, 0), S: (0, 1)}
 STRING_DIRECTIONS = {N: 'North', E: 'East', S: 'South', W: 'West'}
 DIRECTIONS_FROM_STRING = {'North': N, 'East': E, 'South': S, 'West': W}
 OPPOSITE = {N: S, S: N, W: E, E: W}
+RIGHT = {N: E, E: S, S: W, W: N}
+LEFT = {N: W, W: S, S: E, E: N}
 INDEX_TO_STRING = ['Surface', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth',
                    'twentieth', 'twenty-first', 'twenty-second']
 DIR_INDEX = {N: 0, E: 1, S: 2, W: 3}
@@ -22,7 +24,6 @@ class FloorData:
         # Check generated nodes
         # - If generated nodes are out of date, generate new ones
         node_data = Refs.gc.load_floor_node_data(self._floor)
-        print(node_data)
         self._floor.get_map().update_markers(node_data)
 
         # Keep track of which NEW nodes we have found
@@ -118,8 +119,8 @@ class FloorData:
         for character in self._adventurers:
             character.walk()
 
-        for character in self._adventurers:
-            print(character.get_name(), 'Stamina is', character.get_stamina())
+        # for character in self._adventurers:
+        #     print(character.get_name(), 'Stamina is', character.get_stamina())
 
     def get_descriptions(self):
         last_node, current_node = self._floor.get_map().get_saved_nodes()

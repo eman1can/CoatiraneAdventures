@@ -26,7 +26,6 @@ def load_dict(string):
 
 def load_array(string):
     array = []
-    print(string)
     if string == '[]':
         return array
     string = string[2:-1].replace('[', '(')

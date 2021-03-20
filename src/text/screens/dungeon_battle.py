@@ -1,11 +1,10 @@
 from random import randint
 
 from game.floor import ENTRANCE, EXIT, SAFE_ZONES
-from game.floor_data import DIRECTIONS_FROM_STRING, E, N, S, W
+from game.floor_data import DIRECTIONS_FROM_STRING, E, LEFT, N, OPPOSITE, RIGHT, S, STRING_DIRECTIONS, W
 from refs import BLUE_C, END_OPT_C, OPT_C, RED_C, Refs, SEA_FOAM_C
 
 COUNT_TO_STRING = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
-DIRECTION_TO_INDEX = {'North': 8, 'East': 6, 'South': 2, 'West': 4}
 
 
 def get_plain_size(string):
@@ -46,7 +45,7 @@ def rjust(string, length, size):
 def get_tunnel_descriptions(floor_data):
     floor_map = floor_data.get_floor().get_map()
     facing, options = floor_data.get_directions()
-    display_string, option_index, _options = '', 0, {}
+    display_string, _options = '', {}
 
     compass = Refs.gc.in_inventory('compass')
 
@@ -60,82 +59,83 @@ def get_tunnel_descriptions(floor_data):
             display_string = f'\n\tCurrently facing: South\n'
         elif facing == W:
             display_string = f'\n\tCurrently facing: West\n'
-
     # Get possible options
     display_string += '\n\t' + floor_data.get_descriptions()
     display_string += '\n\tWhat do you choose to do?'
 
     # Ascend or descend
     if floor_map.is_marker(EXIT):
-        display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Descend to the next floor'
-        _options[str(option_index)] = 'dungeon_battle_descend'
-        option_index += 1
+        display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Descend to the next floor'
+        _options['0'] = 'dungeon_battle_descend'
     elif floor_map.is_marker(ENTRANCE):
-        display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Turn back and ascend.'
-        _options[str(option_index)] = 'dungeon_battle_ascend'
-        option_index += 1
+        display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Turn back and ascend.'
+        _options['0'] = 'dungeon_battle_ascend'
 
     # Walk in different directions
     display_string += '\n'
 
-    for direction in options:
-        if compass:
-            display_string += f'\n\t{OPT_C}{DIRECTION_TO_INDEX[direction]}:{END_OPT_C} Proceed {direction}, {floor_data.get_basic_direction(direction)} down the hallway.'
-            _options[str(DIRECTION_TO_INDEX[direction])] = f'dungeon_battle_{direction}'
-        else:
-            display_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Proceed {floor_data.get_basic_direction(direction)} down the hallway.'
-            _options[str(option_index)] = f'dungeon_battle_{direction}'
-        option_index += 1
-
+    # If we have compass, order = N E S W
+    # Else, order = FACING, !FACING, LEFT, RIGHT
+    if compass:
+        for index, direction in {8: 'North', 4: 'West', 6: 'East', 2: 'South'}.items():
+            if direction in options:
+                display_string += f'\n\t{OPT_C}{index}:{END_OPT_C} Proceed {direction}, {floor_data.get_basic_direction(direction)} down the hallway.'
+                _options[str(index)] = f'dungeon_battle_{direction}'
+    else:
+        for index, direction_number in {3: facing, 4: OPPOSITE[facing], 5: LEFT[facing], 6: RIGHT[facing]}.items():
+            direction = STRING_DIRECTIONS[direction_number]
+            if direction in options:
+                display_string += f'\n\t{OPT_C}{index}:{END_OPT_C} Proceed {floor_data.get_basic_direction(direction)} down the hallway.'
+                _options[str(index)] = f'dungeon_battle_{direction}'
+    display_string += '\n'
     return display_string, _options
 
 
-def get_extra_actions(global_options, floor_data):
+def get_extra_actions(floor_data):
     text, options = '', {}
 
-    option_index = 0
-    while str(option_index) in global_options:
-        option_index += 1
+    compass = Refs.gc.in_inventory('compass')
+
+    if compass:
+        inventory_index = 5
+        safe_zone_index = 1
+        action_index1 = 7
+        action_index2 = 9
+    else:
+        inventory_index = 1
+        safe_zone_index = 7
+        action_index1 = 8
+        action_index2 = 9
+
+    text += f'\n\t{OPT_C}{inventory_index}:{END_OPT_C} Inventory\n'
+    options[str(inventory_index)] = 'inventory_battle'
+
+    safe_zone = floor_data.get_floor().get_map().is_marker(SAFE_ZONES)
+    activated_safe_zone = floor_data.is_activated_safe_zone()
+
+    if safe_zone and not activated_safe_zone:
+        text += f'\n\n\t{OPT_C}{safe_zone_index}:{END_OPT_C} Create Safe Zone'
+        options[str(safe_zone_index)] = 'dungeon_battle_create_safe_zone'
+
+    if activated_safe_zone:
+        text += f'\n\n\t{OPT_C}{safe_zone_index}:{END_OPT_C} Rest'
+        options[str(safe_zone_index)] = 'dungeon_battle_rest'
 
     adventurers_able = False
     for character in floor_data.get_characters():
         if character.can_take_action():
             adventurers_able = True
+
     pickaxe = False  # Refs.gc.has_pickaxe()
     shovel = False  # Refs.gc.has_shovel()
     if adventurers_able:
         if pickaxe:
-            text += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Inspect the dungeon walls. (Mine for resource)'
-            options[str(option_index)] = 'dungeon_battle_mine'
-            option_index += 1
-            while str(option_index) in global_options:
-                option_index += 1
+            text += f'\n\n\t{OPT_C}{action_index1}:{END_OPT_C} Inspect the dungeon walls. (Mine for resource)'
+            options[str(action_index1)] = 'dungeon_battle_mine'
         if shovel:
-            text += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Inspect the dungeon environment. (Dig and Scrounge for resource)'
-            options[str(option_index)] = 'dungeon_battle_dig'
-            option_index += 1
-            while str(option_index) in global_options:
-                option_index += 1
+            text += f'\n\n\t{OPT_C}{action_index2}:{END_OPT_C} Inspect the dungeon environment. (Dig and Scrounge for resource)'
+            options[str(action_index2)] = 'dungeon_battle_dig'
 
-    # Detect if we are in a safe zone. If we are in a save zone, add option to create a safe zone.
-    # If we are in a made safe zone, then add option for rest
-    safe_zone = floor_data.get_floor().get_map().is_marker(SAFE_ZONES)
-    activated_safe_zone = floor_data.is_activated_safe_zone()
-    if safe_zone and not activated_safe_zone:
-        text += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Create Safe Zone'
-        options[str(option_index)] = 'dungeon_battle_create_safe_zone'
-        option_index += 1
-        while str(option_index) in global_options:
-            option_index += 1
-    if activated_safe_zone:
-        text += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Rest'
-        options[str(option_index)] = 'dungeon_battle_rest'
-        option_index += 1
-        while str(option_index) in global_options:
-            option_index += 1
-
-    text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Inventory\n'
-    options[str(option_index)] = 'inventory_battle'
     return text, options
 
 
@@ -341,31 +341,63 @@ def dungeon_battle(console):
 
     if not floor_data.is_in_encounter():
         display_string, _options = get_tunnel_descriptions(floor_data)
-        tool_string, tool_options = get_extra_actions(_options, floor_data)
-        display_string += tool_string
+        tool_string, tool_options = get_extra_actions(floor_data)
+
         _options.update(tool_options)
 
-        option_index = 0
-        while str(option_index) in _options:
-            option_index += 1
+        compass = Refs.gc.in_inventory('compass')
+
+        if compass:
+            map_index = 3
+        else:
+            map_index = 2
+
+        # If we have compass, then
+        # 0 - Ascend / Descend
+        # 2 - South
+        # 4 - West
+        # 6 - East
+        # 8 - North
+        # 3 - Map Options
+        # 5 - Inventory
+        # 1 - Create Safe Zone / Rest
+        # 7 - Mine
+        # 9 - Dig
+        # Else
+        # 0 - Ascend / Descend
+        # 3 - Forwards
+        # 4 - Backwards
+        # 5 - Left
+        # 6 - Right
+        # 2 - Map Options
+        # 1 - Inventory
+        # 7 - Extra Action 1
+        # 8 - Extra Action 2
+        # 9 - Extra Action 3
 
         # Get map and display it
-        map_rows = floor_data.get_floor().get_map().get_rows()
-        display_string_rows = display_string.split('\n')
-        display_string = ''
-        for x in range(len(display_string_rows)):
-            if x < len(map_rows):
-                row = display_string_rows[x].replace('\t', '    ')
-                display_string += ljust(row, get_plain_size(row), 140) + '[font=CourierNew]' + map_rows[x] + '\n'
+        floor_map = floor_data.get_floor().get_map()
+        if floor_map.get_enabled():
+            display_string_rows = (display_string + tool_string).split('\n')
+            map_rows = floor_map.get_rows()
+            display_string = ''
+
+            for x in range(len(display_string_rows)):
+                if x < len(map_rows):
+                    row = display_string_rows[x].replace('\t', '    ')
+                    display_string += ljust(row, get_plain_size(row), 140) + '[font=CourierNew]' + map_rows[x] + '\n'
+                else:
+                    display_string += display_string_rows[x] + '\n'
+
+            if len(display_string_rows) < len(map_rows):
+                for x in range(len(display_string_rows), len(map_rows)):
+                    display_string += ljust('', 0, 140) + '[font=CourierNew]' + map_rows[x] + '\n'
+                display_string += ljust('', 0, 140) + f'       {OPT_C}{map_index}:{END_OPT_C} Map Options'
             else:
-                display_string += display_string_rows[x] + '\n'
-        if len(display_string_rows) < len(map_rows):
-            for x in range(len(display_string_rows), len(map_rows)):
-                display_string += ljust('', 0, 140) + '[font=CourierNew]' + map_rows[x] + '\n'
-            display_string += ljust('', 0, 140) + f'       {OPT_C}{option_index}:{END_OPT_C} Map Options'
+                display_string += ljust('', 0, 140) + f'       {OPT_C}{map_index}:{END_OPT_C} Map Options'
         else:
-            display_string += ljust('', 0, 140) + f'       {OPT_C}{option_index}:{END_OPT_C} Map Options'
-        _options[str(option_index)] = 'dungeon_battle_map_options'
+            display_string = display_string + f'\n\t{OPT_C}{map_index}:{END_OPT_C} Map Options\n' + tool_string
+        _options[str(map_index)] = 'dungeon_battle_map_options'
         return display_string, _options
     else:
         display_string = '\n\t' + floor_data.get_descriptions()
@@ -429,7 +461,7 @@ def dungeon_result(console):
         _options = {'0': 'dungeon_battle_restore_save'}
     elif console.get_current_screen().endswith('ascend'):
         floor_data = Refs.gc.get_floor_data()
-        if floor_data.get_id() > 1:
+        if floor_data.get_floor().get_id() > 1:
             return show_locked_dungeon_main()
         else:
             display_string = '\n\tYou successfully escaped the dungeon!\n\n\t'
@@ -565,7 +597,7 @@ def dungeon_battle_action(console, action):
         return
     elif action == 'North' or action == 'East' or action == 'South' or action == 'West':
         floor_data = Refs.gc.get_floor_data()
-        print('Go ', action)
+        # print('Go ', action)
         floor_data.progress_by_direction(DIRECTIONS_FROM_STRING[action])
 
         # On floor 1, there are 47 nodes to the next floor.
