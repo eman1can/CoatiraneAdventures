@@ -352,29 +352,6 @@ def dungeon_battle(console):
         else:
             map_index = 2
 
-        # If we have compass, then
-        # 0 - Ascend / Descend
-        # 2 - South
-        # 4 - West
-        # 6 - East
-        # 8 - North
-        # 3 - Map Options
-        # 5 - Inventory
-        # 1 - Create Safe Zone / Rest
-        # 7 - Mine
-        # 9 - Dig
-        # Else
-        # 0 - Ascend / Descend
-        # 3 - Forwards
-        # 4 - Backwards
-        # 5 - Left
-        # 6 - Right
-        # 2 - Map Options
-        # 1 - Inventory
-        # 7 - Extra Action 1
-        # 8 - Extra Action 2
-        # 9 - Extra Action 3
-
         # Get map and display it
         floor_map = floor_data.get_floor().get_map()
         if floor_map.get_enabled():
@@ -596,16 +573,7 @@ def dungeon_battle_action(console, action):
         console.set_screen('dungeon_main')
         return
     elif action == 'North' or action == 'East' or action == 'South' or action == 'West':
-        floor_data = Refs.gc.get_floor_data()
-        # print('Go ', action)
-        floor_data.progress_by_direction(DIRECTIONS_FROM_STRING[action])
-
-        # On floor 1, there are 47 nodes to the next floor.
-        # I want people to encounter maybe 5-6 roaving hordes of monsters.
-        # Therefore, a 0.15% Chance is decent, I think
-
-        # if randint(1, 100) <= 15:
-        #     floor_data.generate_encounter()
+        Refs.gc.get_floor_data().progress_by_direction(DIRECTIONS_FROM_STRING[action])
 
     elif action.startswith('encounter'):
         action = action[len('encounter_'):]
@@ -649,11 +617,13 @@ def dungeon_battle_action(console, action):
         for character in floor_data.get_characters():
             character.rest()
         floor_data.decrease_safe_zones()
+        floor_data.increase_rest_count()
     elif action == 'mine':
         floor_data = Refs.gc.get_floor_data()
         index = randint(0, len(floor_data.get_characters()) - 1)
         character = floor_data.get_characters()[index]
         character.take_action()
+        floor_data.increase_rest_count(2)
         console.set_screen(f'dungeon_mine_result_{character.get_id()}')
         return
     elif action == 'dig':
@@ -661,6 +631,7 @@ def dungeon_battle_action(console, action):
         index = randint(0, len(floor_data.get_characters()) - 1)
         character = floor_data.get_characters()[index]
         character.take_action()
+        floor_data.increase_rest_count(2)
         console.set_screen(f'dungeon_dig_result_{character.get_id()}')
         return
     elif action == 'map_options':
@@ -675,3 +646,4 @@ def dungeon_mine_result(console):
     character = Refs.gc.get_char_by_id(character_id)
 
     display_string += '\n\t' + character.get_name() + ' mined as hard as they could '
+    # If we are standing on a node, then increase chance of drop by a rarity bracket.

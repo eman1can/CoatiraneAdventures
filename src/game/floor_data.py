@@ -1,3 +1,5 @@
+from random import randint
+
 from game.battle_character import create_battle_character
 from game.battle_data import BattleData
 from game.floor import ENTRANCE, EXIT
@@ -23,8 +25,7 @@ class FloorData:
 
         # Check generated nodes
         # - If generated nodes are out of date, generate new ones
-        node_data = Refs.gc.load_floor_node_data(self._floor)
-        self._floor.get_map().update_markers(node_data)
+        self._floor.get_map().update_markers(*Refs.gc.load_floor_node_data(self._floor))
 
         # Keep track of which NEW nodes we have found
         self._explored = []
@@ -38,6 +39,7 @@ class FloorData:
         self._last_direction = None
 
         self._activated_safe_zones = {}
+        self._rest_count = 0
 
         self._in_encounter = False
         self._battle_data = None
@@ -91,6 +93,9 @@ class FloorData:
     def activate_safe_zone(self):
         self._activated_safe_zones[self._floor.get_map().get_current_node()] = 5
 
+    def increase_rest_count(self, count=1):
+        self._rest_count += count
+
     def decrease_safe_zones(self):
         remove_keys = []
         for key in self._activated_safe_zones.keys():
@@ -101,15 +106,16 @@ class FloorData:
             self._activated_safe_zones.pop(key)
 
     def progress_by_direction(self, direction):
+        floor_map = self._floor.get_map()
         dx, dy = COORDS[direction]
-        x, y = self._floor.get_map().get_current_node()
+        x, y = floor_map.get_current_node()
         next_node = (x + dx, y + dy)
 
         self._last_direction = self._current_direction
         self._current_direction = direction
 
         # Do map exploration
-        if self._floor.get_map().set_current_node(next_node):
+        if floor_map.set_current_node(next_node):
             self._explored.append(next_node)
 
         # Detract from safe zone times
@@ -121,6 +127,33 @@ class FloorData:
 
         # for character in self._adventurers:
         #     print(character.get_name(), 'Stamina is', character.get_stamina())
+
+        # On movement, 15% chance for encounter
+        # On node, chance +50%
+        # For every rest count, chance + 20%
+        # For every time you mine / dig, chance +40%
+        if (x, y) not in self._activated_safe_zones:
+            chance = 15
+            node = None
+            for enemy in self._floor.get_enemies():
+                if floor_map.is_marker(enemy.get_id()):
+                    node = enemy.get_id()
+                    chance += 50
+                    break
+            chance += 20 * self._rest_count
+            self._rest_count = 0
+            if randint(1, 100) < min(100, chance):
+                self.generate_encounter(node)
+                if node is not None:
+                    # If we are standing on a node, and we get that enemy generated, reduce positions counter
+                    for enemy in self._battle_data.get_enemies():
+                        if enemy.get_id() == node:
+                            nodes, counters = floor_map.get_node_exploration()
+                            counters[(x, y)] -= 1
+                            if counters[(x, y)] == 0:
+                                counters.pop((x, y))
+                                nodes[(x, y)] = True
+                            break
 
     def get_descriptions(self):
         last_node, current_node = self._floor.get_map().get_saved_nodes()
@@ -316,7 +349,7 @@ class FloorData:
         self._battle_data = None
         # Clear status effects from characters
 
-    def generate_encounter(self):
+    def generate_encounter(self, node_type):
         self._in_encounter = True
         adventurers = []
         supporters = []
@@ -327,7 +360,7 @@ class FloorData:
                     supporters.append(self._supporters[index])
         self._battle_data = BattleData(adventurers, supporters, self._special_amount)
         self._battle_data.set_state('start')
-        self._battle_data.set_enemies(self._floor.generate_enemies())
+        self._battle_data.set_enemies(self._floor.generate_enemies(node_type))
 
     # The characters keep the same special skill charge, health, mana, and status effects encounter to encounter
     def _generate_characters(self):

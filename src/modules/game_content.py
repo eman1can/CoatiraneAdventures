@@ -98,7 +98,9 @@ class GameContent:
         # TODO: Set locks based on save data
         # Load map data into floors
         for floor_id in save_data['map_data']:
-            self._data['floors'][int(floor_id)].get_map().create_current_map(save_data['map_data'][floor_id])
+            floor_map = self._data['floors'][int(floor_id)].get_map()
+            floor_map.create_current_map(save_data['map_data'][floor_id])
+            floor_map.load_node_exploration(save_data['map_node_data'][floor_id], save_data['map_node_counters'][floor_id])
 
     def set_current_housing(self, housing):
         self._current_housing = housing

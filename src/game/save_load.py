@@ -111,8 +111,9 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_file['parties'] = [0] + [[None for _ in range(16)] for _ in range(10)]
     save_file['map_data'] = {}
     for floor in range(60):
-        explored_jsoned = {}
-        save_file['map_data'][str(floor)] = explored_jsoned
+        save_file['map_data'][str(floor)] = {}
+        save_file['map_node_data'][str(floor)] = {}
+        save_file['map_node_counters'][str(floor)] = {}
 
     # - Obtained Characters (all, s, & a)
     # - Character Rank Info and Growth, Grid Progress
@@ -212,11 +213,24 @@ def save_game(save_slot, game_content):
         inventory[item.get_id()] = game_content.get_inventory_count(item.get_id())
     save_file['inventory'] = inventory
     save_file['map_data'] = {}
+    save_file['map_node_data'] = {}
+    save_file['map_node_counters'] = {}
     for floor in game_content['floors'].values():
         explored_array = {}
         for node, discovered in floor.get_map().get_explored().items():
             explored_array[str(node)] = discovered
         save_file['map_data'][str(floor.get_id())] = explored_array
+
+        explored_nodes, explored_node_counters = floor.get_map().get_node_exploration()
+        explored_array = {}
+        explored_counter_array = {}
+        for node, discovered in explored_nodes.items():
+            explored_array[str(node)] = discovered
+            if not discovered:
+                explored_counter_array[str(node)] = explored_node_counters[node]
+        save_file['map_node_data'][str(floor.get_id())] = explored_array
+        save_file['map_node_counters'][str(floor.get_id())] = explored_counter_array
+
 
     save_file['varenth'] = varenth
     parties = [game_content.get_current_party_index()]
@@ -277,7 +291,7 @@ def generate_data(file_path, floor):
 
     generated_nodes = []
     # Blacklist entrance, exit and safe zones
-    for marker_type, routes in floor.get_markers().items():
+    for marker_type, routes in floor.get_map().get_markers().items():
         if marker_type in ['exit', 'entrance', 'safe_zones']:
             generated_nodes += routes
 
@@ -313,9 +327,9 @@ def load_floor_data(save_slot, floor):
         mkdir(path)
     file_path = path + str(floor.get_id()) + '.json'
     if not exists(file_path):
-        return generate_data(file_path, floor)
+        return generate_data(file_path, floor), True
     else:
         data = JsonStore(file_path)
         if time() - data.get('save_time') > SECONDS_IN_WEEK:
-            return generate_data(file_path, floor)
-        return get_arrays(data)
+            return generate_data(file_path, floor), True
+        return get_arrays(data), False

@@ -1,3 +1,4 @@
+from game.floor import ENTRANCE, EXIT, SAFE_ZONES
 from refs import END_OPT_C, OPT_C, Refs
 
 
@@ -8,7 +9,19 @@ def map_options(console):
     enabled = floor_map.get_enabled()
     path = floor_map.layer_active('path')
     current_path = floor_map.get_current_path()
-    layers = floor_map.get_markers().keys()
+
+    layers = []
+    explored_nodes, explored_counters = floor_map.get_node_exploration()
+    for layer, nodes in floor_map.get_markers().items():
+        if layer in [ENTRANCE, EXIT, SAFE_ZONES]:
+            layers.append(layer)
+            continue
+        count = 0
+        for node in nodes:
+            if explored_nodes[node]:
+                count += 1
+        if count > 0:
+            layers.append(layer)
 
     if console.get_current_screen() == 'map_options_change_destination':
         display_text += '\n\tChoose a destination to map to.\n'
@@ -32,15 +45,12 @@ def map_options(console):
     display_text += current_path.replace('_', ' ').upper()
     display_text += '\n\n\tMap Layers'
 
-    if len(layers) == 0:
-        display_text += '\n\t\tNo Layers'
-    else:
-        for index, layer in enumerate(layers):
-            name = layer.replace('_', ' ').title()
-            display_text += f'\n\t\t{OPT_C}{index + 4}:{END_OPT_C} {name}'
-            active = floor_map.layer_active(layer)
-            display_text += ' - ON' if active else ' - OFF'
-            _options[str(index + 4)] = f'map_options_toggle_{layer}_{not active}'
+    for index, layer in enumerate(layers):
+        name = layer.replace('_', ' ').title()
+        display_text += f'\n\t\t{OPT_C}{index + 4}:{END_OPT_C} {name}'
+        active = floor_map.layer_active(layer)
+        display_text += ' - ON' if active else ' - OFF'
+        _options[str(index + 4)] = f'map_options_toggle_{layer}_{not active}'
 
     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
     _options['0'] = 'back'

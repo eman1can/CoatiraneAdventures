@@ -124,7 +124,8 @@ class Floor:
     #                     num -= (self.probabilities[y] * self.PERCENT100)
     #         return enemies
 
-    def generate_enemies(self):
+    def generate_enemies(self, node_type):
+        #TODO Chance to 1-5 rarity
         minimum = int(self._max_enemies * 0.25)
         if not minimum >= 1:
             minimum = 1
@@ -174,11 +175,28 @@ class Map:
         for node in list(self._nodes.keys()):
             self._explored[node] = False
 
+        # Explored nodes
+        self._explored_nodes = {}
+        self._explored_node_counters = {}
+
     def get_enabled(self):
         return self._enabled
 
     def set_enabled(self, enabled):
         self._enabled = enabled
+
+    # Explored nodes
+    def load_node_exploration(self, explored_nodes, explored_node_counters):
+        self._explored_nodes = {}
+        self._explored_node_counters = {}
+        for node, shown in explored_nodes.items():
+            x, y = node[1:-1].split(', ')
+            self._explored_nodes[(int(x), int(y))] = shown
+            if not shown:
+                self._explored_node_counters[(int(x), int(y))] = explored_node_counters[node]
+
+    def get_node_exploration(self):
+        return self._explored_nodes, self._explored_node_counters
 
     # Create the map from an explored array
     def create_current_map(self, explored):
@@ -190,10 +208,18 @@ class Map:
         self._map_data = MapData(self._width, self._size, self._full_map, self._explored)
 
     # Add node data marker to markers
-    def update_markers(self, node_data):
+    def update_markers(self, node_data, generated):
+        if generated:
+            self._explored_nodes = {}
+            self._explored_node_counters = {}
+            for marked_nodes in node_data.values():
+                for marked_node in marked_nodes:
+                    self._explored_nodes[marked_node] = False
+                    self._explored_node_counters[marked_node] = 3
+            # Clear bought / obtained node maps from inventory
         for marker, nodes in node_data.items():
             self._markers[marker] = nodes
-            self._layers[marker] = False
+            self._layers[marker] = True
         # Refresh marker color displays
         self._check_markers()
 
@@ -329,6 +355,8 @@ class Map:
                     route.pop()
                 else:
                     route.append(self._current_node)
+                if layer == 'kobold':
+                    print(route)
 
         self._calculate_path()
 
@@ -344,7 +372,7 @@ class Map:
             shortest_key = list(self._path_solutions[self._current_path].keys())[0]
             shortest = len(self._path_solutions[self._current_path][shortest_key])
             for route_end, route in self._path_solutions[self._current_path].items():
-                if self._explored[route_end]:
+                if self._explored[route_end] and (self._current_path in [EXIT, ENTRANCE, SAFE_ZONES] or self._explored_nodes[route_end]):
                     if len(route) < shortest:
                         shortest = len(route)
                         shortest_key = route_end
@@ -377,6 +405,7 @@ class Map:
             routes = {}
             for route_end in self._markers[self._current_path]:
                 routes[route_end] = list(reversed(self.solve_path(0, self._current_node, route_end, self._nodes)[1:]))
+                print(routes[route_end])
             self._path_solutions[self._current_path] = routes
         # Show the shortest route
         self._calculate_path()
@@ -387,34 +416,35 @@ class Map:
     # Check markers for a specific node
     def _check_marker_color(self, node):
         for layer, routes in self._markers.items():
-            if self._layers[layer] and node in routes:
-                if self._map_data.get_color(*node) != CURRENT_COLOR:
-                    self._map_data.color_node(*node, MARKER_COLORS[layer])
-                else:
-                    self._current_prev_color = MARKER_COLORS[layer]
+            if self._layers[layer] and node in routes and (layer in [EXIT, ENTRANCE, SAFE_ZONES] or self._explored_nodes[node]):
+                self._set_marker_color(node, layer)
 
     # Color all markers
     def _check_markers(self):
         for layer, nodes in self._markers.items():
-            if not self._layers[layer]:
-                for node in nodes:
-                    # If a node is colored, clear if not path or current
-                    if self._map_data.get_color(*node) != PATH_COLOR:
-                        if self._map_data.get_color(*node) == CURRENT_COLOR:
-                            self._current_prev_color = None
-                            continue
-                        # If node WAS a path coloring, restore color
-                        if self._shortest_key is not None and node in self._path_solutions[self._current_path][self._shortest_key]:
-                            self._map_data.color_node(*node, PATH_COLOR)
-                        else:
-                            self._map_data.color_node(*node, None)
+            for node in nodes:
+                if not self._layers[layer]:
+                    self._clear_marker_color(node)
+                elif layer in [EXIT, ENTRANCE, SAFE_ZONES] or self._explored_nodes[node]:
+                    self._set_marker_color(node, layer)
+
+    def _set_marker_color(self, node, layer):
+        if self._map_data.get_color(*node) != CURRENT_COLOR:
+            self._map_data.color_node(*node, MARKER_COLORS[layer])
+        else:
+            self._current_prev_color = MARKER_COLORS[layer]
+
+    def _clear_marker_color(self, node):
+        # If a node is colored, clear if not path or current
+        if self._map_data.get_color(*node) != PATH_COLOR:
+            if self._map_data.get_color(*node) == CURRENT_COLOR:
+                self._current_prev_color = None
+                return
+            # If node WAS a path coloring, restore color
+            if self._shortest_key is not None and node in self._path_solutions[self._current_path][self._shortest_key]:
+                self._map_data.color_node(*node, PATH_COLOR)
             else:
-                # Overwrite any path coloring but not current
-                for node in nodes:
-                    if self._map_data.get_color(*node) != CURRENT_COLOR:
-                        self._map_data.color_node(*node, MARKER_COLORS[layer])
-                    else:
-                        self._current_prev_color = MARKER_COLORS[layer]
+                self._map_data.color_node(*node, None)
 
     @staticmethod
     def solve_path(last, start, end, nodes):
