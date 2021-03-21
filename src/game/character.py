@@ -13,7 +13,7 @@ CHARACTER_TYPE_INDEX_TO_STRING = ['Physical', 'Magical', 'Hybrid', 'Defensive', 
 
 
 class Character(Entity):
-    def __init__(self, name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, dexterity, agility, element, moves, **kwargs):
+    def __init__(self, name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, agility, dexterity, element, moves, **kwargs):
         # Values set by kwargs
         self._display_name = ''
         self._family = ''
@@ -60,7 +60,7 @@ class Character(Entity):
         if not self._is_support:
             moves[6].set_special()
 
-        super().__init__(name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, dexterity, agility, element, moves)
+        super().__init__(name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, agility, dexterity, element, moves)
 
         self.refresh_stats()
 

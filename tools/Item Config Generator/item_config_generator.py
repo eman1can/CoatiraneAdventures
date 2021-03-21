@@ -1,3 +1,4 @@
+from math import sqrt
 from random import choices, randint
 from time import time
 
@@ -7,10 +8,16 @@ import numpy as np
 compass = 'S, compass, Compass, general, single, 375\nnone\nHave trouble getting lost? Buy a compass and never get lost again!'
 pocket_watch = 'S, pocket_watch, Pocket Watch, general, single, 375\nnone\nKeep losing track of time? Buy a watch and always know the time!'
 
+floor_hardnesses = {'1': 1.0, '2': 1.0, '3': 1.5, '4': 1.5, '5': 2.0, '6': 2.0, '7': 2.5, '8': 3.0, '9': 3.0, '10': 3.0, '11': 3.5, '12': 3.5, '13': 3.5, '14': 4.0, '15': 4.5, '16': 4.5, '17': 5.0, '18': 5.0, '19': 5.5, '20': 5.5, '21': 6.0, '22': 6.0, '23': 6.5, '24': 6.5, '25': 7.0, '26': 7.0, '27': 7.0, '28': 7.5, '29': 7.5, '30': 7.5, '31': 8.0, '32': 8.0, '33': 8.0, '34': 8.5, '35': 8.5, '36': 8.5, '37': 9.0, '38': 9.0, '39': 9.0, '40': 9.5, '41': 9.5, '42': 9.5, '43': 10.0, '44': 10.5, '45': 11.0, '46': 11.5, '47': 12.0, '48': 12.5, '49': 13.0, '50': 13.0, '51': 13.5, '52': 13.5, '53': 14.0, '54': 14.0, '55': 14.5, '56': 14.5, '57': 15.0, '58': 15.0, '59': 15.5, '60': 16.0}
+
 tool_types = ['harvesting_knife', 'pickaxe', 'shovel', 'axe']
 soft_materials = ['Cloth 0.5', 'Padded 0.75', 'Leather 1', 'Hardened Leather 1.5']
 hard_materials = [
     'Tin 1.5',
+    'Cadmium 2.0',
+    'Coal 2.0-2.5',
+    'Zinc 2.5',
+    'Silver 2.5-3.0',
     'Copper 3.0',
     'Iron 4.5',
     'Platinum 4.0-4.5',
@@ -96,7 +103,8 @@ gems = [
     'Tiger eye 7.0',
     'Titanite 5.0-5.5',
     'Tsavorite 7.0-7.5',
-    'Zoisite 6.0-6.5']
+    'Zoisite 6.0-6.5',
+    'Diamond 10.0']
 
 magic_stone_types = ['tiny', 'small', 'medium', 'regular', 'large', 'huge']
 falna_types = ['strength', 'magic', 'endurance', 'dexterity', 'agility']
@@ -152,10 +160,10 @@ for traveled_nodes in visit_times:
 map_types = ['path_map', 'full_map', 'safe_zone_map']
 
 enemies = ['goblin', 'kobold', 'jack_bird', 'dungeon_lizard', 'frog_shooter', 'war_shadow', 'killer_ant', 'purple_moth', 'needle_rabbit', 'blue_papilio',
-           'orc', 'imp', 'bad_bat', 'hard_armored', 'infant_dragon', 'silverback', 'black_wyvern', 'wyvern', 'crystal_mantis', 'lamia mormos', 'hellhound',
+           'orc', 'imp', 'bad_bat', 'hard_armored', 'infant_dragon', 'silverback', 'black_wyvern', 'wyvern', 'crystal_mantis', 'lamia_mormos', 'hellhound',
            'almiraj', 'dungeon_worm', 'minotaur', 'lygerfang', 'bugbear', 'battle_boar', 'lizardman', 'firebird', 'vouivre',
            'mad_beetle', 'mammoth_fool', 'dark_fungus', 'gun_libellula', 'sword_stag', 'troll', 'deadly_hornet', 'bloody_hive', 'green_dragon',
-           'hobgoblin', 'viscum', 'moss huge', 'metal_rabbit', 'poison_vermis', 'raider_fish', 'harpy', 'siren', 'blue_crab', 'aqua_serpent',
+           'hobgoblin', 'viscum', 'moss_huge', 'metal_rabbit', 'poison_vermis', 'raider_fish', 'harpy', 'siren', 'blue_crab', 'aqua_serpent',
            'crystal_turtle', 'devil_mosquito', 'light_quartz', 'crystaroth_urchin', 'iguazu', 'mermaid', 'merman', 'kelpie', 'afanc', 'dodora',
            'lamia', 'voltimeria', 'bloodsaurus', 'power_bull', 'grand_treant', 'worm_well', 'spartoi', 'barbarian', 'lizardman_elite',
            'obsidian_soldier', 'skull_sheep', 'loup_garou', 'peluda', 'flame_rock', 'fomoire', 'black_rhino', 'deformis_spider', 'cadmus',
@@ -178,10 +186,10 @@ floor_spawns = {'floor_1': {'goblin': 1, 'kobold': 2, 'jack_bird': 5},
                 'floor_14': {'hard_armored': 1, 'silverback': 1, 'black_wyvern': 4, 'wyvern': 4, 'metal_rabbit': 1},
                 'floor_15': {'black_wyvern': 4, 'wyvern': 4, 'crystal_mantis': 3, 'hellhound': 1, 'metal_rabbit': 1},
                 'floor_16': {'black_wyvern': 4, 'wyvern': 4, 'crystal_mantis': 3, 'hellhound': 1, 'imp': 2, 'needle_rabbit': 1},
-                'floor_17': {'crystal_mantis': 3, 'wyvern': 4, 'lamia mormos': 3, 'hellhound': 1, 'almiraj': 1, 'imp': 2, 'needle_rabbit': 1},
-                'floor_18': {'crystal_mantis': 3, 'wyvern': 4, 'lamia mormos': 3, 'hellhound': 2, 'imp': 2, 'armarosaurus': 4},
-                'floor_19': {'wyvern': 4, 'lamia mormos': 2, 'hellhound': 1, 'almiraj': 1, 'imp': 2, 'poison_vermis': 4},
-                'floor_20': {'lamia mormos': 2, 'hellhound': 1, 'almiraj': 1, 'imp': 2, 'minotaur': 3, 'poison_vermis': 4},
+                'floor_17': {'crystal_mantis': 3, 'wyvern': 4, 'lamia_mormos': 3, 'hellhound': 1, 'almiraj': 1, 'imp': 2, 'needle_rabbit': 1},
+                'floor_18': {'crystal_mantis': 3, 'wyvern': 4, 'lamia_mormos': 3, 'hellhound': 2, 'imp': 2, 'armarosaurus': 4},
+                'floor_19': {'wyvern': 4, 'lamia_mormos': 2, 'hellhound': 1, 'almiraj': 1, 'imp': 2, 'poison_vermis': 4},
+                'floor_20': {'lamia_mormos': 2, 'hellhound': 1, 'almiraj': 1, 'imp': 2, 'minotaur': 3, 'poison_vermis': 4},
 
                 # The "Middle" Levels
                 'floor_21': {'dungeon_worm': 4, 'minotaur': 2, 'lygerfang': 1, 'bugbear': 1, 'hobgoblin': 1, 'flame_rock': 2, 'old_bison': 3, 'needle_rabbit': 2},
@@ -200,9 +208,9 @@ floor_spawns = {'floor_1': {'goblin': 1, 'kobold': 2, 'jack_bird': 5},
                 'floor_34': {'mammoth_fool': 1, 'dark_fungus': 1, 'gun_libellula': 1, 'deadly_hornet': 3, 'bloody_hive': 3, 'unicorn': 5, 'gryphon': 3},
                 'floor_35': {'dark_fungus': 2, 'gun_libellula': 1, 'sword_stag': 2, 'green_dragon': 3, 'hobgoblin': 2, 'unicorn': 5, 'ogre': 3},
                 'floor_36': {'dark_fungus': 2, 'gun_libellula': 1, 'sword_stag': 2, 'green_dragon': 4, 'hobgoblin': 2, 'dungeon_fly': 2, 'ogre': 3},
-                'floor_37': {'gun_libellula': 2, 'sword_stag': 1, 'green_dragon': 3, 'viscum': 3, 'moss huge': 2, 'metal_rabbit': 1, 'unicorn': 5},
-                'floor_38': {'gun_libellula': 1, 'sword_stag': 1, 'green_dragon': 3, 'hobgoblin': 1, 'viscum': 3, 'moss huge': 2, 'ogre': 2},
-                'floor_39': {'green_dragon': 2, 'hobgoblin': 1, 'viscum': 3, 'moss huge': 2, 'metal_rabbit': 1, 'poison_vermis': 3, 'unicorn': 4},
+                'floor_37': {'gun_libellula': 2, 'sword_stag': 1, 'green_dragon': 3, 'viscum': 3, 'moss_huge': 2, 'metal_rabbit': 1, 'unicorn': 5},
+                'floor_38': {'gun_libellula': 1, 'sword_stag': 1, 'green_dragon': 3, 'hobgoblin': 1, 'viscum': 3, 'moss_huge': 2, 'ogre': 2},
+                'floor_39': {'green_dragon': 2, 'hobgoblin': 1, 'viscum': 3, 'moss_huge': 2, 'metal_rabbit': 1, 'poison_vermis': 3, 'unicorn': 4},
 
                 # The "Water" Levels
                 'floor_40': {'raider_fish': 1, 'blue_crab': 1, 'devil_mosquito': 2, 'crystaroth_urchin': 3, 'afanc': 3, 'lamia': 2, 'vulture': 3, 'troll': 2},
@@ -449,27 +457,6 @@ file = open('monster_list.txt', 'r', encoding='utf-8')
 monster_list = file.read().split('\n\n')
 file.close()
 
-file = open('natural_materials.txt', 'r', encoding='utf-8')
-material_list = file.read().split('\n\n')
-file.close()
-natural_materials_found = {}
-gems_found = {}
-floor_hardnesses = {}
-for floor in material_list:
-    name, material_string, gem_string = floor.split('\n')
-    floor_id, hardness = name.split(' → Hardness ')
-    floor_hardnesses[floor_id[len('Floor '):]] = float(hardness)
-    material_list = material_string[len('   - '):].split(', ')
-    gem_list = gem_string[len('   - '):].split(', ')
-    for material in material_list:
-        if material not in natural_materials_found:
-            natural_materials_found[material] = []
-        natural_materials_found[material].append(int(floor_id[len('Floor '):]))
-    for gem in gem_list:
-        if gem not in gems_found:
-            gems_found[gem] = []
-        gems_found[gem].append(int(floor_id[len('Floor '):]))
-
 element_counts = {
     'None': 0,
     'Earth': 0,
@@ -515,21 +502,15 @@ for monster in monster_list:
                     soft = f'{floor_hardnesses[found_list[0]] * 2 / 3}'
                 else:
                     soft = f'{floor_hardnesses[found_list[0]] * 2 / 3}-{floor_hardnesses[found_list[-1]] * 2 / 3}'
-                # if soft != 'None' and soft != '':
                 materials_found[f'{name} {material_type.title()}'] = found_list
                 non_natural_soft_materials.append(f'{name} {material_type.title()} {soft}')
-                # else:
-                #     print('Error', name, 'soft')
             elif material_type in ['fang', 'claw', 'scale', 'horn']:
-                # if hard != 'None' and hard != '':
                 materials_found[f'{name} {material_type.title()}'] = found_list
                 if floor_hardnesses[found_list[0]] == floor_hardnesses[found_list[-1]]:
                     hard = f'{floor_hardnesses[found_list[0]]}'
                 else:
                     hard = f'{floor_hardnesses[found_list[0]]}-{floor_hardnesses[found_list[-1]]}'
                 non_natural_hard_materials.append(f'{name} {material_type.title()} {hard}')
-                # else:
-                #     print('Error', name, 'hard')
 print('Total Elements:', total_elements)
 for element, element_count in element_counts.items():
     print(element, element_count, '-', str(round(element_count / total_elements * 100, 2)) + '%')
@@ -568,10 +549,6 @@ class Material:
         return self.string.__hash__()
 
 
-materials_found.update(natural_materials_found)
-materials_found.update(gems_found)
-
-
 natural_hard_materials_by_hardness = []
 for material in hard_materials:
     natural_hard_materials_by_hardness.append(Material(material))
@@ -601,9 +578,13 @@ for material in gems:
     gems_by_hardness.append(Material(material))
 
 all_materials_by_hardness = hard_materials_by_hardness + soft_materials_by_hardness + gems_by_hardness
+metals_by_hardness = natural_hard_materials_by_hardness + alloy_hard_materials_by_hardness
+metals_and_gems_by_hardness = metals_by_hardness + gems_by_hardness
 
 natural_hard_materials_by_hardness.sort()
 alloy_hard_materials_by_hardness.sort()
+metals_by_hardness.sort()
+metals_and_gems_by_hardness.sort()
 monster_hard_materials_by_hardness.sort()
 hard_materials_by_hardness.sort()
 natural_soft_materials_by_hardness.sort()
@@ -611,6 +592,33 @@ monster_soft_materials_by_hardness.sort()
 soft_materials_by_hardness.sort()
 gems_by_hardness.sort()
 all_materials_by_hardness.sort()
+
+natural_hard_materials_found = {}
+gems_found = {}
+
+for material in natural_hard_materials_by_hardness:
+    natural_hard_materials_found[material.full_string] = []
+    min_hard, max_hard = material.get_numbers()
+    for floor, hardness in floor_hardnesses.items():
+        if min_hard <= float(hardness) <= max_hard + 1.5:
+            natural_hard_materials_found[material.full_string].append(int(floor))
+
+for material in alloy_hard_materials_by_hardness:
+    natural_hard_materials_found[material.full_string] = []
+    min_hard, max_hard = material.get_numbers()
+    for floor, hardness in floor_hardnesses.items():
+        if min_hard <= float(hardness) <= max_hard + 1.5:
+            natural_hard_materials_found[material.full_string].append(int(floor))
+
+for material in gems_by_hardness:
+    gems_found[material.full_string] = []
+    min_hard, max_hard = material.get_numbers()
+    for floor, hardness in floor_hardnesses.items():
+        if min_hard <= float(hardness) <= max_hard + 1.5:
+            gems_found[material.full_string].append(int(floor))
+
+materials_found.update(natural_hard_materials_found)
+materials_found.update(gems_found)
 
 # Write material list to output
 if False:
@@ -645,7 +653,7 @@ if False:
             write_material('hard', material, 'raw_', True, '', 'processed_', '')
 
 # Write drops and materials to item output
-if True:
+if False:
     with open('output.txt', 'w', encoding='utf-8') as file:
         def write_item(type, id, name, min_price, max_price, description, sell_type='multi'):
             if type == 'drop':
@@ -702,6 +710,64 @@ if True:
         # Write magic stones!
         for magic_stone in magic_stones:
             file.write(magic_stone + '\n')
+
+def get_hardness(start, x, y, minimum, maximum):
+    return round(minimum + (maximum - minimum) / (y - 1) * (x - start), 2)
+
+metals_by_floors = {}
+gems_by_floors = {}
+for floor in floor_spawns.keys():
+    fid = int(floor.split('_')[1])
+    metals_by_floors[fid] = {}
+    gems_by_floors[fid] = {}
+    for material in natural_hard_materials_by_hardness:
+        start = min(materials_found[material.full_string])
+        end = max(materials_found[material.full_string])
+        if start <= fid <= end:
+            minh, maxh = material.get_numbers()
+            hard = get_hardness(start, fid, end - start + 1, minh, maxh)
+            metals_by_floors[fid][material.full_string] = hard
+    for material in gems_by_hardness:
+        start = min(materials_found[material.full_string])
+        end = max(materials_found[material.full_string])
+        if start <= fid <= end:
+            minh, maxh = material.get_numbers()
+            hard = get_hardness(start, fid, end - start + 1, minh, maxh)
+            gems_by_floors[fid][material.full_string] = hard
+
+# Write Monsters and materials for each Floor
+if True:
+    with open('output.txt', 'w', encoding='utf-8') as file:
+        for floor, spawns in floor_spawns.items():
+            fid = int(floor.split('_')[1])
+            file.write(f'#\n{fid}; 10; 3; ')
+            monsters = []
+            for id, rarity in spawns.items():
+                monsters.append(f'{rarity} {id}')
+            monsters.sort()
+            file.write(f'{len(monsters)}; ')
+            for index, monster in enumerate(monsters):
+                rarity, name = monster.split(' ')
+                file.write(f'{name},{rarity}')
+                if index != len(monsters) - 1:
+                    file.write('; ')
+            file.write('\n')
+            metals_array = []
+            for metal, hard in metals_by_floors[fid].items():
+                metals_array.append(f'{metal},{hard}')
+            file.write(f'{len(metals_array)}; ')
+            for index, material in enumerate(metals_array):
+                file.write(f'{material.lower().replace(" ", "_")}')
+                file.write('; ')
+            gems_array = []
+            for gem, hard in gems_by_floors[fid].items():
+                gems_array.append(f'{gem},{hard}')
+            file.write(f'{len(gems_array)}; ')
+            for index, material in enumerate(gems_array):
+                file.write(f'{material.lower().replace(" ", "_")}')
+                if index != len(gems_array) - 1:
+                    file.write('; ')
+            file.write('\n\n')
 
 # Generate Common items
 common_items = []
@@ -762,7 +828,7 @@ rarities = [1, 2, 3, 4, 5]
 rarities_weights = [1 / (2 ** rarities[x]) for x in range(5)]
 
 # Do Spawn Percentages and Excel output
-if False:
+if True:
     def get_drop_item(drop_rarities):
         drop_list = drop_rarities[choices(rarities, rarities_weights, k=1)[0]]
         if len(drop_list) > 0:
@@ -842,6 +908,57 @@ if False:
                             drop_count_totals[drop_item[2:]] += 1
         return spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters
 
+    def simulate_resource_drop(floor_index, skew):
+        metals = metals_by_floors[floor_index]
+        gems = gems_by_floors[floor_index]
+        options = [None]
+        weights = [0]
+
+        drop_counts = {None: 0}
+        for material, hard in metals.items():
+            drop_counts[material] = 0
+            weights[0] += hard * skew
+            weights.append(hard * skew)
+            options.append(material)
+        for material, hard in gems.items():
+            drop_counts[material] = 0
+            weights[0] += hard * (1 - skew)
+            weights.append(hard * (1 - skew))
+            options.append(material)
+        weights[0] *= 3
+
+        if len(options) == 1:
+            return {}, 1000000
+        for _ in range(1000000):
+            drop_counts[choices(options, weights)[0]] += 1
+        drop_counts.pop(None)
+        return drop_counts, 1000000
+
+
+    def load_dict(string):
+        out = {}
+        if string == '{}':
+            return out
+
+        parts = string[2:-1].split(', (')
+        for part in parts:
+            key, value = part.split(': ')
+            x, y = key[:-1].split(', ')
+            out[(int(x), int(y))] = int(value)
+        return out
+
+
+    def load_array(string):
+        array = []
+        if string == '[]':
+            return array
+        string = string[2:-1].replace('[', '(')
+        string = string.replace(']', ')')
+        tuples = string.split(', (')
+        for tup in tuples:
+            x, y = tup[:-1].split(', ')
+            array.append((int(x), int(y)))
+        return array
 
     floors = {}
     # Make the dictionary of the spawn rarities
@@ -853,10 +970,64 @@ if False:
                 level_name = f'{name} Level {new_rarity + 1 - rarity}'
                 floors[floor_id][new_rarity].append(level_name)
 
+    floor_nodes = {}
+    floor_entrances = {}
+    floor_exits = {}
+    with open('C:\\Users\\Zoe\\Code Projects\\PycharmProjects\\CoatiraneAdventures\\data\\test\\Floors.txt', 'r', encoding='utf-8') as file:
+        floor_data = file.read().split('\n#\n')
+        for floor in floor_data:
+            lines = floor.split('\n')
+            floor_num = int(lines[0].split(';')[0])
+            floor_nodes[floor_num] = load_dict(lines[2])
+            path_nodes = load_array(lines[3])
+            floor_entrances[floor_num] = path_nodes[0]
+            floor_exits[floor_num] = path_nodes[-1]
+
+    N, S, E, W = 1, 2, 4, 8  # 0001 0010 0100 1000
+    def solve_path_iterative(nodes, start, end):
+        visited = {}
+
+        distances = []
+
+        for x in range(100000):
+            for node in nodes.keys():
+                visited[node] = False
+
+            x, y = start
+            visited[start] = True
+            travelled = [(0, 0)]
+            distance = 0
+
+            while (x, y) != end:
+                options = []
+                if (nodes[(x, y)] & N) == N and travelled[-1] != S and not visited[(x, y - 1)]:
+                    options.append((0, -1))
+                if (nodes[(x, y)] & E) == E and travelled[-1] != W and not visited[(x + 1, y)]:
+                    options.append((1, 0))
+                if (nodes[(x, y)] & S) == S and travelled[-1] != N and not visited[(x, y + 1)]:
+                    options.append((0, 1))
+                if (nodes[(x, y)] & W) == W and travelled[-1] != E and not visited[(x - 1, y)]:
+                    options.append((-1, 0))
+
+                if len(options) == 0:
+                    dx, dy = travelled.pop()
+                    x, y = x - dx, y - dy
+                    distance += 1
+                else:
+                    dx, dy = options[randint(0, len(options) - 1)]
+                    travelled.append((dx, dy))
+                    x, y = x + dx, y + dy
+                    visited[(x, y)] = True
+                    distance += 1
+            distances.append(distance)
+        return min(distances), max(distances), sum(distances) / 100000, sqrt(len(nodes.keys()))
+
     floor_data = {}
     start_time = time()
     last_time = start_time
     for floor_id, spawn_rarities in floors.items():
+        floor_num = int(floor_id.split('_')[1])
+        floor_name = floor_id.title().replace('_', ' ')
         drop_rarities = {}
         guarrenteed = {}
         for spawn_list in spawn_rarities.values():
@@ -867,8 +1038,8 @@ if False:
                 if boost not in drop_rarities[name]:
                     drop_rarities[name][boost] = {1: [None], 2: [], 3: [], 4: [], 5: []}
                 for drop_type, drop_list in drop_types.items():
-                    if name.lower().replace(" ", "_") in drop_list.keys():
-                        rarity = drop_list[name.lower().replace(" ", "_")]
+                    if name.lower().replace(' ', '_') in drop_list.keys():
+                        rarity = drop_list[name.lower().replace(' ', '_')]
                         if rarity == 0:
                             if name not in guarrenteed:
                                 guarrenteed[name] = []
@@ -876,14 +1047,22 @@ if False:
                             continue
                         for new_rarity in range(rarity, 6):
                             drop_rarities[name][boost][new_rarity].append(f'{1 + new_rarity - 1 + boost} {name} {drop_type.title()}')
-        spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters = simulate_ecounters(int(floor_id.split('_')[1]) - 1, spawn_rarities, drop_rarities, guarrenteed)
-        floor_data[floor_id.title().replace('_', ' ')] = {}
-        floor_data[floor_id.title().replace('_', ' ')]['spawn_count_total'] = spawn_count_total
-        floor_data[floor_id.title().replace('_', ' ')]['spawn_counts'] = spawn_counts
-        floor_data[floor_id.title().replace('_', ' ')]['spawn_count_totals'] = spawn_count_totals
-        floor_data[floor_id.title().replace('_', ' ')]['drop_counts'] = drop_counts
-        floor_data[floor_id.title().replace('_', ' ')]['drop_count_totals'] = drop_count_totals
-        floor_data[floor_id.title().replace('_', ' ')]['first_encounters'] = first_encounters
+        spawn_count_total, spawn_counts, spawn_count_totals, drop_counts, drop_count_totals, first_encounters = simulate_ecounters(floor_num - 1, spawn_rarities, drop_rarities, guarrenteed)
+
+        resource_drops_metal_skew, resource_drop_total = simulate_resource_drop(floor_num, 0.6)
+        resource_drops_gem_skew, resource_drop_total = simulate_resource_drop(floor_num, 0.4)
+
+        floor_data[floor_name] = {}
+        floor_data[floor_name]['spawn_count_total'] = spawn_count_total
+        floor_data[floor_name]['spawn_counts'] = spawn_counts
+        floor_data[floor_name]['spawn_count_totals'] = spawn_count_totals
+        floor_data[floor_name]['drop_counts'] = drop_counts
+        floor_data[floor_name]['drop_count_totals'] = drop_count_totals
+        floor_data[floor_name]['first_encounters'] = first_encounters
+        floor_data[floor_name]['resource_count_total'] = resource_drop_total
+        floor_data[floor_name]['resource_drops_metal_skew'] = resource_drops_metal_skew
+        floor_data[floor_name]['resource_drops_gem_skew'] = resource_drops_gem_skew
+        floor_data[floor_name]['floor_movements'] = solve_path_iterative(floor_nodes[floor_num], floor_entrances[floor_num], floor_exits[floor_num])
 
         current_time = time()
         print(floor_id.title().replace('_', ' '), f'took {round(current_time - last_time, 2)} - currently {round(current_time - start_time, 2)}')
@@ -907,7 +1086,6 @@ if False:
             return get_next(string[:-1]) + 'A'
         else:
             return 'AA'
-
 
     def char_range(start, end):
         start_index = char_string_to_index(start.upper())
@@ -933,6 +1111,36 @@ if False:
     for floor in floor_data.values():
         floor_spawn_rates_data['Totals'].append(floor['spawn_count_total'])
 
+    # Metal Skewed data frame
+    metal_skewed_resource_drop = {}
+    for material in natural_hard_materials_by_hardness + gems_by_hardness:
+        name = material.full_string
+        metal_skewed_resource_drop[name] = []
+        for floor in floor_data.values():
+            if name in floor['resource_drops_metal_skew']:
+                metal_skewed_resource_drop[name].append(floor['resource_drops_metal_skew'][name] / floor['resource_count_total'])
+            else:
+                metal_skewed_resource_drop[name].append(np.nan)
+
+    # Make Gem skewed data frame
+    gem_skewed_resource_drop = {}
+    for material in natural_hard_materials_by_hardness + gems_by_hardness:
+        name = material.full_string
+        gem_skewed_resource_drop[name] = []
+        for floor in floor_data.values():
+            if name in floor['resource_drops_gem_skew']:
+                gem_skewed_resource_drop[name].append(floor['resource_drops_gem_skew'][name] / floor['resource_count_total'])
+            else:
+                gem_skewed_resource_drop[name].append(np.nan)
+
+    # Make floor movements data frame
+    floor_movement_data = {'Minimum Movements': [], 'Maximum Movements': [], 'Average Movements': [], 'Total Nodes': []}
+    for floor in floor_data.values():
+        minimum, maximum, average, total = floor['floor_movements']
+        floor_movement_data['Minimum Movements'].append(minimum)
+        floor_movement_data['Maximum Movements'].append(maximum)
+        floor_movement_data['Average Movements'].append(average)
+        floor_movement_data['Total Nodes'].append(total)
 
     # Material Hardness Data
     def create_hardness_data(hardness_array):
@@ -956,12 +1164,14 @@ if False:
     hardness_types = {
         'Hard Materials (Natural)': natural_hard_materials_by_hardness,
         'Hard Materials (Alloys)': alloy_hard_materials_by_hardness,
+        'Hard Materials (Metals)': metals_by_hardness,
+        'Gems': gems_by_hardness,
+        'Hard Materials (Metals & Gems)': metals_and_gems_by_hardness,
         'Hard Materials (Monster)': monster_hard_materials_by_hardness,
         'All Hard Materials': hard_materials_by_hardness,
         'Soft Materials (Natural)': natural_soft_materials_by_hardness,
         'Soft Materials (Monster)': monster_soft_materials_by_hardness,
         'All Soft Materials': soft_materials_by_hardness,
-        'Gems': gems_by_hardness,
         'All Materials': all_materials_by_hardness
     }
 
@@ -970,17 +1180,25 @@ if False:
         hardness_datas[hardness_type] = create_hardness_data(hardness_array)
 
     floor_spawn_rates = DataFrame(data=floor_spawn_rates_data, index=list(floor_data.keys()), columns=floor_spawn_rates_data.keys())
+    metal_skewed_drop_rates = DataFrame(data=metal_skewed_resource_drop, index=list(floor_data.keys()), columns=metal_skewed_resource_drop.keys())
+    gem_skewed_drop_rates = DataFrame(data=gem_skewed_resource_drop, index=list(floor_data.keys()), columns=gem_skewed_resource_drop.keys())
+    floor_movements = DataFrame(data=floor_movement_data, index=list(floor_data.keys()), columns=floor_movement_data.keys())
 
     hardness_dataframes = {}
     for hardness_type, hardness_data in hardness_datas.items():
         hardness_dataframes[hardness_type] = create_hardness_data_frame(hardness_data)
 
-
     with ExcelWriter('output.xlsx') as writer:
         floor_spawn_rates.to_excel(writer, sheet_name='Spawn Rates')
+        metal_skewed_drop_rates.to_excel(writer, sheet_name='Metal Skew Drop Rates')
+        gem_skewed_drop_rates.to_excel(writer, sheet_name='Gem Skew Drop Rates')
+        floor_movements.to_excel(writer, sheet_name='Floor Movements')
         for hardness_type, hardness_dataframe in hardness_dataframes.items():
             hardness_dataframe.to_excel(writer, sheet_name=hardness_type)
         floor_spawn_rates_sheet = writer.sheets['Spawn Rates']
+        metal_skewed_drop_rates_sheet = writer.sheets['Metal Skew Drop Rates']
+        gem_skewed_drop_rates_sheet = writer.sheets['Gem Skew Drop Rates']
+        floor_movements_sheet = writer.sheets['Floor Movements']
         hardness_sheets = {}
         for hardness_type in hardness_dataframes.keys():
             hardness_sheets[hardness_type] = writer.sheets[hardness_type]
@@ -1018,6 +1236,66 @@ if False:
         floor_spawn_rates_sheet.insert_chart(f'A{len(floor_data) + 2}', chart)
         floor_spawn_rates_sheet.insert_chart(f'A134', log_chart)
 
+        # Create Resource Drop Charts
+        metal_chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
+        for char_index in char_range('B', index_to_char_string(len(natural_hard_materials_by_hardness + gems_by_hardness) + 2)):
+            if char_string_to_index(char_index) != len(natural_hard_materials_by_hardness + gems_by_hardness) + 1:
+                name = list(natural_hard_materials_by_hardness + gems_by_hardness)[char_string_to_index(char_index) - 1].full_string
+                metal_chart.add_series({
+                    'name':       ['Metal Skew Drop Rates', 0, char_string_to_index(char_index)],
+                    'categories': ['Metal Skew Drop Rates', 1, 0, len(floor_data) + 1, 0],
+                    'values':     ['Metal Skew Drop Rates', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],
+                    'marker':     {'type': 'circle'}
+                })
+
+        metal_chart.set_title({'name': 'Metal Skewed Resource Drop Rates'})
+        metal_chart.show_blanks_as('span')
+        metal_chart.set_legend({'position': 'top'})
+        metal_chart.set_x_axis({'name': 'Floors'})
+        metal_chart.set_y_axis({'name': 'Drop Percent', 'major_gridlines': {'visible': False}, 'max': max(metal_skewed_resource_drop.values())})
+        metal_chart.set_size({'width': 2560, 'height': 1440})
+        metal_skewed_drop_rates_sheet.insert_chart(f'A{len(floor_data) + 2}', metal_chart)
+
+        # Gem chart
+        gem_chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
+        for char_index in char_range('B', index_to_char_string(len(natural_hard_materials_by_hardness + gems_by_hardness) + 2)):
+            if char_string_to_index(char_index) != len(natural_hard_materials_by_hardness + gems_by_hardness) + 1:
+                name = list(natural_hard_materials_by_hardness + gems_by_hardness)[char_string_to_index(char_index) - 1].full_string
+                gem_chart.add_series({
+                    'name':       ['Gem Skew Drop Rates', 0, char_string_to_index(char_index)],
+                    'categories': ['Gem Skew Drop Rates', 1, 0, len(floor_data) + 1, 0],
+                    'values':     ['Gem Skew Drop Rates', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],
+                    'marker':     {'type': 'circle'}
+                })
+
+        gem_chart.set_title({'name': 'Gem Skewed Resource Drop Rates'})
+        gem_chart.show_blanks_as('span')
+        gem_chart.set_legend({'position': 'top'})
+        gem_chart.set_x_axis({'name': 'Floors'})
+        gem_chart.set_y_axis({'name': 'Drop Percent', 'major_gridlines': {'visible': False}, 'max': max(gem_skewed_resource_drop.values())})
+        gem_chart.set_size({'width': 2560, 'height': 1440})
+        gem_skewed_drop_rates_sheet.insert_chart(f'A{len(floor_data) + 2}', gem_chart)
+
+        # Floor movement chart
+        floor_chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
+        for char_index in char_range('B', index_to_char_string(len(floor_movements) + 2)):
+            if char_string_to_index(char_index) != len(floor_movements) + 1:
+                name = list(floor_movements.keys())[char_string_to_index(char_index) - 1]
+                gem_chart.add_series({
+                    'name':       ['Floor Movements', 0, char_string_to_index(char_index)],
+                    'categories': ['Floor Movements', 1, 0, len(floor_data) + 1, 0],
+                    'values':     ['Floor Movements', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],
+                    'marker':     {'type': 'circle'}
+                })
+
+        floor_chart.set_title({'name': 'Floor Movements to Exit'})
+        floor_chart.show_blanks_as('span')
+        floor_chart.set_legend({'position': 'top'})
+        floor_chart.set_x_axis({'name': 'Floors'})
+        floor_chart.set_y_axis({'name': 'Average Movements to Exit', 'major_gridlines': {'visible': False}, 'max': max(floor_movement_data['Total Nodes'])})
+        floor_chart.set_size({'width': 2560, 'height': 1440})
+        floor_movements_sheet.insert_chart(f'A{len(floor_data) + 2}', floor_chart)
+
         # Create Material Hardness Charts
         def create_material_hardness_chart(hardness_sheet, sheet_name, hardness_data):
             chart = writer.book.add_chart({'type': 'line'})
@@ -1036,7 +1314,6 @@ if False:
             chart.set_y_axis({'name': 'Materials'})
             chart.set_size({'width': 1920, 'height': 1080})
             hardness_sheet.insert_chart(f'A67', chart)
+
         for hardness_type, hardness_sheet in hardness_sheets.items():
             create_material_hardness_chart(hardness_sheet, hardness_type, hardness_datas[hardness_type])
-print('Done')
-quit(0)

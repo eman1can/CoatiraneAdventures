@@ -3,7 +3,7 @@ from game.smead import SMEAD
 
 
 class Entity(SMEAD, HMPMD):
-    def __init__(self, name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, dexterity, agility, element, moves):
+    def __init__(self, name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, agility, dexterity, element, moves):
         self._initialized = False
         SMEAD.__init__(self, strength, magic, endurance, agility, dexterity)
         HMPMD.__init__(self, health, mana, physical_attack, magical_attack, defense)

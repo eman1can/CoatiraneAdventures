@@ -47,14 +47,32 @@ class Floor:
 
     """
 
-    def __init__(self, floor_id, max_enemies, boss_type, enemies, probabilities, floor_data, path_data, floor_map, save_zone_data):
+    def __init__(self, floor_id, max_enemies, boss_type, enemies, metals, gems, floor_data, path_data, floor_map, save_zone_data):
         self._floor_id = floor_id
         self._max_enemies = max_enemies
         self._boss_type = boss_type
         self._enemies = enemies
-        self._probabilities = probabilities
 
-        self._resources = {}
+        self._resources = {'metals': metals, 'gems': gems}
+        metal_weights, gem_weights = [], []
+        options = []
+
+        for material, hard in self._resources['metals'].items():
+            metal_weights[0] += hard * 0.6
+            metal_weights.append(hard * 0.6)
+            gem_weights[0] += hard * 0.4
+            gem_weights.append(hard * 0.4)
+            options.append(material)
+        for material, hard in self._resources['gems'].items():
+            metal_weights[0] += hard * 0.4
+            metal_weights.append(hard * 0.4)
+            gem_weights[0] += hard * 0.6
+            gem_weights.append(hard * 0.6)
+            options.append(material)
+        metal_weights[0] *= 3
+        gem_weights[0] *= 3
+        self._drop_skew_metal = (options, metal_weights)
+        self._drop_skew_gem = (options, gems)
 
         self._map = Map(floor_map, floor_data, path_data, {SAFE_ZONES: save_zone_data, ENTRANCE: [path_data[0]], EXIT: [path_data[-1]]})
 
@@ -67,9 +85,15 @@ class Floor:
     def get_score(self):
         # Floor 1 rec score should be ~ 7
         score = 0
-        for enemy in self._enemies:
+        for enemy in self._enemies.values():
             score += enemy.get_score()
         return round(score, 0)
+
+    def get_enemies(self):
+        return self._enemies
+
+    def get_resources(self):
+        return self._resources
 
     # def generateBoss(self):
     #     if self.bossType == 0:
@@ -125,22 +149,40 @@ class Floor:
     #         return enemies
 
     def generate_enemies(self, node_type):
-        #TODO Chance to 1-5 rarity
-        minimum = int(self._max_enemies * 0.25)
-        if not minimum >= 1:
-            minimum = 1
+        rarities = choices([1, 2, 3, 4, 5], [1 / (2 ** (x + 1)) for x in range(5)], k=randint(max(1, int(self._max_enemies * 0.25)), self._max_enemies))
         enemies = []
-        weights = self._probabilities
-        for x in range(randint(minimum, self._max_enemies)):
-            enemy = choices(self._enemies, list(weights.values()), k=1)[0]
-            enemies.append(enemy.new_instance(self._floor_id))
+        spawn_lists = {spawn_rarity: [] for spawn_rarity in range(max(rarities))}
+        if node_type is None:
+            rarity_adjustment = 0
+        else:
+            rarity_adjustment = 1
+            for (enemy, rarity) in self._enemies:
+                if enemy.get_id() == node_type and rarity == 1:
+                    rarity_adjustment = 2
+                    break
+        for spawn_rarity in set(rarities):
+            for (enemy, rarity) in self._enemies:
+                if rarity_adjustment == 0:
+                    if rarity <= spawn_rarity:
+                        spawn_lists[spawn_rarity] += (enemy, rarity + 1 - spawn_rarity)
+                elif rarity_adjustment == 1:
+                    if enemy.get_id() == node_type:
+                        if rarity - 1 <= spawn_rarity:
+                            spawn_lists[spawn_rarity] += (enemy, rarity + 1 - spawn_rarity)
+                    elif min(rarity + 1, 5) <= spawn_rarity:
+                            spawn_lists[spawn_rarity] += (enemy, rarity + 1 - spawn_rarity)
+                elif min(rarity + 2, 5) <= spawn_rarity:
+                        spawn_lists[spawn_rarity] += (enemy, rarity + 1 - spawn_rarity)
+        for spawn_rarity in rarities:
+            enemy, boost = spawn_lists[spawn_rarity][randint(0, len(spawn_lists[spawn_rarity]) - 1)]
+            enemies.append(enemy.new_instance(boost))
         return enemies
 
-    def get_enemies(self):
-        return self._enemies
-
-    def get_resources(self):
-        return self._resources
+    def generate_resource(self, metal_skew=True):
+        if metal_skew:
+            return choices(*self._drop_skew_metal)[0], choices([1, 2, 3], [3, 2, 1])[0]
+        else:
+            return choices(*self._drop_skew_gem)[0], choices([1, 2, 3], [3, 2, 1])[0]
 
 
 class Map:
@@ -411,7 +453,7 @@ class Map:
         if self._current_path not in self._path_solutions:
             routes = {}
             for route_end in self._markers[self._current_path]:
-                routes[route_end] = list(reversed(self.solve_path(0, self._current_node, route_end, self._nodes)[1:]))
+                routes[route_end] = list(reversed(self.solve_path(self._nodes, self._current_path, route_end)))
                 print(routes[route_end])
             self._path_solutions[self._current_path] = routes
         # Show the shortest route
@@ -454,27 +496,36 @@ class Map:
                 self._map_data.color_node(*node, None)
 
     @staticmethod
-    def solve_path(last, start, end, nodes):
-        if start == end:
-            return [end]
-        node = nodes[start]
-        if (node & N) == N and last != S:
-            path = Map.solve_path(N, (start[0], start[1] - 1), end, nodes)
-            if path:
-                return [start] + path
-        if (node & E) == E and last != W:
-            path = Map.solve_path(E, (start[0] + 1, start[1]), end, nodes)
-            if path:
-                return [start] + path
-        if (node & S) == S and last != N:
-            path = Map.solve_path(S, (start[0], start[1] + 1), end, nodes)
-            if path:
-                return [start] + path
-        if (node & W) == W and last != E:
-            path = Map.solve_path(W, (start[0] - 1, start[1]), end, nodes)
-            if path:
-                return [start] + path
-        return False
+    def solve_path(nodes, start, end):
+        x, y = start
+        visited = [start]
+        travelled = [(0, 0)]
+
+        while (x, y) != end:
+            options = []
+            if (nodes[(x, y)] & N) == N and travelled[-1] != S and (x, y - 1) not in visited:
+                options.append((0, -1))
+            if (nodes[(x, y)] & E) == E and travelled[-1] != W and (x + 1, y) not in visited:
+                options.append((1, 0))
+            if (nodes[(x, y)] & S) == S and travelled[-1] != N and (x, y + 1) not in visited:
+                options.append((0, 1))
+            if (nodes[(x, y)] & W) == W and travelled[-1] != E and (x - 1, y) not in visited:
+                options.append((-1, 0))
+
+            if len(options) == 0:
+                dx, dy = travelled.pop()
+                x, y = x - dx, y - dy
+            else:
+                dx, dy = options[randint(0, len(options) - 1)]
+                travelled.append((dx, dy))
+                x, y = x + dx, y + dy
+                visited += [(x, y)]
+        # Convert (dx, dy) to (x, y)
+        x, y = start
+        for index in range(len(travelled)):
+            dx, dy = travelled[index]
+            travelled[index] = (x + dx, y + dy)
+        return travelled[1:-1]  # We don't want to color current node or ending node
 
 
 class MapData:

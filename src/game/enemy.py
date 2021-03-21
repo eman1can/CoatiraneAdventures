@@ -2,62 +2,63 @@ from random import choices, randint
 
 from game.battle_enemy import BattleEnemy
 
+LEVEL_MULTIPLITER = [1, 1.5, 2, 2.75, 3.5, 4.75, 6, 8, 10]
+
 STAT_INDEX = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 6, 8, 12]
+HEALTH, MANA, STR, MAG, END, AGI, DEX = 0, 1, 2, 3, 4, 5, 6
 
 
 class Enemy:
-    def __init__(self, eid, name, skeleton_id, program_type, attack_type, min_health, max_health, min_strength, max_strength, min_magic, max_magic, min_agility, max_agility, min_dexterity,
-                 max_dexterity, min_endurance, max_endurance, moves, move_probabilities):
-        self.id = eid
-        self.name = name
-        self.skel_id = skeleton_id
-        self.skel_path = f'res/enemies/{program_type}/{name.lower()}/{skeleton_id}.skel'
-        self.moves = moves
-        self.move_probabilities = move_probabilities
-        self.attack_type = attack_type
-        self.min_health = min_health
-        self.max_health = max_health
-        self.min_strength = min_strength
-        self.max_strength = max_strength
-        self.min_magic = min_magic
-        self.max_magic = max_magic
-        self.min_agility = min_agility
-        self.max_agility = max_agility
-        self.min_dexterity = min_dexterity
-        self.max_dexterity = max_dexterity
-        self.min_endurance = min_endurance
-        self.max_endurance = max_endurance
-        self.element = None
-        self._crystal_chance = None
-        self._crystal_drops = None
-        self._optional_drops = None
-
-    def set_drops(self, crystal_drop_chance, crystal_drops, optional_drops):
-        self._crystal_chance = crystal_drop_chance
-        self._crystal_drops = crystal_drops
-        self._optional_drops = optional_drops
-
-    def generate_drop(self):
-        drops = []
-        if randint(1, 100) <= self._crystal_chance * 100:
-            drops += choices(list(self._crystal_drops.keys()), list(self._crystal_drops.values()))
-        drops += choices(list(self._optional_drops.keys()), list(self._optional_drops.values()), k=choices([1, 2, 3], [3, 2, 1])[0])
-        return drops
+    def __init__(self, identifier, name, skeleton_id, program_type, attack_type, min_hmsmead, max_hmsmead, moves, move_probabilities, drops):
+        self._id = identifier
+        self._name = name
+        self._skel_id = skeleton_id
+        self._skel_path = f'res/enemies/{program_type}/{name.lower()}/{skeleton_id}.skel'
+        self._moves = moves
+        self._move_probabilities = move_probabilities
+        self._attack_type = attack_type
+        self._min_hmsmead = min_hmsmead
+        self._max_hmsmead = max_hmsmead
+        self._element = None
+        self._drops = {'guaranteed': drops['guaranteed']}
+        for index, key in enumerate(['crystal', 'falna', 'drop']):
+            rarity_list = []
+            for rarity in range(1, 6):
+                drop_list = []
+                if rarity == 1:
+                    drop_list = [None]
+                for (item_id, rarity) in self._drops[key]:
+                    if rarity <= rarity:
+                        drop_list += (item_id, rarity + 1 - int(rarity))
+                rarity_list.append(drop_list)
+            self._drops[key] = rarity_list
 
     def get_id(self):
-        return self.id
+        return self._id
 
-    def get_score(self):
-        return (self.max_strength + self.max_magic + self.max_agility + self.max_dexterity + self.max_endurance) / 15
+    def get_name(self):
+        return self._name
 
-    def new_instance(self, level):
-        stat_multiplier = STAT_INDEX[level - 1]
-        return BattleEnemy(level, self.id, self.name, self.skel_path, self.attack_type,
-                           randint(int(self.min_health * stat_multiplier), int(self.max_health * stat_multiplier)),
-                           0,
-                           randint(int(self.min_strength * stat_multiplier), int(self.max_strength * stat_multiplier)),
-                           randint(int(self.min_magic * stat_multiplier), int(self.max_magic * stat_multiplier)),
-                           randint(int(self.min_endurance * stat_multiplier), int(self.max_endurance * stat_multiplier)),
-                           randint(int(self.min_dexterity * stat_multiplier), int(self.max_dexterity * stat_multiplier)),
-                           randint(int(self.min_agility * stat_multiplier), int(self.max_agility * stat_multiplier)),
-                           self.element, self.moves, self.move_probabilities)
+    def generate_drop(self, boost):
+        drops = []
+        rarities = choices([1, 2, 3, 4, 5], [1 / (2 ** (x + 1)) for x in range(5)], k=3)
+        # Generate guaranteed drops
+        for item_id in self._drops['guaranteed']:
+            drops += (item_id, 1)
+        # Generate other drops
+        for index, key in enumerate(['crystal', 'falna', 'drop']):
+            drop_list = self._drops[key][rarities[index]]
+            drops += drop_list[randint(0, len(drop_list) - 1)]
+        return drops
+
+    def get_score(self, boost):
+        return (sum(self._min_hmsmead) + (sum(self._max_hmsmead) - sum(self._min_hmsmead)) / 2) / 5 * LEVEL_MULTIPLITER[boost]
+
+    def new_instance(self, boost):
+        multiplier = LEVEL_MULTIPLITER[boost]
+
+        hmsmead = [0, 0, 0, 0, 0]
+        for stat in range(DEX + 1):
+            hmsmead[stat] = randint(self._min_hmsmead[stat] * multiplier, self._max_hmsmead[stat] * multiplier)
+
+        return BattleEnemy(self._id, self._name, self._skel_path, self._attack_type, hmsmead[HEALTH], hmsmead[MANA], hmsmead[STR], hmsmead[MAG], hmsmead[END], hmsmead[AGI], hmsmead[DEX], self.element, self.moves, self.move_probabilities)

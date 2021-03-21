@@ -317,13 +317,10 @@ class BattleData:
         """
         Generate a dropped item from the enemy
         """
-        drop_ids = Refs.gc['enemies'][entity.get_id()].generate_drop()
-        announced = []
-        for drop_id in drop_ids:
-            item = Refs.gc.add_to_inventory(drop_id)
+        drops = Refs.gc['enemies'][entity.get_id()].generate_drop()
+        for (drop_id, count) in drops:
+            item = Refs.gc.add_to_inventory(drop_id, count)
             if item not in self._dropped_items:
                 self._dropped_items[item] = 0
             self._dropped_items[item] += 1
-            if drop_id not in announced:
-                self._log += f'      {entity.get_name()} dropped {item.get_name()} x {drop_ids.count(drop_id)}\n'
-                announced.append(drop_id)
+            self._log += f'      {entity.get_name()} dropped {item.get_name()} x {drop_id}\n'

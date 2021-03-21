@@ -68,21 +68,22 @@ def load_enemy_chunk(chunk, loader, program_type, callbacks):
     skills, skill_chances = get_skill_data(values, loader)
     for x in range(ENEMY_HEALTH_MIN, ENEMY_ENDURANCE_MAX+1):
         values[x] = int(values[x])
-    enemy = Enemy(values[ENEMY_ID], values[ENEMY_NAME], values[ENEMY_SKEL_ID], program_type, values[ENEMY_ATTACK_TYPE],
-                  values[ENEMY_HEALTH_MIN], values[ENEMY_HEALTH_MAX], values[ENEMY_STRENGTH_MIN], values[ENEMY_STRENGTH_MAX],
-                  values[ENEMY_MAGIC_MIN], values[ENEMY_MAGIC_MAX], values[ENEMY_AGILITY_MIN], values[ENEMY_AGILITY_MAX],
-                  values[ENEMY_DEXTERITY_MIN], values[ENEMY_DEXTERITY_MAX], values[ENEMY_ENDURANCE_MIN], values[ENEMY_ENDURANCE_MAX], skills, skill_chances)
 
-    optional_list, crystal_drop_chance, crystal_list = item_data.split(';')
-    optional_drops = {}
-    crystal_drops = {}
-    for drop_item in optional_list.split(','):
-        item_id, drop_chance = drop_item.split('/')
-        optional_drops[item_id.strip()] = float(drop_chance.strip())
-    for crystal_drop in crystal_list.split(','):
-        item_id, drop_weight = crystal_drop.split('/')
-        crystal_drops[item_id.strip()] = float(drop_weight.strip())
-    enemy.set_drops(float(crystal_drop_chance.strip()), crystal_drops, optional_drops)
+    drops = {'guaranteed': [], 'crystal': [], 'falna': [], 'drop': []}
+
+    for drop_list in item_data.split(';'):
+        key = list(drops.keys())[0]
+        for drop in drop_list.split(','):
+            item_id, rarity = drop.split('/')
+            if rarity == '':
+                drops[key] += item_id
+            else:
+                drops[key] += (item_id, int(rarity))
+
+    min_smead = [values[ENEMY_HEALTH_MIN], values[ENEMY_STRENGTH_MIN], values[ENEMY_MAGIC_MIN], values[ENEMY_AGILITY_MIN], values[ENEMY_DEXTERITY_MIN], values[ENEMY_ENDURANCE_MIN]]
+    max_smead = [values[ENEMY_HEALTH_MAX], values[ENEMY_STRENGTH_MAX], values[ENEMY_MAGIC_MAX], values[ENEMY_AGILITY_MAX], values[ENEMY_DEXTERITY_MAX], values[ENEMY_ENDURANCE_MAX]]
+
+    enemy = Enemy(values[ENEMY_ID], values[ENEMY_NAME], values[ENEMY_SKEL_ID], program_type, values[ENEMY_ATTACK_TYPE], min_smead, max_smead, skills, skill_chances, drops)
 
     loader.append('enemies', values[ENEMY_ID], enemy)
     for callback in callbacks:

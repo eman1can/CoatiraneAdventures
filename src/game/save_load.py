@@ -297,7 +297,7 @@ def generate_data(file_path, floor):
 
     node_lists = {}
     # Generate nodes for every resource
-    for resource in floor.get_resources():
+    for resource in floor.get_resources().keys():
         node_lists[resource] = []
         for index in range(node_amount):
             node = get_random_node(size)

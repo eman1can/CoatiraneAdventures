@@ -1,8 +1,13 @@
+import time
+from copy import copy
+
 from kivy.lang.builder import Builder
 from kivy.app import App
 from kivy.properties import DictProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.utils import rgba
+
+from game.floor_data import OPPOSITE
 from loading.floor import load_array, load_dict
 from random import randint, shuffle
 
@@ -183,6 +188,56 @@ def solve_path(last, start, end, nodes):
     return False
 
 
+def get_change(direction):
+    if direction == N:
+        return (0, -1), 'North'
+    elif direction == E:
+        return (1, 0), 'West'
+    elif direction == S:
+        return (0, 1), 'South'
+    else:
+        return (-1, 0), 'East'
+
+
+def solve_path_iterative(nodes, start, end):
+    visited = {}
+    for node in nodes.keys():
+        visited[node] = False
+
+    x, y = start
+    visited[start] = True
+    travelled = [(0, 0)]
+    distance = 0
+    path = [start]
+
+    while (x, y) != end:
+        options = []
+        if (nodes[(x, y)] & N) == N and travelled[-1] != S and not visited[(x, y - 1)]:
+            options.append((0, -1))
+        if (nodes[(x, y)] & E) == E and travelled[-1] != W and not visited[(x + 1, y)]:
+            options.append((1, 0))
+        if (nodes[(x, y)] & S) == S and travelled[-1] != N and not visited[(x, y + 1)]:
+            options.append((0, 1))
+        if (nodes[(x, y)] & W) == W and travelled[-1] != E and not visited[(x - 1, y)]:
+            options.append((-1, 0))
+
+        if len(options) == 0:
+            dx, dy = travelled.pop()
+            x, y = x - dx, y - dy
+            path.pop()
+            distance += 1
+        else:
+            dx, dy = options[randint(0, len(options) - 1)]
+            travelled.append((dx, dy))
+            x, y = x + dx, y + dy
+            visited[(x, y)] = True
+            path += [(x, y)]
+            distance += 1
+
+    path += [end]
+    return path, distance
+
+
 kv_string = """
 RelativeLayout:
     MazePreview:
@@ -240,7 +295,7 @@ RelativeLayout:
                 size_hint: 0.5, 0.05
                 pos_hint: {'top': 0.85, 'right': 1}
                 multiline: False
-                disabled: True
+                #disabled: True
                 hint_text: '(x, y)'
                 font_size: '20pt'
                 text: str(maze_preview.marker_lists['Entrance'])
@@ -249,7 +304,7 @@ RelativeLayout:
                 size_hint: 0.5, 0.05
                 pos_hint: {'top': 0.8, 'right': 1}
                 multiline: False
-                disabled: True
+                #disabled: True
                 hint_text: '(x, y)'
                 font_size: '20pt'
                 text: str(maze_preview.marker_lists['Exit'])
@@ -345,11 +400,11 @@ class MazeTile(RelativeLayout):
 MARKERS = {
     'Entrance': '#0000FF',
     'Exit': '#FF0000',
-    'Safe Zone': '#FEDE00',
-    'Goblin Spawn': '#91CA75',
-    'Kobold Spawn': '#75AC19',
-    'Jack Bird Spawn': '#FECA34'
+    'Safe Zone': '#FEDE00'
 }
+    # 'Goblin Spawn': '#91CA75',
+    # 'Kobold Spawn': '#75AC19',
+    # 'Jack Bird Spawn': '#FECA34'
 PATH_COLOR = '#DA8FBE'
 
 
@@ -370,22 +425,34 @@ class MazePreview(RelativeLayout):
 
     def generate_tile_data(self):
         self._generated_data, self.nodes = generate_maze(self.maze_size)
+        safe_zones = []
+        options = []
+        for node in self.nodes:
+            if self.nodes[node] in [N, S, E, W]:
+                options.append(node)
 
+        for x in range(int((self.maze_size * self.maze_size) / 20)):
+            node = options[randint(0, len(options) - 1)]
+            while node in safe_zones:
+                node = options[randint(0, len(options) - 1)]
+            safe_zones.append(node)
         # Reset path nodes
         self.path_nodes = []
         # Reset marker lists
         self.marker_lists = {key: [] for key in MARKERS.keys()}
+        self.marker_lists['Safe Zone'] = safe_zones
         self.update_tile_data()
 
     def update_tile_data(self):
         tile_data = []
         for row in range(self.maze_size):
             for col in range(self.maze_size):
-                new_tile = {'coords': [col, row], 'tile': self._generated_data[row][col], 'update_callback': self.update_marker_list}
+                new_tile = {'coords': [col, row], 'tile': self._generated_data[row][col], 'update_callback': self.update_marker_list, 'current_marker': 'None'}
                 if tuple(new_tile['coords']) in self.path_nodes:
                     new_tile['color'] = rgba(PATH_COLOR)
                 for marker_name, marker_list in self.marker_lists.items():
                     if tuple(new_tile['coords']) in marker_list:
+                        new_tile['current_marker'] = marker_name
                         new_tile['color'] = rgba(MARKERS[marker_name])
                 if 'color' not in new_tile:
                     new_tile['color'] = rgba('#FFFFFF')
@@ -419,12 +486,18 @@ class MazePreview(RelativeLayout):
             return
         entrance_node = tuple(self.marker_lists['Entrance'][0])
         exit_node = tuple(self.marker_lists['Exit'][0])
-        self.path_nodes = solve_path(0, entrance_node, exit_node, self.nodes)
 
+        distances = []
+        # for x in range(100000):
+        self.path_nodes, distance = solve_path_iterative(self.nodes, entrance_node, exit_node)
+        distances.append(distance)
+        print('Min', min(distances))
+        print('Max', max(distances))
+        print('Avg', sum(distances) / 100000)
         self.update_tile_data()
 
     def export_maze(self):
-        file = open('output.txt', 'w', encoding='utf-8')
+        file = open('output.txt', 'a', encoding='utf-8')
         file.write(str(self.nodes) + '\n')
         file.write(str(self.path_nodes) + '\n')
         for marker_name, marker_list in self.marker_lists.items():
