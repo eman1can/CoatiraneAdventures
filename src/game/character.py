@@ -205,6 +205,15 @@ class Character(Entity):
             return self._abilities[index]
         return None
 
+    def has_perk(self, perk_id):
+        return perk_id in self._abilities
+
+    def bestow_perk(self, perk):
+        self._abilities.append(perk.get_id())
+
+    def get_perks(self):
+        return self._abilities
+
     # def get_ability_options(self, abilities):
     #     return abilities[:3]
     def add_ability(self, ability):

@@ -49,6 +49,7 @@ class FloorData:
         self._special_amount = 0
         self._gained_items = {}
         self._killed_monsters = {}
+        self._party_perks = []
         self._generate_characters()
 
     # Basic getter functions
@@ -69,6 +70,12 @@ class FloorData:
 
     def get_killed(self):
         return self._killed_monsters
+
+    def get_party_perks(self):
+        return self._party_perks
+
+    def party_has_perk(self, perk_id):
+        return perk_id in self._party_perks
 
     # Movement functions
     def get_directions(self):
@@ -115,7 +122,7 @@ class FloorData:
         self._current_direction = direction
 
         # Do map exploration
-        if floor_map.set_current_node(next_node):
+        if floor_map.set_current_node(next_node, self.party_has_perk('mapping')):
             self._explored.append(next_node)
 
         # Detract from safe zone times
@@ -135,9 +142,9 @@ class FloorData:
         if (x, y) not in self._activated_safe_zones:
             chance = 15
             node = None
-            for enemy in self._floor.get_enemies():
-                if floor_map.is_marker(enemy.get_id()):
-                    node = enemy.get_id()
+            for enemy_id in self._floor.get_enemies().keys():
+                if floor_map.is_marker(enemy_id):
+                    node = enemy_id
                     chance += 50
                     break
             chance += 20 * self._rest_count
@@ -148,11 +155,10 @@ class FloorData:
                     # If we are standing on a node, and we get that enemy generated, reduce positions counter
                     for enemy in self._battle_data.get_enemies():
                         if enemy.get_id() == node:
-                            nodes, counters = floor_map.get_node_exploration()
-                            counters[(x, y)] -= 1
-                            if counters[(x, y)] == 0:
-                                counters.pop((x, y))
-                                nodes[(x, y)] = True
+                            if self.party_has_perk('hunter'):
+                                floor_map.decrease_node_counter(2)
+                            else:
+                                floor_map.decrease_node_counter(1)
                             break
 
     def get_descriptions(self):
@@ -368,6 +374,7 @@ class FloorData:
         self._adventurers = []
         self._supporters = []
         self._increases = {}
+        self._party_perks = []
 
         for index in range(16):
             character = party[index]
@@ -377,6 +384,7 @@ class FloorData:
             if index < 8:
                 support = party[index + 8]
                 self._adventurers.append(create_battle_character(character, support))
+                self._party_perks += character.get_perks()
             else:
                 self._supporters.append(character)
 

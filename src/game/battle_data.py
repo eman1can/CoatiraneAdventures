@@ -97,7 +97,7 @@ class BattleData:
     def set_enemies(self, enemies):
         self._enemies = enemies
         for enemy in enemies:
-            self._log += f'Level {enemy.get_level()} {enemy.get_name()} entered the battle!\n'
+            self._log += f'{enemy.get_name()} entered the battle!\n'
         for character in self._adventurers:
             self._log += f'{character.get_name()} joined the battle!\n'
             print(character.get_description_recap())
@@ -250,7 +250,6 @@ class BattleData:
                         self._log += f'   {target.get_name()} has been incapacitated!\n'
                     else:
                         self._log += f'   {target.get_name()} has been killed!\n'
-                        self._generate_drop(target)
                 if do_counter and not counter:
                     if not target.is_dead():
                         self._process_move(target, True)
@@ -312,15 +311,3 @@ class BattleData:
         counter = self._make_choice(ratio)
         print('\t\t\t\tCounter:', counter)
         return counter
-
-    def _generate_drop(self, entity):
-        """
-        Generate a dropped item from the enemy
-        """
-        drops = Refs.gc['enemies'][entity.get_id()].generate_drop()
-        for (drop_id, count) in drops:
-            item = Refs.gc.add_to_inventory(drop_id, count)
-            if item not in self._dropped_items:
-                self._dropped_items[item] = 0
-            self._dropped_items[item] += 1
-            self._log += f'      {entity.get_name()} dropped {item.get_name()} x {drop_id}\n'

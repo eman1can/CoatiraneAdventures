@@ -6,16 +6,22 @@ from game.entity import Entity
 
 
 class BattleEnemy(BattleEntity, Entity):
-    def __init__(self, identifier, name, skeleton_path, attack_type, health, mana, strength, magic, endurance, agility, dexterity, element, moves, move_chances):
+    def __init__(self, identifier, name, skeleton_path, attack_type, health, mana, strength, magic, endurance, agility, dexterity, boost, element, sub_element, moves, move_chances):
         Entity.__init__(self, name, skeleton_path, health, mana, strength, magic, endurance, strength, magic, endurance, agility, dexterity, element, moves)
         BattleEntity.__init__(self)
         self._id = identifier
         self._move_chances = move_chances
         self._attack_type = attack_type
+        self._boost = boost
+        self._element = element
+        self._sub_element = element
         self._bhealth = self.get_health()
 
     def get_id(self):
         return self._id
+
+    def get_boost(self):
+        return self._boost
 
     def get_idle_animation(self):
         return 'idle'
@@ -34,3 +40,5 @@ class BattleEnemy(BattleEntity, Entity):
 
     def is_enemy(self):
         return True
+
+    # TODO Add element boost weaknesses

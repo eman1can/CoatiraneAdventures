@@ -11,8 +11,11 @@ def get_town_header():
     renown = Refs.gc.get_renown()
     varenth = Refs.gc.format_number(Refs.gc.get_varenth())
     skill_level = Refs.gc.get_skill_level()
-    time = Refs.gc.get_time()
-    return '\n' + f'{name} - {domain} - Skill Level {skill_level}'.rjust(40).ljust(100) + f'{time} - {varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
+    if Refs.gc.in_inventory('pocket_watch'):
+        time = Refs.gc.get_time()
+        return '\n' + f'{name} - {domain} - Perks Unlocked {skill_level}'.rjust(40).ljust(100) + f'{time} - {varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
+    else:
+        return '\n' + f'{name} - {domain} - Perks Unlocked {skill_level}'.rjust(40).ljust(100) + f'{varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
 
 
 def town_main(console):
@@ -60,7 +63,8 @@ def profile_main(console):
     domain_desc = domain.get_large_description().replace('\n', '\n\t')
     display_text += f'\n\t{domain.get_title()}\n\t{domain_desc}\n'
     display_text += f'\n\tRenown - {Refs.gc.get_renown()}'
-    display_text += f'\n\tSkill Level {Refs.gc.get_skill_level()}'
+    display_text += f'\n\tCurrent Perk Points - {Refs.gc.get_perk_points()}'
+    display_text += f'\n\tPerks Unlocked {Refs.gc.get_skill_level()}'
     display_text += f'\n\tYou have {Refs.gc.format_number(Refs.gc.get_varenth())} Varenth'
     display_text += f'\n\n\t{OPT_C}1:{END_OPT_C} Skill Trees'
     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
@@ -118,6 +122,8 @@ def tavern_relax(console):
         text = texts[randint(0, len(texts) - 1)]
         point = randint(1, 100) > 95
         point_text = 'You gain 1 skill point.' if point else ''
+        if point:
+            Refs.gc.add_skill_point()
         display_text += f'\n\t{text}\n\t{point_text}'
 
     _options = {'0': 'back'}

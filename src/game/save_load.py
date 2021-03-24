@@ -41,6 +41,8 @@ def load_save_info(save_slot):
 
 def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_info, save_path = get_info_and_path(save_slot)
+    if not exists(SAVE_PATHS[save_slot - 1]):
+        mkdir(SAVE_PATHS[save_slot - 1])
 
     starting_rank = RANKS[0]
     starting_varenth = 3000
@@ -48,9 +50,9 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     starting_quests = 0
     starting_floor = 0
     starting_score = 0
-    starting_skills = 0
+    perks_unlocked = 0
 
-    save_header(save_info, name, gender, domain, symbol, starting_rank, starting_varenth, starting_chars, starting_quests, starting_floor, starting_score, starting_skills)
+    save_header(save_info, name, gender, domain, symbol, starting_rank, starting_varenth, starting_chars, starting_quests, starting_floor, starting_score, perks_unlocked)
 
     save_file = JsonStore(save_path)
     save_file['family'] = {
@@ -61,15 +63,14 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
         'rank': starting_rank,
         'chars': starting_chars,
         'quests': starting_quests,
-        'score': starting_score,
-        'skills': starting_skills
+        'score': starting_score
     }
-    save_file['time'] = 60914
+    save_file['time'] = 824316914
     save_file['housing'] = {}
     save_file['housing']['id'] = 'two_room_flat'
     save_file['housing']['type'] = 'rent'
     save_file['housing']['installed_features'] = []
-    save_file['housing']['bill_due'] = 114914
+    save_file['housing']['bill_due'] = 824370914
     save_file['housing']['bill_count'] = 1
     save_file['lowest_floor'] = starting_floor
     save_file['obtained_characters'] = [choice]
@@ -110,11 +111,14 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_file['varenth'] = starting_varenth
     save_file['parties'] = [0] + [[None for _ in range(16)] for _ in range(10)]
     save_file['map_data'] = {}
-    for floor in range(60):
+    save_file['map_node_data'] = {}
+    save_file['map_node_counters'] = {}
+    for floor in range(1, 61):
         save_file['map_data'][str(floor)] = {}
         save_file['map_node_data'][str(floor)] = {}
         save_file['map_node_counters'][str(floor)] = {}
-
+    save_file['perk_points'] = 1
+    save_file['perks'] = []
     # - Obtained Characters (all, s, & a)
     # - Character Rank Info and Growth, Grid Progress
     # - Character Abilities & Skills
@@ -130,7 +134,7 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     # - Family Skill Tree - Not yet a thing
 
 
-def save_header(info_slot, name, gender, domain, symbol, rank, varenth, chars_collected, quest_count, lowest_floor, total_score, skill_level):
+def save_header(info_slot, name, gender, domain, symbol, rank, varenth, chars_collected, quest_count, lowest_floor, total_score, perks_unlocked):
     info = JsonStore(info_slot)
     info['game_version'] = GAME_VERSION
     info['last_save_time'] = strftime('%d/%m/%y %I:%M %p', localtime(time()))
@@ -144,7 +148,7 @@ def save_header(info_slot, name, gender, domain, symbol, rank, varenth, chars_co
     info['quests'] = quest_count
     info['lowest_floor'] = lowest_floor
     info['total_character_score'] = total_score
-    info['skill_level'] = skill_level
+    info['skill_level'] = perks_unlocked
 
 
 def save_game(save_slot, game_content):
@@ -163,9 +167,9 @@ def save_game(save_slot, game_content):
     quest_count = game_content.get_quests()
     lowest_floor = game_content.get_lowest_floor()
     score = game_content.get_score()
-    skill_level = game_content.get_skill_level()
+    perks_unlocked = game_content.get_skill_level()
 
-    save_header(save_info, name, gender, domain, symbol, rank, varenth, char_count, quest_count, lowest_floor, score, skill_level)
+    save_header(save_info, name, gender, domain, symbol, rank, varenth, char_count, quest_count, lowest_floor, score, perks_unlocked)
 
     save_file = JsonStore(save_path)
     save_file['family'] = {
@@ -176,8 +180,7 @@ def save_game(save_slot, game_content):
         'rank':   rank,
         'chars':  char_count,
         'quests': quest_count,
-        'score':  score,
-        'skills': skill_level
+        'score':  score
     }
     save_file['time'] = game_content.get_calendar().get_int_time()
     save_file['housing'] = {}
@@ -231,6 +234,8 @@ def save_game(save_slot, game_content):
         save_file['map_node_data'][str(floor.get_id())] = explored_array
         save_file['map_node_counters'][str(floor.get_id())] = explored_counter_array
 
+    save_file['perk_points'] = game_content.get_perk_points()
+    save_file['perks'] = game_content.get_unlocked_perks()
 
     save_file['varenth'] = varenth
     parties = [game_content.get_current_party_index()]
@@ -307,14 +312,14 @@ def generate_data(file_path, floor):
             node_lists[resource].append(node)
 
     # Generate nodes for every enemy
-    for enemy in floor.get_enemies():
-        node_lists[enemy.get_id()] = []
+    for enemy in floor.get_enemies().keys():
+        node_lists[enemy] = []
         for index in range(node_amount):
             node = get_random_node(size)
             while node in generated_nodes:
                 node = get_random_node(size)
             generated_nodes.append(node)
-            node_lists[enemy.get_id()].append(node)
+            node_lists[enemy].append(node)
     for node_type, node_list in node_lists.items():
         data[node_type] = node_list
     data['save_time'] = time()

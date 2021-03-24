@@ -1,3 +1,5 @@
+import math
+import os
 from math import sqrt
 from random import choices, randint
 from time import time
@@ -107,14 +109,16 @@ gems = [
     'Diamond 10.0']
 
 magic_stone_types = ['tiny', 'small', 'medium', 'regular', 'large', 'huge']
-falna_types = ['strength', 'magic', 'endurance', 'dexterity', 'agility']
+falna_types = ['strength', 'magic', 'endurance', 'agility', 'dexterity']
 # D, small_strength_falna, Strength Falna, multi, 0, 0
 # A gem found in monsters that can be used to grow strength in an adventurer.
 
 # Generate Falna Types
 falnas = []
+falna_names = []
 for stone_type in magic_stone_types:
     for falna_type in falna_types:
+        falna_names.append(f'{stone_type}_{falna_type}_falna')
         falnas.append(f'D, {stone_type}_{falna_type}_falna, {falna_type.capitalize()} Falna, multi, 0, 0\nA gem found in monsters that can be used to grow {falna_type} in an adventurer.')
 
 # Generate Magic Stone Types
@@ -127,8 +131,10 @@ magic_stone_sub_text = {'tiny': 'A {0} sliver of a magic stone',
                         'huge': 'A {0} cluster of magic stones'}
 
 magic_stones = []
+magic_stone_names = []
 for large_type in magic_stone_types:
     for small_type in magic_stone_types:
+        magic_stone_names.append(f'{large_type}_{small_type}_magic_stone')
         definition = f'D, {large_type}_{small_type}_magic_stone, {small_type.title()} Magic Stone {magic_stone_text[large_type]}, multi, {100}, {200}\n{magic_stone_sub_text[large_type].format(small_type)}.\n'
         magic_stones.append(definition)
 print(f'{len(magic_stones)} Magic Stones.')
@@ -247,7 +253,7 @@ drop_types = {
         'hard_armored': 1,
         'infant_dragon': 1,
         'wyvern': 1,
-        'lamia mormos': 1,
+        'lamia_mormos': 1,
         'minotaur': 1,
         'bugbear': 1,
         'battle_boar': 1,
@@ -255,7 +261,7 @@ drop_types = {
         'vouivre': 1,
         'green_dragon': 1,
         'hobgoblin': 1,
-        'moss huge': 1,
+        'moss_huge': 1,
         'harpy': 1,
         'siren': 1,
         'blue_crab': 1,
@@ -315,7 +321,7 @@ drop_types = {
         'mammoth_fool': 2,
         'sword_stag': 2,
         'troll': 2,
-        'moss huge': 2,
+        'moss_huge': 2,
         'metal_rabbit': 2,
         'kelpie': 2,
         'power_bull': 2,
@@ -343,7 +349,7 @@ drop_types = {
         'infant_dragon': 2,
         'black_wyvern': 2,
         'wyvern': 2,
-        'lamia mormos': 2,
+        'lamia_mormos': 2,
         'lizardman': 2,
         'vouivre': 2,
         'mad_beetle': 2,
@@ -470,6 +476,7 @@ element_counts = {
 total_elements = 0
 
 materials_found = {}
+monsters_found = {}
 
 for monster in monster_list:
     lines = monster.split('\n')
@@ -478,17 +485,26 @@ for monster in monster_list:
     found_list = found[len('Found on Floor '):].strip().split(', ')
     if name == 'Frog Shooter':
         print(found_list, found)
+    int_found_list = []
     for index in range(len(found_list)):
-        if 'and' in found_list[index]:
+        if ' and' in found_list[index]:
+            first, second = found_list[index].split(' and ')
+            found_list[index] = second
+            found_list.insert(index, first)
+        elif 'and' in found_list[index]:
             found_list[index] = found_list[index][4:]
+        int_found_list.append(int(found_list[index]))
+    monsters_found[name] = int_found_list
     description = lines[2]
     elements_string = lines[3][len('Type: '):]
     if ',' in elements_string:
         elements = elements_string.split(', ')
     else:
-        elements = [elements_string]
+        elements = [elements_string, None]
     monster_types[name] = elements
     for element in elements:
+        if element is None:
+            continue
         element_counts[element] += 1
         total_elements += 1
     hardnesses = lines[4][len('Hardness: '):]
@@ -511,9 +527,103 @@ for monster in monster_list:
                 else:
                     hard = f'{floor_hardnesses[found_list[0]]}-{floor_hardnesses[found_list[-1]]}'
                 non_natural_hard_materials.append(f'{name} {material_type.title()} {hard}')
+    for line in lines[8:]:
+        if '→' not in line:
+            continue
+        raw_data, unit_data = line.split(' → ')
+        raw_amount, raw_type = raw_data.split(' ')
+        unit_amount = unit_data.split(' ')[0]
+
 print('Total Elements:', total_elements)
 for element, element_count in element_counts.items():
     print(element, element_count, '-', str(round(element_count / total_elements * 100, 2)) + '%')
+
+if True:
+    with open('output.txt', 'w', encoding='utf-8') as file:
+        for enemy, drop_list in enemy_drops.items():
+            file.write(enemy + ', ')
+            name = enemy.replace('_', ' ').title()
+            file.write(name + ', ')
+            skeleton = '-'
+            file.write(skeleton + ', ')
+            element = monster_types[name][0]
+            sub_element = monster_types[name][1]
+            file.write(element + ', ' + str(sub_element) + ', ')
+            attack_type = 0
+            min_hsmead = [40, 8, 8, 6, 4, 4]
+            max_hsmead = [120, 20, 20, 14, 10, 10]
+            file.write(str(attack_type))
+            for x in range(6):
+                file.write(', ')
+                file.write(str(min_hsmead[x]))
+                file.write(', ')
+                file.write(str(max_hsmead[x]))
+            basic_move = 14
+            file.write(', ')
+            file.write('0')
+            file.write(', ')
+            file.write(str(basic_move))  # Basic
+            file.write(', ')
+            file.write('1')
+            file.write(', ')
+            file.write(str(basic_move))  # Counter
+            file.write(', ')
+            file.write('1')
+            file.write(', ')
+            file.write('-')  # Block
+            file.write(', ')
+            file.write('-')
+            file.write('\n')
+            guaranteed_drops = []
+            drops = []
+            for drop, rarity in drop_list.items():
+                if rarity == 0:
+                    guaranteed_drops.append(f'{enemy}_{drop}')
+                else:
+                    if drop in ['claw', 'fang', 'horn', 'hide', 'scale']:
+                        drops.append((f'raw_{enemy}_{drop}', rarity))
+                    else:
+                        drops.append((f'{enemy}_{drop}', rarity))
+            for index, drop in enumerate(guaranteed_drops):
+                file.write(drop + '/')
+                if index < len(guaranteed_drops) - 1:
+                    file.write(',')
+            file.write(';')
+            # Crystals
+            minimum, maximum = min(monsters_found[name]), max(monsters_found[name])
+            crystal_min, crystal_max = math.floor(minimum / 60 * 36), min(math.ceil(maximum / 60 * 36), 35)
+            falna_min, falna_max = math.floor(minimum / 60 * 6), min(math.ceil(maximum / 60 * 6), 5)
+            crystal_count = max(crystal_max - crystal_min + 1, 1)
+            falna_count = max(falna_max - falna_min + 1, 1)
+
+            count = 0
+            for rarity in range(min(crystal_count, 5), 0, -1):
+                if count < crystal_count:
+                    index_count = max(math.ceil((crystal_count - count) / rarity), 1.0)
+                    for index in range(index_count):
+                        file.write(magic_stone_names[crystal_max - count - index] + '/' + str(min(crystal_count + 1, 6) - rarity))
+                        if count + index != crystal_count - 1:
+                            file.write(',')
+                    count += index_count
+            file.write(';')
+            count = 0
+            for rarity in range(min(falna_count, 5), 0, -1):
+                if count < falna_count:
+                    index_count = max(math.ceil((falna_count - count) / rarity), 1.0)
+                    for index in range(index_count):
+                        # The index is for a falna TYPE; We want all SMEAD to drop
+                        type_index = falna_min + count + index
+                        for sub_index in range(type_index * 5, (type_index + 1) * 5):
+                            file.write(falna_names[sub_index] + '/' + str(min(falna_count + 1, 6) - rarity))
+                            if count + index != falna_count - 1 or sub_index != (type_index + 1) * 5 - 1:
+                                file.write(',')
+                    count += index_count
+            file.write(';')
+            for index, (drop, rarity) in enumerate(drops):
+                file.write(drop + '/' + str(rarity))
+                if index < len(drops) - 1:
+                    file.write(',')
+            file.write('\n#\n')
 
 
 class Material:
@@ -735,8 +845,8 @@ for floor in floor_spawns.keys():
             hard = get_hardness(start, fid, end - start + 1, minh, maxh)
             gems_by_floors[fid][material.full_string] = hard
 
-# Write Monsters and materials for each Floor
-if True:
+# Floor Definitions for each floor
+if False:
     with open('output.txt', 'w', encoding='utf-8') as file:
         for floor, spawns in floor_spawns.items():
             fid = int(floor.split('_')[1])
@@ -768,6 +878,8 @@ if True:
                 if index != len(gems_array) - 1:
                     file.write('; ')
             file.write('\n\n')
+
+
 
 # Generate Common items
 common_items = []
@@ -828,7 +940,7 @@ rarities = [1, 2, 3, 4, 5]
 rarities_weights = [1 / (2 ** rarities[x]) for x in range(5)]
 
 # Do Spawn Percentages and Excel output
-if True:
+if False:
     def get_drop_item(drop_rarities):
         drop_list = drop_rarities[choices(rarities, rarities_weights, k=1)[0]]
         if len(drop_list) > 0:
@@ -1238,8 +1350,8 @@ if True:
 
         # Create Resource Drop Charts
         metal_chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
-        for char_index in char_range('B', index_to_char_string(len(natural_hard_materials_by_hardness + gems_by_hardness) + 2)):
-            if char_string_to_index(char_index) != len(natural_hard_materials_by_hardness + gems_by_hardness) + 1:
+        for char_index in char_range('B', index_to_char_string(len(natural_hard_materials_by_hardness + gems_by_hardness) + 1)):
+            if char_string_to_index(char_index) != len(natural_hard_materials_by_hardness + gems_by_hardness):
                 name = list(natural_hard_materials_by_hardness + gems_by_hardness)[char_string_to_index(char_index) - 1].full_string
                 metal_chart.add_series({
                     'name':       ['Metal Skew Drop Rates', 0, char_string_to_index(char_index)],
@@ -1258,8 +1370,8 @@ if True:
 
         # Gem chart
         gem_chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
-        for char_index in char_range('B', index_to_char_string(len(natural_hard_materials_by_hardness + gems_by_hardness) + 2)):
-            if char_string_to_index(char_index) != len(natural_hard_materials_by_hardness + gems_by_hardness) + 1:
+        for char_index in char_range('B', index_to_char_string(len(natural_hard_materials_by_hardness + gems_by_hardness) + 1)):
+            if char_string_to_index(char_index) != len(natural_hard_materials_by_hardness + gems_by_hardness):
                 name = list(natural_hard_materials_by_hardness + gems_by_hardness)[char_string_to_index(char_index) - 1].full_string
                 gem_chart.add_series({
                     'name':       ['Gem Skew Drop Rates', 0, char_string_to_index(char_index)],
@@ -1278,10 +1390,11 @@ if True:
 
         # Floor movement chart
         floor_chart = writer.book.add_chart({'type': 'scatter', 'subtype': 'straight'})
-        for char_index in char_range('B', index_to_char_string(len(floor_movements) + 2)):
-            if char_string_to_index(char_index) != len(floor_movements) + 1:
+        for char_index in char_range('B', index_to_char_string(len(floor_movements.keys()) + 1)):
+            if char_string_to_index(char_index) != len(floor_movements.keys()):
+                print(char_string_to_index(char_index) - 1, len(floor_movements.keys()))
                 name = list(floor_movements.keys())[char_string_to_index(char_index) - 1]
-                gem_chart.add_series({
+                floor_chart.add_series({
                     'name':       ['Floor Movements', 0, char_string_to_index(char_index)],
                     'categories': ['Floor Movements', 1, 0, len(floor_data) + 1, 0],
                     'values':     ['Floor Movements', 1, char_string_to_index(char_index), len(floor_data), char_string_to_index(char_index)],

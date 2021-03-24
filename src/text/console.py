@@ -20,9 +20,10 @@ from text.screens.inventory import inventory
 from text.screens.new_game import game_loading, intro_domain, intro_domain_gender, intro_domain_name, intro_news, intro_select, new_game, save_select
 from text.screens.select_char import select_screen_char
 from text.screens.shop import do_transaction, shop
+from text.screens.skill_tree import perk_bestow, perk_info, skill_tree_main
 from text.screens.status_board import status_board_main, status_board_unlock, status_board_view_falna
 from text.screens.town import profile_main, quests_main, tavern_main, tavern_recruit, tavern_recruit_show, tavern_relax, town_main
-from text.screens.dungeon_battle import dungeon_battle, dungeon_battle_action, dungeon_result
+from text.screens.dungeon_battle import dungeon_battle, dungeon_battle_action, dungeon_dig_result, dungeon_mine_result, dungeon_result
 
 TEST_TEXT = 'Level 1 Goblin entered the battle!\nLevel 1 Goblin entered the battle!\nLevel 1 Goblin entered the battle!\nLevel 1 Goblin entered the battle!\nAis Wallenstein joined the battle!\nLexi Buhr joined the battle!\nSofi joined' \
             ' the battle!\nSophie Nicholson joined the battle!\nSophie Nicholson used support skill Invigoration!\nMaya Lurch joined the battle!\nMaya Lurch used support skill Invigoration!\nSophie Nicholson joined the battle!\nSophie Nicholson ' \
@@ -243,10 +244,11 @@ class Console(TextInput):
 
         names = ['new_game', 'save_select', 'intro_domain_name', 'intro_domain_gender', 'intro_domain', 'intro_select', 'game_loading', 'town_main', 'tavern_main', 'shop', 'quests_main', 'crafting_main', 'inventory', 'dungeon_main',
                  'select_screen_char', 'dungeon_confirm', 'dungeon_battle', 'dungeon_result', 'tavern_recruit_show', 'tavern_recruit', 'tavern_relax', 'intro_news', 'profile_main', 'housing_main', 'housing_browse', 'housing_rent', 'housing_buy',
-                 'character_attribute_main', 'status_board_main', 'status_board_unlock', 'status_board_view_falna', 'change_equip_main', 'gear_main', 'map_options']
+                 'character_attribute_main', 'status_board_main', 'status_board_unlock', 'status_board_view_falna', 'change_equip_main', 'gear_main', 'map_options', 'skill_tree_main', 'perk_info', 'perk_bestow', 'dungeon_mine_result',
+                 'dungeon_dig_result']
         screens = [new_game, save_select, intro_domain_name, intro_domain_gender, intro_domain, intro_select, game_loading, town_main, tavern_main, shop, quests_main, crafting_main, inventory, dungeon_main, select_screen_char,
                    dungeon_main_confirm, dungeon_battle, dungeon_result, tavern_recruit_show, tavern_recruit, tavern_relax, intro_news, profile_main, housing_main, housing_browse, housing_rent, housing_buy, character_attribute_main,
-                   status_board_main, status_board_unlock, status_board_view_falna, change_equip_main, gear_main, map_options]
+                   status_board_main, status_board_unlock, status_board_view_falna, change_equip_main, gear_main, map_options, skill_tree_main, perk_info, perk_bestow, dungeon_mine_result, dungeon_dig_result]
         for index, screen in enumerate(names):
             if screen_name.startswith(screen):
                 self.display_text, self._options = screens[index](self)
@@ -313,6 +315,7 @@ class Console(TextInput):
         elif action.startswith('load_game'):
             self.set_screen('game_loading')
             Refs.app.start_loading(self, int(action[-1]), 'town_main')
+            return
         elif action.startswith('dungeon_main_'):
             index = 0
             if action.endswith('next'):
@@ -347,6 +350,11 @@ class Console(TextInput):
 
             Refs.gc.get_current_party()[index] = char
             self.set_screen('dungeon_main')
+        if action.startswith('dungeon_battle_start'):
+            Refs.gc.set_next_floor(bool(action[6:]))
+            self.text = '\n\tSaving Game...'
+            Clock.schedule_once(lambda dt: Refs.gc.save_game(), 0.5)
+            Clock.schedule_once(lambda dt: self.set_screen('dungeon_battle'), 1)
         elif action.startswith('dungeon_battle'):
             dungeon_battle_action(self, action)
         elif action.startswith('shop') and 'confirm' in action:
@@ -358,23 +366,25 @@ class Console(TextInput):
                 return
             self.set_screen(screen_name + f'{page_num}page')
         elif action == 'save_game':
-            Refs.gc.save_game()
+            self.text = '\n\tSaving Game...'
+            Clock.schedule_once(lambda dt: Refs.gc.save_game(), 0.5)
+            Clock.schedule_once(lambda dt: self.set_screen('town_main'), 1)
         elif action == 'crafting_main':
             if Refs.gc.is_crafting_locked():
                 self.error_time = 2.5
-                self.error_text = 'You need an adventurer with the crafting perk.'
+                self.error_text = 'You need an adventurer with a crafting perk.'
             else:
                 self.set_screen(action)
         elif action == 'crafting_potions':
             if Refs.gc.is_potion_crafting_locked():
                 self.error_time = 2.5
-                self.error_text = 'You need an adventurer with the potion crafting perk.'
+                self.error_text = 'You need an adventurer with the Fledgling Alchemist perk.'
             else:
                 self.set_screen(action)
         elif action == 'crafting_blacksmithing':
             if Refs.gc.is_blacksmithing_locked():
                 self.error_time = 2.5
-                self.error_text = 'You need an adventurer with the blacksmithing perk.'
+                self.error_text = 'You need an adventurer with the Apprentice Blacksmith perk.'
             else:
                 self.set_screen(action)
         elif action == 'tavern_main':
@@ -466,5 +476,13 @@ class Console(TextInput):
                 self.set_screen('map_options')
                 return
             self.set_screen('map_options_' + action)
+        elif action.startswith('perk_bestow') and '#' in action:
+            perk_information, character_id = action.split('#')
+            perk_id = perk_information[len('perk_bestow_'):]
+            perk = Refs.gc['perks'][perk_id]
+            character = Refs.gc.get_char_by_id(character_id)
+            character.bestow_perk(perk)
+            Refs.gc.unlock_perk(perk)
+            self.set_screen('perk_info_' + perk_id)
         else:
             self.set_screen(action)

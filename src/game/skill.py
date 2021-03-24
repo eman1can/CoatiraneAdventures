@@ -1,110 +1,138 @@
-__all__ = ('Skill', 'ATTACK_TYPES', 'ATTACK_TYPE_INDEX_TO_STRING', 'ELEMENTS', 'ELEMENT_INDEX_TO_STRING', 'MODIFIERS', 'MOD_INDEX_TO_STRING', 'SPEEDS', 'SPEED_INDEX_TO_STRING', 'TARGET_INDEX_TO_STRING', 'ALL_ALLIES', 'ALL_FOES', 'FOE', 'SELF',)
+__all__ = ('Skill',)
 
-# Ranks
-RANKS = ['I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS']
+# Skill Types
+ATTACK       = 0
+CAUSE_EFFECT = 1
+HEAL         = 2
+AILMENT_CURE = 3
 
-# LINE TYPES
-SKILL = 0
-ABILITY = 1
+SKILL_TYPES = {ATTACK: 'Attack', CAUSE_EFFECT: 'Cause Effect', HEAL: 'Heal', AILMENT_CURE: 'Ailment Cure'}
 
-# Skill Attack type
-ATTACK_TYPE_PHYSICAL = 0
-ATTACK_TYPE_MAGICAL = 1
-ATTACK_TYPE_HYBRID = 2
-ATTACK_TYPES = [ATTACK_TYPE_PHYSICAL, ATTACK_TYPE_MAGICAL, ATTACK_TYPE_HYBRID]
-ATTACK_TYPE_INDEX_TO_STRING = ['Phy. Atk.', 'Mag. Atk.', 'Hyb. Atk.']
-
-# Target types
-FOE = 0
-SELF = 1
-ALL_FOES = 2
-ALL_ALLIES = 3
-TARGET_INDEX_TO_STRING = ['Foe', 'Self', 'Foes', 'Allies']
-
-# MODIFIERS
-SINGLE_LOW = 0.5
-SINGLE_MID = 0.7
-SINGLE_HIGH = 0.9
-SINGLE_SUPER = 1.1
-SINGLE_ULTRA = 3.0
-
-SINGLE_TEMP = 0.3
-SINGLE_TEMP_SA = 0.4
-
-SINGLE_MODS = [SINGLE_LOW, SINGLE_MID, SINGLE_HIGH, SINGLE_SUPER, SINGLE_ULTRA]
-
-MULTI_LOW = 0.1
-MULTI_MID = 0.15
-MULTI_HIGH = 0.2
-MULTI_SUPER = 0.4
-MULTI_ULTRA = 2.6
-
-MULTI_TEMP = 0.4
-MULTI_TEMP_SA = 0.4
-
-MULTI_MODS = [MULTI_LOW, MULTI_MID, MULTI_HIGH, MULTI_SUPER, MULTI_ULTRA]
-
-MOD_LOW = 0
-MOD_MID = 1
-MOD_HIGH = 2
-MOD_SUPER = 3
-MOD_ULTRA = 4
-MODIFIERS = [MOD_LOW, MOD_MID, MOD_HIGH, MOD_SUPER, MOD_ULTRA]
-MOD_INDEX_TO_STRING = ['Low', 'Mid', 'High', 'Super', 'Ultra']
+# Targets
+FOE    = 0
+FOES   = 1
+SELF   = 2
+ALLY   = 3
+ALLIES = 4
+TARGETS = {FOE: 'Foe', FOES: 'Foes', SELF: 'Self', ALLY: 'Ally', ALLIES: 'Allies'}
 
 # Attack Speed
-SPEED_SLOW = 0.5
-SPEED_NORMAL = 1
-SPEED_FAST = 1.5
-SPEEDS = [SPEED_SLOW, SPEED_NORMAL, SPEED_FAST]
-SPEED_INDEX_TO_STRING = ['Slow', '', 'Fast']
+SLOW   = 0
+NORMAL = 1
+FAST   = 2
+ATTACK_SPEEDS = {SLOW: 'Slow', NORMAL: '', FAST: 'Fast'}
 
-# Element Types
-ELEMENT_NONE = 0
-ELEMENT_WATER = 1
-ELEMENT_FIRE = 2
-ELEMENT_THUNDER = 3
-ELEMENT_WIND = 4
-ELEMENT_EARTH = 5
-ELEMENT_LIGHT = 6
-ELEMENT_DARK = 7
-ELEMENTS = [ELEMENT_NONE, ELEMENT_WATER, ELEMENT_FIRE, ELEMENT_THUNDER, ELEMENT_WIND, ELEMENT_EARTH, ELEMENT_LIGHT, ELEMENT_DARK]
-ELEMENT_INDEX_TO_STRING = ['None', 'Water', 'Fire', 'Thunder', 'Wind', 'Earth', 'Light', 'Dark']
+ATTACK_SPEED_MODIFIER = {
+    SLOW: 0.5,
+    NORMAL: 1.0,
+    FAST: 1.5
+}
+
+# Attack Power
+LOW   = 0
+MID   = 1
+HIGH  = 2
+SUPER = 3
+ULTRA = 4
+ATTACK_POWERS = {LOW: 'Low', MID: 'Mid', HIGH: 'High', SUPER: 'Super', ULTRA: 'Ultra'}
+
+ATTACK_POWERS_EFFECT_BY_TARGET = {
+    FOE: {
+        LOW: 0.5,
+        MID: 0.7,
+        HIGH: 0.9,
+        SUPER: 1.1,
+        ULTRA: 3.0
+    },
+    ALLY: {
+        LOW: 0.5,
+        MID: 0.7,
+        HIGH: 0.9,
+        SUPER: 1.1,
+        ULTRA: 3.0
+    },
+    SELF: {
+        LOW: 0.5,
+        MID: 0.7,
+        HIGH: 0.9,
+        SUPER: 1.1,
+        ULTRA: 3.0
+    },
+    FOES: {
+        LOW: 0.1,
+        MID: 0.15,
+        HIGH: 0.2,
+        SUPER: 0.4,
+        ULTRA: 2.6
+    },
+    ALLIES: {
+        LOW: 0.1,
+        MID: 0.15,
+        HIGH: 0.2,
+        SUPER: 0.4,
+        ULTRA: 2.6
+    }
+}
+
+# Skill Attack type
+PHYSICAL = 0
+MAGICAL  = 1
+HYBRID   = 2
+ATTACK_TYPES = {PHYSICAL: 'P.', MAGICAL: 'M.', HYBRID: 'H.'}
+
+# Elements
+NONE = 0
+WATER = 1
+FIRE = 2
+THUNDER = 3
+WIND = 4
+EARTH = 5
+LIGHT = 6
+DARK = 7
+ELEMENTS = {NONE: 'None', WATER: 'Water', FIRE: 'Fire', THUNDER: 'Thunder', WIND: 'Wind', EARTH: 'Earth', LIGHT: 'Light', DARK: 'Dark'}
+
+# Temporary Boost
+BOOST       = 0
+GREAT_BOOST = 1
+BOOST_TYPES = {BOOST: 'Boost', GREAT_BOOST: 'Great Boost'}
+TEMP_BOOST_BY_TARGET = {
+    BOOST: {
+        FOE: 0.4,
+        ALLY: 0.4,
+        SELF: 0.4,
+        FOES: 0.3,
+        ALLIES: 0.3
+    },
+    GREAT_BOOST: {
+        FOE: 0.6,
+        ALLY: 0.6,
+        SELF: 0.7,
+        FOES: 0.5,
+        ALLIES: 0.5
+    }
+}
 
 
 class Skill:
-    # Skills need
-    # - A id
-    # - A name
-    # - An animation for the character
-    #
-    # - A current rank
-    # - A usage count
-    #
-    # - An attack type
-    # - A target
-    # - A Modifier
-    # - A Speed
-    # - A element
-    # - A mana cost
-    # - A list of effects
-
-    def __init__(self, skill_id, skill_name, animation_id, attack_type, target, modifier, speed, element, mana_cost, effects):
+    def __init__(self, skill_id, skill_name, animation_id, mana_cost, skill_type, target, speed, power, stat_type, element, modifier=None, effect_list=None):
         self._id = skill_id
         self._name = skill_name
         self._animation_id = animation_id
-        self._attack_type = attack_type
+
+        self._type = skill_type
         self._target = target
-        if self._target in [FOE, SELF]:
-            self._modifier = SINGLE_MODS[modifier]
-        else:
-            self._modifier = MULTI_MODS[modifier]
-        self._speed = SPEEDS[speed]
-        self._element = element
+        self._speed = speed
+        self._power = power
         self._mana_cost = mana_cost
-        self._effects = effects
+        self._stat_type = stat_type
+        self._element = element
+
+        self._modifier = modifier
+        self._effect_list = effect_list
+
         self._special = False
 
+    # For character specific actions
     def set_special(self):
         self._special = True
 
@@ -116,8 +144,11 @@ class Skill:
             return f'Special: {self._name}'
         return self._name
 
-    def get_attack_type(self):
-        return self._attack_type
+    def get_id(self):
+        return self._id
+
+    def get_type(self):
+        return self._type
 
     def get_target(self):
         return self._target
@@ -125,36 +156,36 @@ class Skill:
     def get_speed(self):
         return self._speed
 
-    def get_modifier(self):
-        return self._modifier
+    def get_power(self):
+        return self._power
 
     def get_mana_cost(self):
         return self._mana_cost
 
     def get_effects(self):
-        return self._effects
+        return self._effect_list
 
-    @staticmethod
-    def boost(move_type, target_type):
-        if move_type == ELEMENT_LIGHT and target_type == ELEMENT_DARK:
-            return True
-        if move_type == ELEMENT_DARK and target_type == ELEMENT_LIGHT:
-            return True
-        if move_type == ELEMENT_THUNDER and target_type == ELEMENT_WATER:
-            return True
-        if move_type == ELEMENT_WATER and target_type == ELEMENT_FIRE:
-            return True
-        if move_type == ELEMENT_FIRE and target_type == ELEMENT_WIND:
-            return True
-        if move_type == ELEMENT_WIND and target_type == ELEMENT_EARTH:
-            return True
-        if move_type == ELEMENT_EARTH and target_type == ELEMENT_THUNDER:
-            return True
-        return False
+    # @staticmethod
+    # def boost(move_type, target_type):
+    #     if move_type == ELEMENT_LIGHT and target_type == ELEMENT_DARK:
+    #         return True
+    #     if move_type == ELEMENT_DARK and target_type == ELEMENT_LIGHT:
+    #         return True
+    #     if move_type == ELEMENT_THUNDER and target_type == ELEMENT_WATER:
+    #         return True
+    #     if move_type == ELEMENT_WATER and target_type == ELEMENT_FIRE:
+    #         return True
+    #     if move_type == ELEMENT_FIRE and target_type == ELEMENT_WIND:
+    #         return True
+    #     if move_type == ELEMENT_WIND and target_type == ELEMENT_EARTH:
+    #         return True
+    #     if move_type == ELEMENT_EARTH and target_type == ELEMENT_THUNDER:
+    #         return True
+    #     return False
 
-    def element_modifier(self, target):
-        if self.boost(self._element, target.get_element()):
-            return 1.5
-        if self.boost(target.get_element(), self._element):
-            return 0.5
-        return 1
+    # def element_modifier(self, target):
+    #     if self.boost(self._element, target.get_element()):
+    #         return 1.5
+    #     if self.boost(target.get_element(), self._element):
+    #         return 0.5
+    #     return 1

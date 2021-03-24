@@ -1,43 +1,49 @@
 from refs import END_OPT_C, OPT_C, Refs
 from text.screens.town import get_town_header
 
+"""
+Process Materials - Requires Basic Tailor or Apprentice Blacksmith
+Craft Alloys - Requires Apprentice Blacksmith
+Craft Items - Requires Daedalus' Protégé
+Craft Equipment - Requires Basic Tailor or Apprentice Blacksmith
+Craft Potions - Required Fledgling Alchemist
+"""
 
-# Crafting General
-# - Process Soft materials
-# - Craft using soft materials
-# Crafting Potions
-# - Craft Potion
-#   - Try to find new potion recipe
-#   - Craft Known Potion
-# Forging
-# - Process Hard Materials
-# - Crafting using hard materials
 
 def crafting_main(console):
     display_text = get_town_header()
     display_text += '\n\tWhat kind of crafting would you like to do?\n'
-    display_text += f'\n\t{OPT_C}1:{END_OPT_C} Process Soft Materials'
-    display_text += f'\n\t{OPT_C}2:{END_OPT_C} Craft Using Soft Materials'
-    display_text += f'\n\t{OPT_C}3:{END_OPT_C} Craft Potions'
-    if Refs.gc.is_potion_crafting_locked():
+    _options = {'0': 'back'}
+
+    display_text += f'\n\t{OPT_C}1:{END_OPT_C} Process Materials'
+    if not Refs.gc.has_perk('basic_tailor') and not Refs.gc.has_perk('apprentice_blacksmith'):
         display_text += ' - LOCKED'
-    display_text += f'\n\t{OPT_C}4:{END_OPT_C} Process Hard Materials'
-    if Refs.gc.is_blacksmithing_locked():
+    else:
+        _options['1'] = 'crafting_process_materials'
+    display_text += f'\n\t{OPT_C}2:{END_OPT_C} Craft Alloys'
+    if not Refs.gc.has_perk('apprentice_blacksmith'):
         display_text += ' - LOCKED'
-    display_text += f'\n\t{OPT_C}5:{END_OPT_C} Craft Using Hard Materials'
-    if Refs.gc.is_blacksmithing_locked():
+    else:
+        _options['2'] = 'crafting_alloys'
+    display_text += f'\n\t{OPT_C}3:{END_OPT_C} Craft Items'
+    if not Refs.gc.has_perk('daedalus_protege'):
         display_text += ' - LOCKED'
-    _options = {
-        '0': 'back',
-        '1': 'crafting_process_soft',
-        '2': 'crafting_equipment_soft',
-        '3': 'crafting_potions',
-        '4': 'crafting_process_hard',
-        '5': 'crafting_equipment_hard'
-    }
+    else:
+        _options['3'] = 'crafting_items'
+    display_text += f'\n\t{OPT_C}4:{END_OPT_C} Craft Equipment'
+    if not Refs.gc.has_perk('basic_tailor') and not Refs.gc.has_perk('apprentice_blacksmith'):
+        display_text += ' - LOCKED'
+    else:
+        _options['4'] = 'crafting_equipment'
+    display_text += f'\n\t{OPT_C}5:{END_OPT_C} Craft Potions'
+    if not Refs.gc.has_perk('fledgling_alchemist'):
+        display_text += ' - LOCKED'
+    else:
+        _options['5'] = 'crafting_items'
+
     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} back\n'
     return display_text, _options
 
 
-def crafting_general(console):
+def crafting_process_materials(console):
     pass

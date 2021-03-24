@@ -1,0 +1,130 @@
+daedalus_protege, Daedalus' Protégé, crafting, 1
+none
+Craft basic items
+#
+basic_tailor, Basic Tailor, crafting, 1
+none
+Process soft materials hardness 2.0 and below
+#
+apprentice_blacksmith, Apprentice Blacksmith, crafting, 1
+none
+Process hard materials and craft alloys hardness 3.0 and below
+#
+beginning_of_enigma, The Beginning of Enigma, crafting, 2
+daedalus_protege
+Craft advanced items
+#
+reputable_tailor, Reputable Tailor, crafting, 2
+basic_tailor
+Process soft materials hardness 5.5 and below
+Craft soft material based equipment using soft materials hardness 5.5 and below
+#
+skilled_blacksmith, Skilled Blacksmith, crafting, 2
+basic_blacksmith
+Process hard materials and craft alloys with hardness 8.0 and below
+Craft hard material based equipment using hard materials hardness 8.0 and below
+#
+truth_to_enigma, The Truth to Enigma, crafting, 3
+beginning_of_enigma
+Craft any items
+#
+famous_tailor, Famous Tailor, crafting, 3
+reputable_tailor
+Process Soft Materials hardness 8.75 and below
+Craft soft material based equipment using soft materials hardness 8.75 and below
+Sold soft material based equipment and processed soft materials sell for 20% more
+#
+famous_blacksmith, Famous Blacksmith, crafting, 3
+skilled_blacksmith
+Process Hard Materials and craft alloys with hardness 10.5 and below
+Craft hard material based equipment using hard materials hardness 10.5 and below
+Sold hard material based equipment and processed hard materials sell for 20% more
+#
+master_tailor, Master Tailor, crafting, 4
+famous_tailor
+Process Any Soft Materials
+Craft soft material based equipment using any soft materials
+Sold soft material based equipment and processed soft materials sell for 50% more (Overwrites Famous Tailor)
+#
+master_blacksmith, Master Blacksmith, crafting, 4
+famous_tailor
+Process hard materials and craft alloys with any hardness
+Craft hard material based equipment using any hard materials
+Sold hard material based equipment and processed hard materials sell for 50% more (Overwrites Famous Blacksmith)
+#
+insider_information, Insider Information, crafting, 4
+famous_tailor#famous_blacksmith
+Decrease Price of materials by 30%
+#
+mapping, Mapping, information, 1
+none
+Create basic maps in the dungeon
+#
+trial_argo, Trial Argo, information, 2
+none
+Increase Recruitment amount by 30%
+Increase chance of successful information by 30%
+#
+miners_bearings, A Miners bearings, information, 2
+mapping
+Recognize resource nodes twice as fast
+#
+hunter, Hunter, information, 2
+mapping
+Recognize monster nodes twice as fast
+#
+extended_awareness, Extended Awareness, information, 2
+mapping
+Increase mapping radius by 1
+#
+argo, Argo, information, 3
+trial_argo
+Increase chance of successful perk point by 30%
+Decrease Recruitment Party cost by 30%
+#
+increased_extended_awareness, Increased Extended Awareness, information, 3
+extended_awareness
+Increase mapping radius by 3 (Overwrites Extended Awareness)
+#
+rat, The Rat, information, 4
+argo
+Decrease Adventurer Recruitment Cost by 50%
+Increase chance of rare adventurer by a single bracket
+#
+sixth_sense, Sixth Sense, information, 4
+miners_bearings#hunter#increased_extended_awareness
+Increase mapping radius by 5 (Overwrites Increased Extended Awareness)
+Mapping Radius affects all surrounding area
+#
+fledgling_alchemist, Fledgling Alchemist, alchemy, 1
+none
+Unlock basic potions
+Experiment with materials Grade G and below
+#
+reputable_alchemist, Reputable Alchemist, alchemy, 2
+fledgling_alchemist
+Unlock advanced potions
+Experiment with materials Grade D and below
+#
+researcher, Researcher, alchemy, 2
+fledgling_alchemist
+Increase chance to unlocking ingredient attributes by 30%
+#
+true_efficiency, True Efficiency, alchemy, 3
+reputable_alchemist
+Decrease material requirements by 30%
+Increase yield by 30%
+#
+stanford_grad, Stanford Grad, alchemy, 3
+researcher
+Increase chance to unlocking ingredient attributes to one use
+#
+chemist, The Chemist, alchemy, 4
+reputable_alchemist
+Experiment with any ingredients
+Craft all potions
+#
+harvard_grad, Harvard Grad, alchemy, 4
+stanford_grad
+Increase sale price of your potions by 40%
+Decrease potion and ingredient prices by 40%

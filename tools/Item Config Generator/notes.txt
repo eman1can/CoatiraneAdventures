@@ -83,9 +83,9 @@ Ex: Dagger
 
 # List of current materials (hard) (alloys)
 # Bronze 3.0
-# - 2 units copper
+# - 3 units copper
 # - 1 units tin
-# → 2 units bronze
+# → 3 units bronze
 # Defining Effect (weapon): Elemental Boost Damage +100%
 # Defining Effect (armor): Elemental Resist +50%
 # Sub Effect (weapon): Elemental Boost Damage +50%

@@ -27,7 +27,7 @@ def save_select(console):
             display_text += f"\n\t\tQuests Finished - {info.get('quests')}"
             display_text += f"\n\t\tLowest Floor - {info.get('lowest_floor')}"
             display_text += f"\n\t\tTotal Score - {info.get('total_character_score')}"
-            display_text += f"\n\t\tSkill Level - {info.get('skill_level')}"
+            display_text += f"\n\t\tPerks Unlocked - {info.get('skill_level')}"
         else:
             display_text += 'New Game[/b]'
             _options[str(save_slot)] = f'new_game_{save_slot}'
@@ -62,8 +62,9 @@ def intro_domain(console):
     desc = console.memory.domains[console.memory.current_domain].get_large_description().replace('\n', '\n\t\t')
     display_text += f'\n\t{OPT_C}1:{END_OPT_C} {console.memory.domains[console.memory.current_domain].title}\n\t\t{desc}\n'
     _options['1'] = f'domain_{console.memory.domains[console.memory.current_domain].title}'
-    display_text += f'\n\n\t←────── {OPT_C}2{END_OPT_C} {console.memory.domains[console.memory.current_domain - 1].title} | {console.memory.domains[len(console.memory.domains) % (console.memory.current_domain + 2)].title} {OPT_C}3{END_OPT_C} ' \
-                    f'──────→\n'
+    print(console.memory.current_domain, console.memory.current_domain - 1, (console.memory.current_domain + 2) % len(console.memory.domains))
+    print(console.memory.domains)
+    display_text += f'\n\n\t←────── {OPT_C}2{END_OPT_C} {console.memory.domains[console.memory.current_domain - 1].title} | {console.memory.domains[(console.memory.current_domain + 2) % len(console.memory.domains)].title} {OPT_C}3{END_OPT_C} ──────→\n'
     _options['2'] = 'domain_prev'
     _options['3'] = 'domain_next'
     return display_text, _options

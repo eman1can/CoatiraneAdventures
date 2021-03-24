@@ -1,3 +1,4 @@
+from copy import copy
 from random import choices, randint
 
 from game.battle_enemy import BattleEnemy
@@ -9,7 +10,7 @@ HEALTH, MANA, STR, MAG, END, AGI, DEX = 0, 1, 2, 3, 4, 5, 6
 
 
 class Enemy:
-    def __init__(self, identifier, name, skeleton_id, program_type, attack_type, min_hmsmead, max_hmsmead, moves, move_probabilities, drops):
+    def __init__(self, identifier, name, skeleton_id, program_type, attack_type, min_hmsmead, max_hmsmead, elements, moves, move_probabilities, drops):
         self._id = identifier
         self._name = name
         self._skel_id = skeleton_id
@@ -19,7 +20,8 @@ class Enemy:
         self._attack_type = attack_type
         self._min_hmsmead = min_hmsmead
         self._max_hmsmead = max_hmsmead
-        self._element = None
+        self._element = elements[0]
+        self._sub_element = elements[1]
         self._drops = {'guaranteed': drops['guaranteed']}
         for index, key in enumerate(['crystal', 'falna', 'drop']):
             rarity_list = []
@@ -27,7 +29,7 @@ class Enemy:
                 drop_list = []
                 if rarity == 1:
                     drop_list = [None]
-                for (item_id, rarity) in self._drops[key]:
+                for (item_id, rarity) in drops[key]:
                     if rarity <= rarity:
                         drop_list += (item_id, rarity + 1 - int(rarity))
                 rarity_list.append(drop_list)
@@ -39,16 +41,24 @@ class Enemy:
     def get_name(self):
         return self._name
 
-    def generate_drop(self, boost):
+    def generate_drop(self, boost, hardness):
         drops = []
         rarities = choices([1, 2, 3, 4, 5], [1 / (2 ** (x + 1)) for x in range(5)], k=3)
         # Generate guaranteed drops
         for item_id in self._drops['guaranteed']:
-            drops += (item_id, 1)
+            drops.append((item_id, 1))
         # Generate other drops
         for index, key in enumerate(['crystal', 'falna', 'drop']):
-            drop_list = self._drops[key][rarities[index]]
-            drops += drop_list[randint(0, len(drop_list) - 1)]
+            drop_list = copy(self._drops[key][rarities[index]])
+            # TODO Remove Hard Materials if hardness not enough
+            # TODO Remove Soft Materials if hardness not enough
+            if boost > 2:
+                for sub_boost in [randint(2, int(boost / 2)), randint(2, int(boost / 2))]:
+                    drop_id, count = drop_list[randint(0, len(drop_list) - 1)]
+                    drops.append((drop_id, count * sub_boost))
+            else:
+                drop_id, count = drop_list[randint(0, len(drop_list) - 1)]
+                drops.append((drop_id, count * boost))
         return drops
 
     def get_score(self, boost):
@@ -57,8 +67,8 @@ class Enemy:
     def new_instance(self, boost):
         multiplier = LEVEL_MULTIPLITER[boost]
 
-        hmsmead = [0, 0, 0, 0, 0]
+        hmsmead = [0 for _ in range(DEX + 1)]
         for stat in range(DEX + 1):
             hmsmead[stat] = randint(self._min_hmsmead[stat] * multiplier, self._max_hmsmead[stat] * multiplier)
 
-        return BattleEnemy(self._id, self._name, self._skel_path, self._attack_type, hmsmead[HEALTH], hmsmead[MANA], hmsmead[STR], hmsmead[MAG], hmsmead[END], hmsmead[AGI], hmsmead[DEX], self.element, self.moves, self.move_probabilities)
+        return BattleEnemy(self._id, self._name, self._skel_path, self._attack_type, hmsmead[HEALTH], hmsmead[MANA], hmsmead[STR], hmsmead[MAG], hmsmead[END], hmsmead[AGI], hmsmead[DEX], boost, self._element, self._sub_element, self._moves, self._move_probabilities)

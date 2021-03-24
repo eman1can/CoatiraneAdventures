@@ -1,11 +1,10 @@
 from game.floor import Floor
 
-FLOOR_ID = 0
-FLOOR_MAX_ENEMIES = 1
-FLOOR_BOSS_TYPE = 2
-FLOOR_ARRAY_NUM = 3
-FLOOR_END_OF_VALUES = 6
-FLOOR_NUMBER_OF_VALUES = 2
+FLOOR_ID               = 0
+FLOOR_HARDNESS         = 1
+FLOOR_MAX_ENEMIES      = 2
+FLOOR_BOSS_TYPE        = 3
+FLOOR_ARRAY_NUM        = 4
 
 
 def load_dict(string):
@@ -40,6 +39,7 @@ def load_floor_chunk(chunk, loader, program_type, callbacks):
     lines = chunk.split('\n')
     data = lines[0].split('; ')
     floor_id = int(data[FLOOR_ID])
+    floor_hardness = float(data[FLOOR_HARDNESS])
     max_enemies = int(data[FLOOR_MAX_ENEMIES])
     boss_type = int(data[FLOOR_BOSS_TYPE])
     number_of_monsters = int(data[FLOOR_ARRAY_NUM])
@@ -52,14 +52,15 @@ def load_floor_chunk(chunk, loader, program_type, callbacks):
 
     if debug:
         print('Floor ID:', floor_id)
+        print('Floor Hardness:', floor_hardness)
         print('Max Enemies:', max_enemies)
         print('Boss Type:', boss_type)
         print('Enemies:', enemies)
 
-    resources = lines[1].split('; ')
-    number_of_metals = int(resources[0])
+    resources = lines[1].split(';')
+    number_of_metals = int(resources[0].strip())
     metal_data = resources[1:number_of_metals + 1]
-    number_of_gems = int(resources[number_of_metals + 1])
+    number_of_gems = int(resources[number_of_metals + 1].strip())
     gem_data = resources[number_of_metals + 2: number_of_metals + 2 + number_of_gems]
 
     metals = {}
@@ -83,7 +84,7 @@ def load_floor_chunk(chunk, loader, program_type, callbacks):
         print('Safe Zone Data:', safe_zone_data)
         print('Floor Map:\n' + floor_map)
 
-    loader.append('floors', floor_id, Floor(floor_id, max_enemies, boss_type, enemies, metals, gems, floor_data, path_data, floor_map, safe_zone_data))
+    loader.append('floors', floor_id, Floor(floor_id, floor_hardness, max_enemies, boss_type, enemies, metals, gems, floor_data, path_data, floor_map, safe_zone_data))
     for callback in callbacks:
         if callback is not None:
             callback()

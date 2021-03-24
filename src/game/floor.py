@@ -47,32 +47,14 @@ class Floor:
 
     """
 
-    def __init__(self, floor_id, max_enemies, boss_type, enemies, metals, gems, floor_data, path_data, floor_map, save_zone_data):
+    def __init__(self, floor_id, hardness, max_enemies, boss_type, enemies, metals, gems, floor_data, path_data, floor_map, save_zone_data):
         self._floor_id = floor_id
         self._max_enemies = max_enemies
         self._boss_type = boss_type
         self._enemies = enemies
+        self._hardness = hardness
 
         self._resources = {'metals': metals, 'gems': gems}
-        metal_weights, gem_weights = [], []
-        options = []
-
-        for material, hard in self._resources['metals'].items():
-            metal_weights[0] += hard * 0.6
-            metal_weights.append(hard * 0.6)
-            gem_weights[0] += hard * 0.4
-            gem_weights.append(hard * 0.4)
-            options.append(material)
-        for material, hard in self._resources['gems'].items():
-            metal_weights[0] += hard * 0.4
-            metal_weights.append(hard * 0.4)
-            gem_weights[0] += hard * 0.6
-            gem_weights.append(hard * 0.6)
-            options.append(material)
-        metal_weights[0] *= 3
-        gem_weights[0] *= 3
-        self._drop_skew_metal = (options, metal_weights)
-        self._drop_skew_gem = (options, gems)
 
         self._map = Map(floor_map, floor_data, path_data, {SAFE_ZONES: save_zone_data, ENTRANCE: [path_data[0]], EXIT: [path_data[-1]]})
 
@@ -82,11 +64,14 @@ class Floor:
     def get_map(self):
         return self._map
 
+    def get_hardness(self):
+        return self._hardness
+
     def get_score(self):
         # Floor 1 rec score should be ~ 7
         score = 0
-        for enemy in self._enemies.values():
-            score += enemy.get_score()
+        for enemy, rarity in self._enemies.values():
+            score += enemy.get_score(0)
         return round(score, 0)
 
     def get_enemies(self):
@@ -151,38 +136,74 @@ class Floor:
     def generate_enemies(self, node_type):
         rarities = choices([1, 2, 3, 4, 5], [1 / (2 ** (x + 1)) for x in range(5)], k=randint(max(1, int(self._max_enemies * 0.25)), self._max_enemies))
         enemies = []
-        spawn_lists = {spawn_rarity: [] for spawn_rarity in range(max(rarities))}
+        spawn_lists = {spawn_rarity: [] for spawn_rarity in range(1, max(rarities) + 1)}
         if node_type is None:
             rarity_adjustment = 0
         else:
             rarity_adjustment = 1
-            for (enemy, rarity) in self._enemies:
+            for (enemy, rarity) in self._enemies.values():
                 if enemy.get_id() == node_type and rarity == 1:
                     rarity_adjustment = 2
                     break
         for spawn_rarity in set(rarities):
-            for (enemy, rarity) in self._enemies:
+            for (enemy, rarity) in self._enemies.values():
                 if rarity_adjustment == 0:
                     if rarity <= spawn_rarity:
-                        spawn_lists[spawn_rarity] += (enemy, rarity + 1 - spawn_rarity)
+                        spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
                 elif rarity_adjustment == 1:
                     if enemy.get_id() == node_type:
                         if rarity - 1 <= spawn_rarity:
-                            spawn_lists[spawn_rarity] += (enemy, rarity + 1 - spawn_rarity)
+                            spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
                     elif min(rarity + 1, 5) <= spawn_rarity:
-                            spawn_lists[spawn_rarity] += (enemy, rarity + 1 - spawn_rarity)
+                        spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
                 elif min(rarity + 2, 5) <= spawn_rarity:
-                        spawn_lists[spawn_rarity] += (enemy, rarity + 1 - spawn_rarity)
+                    spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
         for spawn_rarity in rarities:
             enemy, boost = spawn_lists[spawn_rarity][randint(0, len(spawn_lists[spawn_rarity]) - 1)]
             enemies.append(enemy.new_instance(boost))
         return enemies
 
-    def generate_resource(self, metal_skew=True):
+    def generate_resource(self, node_type, metal_skew=True):
+        options, weights = [], [0]
         if metal_skew:
-            return choices(*self._drop_skew_metal)[0], choices([1, 2, 3], [3, 2, 1])[0]
+            for material, hard in self._resources['metals'].items():
+                if material == node_type:
+                    weights[0] += hard * 0.6
+                    weights.append(hard * 0.6)
+                else:
+                    weights[0] += hard * 0.6
+                    weights.append(hard * 2 * 0.6)
+                options.append(material)
+            for material, hard in self._resources['gems'].items():
+                if material == node_type:
+                    weights[0] += hard * 0.4
+                    weights.append(hard * 2 * 0.4)
+                else:
+                    weights[0] += hard * 0.4
+                    weights.append(hard * 0.4)
+                options.append(material)
+            weights[0] *= 3
         else:
-            return choices(*self._drop_skew_gem)[0], choices([1, 2, 3], [3, 2, 1])[0]
+            for material, hard in self._resources['metals'].items():
+                if material == node_type:
+                    weights[0] += hard * 0.4
+                    weights.append(hard * 2 * 0.4)
+                else:
+                    weights[0] += hard * 0.4
+                    weights.append(hard * 0.4)
+                options.append(material)
+            for material, hard in self._resources['gems'].items():
+                if material == node_type:
+                    weights[0] += hard * 0.6
+                    weights.append(hard * 2 * 0.6)
+                else:
+                    weights[0] += hard * 0.6
+                    weights.append(hard * 0.6)
+                options.append(material)
+            weights[0] *= 3
+        if len(options) == 0:
+            return None, 0
+        return choices(options, weights)[0], choices([1, 2, 3], [3, 2, 1])[0]
 
 
 class Map:
@@ -241,9 +262,14 @@ class Map:
     def get_node_exploration(self):
         return self._explored_nodes, self._explored_node_counters
 
+    def decrease_node_counter(self, count):
+        self._explored_node_counters[self._current_node] -= count
+        if self._explored_node_counters[self._current_node] <= 0:
+            self._explored_node_counters.pop(self._current_node)
+            self._explored_nodes[self._current_node] = True
+
     # Create the map from an explored array
     def create_current_map(self, explored):
-        self._explored = {}
         for node, shown in explored.items():
             x, y = node[1:-1].split(', ')
             self._explored[(int(x), int(y))] = shown
@@ -258,7 +284,7 @@ class Map:
             for marked_nodes in node_data.values():
                 for marked_node in marked_nodes:
                     self._explored_nodes[marked_node] = False
-                    self._explored_node_counters[marked_node] = 3
+                    self._explored_node_counters[marked_node] = 4
             # Clear bought / obtained node maps from inventory
         for marker, nodes in node_data.items():
             self._markers[marker] = nodes
@@ -312,10 +338,10 @@ class Map:
         self._calculate_path()
         return found
 
-    def set_current_node(self, node):
+    def set_current_node(self, node, show_node=True):
         # Are we just discovering this node?
         found = not self._explored[node]
-        if found:
+        if found and show_node:
             self._explored[node] = True
             self._map_data.show_node(*node)
         # Restore previous color
@@ -325,10 +351,11 @@ class Map:
         # Set next current
         self._last_node = self._current_node
         self._current_node = node
-        self._current_prev_color = self._map_data.color_node(*self._current_node, CURRENT_COLOR)
-        # Don't save path color
-        if self._current_prev_color == PATH_COLOR:
-            self._current_prev_color = None
+        if show_node or self._explored[node]:
+            self._current_prev_color = self._map_data.color_node(*self._current_node, CURRENT_COLOR)
+            # Don't save path color
+            if self._current_prev_color == PATH_COLOR:
+                self._current_prev_color = None
         return found
 
     def clear_current_node(self):

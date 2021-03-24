@@ -1,0 +1,7 @@
+item,processed_goblin_claw,process_hard_basic,1
+raw_goblin_claw#20
+#
+item,bronze,craft_hard_basic,2
+copper_ingot#3,copper_tin#1
+#
+item,steel,craft

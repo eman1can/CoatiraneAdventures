@@ -65,7 +65,7 @@ def populate_box(box, party):
             string = ''.center(BOX_WIDTH)
             if char is None:
                 if stat == 6:
-                    string = '-'.center(BOX_WIDTH)
+                    string = '+'.center(BOX_WIDTH)
             else:
                 string = center_stat(char, stat)
             box[top_index + stat * 18] = string
@@ -75,7 +75,7 @@ def populate_box(box, party):
             if char is None:
                 string = ''.center(BOX_WIDTH)
                 if stat == 6:
-                    string = '-'.center(BOX_WIDTH)
+                    string = '+'.center(BOX_WIDTH)
             else:
                 string = center_stat(char, stat)
             box[top_index + stat * 18] = string

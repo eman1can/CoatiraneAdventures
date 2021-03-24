@@ -21,8 +21,7 @@ class GameContent:
         self._skeleton_states = None
         self._parties = None
 
-        self._tavern_locked = False
-        self._crafting_locked = False
+        self._tavern_locked = True
         self._potion_crafting_locked = False
         self._blacksmithing_locked = False
 
@@ -42,10 +41,11 @@ class GameContent:
         self._name = ''
         self._domain = ''
         self._domain_object = None
+        self._perk_points = 1
+        self._unlocked_perks = {}
         self._gender = ''
         self._symbol = ''
         self._quests = 0
-        self._skill_level = 0
         self._inventory = None
         self._varenth = 0
         self._renown = ''
@@ -75,7 +75,6 @@ class GameContent:
             self._inventory[f'{item_id}_count'] = count
         self._lowest_floor = save_data['lowest_floor']
         self._varenth = save_data['varenth']
-        self._skill_level = save_data['family']['skills']
         self._name = save_data['family']['name']
         self._symbol = save_data['family']['symbol']
         self._gender = save_data['family']['gender']
@@ -95,12 +94,19 @@ class GameContent:
             bill_cost = save_data['housing']['bill_cost']
             self._current_housing.set_data(housing_type, bill_due, bill_count, bill_cost)
         self._current_housing.set_installed(save_data['housing']['installed_features'])
-        # TODO: Set locks based on save data
+
+        if self._varenth > 20000 and self._renown >= 'H':
+            self._tavern_locked = False
+
         # Load map data into floors
         for floor_id in save_data['map_data']:
             floor_map = self._data['floors'][int(floor_id)].get_map()
             floor_map.create_current_map(save_data['map_data'][floor_id])
             floor_map.load_node_exploration(save_data['map_node_data'][floor_id], save_data['map_node_counters'][floor_id])
+
+        self._perk_points = save_data['perk_points']
+        for perk_id in save_data['perks']:
+            self._unlocked_perks[perk_id] = True
 
     def set_current_housing(self, housing):
         self._current_housing = housing
@@ -169,13 +175,18 @@ class GameContent:
         return self._quests
 
     def get_skill_level(self):
-        return self._skill_level
+        return list(self._unlocked_perks.values()).count(True)
 
     def get_domain(self):
         return self._domain
 
     def update_varenth(self, delta):
         self._varenth += delta
+
+        if self._varenth < 20000:
+            self._tavern_locked = True
+        elif self._renown > 'H':
+            self._tavern_locked = False
 
     def get_renown(self):
         return self._renown
@@ -203,10 +214,12 @@ class GameContent:
             self._parties = cp
 
     def initialize(self, loader):
-        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'shop_items', 'drop_items', 'housing']
+        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'shop_items', 'drop_items', 'housing', 'perks']
         self._data = {}
         for key in keys:
             self._data[key] = loader.get(key)
+        for perk_id in self._data['perks']:
+            self._unlocked_perks[perk_id] = False
 
     def __getitem__(self, item):
         if self._data is None:
@@ -300,13 +313,27 @@ class GameContent:
         return self._tavern_locked
 
     def is_crafting_locked(self):
-        return self._crafting_locked
+        return not self.has_perk('basic_tailor') and not self.has_perk('apprentice_blacksmith') and not self.has_perk('fledgling_alchemist') and not self.has_perk('daedalus_protege')
 
-    def is_potion_crafting_locked(self):
-        return self._potion_crafting_locked
+    def get_perk_points(self):
+        return self._perk_points
 
-    def is_blacksmithing_locked(self):
-        return self._blacksmithing_locked
+    def add_perk_point(self):
+        self._perk_points += 1
+
+    def has_perk(self, perk_id):
+        return self._unlocked_perks[perk_id]
+
+    def unlock_perk(self, perk):
+        self._unlocked_perks[perk.get_id()] = True
+        self._perk_points -= perk.get_cost()
+
+    def get_unlocked_perks(self):
+        perks = []
+        for perk_id, unlocked in self._unlocked_perks.items():
+            if unlocked:
+                perks.append(perk_id)
+        return perks
 
     def get_inventory_list(self):
         items = []
@@ -317,6 +344,48 @@ class GameContent:
 
     def in_inventory(self, item_id):
         return item_id in self._inventory
+
+    def has_pickaxe(self):
+        pickaxes = []
+        for item_id, item in self._inventory.items():
+            if item_id.endswith('pickaxe'):
+                pickaxes.append(item)
+        best_pick = None
+        for pick in pickaxes:
+            if best_pick is None:
+                best_pick = pick
+            else:
+                if pick.get_hardness() > best_pick.get_hardness():
+                    best_pick = pick
+        return best_pick
+
+    def has_shovel(self):
+        shovels = []
+        for item_id, item in self._inventory.items():
+            if item_id.endswith('shovel'):
+                shovels.append(item)
+        best_shovel = None
+        for shovel in shovels:
+            if best_shovel is None:
+                best_shovel = shovel
+            else:
+                if shovel.get_hardness() > best_shovel.get_hardness():
+                    best_shovel = shovel
+        return best_shovel
+
+    def has_harvesting_knife(self):
+        harvesting_knives = []
+        for item_id, item in self._inventory.items():
+            if item_id.endswith('harvesting_knife'):
+                harvesting_knives.append(item)
+        best_harvesting_knife = None
+        for harvesting_knife in harvesting_knives:
+            if best_harvesting_knife is None:
+                best_harvesting_knife = harvesting_knife
+            else:
+                if harvesting_knife.get_hardness() > best_harvesting_knife.get_hardness():
+                    best_harvesting_knife = harvesting_knife
+        return best_harvesting_knife
     
     def get_inventory_count(self, item_id):
         if item_id in self._inventory:

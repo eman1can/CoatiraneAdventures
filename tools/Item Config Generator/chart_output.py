@@ -3,6 +3,7 @@ chart_names = [
         'Monster Spawn Rates Per Floor (Log)',
         'Metal Skewed Resource Drop Rates',
         'Gem Skewed Resource Drop Rates',
+        'Floor Movements',
         'Hard Materials (Natural)',
         'Hard Materials (Alloys)',
         'Hard Materials (Metals)',
