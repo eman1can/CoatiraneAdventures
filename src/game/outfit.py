@@ -1,37 +1,60 @@
 from game.hmpmd import HMPMD
 from game.smead import SMEAD
 
+WEAPON          = 0
+OFF_HAND_WEAPON = 1
+NECKLACE        = 2
+RING            = 3
+HELMET          = 4
+VAMBRACES       = 5
+GLOVES          = 6
+CHEST           = 7
+GRIEVES         = 8
+BOOTS           = 9
+
+EQUIPMENT_CATEGORIES = {
+    WEAPON: 'Weapon',
+    OFF_HAND_WEAPON: 'Off-Hand Weapon',
+    NECKLACE: 'Necklace',
+    RING: 'Ring',
+    HELMET: 'Helmet',
+    VAMBRACES: 'Vambraces',
+    GLOVES: 'Gloves',
+    CHEST: 'Chest',
+    GRIEVES: 'Grieves',
+    BOOTS: 'Boots'
+}
+
 
 class Outfit(HMPMD, SMEAD):
     def __init__(self, **kwargs):
         # Definitions
-        self.weapon = None  # type: Equipment or None
-        self.off_hand_weapon = None  # type: Equipment or None
+        self.weapon = None
+        self.off_hand_weapon = None
 
-        self.necklace = None  # type: Equipment or None
-        self.ring = None  # type: Equipment or None
+        self.necklace = None
+        self.ring = None
 
-        self.helmet = None  # type: Equipment or None
-        self.vambraces = None  # type: Equipment or None
-        self.gloves = None  # type: Equipment or None
-        self.chest = None  # type: Equipment or None
-        self.grieves = None  # type: Equipment or None
-        self.boots = None  # type: Equipment or None
+        self.helmet = None
+        self.vambraces = None
+        self.gloves = None
+        self.chest = None
+        self.grieves = None
+        self.boots = None
 
-        self.items = [self.weapon, self.off_hand_weapon, self.necklace, self.ring, self.helmet, self.vambraces, self.gloves, self.chest, self.grieves, self.boots]  # type: list[Equipment or None]
-        self.types = ['weapon', 'off hand weapon', 'necklace', 'ring', 'helmet', 'vambraces', 'gloves', 'chest', 'grieves', 'boots']  # type: list[str]
+        self.items = [self.weapon, self.off_hand_weapon, self.necklace, self.ring, self.helmet, self.vambraces, self.gloves, self.chest, self.grieves, self.boots]
 
         SMEAD.__init__(self, 0, 0, 0, 0, 0)
         HMPMD.__init__(self, 0, 0, 0, 0, 0)
 
     def get_type(self, equipment_type):
-        return self.items[self.types.index(equipment_type)]
+        return self.items[equipment_type]
 
     def set_type(self, equipment_type, item):
-        self.items[self.types.index(equipment_type)] = item
+        self.items[equipment_type] = item
 
     def update_type(self, equipment_type, stat):
-        item = self.items[self.types.index(equipment_type)]
+        item = self.items[equipment_type]
 
     def update_health(self):
         health = 0

@@ -4,33 +4,49 @@ from game.rank import Rank
 from game.skill import Skill
 from kivy.resources import resource_find
 
-CHAR_ATTACK_TYPE = 0
-CHAR_TYPE = 1
-CHAR_ELEMENT = 2
-CHAR_HEALTH_BASE = 3
-CHAR_MANA_BASE = 4
-CHAR_STRENGTH_BASE = 5
-CHAR_MAGIC_BASE = 6
-CHAR_ENDURANCE_BASE = 7
-CHAR_DEXTERITY_BASE = 8
-CHAR_AGILITY_BASE = 9
-CHAR_NAME = 10
-CHAR_NICK_NAME = 11
-CHAR_ID = 12
-CHAR_SKEL_ID = 13
+TYPE           = 0
+ID             = 1
+NAME           = 2
+DISPLAY_NAME   = 3
+SKEL_ID        = 4
+RACE           = 5
+GENDER         = 6
+AGE            = 7
 
-CHAR_BASE_MOVE = 14
-CHAR_COUNTER_MOVE = 15
-CHAR_BLOCK_MOVE = 16
-CHAR_MOVE_1 = 17
-CHAR_MOVE_2 = 18
-CHAR_MOVE_3 = 19
-CHAR_MOVE_SPECIAL = 20
-CHAR_COMBO_AMOUNT = 21
-CHAR_COMBO_START = 22
+ATTACK_TYPE     = 8
+ELEMENT         = 9
+WEAPON_TYPE     = 10
+SUB_WEAPON_TYPE = 11
+HEALTH          = 12
+MANA            = 13
+STRENGTH        = 14
+MAGIC           = 15
+ENDURANCE       = 16
+AGILITY         = 17
+DEXTERITY       = 18
 
-CHAR_UNLOCKED = 1
-CHAR_LOCKED = 0
+BASE_MOVE        = 19
+MOVE_1           = 20
+MOVE_1_MANA_COST = 21
+MOVE_2           = 22
+MOVE_2_MANA_COST = 23
+MOVE_3           = 24
+MOVE_3_MANA_COST = 25
+MOVE_SPECIAL     = 26
+COUNTER_MOVE     = 27
+BLOCK_MOVE       = 28
+COMBO_AMOUNT     = 29
+COMBO_START      = 30
+
+EFFECT_1 = 17
+EFFECT_2 = 18
+EFFECT_3 = 19
+EFFECT_4 = 20
+EFFECT_5 = 21
+
+RECRUITMENT_ITEM = -3
+RECRUITMENT_ITEM_COUNT = -2
+DESCRIPTION = -1
 
 
 def load_char_chunk(line, loader, program_type, callbacks):
@@ -47,8 +63,9 @@ def load_char_chunk(line, loader, program_type, callbacks):
         # ranks = [CHAR_UNLOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED, CHAR_LOCKED]
         res_path = 'res/characters/' + values[CHAR_ID] + '/' + values[CHAR_ID]
         skel_path = 'res/characters/' + values[CHAR_ID] + '/' + values[CHAR_SKEL_ID] + '.skel'
+
         skills = []
-        if values[CHAR_ATTACK_TYPE] == 'A':
+        if values[CHAR_TYPE] == 'A':
             skills.append(int(values[CHAR_BASE_MOVE]))
             skills.append(int(values[CHAR_COUNTER_MOVE]))
             skills.append(int(values[CHAR_BLOCK_MOVE]))

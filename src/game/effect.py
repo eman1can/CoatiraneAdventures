@@ -25,21 +25,22 @@ DEFENSE         = 11
 # Resists
 PHYSICAL_RESIST = 11
 MAGICAL_RESIST  = 12
-WATER_RESIST    = 13
-FIRE_RESIST     = 14
-THUNDER_RESIST  = 15
-WIND_RESIST     = 16
-EARTH_RESIST    = 17
-LIGHT_RESIST    = 18
-DARK_RESIST     = 19
+HYBRID_RESIST   = 13
+WATER_RESIST    = 14
+FIRE_RESIST     = 15
+THUNDER_RESIST  = 16
+WIND_RESIST     = 17
+EARTH_RESIST    = 18
+LIGHT_RESIST    = 19
+DARK_RESIST     = 20
 
 # Chances
-GUARD_CHANCE       = 20
-COUNTER_CHANCE     = 21
-PENETRATION_CHANCE = 22
-CRITICAL_CHANCE    = 23
-BLOCK_CHANCE       = 24
-EVADE_CHANCE       = 25
+GUARD_CHANCE       = 21
+COUNTER_CHANCE     = 22
+PENETRATION_CHANCE = 23
+CRITICAL_CHANCE    = 24
+BLOCK_CHANCE       = 25
+EVADE_CHANCE       = 26
 
 STAT_TYPES = {
     STRENGTH: 'Str.',
@@ -56,6 +57,7 @@ STAT_TYPES = {
     DEFENSE: 'Def.',
     PHYSICAL_RESIST: 'Phy. Resist',
     MAGICAL_RESIST: 'Mag. Resist',
+    HYBRID_RESIST: 'Hyb. Resist',
     WATER_RESIST: 'Water Resist',
     FIRE_RESIST: 'Fire Resist',
     THUNDER_RESIST: 'Thunder Resist',
@@ -77,7 +79,12 @@ NULL_PHY_ATK = 1
 NULL_MAG_ATK = 2
 NULL_HYB_ATK = 3
 
-COUNTER_TYPES = {NULL_ATK: 'Null Atk.', NULL_PHY_ATK: 'Null P. Atk.', NULL_MAG_ATK: 'Null M. Atk.', NULL_HYB_ATK: 'Null H. Atk.'}
+COUNTER_TYPES = {
+    NULL_ATK: 'Null Atk.',
+    NULL_PHY_ATK: 'Null P. Atk.',
+    NULL_MAG_ATK: 'Null M. Atk.',
+    NULL_HYB_ATK: 'Null H. Atk.'
+}
 
 # Duration Types
 SPECIAL_BLOCK = 0
@@ -93,6 +100,7 @@ TYPES = {
     STAT: STAT_TYPES,
     COUNTER: COUNTER_TYPES
 }
+
 
 class Effect:
     def __init__(self, effect_type):

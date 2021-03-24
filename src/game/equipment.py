@@ -1,6 +1,94 @@
 from game.hmpmd import HMPMD
 from game.smead import SMEAD
 
+DAGGER                    = 0
+CURVED_DAGGER             = 1
+KUKRI                     = 2
+CUTLASS                   = 3
+SHORT_SWORD               = 4
+KATANA                    = 5
+LONGSWORD                 = 6
+BROADSWORD                = 7
+DOUBLE_ENDED_BROADSWORD   = 8
+RAPIER                    = 9
+KNUCKLEDUSTER             = 10
+CLAWS                     = 11
+GAUNTLETS                 = 12
+AXE                       = 13
+DOUBLE_HEADED_AXE         = 14
+GIANT_AXE                 = 15
+DOUBLE_HEADED_GIANT_AXE   = 16
+MACE                      = 17
+HAMMER                    = 18
+DOUBLE_HEADED_HAMMER      = 19
+GIANT_HAMMER              = 20
+DOUBLE_ENDED_GIANT_HAMMER = 21
+SPEAR                     = 22
+PIKE                      = 23
+HALBERD                   = 24
+SHORT_STAFF               = 25
+STAFF                     = 26
+
+WEAPON_TYPES = {
+    DAGGER: 'Dagger',
+    CURVED_DAGGER: 'Curved Dagger',
+    KUKRI: 'Kukri',
+    CUTLASS: 'Cutlass',
+    SHORT_SWORD: 'Short Sword',
+    KATANA: 'Katana',
+    LONGSWORD: 'Longsword',
+    BROADSWORD: 'Broadsword',
+    DOUBLE_ENDED_BROADSWORD: 'Double-Ended Broadsword',
+    RAPIER: 'Rapier',
+    KNUCKLEDUSTER: 'Knuckleduster',
+    CLAWS: 'Claws',
+    GAUNTLETS: 'Fists',
+    AXE: 'Axe',
+    DOUBLE_HEADED_AXE: 'Double-Headed Axe',
+    GIANT_AXE: 'Giant Axe',
+    DOUBLE_HEADED_GIANT_AXE: 'Double-Headed Giant Axe',
+    MACE: 'Maxe',
+    HAMMER: 'Hammer',
+    DOUBLE_HEADED_HAMMER: 'Double-Headed Hammer',
+    GIANT_HAMMER: 'Giant-Hammer',
+    DOUBLE_ENDED_GIANT_HAMMER: 'Double-Ended Giant Hammer',
+    SPEAR: 'Spear',
+    PIKE: 'Pike',
+    HALBERD: 'Halberd',
+    SHORT_STAFF: 'Short Staff',
+    STAFF: 'Staff'
+}
+
+CAN_DUAL_WIELD: {
+    DAGGER: True,
+    CURVED_DAGGER: True,
+    KUKRI: True,
+    CUTLASS: True,
+    SHORT_SWORD: True,
+    KATANA: False,
+    LONGSWORD: False,
+    BROADSWORD: False,
+    DOUBLE_ENDED_BROADSWORD: False,
+    RAPIER: False,
+    KNUCKLEDUSTER: True,
+    CLAWS: True,
+    GAUNTLETS: True,
+    AXE: True,
+    DOUBLE_HEADED_AXE: False,
+    GIANT_AXE: False,
+    DOUBLE_HEADED_GIANT_AXE: False,
+    MACE: True,
+    HAMMER: True,
+    DOUBLE_HEADED_HAMMER: False,
+    GIANT_HAMMER: False,
+    DOUBLE_ENDED_GIANT_HAMMER: False,
+    SPEAR: False,
+    PIKE: False,
+    HALBERD: False,
+    SHORT_STAFF: True,
+    STAFF: False
+}
+
 
 class EquipmentPattern:
     def __init__(self, name, description, one_handed, material_list):

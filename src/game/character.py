@@ -2,14 +2,83 @@ from game.entity import Entity
 from game.outfit import Outfit
 from game.rank import MAX_RANK
 from game.scale import Scale
-from game.skill import ATTACK_TYPE_INDEX_TO_STRING, ELEMENT_INDEX_TO_STRING
+from game.skill import ELEMENTS
+
+ADVENTURER = 0
+SUPPORTER  = 1
+CHARACTER_TYPES = {ADVENTURER: 'Adventurer', SUPPORTER: 'Supporter'}
 
 PHYSICAL_ATTACK = 0
 MAGICAL_ATTACK = 1
 HYBRID_ATTACK = 2
 DEFENSIVE = 3
 HEALING = 4
-CHARACTER_TYPE_INDEX_TO_STRING = ['Physical', 'Magical', 'Hybrid', 'Defensive', 'Healing']
+CHARACTER_ATTACK_TYPES = {
+    PHYSICAL_ATTACK: 'Physical',
+    MAGICAL_ATTACK: 'Magical',
+    HYBRID_ATTACK: 'Hybrid',
+    DEFENSIVE: 'Defensive',
+    HEALING: 'Healing'
+}
+
+UNKNOWN = 0
+MALE = 1
+FEMALE = 2
+GENDERS = {UNKNOWN: 'Unknown', MALE: 'Male', FEMALE: 'Female'}
+
+HUMAN         = 1
+GOD           = 2
+SPIRIT        = 3
+PALLUM        = 4
+HALF_PALLUM   = 5
+ELF           = 6
+HIGH_ELF      = 7
+HALF_ELF      = 8
+DARK_ELF      = 9
+HIGH_DARK_ELF = 10
+HALF_DARK_ELF = 11
+DWARF         = 12
+HALF_DWARF    = 13
+AMAZON        = 14
+BOAZ          = 15
+CHIENTHROPE   = 16
+CAT_PEOPLE    = 17
+COW           = 18
+RACCOON       = 19
+HUME_BUNNY    = 20
+SHEEP         = 21
+RENARD        = 22
+WEREWOLF      = 23
+WERETIGER     = 24
+XENOS         = 25
+RACES = {
+    UNKNOWN: 'Unknown',
+    HUMAN: 'Human',
+    GOD: 'God',
+    SPIRIT: 'Spirit',
+    PALLUM: 'Pallum',
+    HALF_PALLUM: 'Half Pallum',
+    ELF: 'Elf',
+    HIGH_ELF: 'High Elf',
+    HALF_ELF: 'Half Elf',
+    DARK_ELF: 'Dark Elf',
+    HIGH_DARK_ELF: 'High Dark Elf',
+    HALF_DARK_ELF: 'Half Dark Elf',
+    DWARF: 'Dwarf',
+    HALF_DWARF: 'Half Dwarf',
+    AMAZON: 'Amazon',
+    BOAZ: 'Boaz',
+    CHIENTHROPE: 'Chienthrope',
+    CAT_PEOPLE: 'Cat People',
+    COW: 'Cow',
+    RACCOON: 'Raccoon',
+    HUME_BUNNY: 'Hume Bunny',
+    SHEEP: 'Sheep',
+    RENARD: 'Renard',
+    WEREWOLF: 'Werewolf',
+    WERETIGER: 'Weretiger',
+    XENOS: 'Xenos'
+}
 
 
 class Character(Entity):
@@ -161,7 +230,7 @@ class Character(Entity):
         return self._outfit
 
     def get_element_string(self):
-        return ELEMENT_INDEX_TO_STRING[self._element]
+        return ELEMENTS[self._element]
 
     def get_display_name(self):
         return self._display_name
