@@ -102,7 +102,7 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
             'people_slain': 0,
             'equipment': [],
             'abilities': [],
-            'familiarities': []
+            'familiarities': {}
         }
     }
     save_file['equipment'] = []
@@ -198,7 +198,7 @@ def save_game(save_slot, game_content):
     save_file['obtained_characters_s'] = game_content.get_obtained_character_indexes(True)
     character_development = {}
     for character in game_content['chars'].values():
-        char_develop = {'ranks': {}, 'equipment': [], 'abilities': [], 'familiarities': []}
+        char_develop = {'ranks': {}, 'equipment': [], 'abilities': [], 'familiarities': {}}
         char_develop['ranks']['unlocked'] = [rank.is_unlocked() for rank in character.get_ranks()]
         char_develop['ranks']['broken'] = [rank.is_broken() for rank in character.get_ranks()]
         char_develop['ranks']['boards'] = [[rank.get_board().get_unlocked(tile) for tile in range(rank.get_board().get_count())] for rank in character.get_ranks()]

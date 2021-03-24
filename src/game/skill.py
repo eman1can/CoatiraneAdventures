@@ -114,20 +114,19 @@ TEMP_BOOST_BY_TARGET = {
 
 
 class Skill:
-    def __init__(self, skill_id, skill_name, animation_id, mana_cost, skill_type, target, speed, power, stat_type, element, modifier=None, effect_list=None):
+    def __init__(self, skill_id, name, animation_id, skill_type, target, speed, power, attack_type, element, boosts, effect_list):
         self._id = skill_id
-        self._name = skill_name
+        self._name = name
         self._animation_id = animation_id
 
         self._type = skill_type
         self._target = target
         self._speed = speed
         self._power = power
-        self._mana_cost = mana_cost
-        self._stat_type = stat_type
+        self._attack_type = attack_type
         self._element = element
 
-        self._modifier = modifier
+        self._boosts = boosts
         self._effect_list = effect_list
 
         self._special = False
@@ -159,33 +158,14 @@ class Skill:
     def get_power(self):
         return self._power
 
-    def get_mana_cost(self):
-        return self._mana_cost
+    def get_element(self):
+        return self._element
 
     def get_effects(self):
         return self._effect_list
 
-    # @staticmethod
-    # def boost(move_type, target_type):
-    #     if move_type == ELEMENT_LIGHT and target_type == ELEMENT_DARK:
-    #         return True
-    #     if move_type == ELEMENT_DARK and target_type == ELEMENT_LIGHT:
-    #         return True
-    #     if move_type == ELEMENT_THUNDER and target_type == ELEMENT_WATER:
-    #         return True
-    #     if move_type == ELEMENT_WATER and target_type == ELEMENT_FIRE:
-    #         return True
-    #     if move_type == ELEMENT_FIRE and target_type == ELEMENT_WIND:
-    #         return True
-    #     if move_type == ELEMENT_WIND and target_type == ELEMENT_EARTH:
-    #         return True
-    #     if move_type == ELEMENT_EARTH and target_type == ELEMENT_THUNDER:
-    #         return True
-    #     return False
 
-    # def element_modifier(self, target):
-    #     if self.boost(self._element, target.get_element()):
-    #         return 1.5
-    #     if self.boost(target.get_element(), self._element):
-    #         return 0.5
-    #     return 1
+class Boost:
+    def __init__(self, type, stat_type):
+        self._type = type
+        self._stat_type = stat_type

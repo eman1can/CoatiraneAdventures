@@ -1,7 +1,7 @@
 from game.character import ADVENTURER, CHARACTER_ATTACK_TYPES, GENDERS, RACES, SUPPORTER
 from game.effect import COUNTER, COUNTER_TYPES, DURATION, SPECIFIC_TARGET, STAT, STATUS_EFFECT, STAT_TYPES, TYPES
 from game.equipment import WEAPON_TYPES
-from game.skill import AILMENT_CURE, ALLIES, ALLY, ATTACK, ATTACK_POWERS, ATTACK_SPEEDS, ATTACK_TYPES, BOOST_TYPES, CAUSE_EFFECT, ELEMENTS, FOE, FOES, HEAL, SELF, SKILL_TYPES, TARGETS
+from game.skill import AILMENT_CURE, ATTACK, ATTACK_POWERS, ATTACK_SPEEDS, ATTACK_TYPES, BOOST_TYPES, CAUSE_EFFECT, ELEMENTS, FOE, FOES, HEAL, SELF, SKILL_TYPES, TARGETS
 from game.status_effect import LEVELS, NORMAL, STATUS_EFFECTS
 
 
@@ -614,7 +614,7 @@ for index, (skill_name, skill) in enumerate(skills.items()):
     if skill.effect_list is not None:
         string += f', {len(skill.effect_list)}'
         for effect in skill.effect_list:
-            string += f', {skill.type}'
+            string += f', {effect.type}'
             if effect.type == STAT:
                 string += f', {effect.sub_type}'
                 string += f', {effect.target}'
@@ -646,7 +646,7 @@ for skill in skills_lines:
 for skill_index, skill_line in enumerate(skills_lines):
     for index, col in enumerate(skill_line.split(', ')):
         print(col.ljust(max(skill_cols[index])), end='')
-        if index != skill_lengths[skill_index]:
+        if index != skill_lengths[skill_index] - 1:
             print(', ', end='')
     print()
 

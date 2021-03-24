@@ -82,12 +82,13 @@ RACES = {
 
 
 class Character(Entity):
-    def __init__(self, name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, agility, dexterity, element, moves, **kwargs):
+    def __init__(self, name, skel_path, hp, mp, s, m, e, a, d, element, skills, **kwargs):
         # Values set by kwargs
         self._display_name = ''
         self._family = ''
-        self._gender = 'Female'  # Not yet implemented
-        self._race = 'Human'  # Not yet implemented
+        self._gender = ''
+        self._race = ''
+        self._age = 0
         self._high_damage = 0  # Not yet implemented
         self._lowest_floor = 0  # Not yet implemented
         self._monsters_slain = 0  # Not yet implemented
@@ -127,16 +128,13 @@ class Character(Entity):
         self._worth = 0  # Not yet implemented
 
         if not self._is_support:
-            moves[6].set_special()
+            skills[6].set_special()
 
-        super().__init__(name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, agility, dexterity, element, moves)
+        super().__init__(name, skel_path, hp, mp, s, m, e, s, m, e, a, d, element, skills)
 
         self.refresh_stats()
 
     # Refresh and calculation functions
-
-    def set_family(self, name):
-        self._family = name
 
     def refresh_stats(self):
         super().refresh_stats()
@@ -173,10 +171,31 @@ class Character(Entity):
         else:
             self._familiarities[key] = value
 
+    def set_familiarity_bonus(self, bonus):
+        self._familiarity_bonus = bonus
+
     # Basic info functions
 
     def get_skills(self):
-        return self._moves[0:1] + self._moves[3:7]
+        return self._moves[:2] + self._moves[3:4] + self._moves[5:6] + self._moves[7:-2]
+
+    def get_counter_skill(self):
+        return self._moves[-2]
+
+    def get_block_skill(self):
+        return self._moves[-1]
+
+    def get_support_skill(self):
+        if self._rank == 10:
+            return self._moves[4]
+        elif self._rank >= 7:
+            return self._moves[3]
+        elif self._rank >= 5:
+            return self._moves[2]
+        elif self._rank >= 3:
+            return self._moves[1]
+        else:
+            return self._moves[0]
 
     def get_image(self, image_type):
         if image_type == 'slide':
@@ -197,7 +216,7 @@ class Character(Entity):
         return self._attack_type
 
     def get_attack_type_string(self):
-        return CHARACTER_TYPE_INDEX_TO_STRING[self._attack_type]
+        return CHARACTER_ATTACK_TYPES[self._attack_type]
 
     def get_index(self):
         return self._index

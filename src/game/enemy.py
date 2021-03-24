@@ -6,20 +6,20 @@ from game.battle_enemy import BattleEnemy
 LEVEL_MULTIPLITER = [1, 1.5, 2, 2.75, 3.5, 4.75, 6, 8, 10]
 
 STAT_INDEX = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 6, 8, 12]
-HEALTH, MANA, STR, MAG, END, AGI, DEX = 0, 1, 2, 3, 4, 5, 6
+HEALTH, STR, MAG, END, AGI, DEX = 0, 1, 2, 3, 4, 5
 
 
 class Enemy:
-    def __init__(self, identifier, name, skeleton_id, program_type, attack_type, min_hmsmead, max_hmsmead, elements, moves, move_probabilities, drops):
+    def __init__(self, identifier, name, skeleton_id, program_type, attack_type, min_hsmead, max_hsmead, elements, skills, skill_probabilities, drops):
         self._id = identifier
         self._name = name
         self._skel_id = skeleton_id
         self._skel_path = f'res/enemies/{program_type}/{name.lower()}/{skeleton_id}.skel'
-        self._moves = moves
-        self._move_probabilities = move_probabilities
+        self._skills = skills
+        self._skill_probabilities = skill_probabilities
         self._attack_type = attack_type
-        self._min_hmsmead = min_hmsmead
-        self._max_hmsmead = max_hmsmead
+        self._min_hsmead = min_hsmead
+        self._max_hsmead = max_hsmead
         self._element = elements[0]
         self._sub_element = elements[1]
         self._drops = {'guaranteed': drops['guaranteed']}
@@ -62,13 +62,13 @@ class Enemy:
         return drops
 
     def get_score(self, boost):
-        return (sum(self._min_hmsmead) + (sum(self._max_hmsmead) - sum(self._min_hmsmead)) / 2) / 5 * LEVEL_MULTIPLITER[boost]
+        return (sum(self._min_hsmead) + (sum(self._max_hsmead) - sum(self._min_hsmead)) / 2) / 5 * LEVEL_MULTIPLITER[boost]
 
     def new_instance(self, boost):
         multiplier = LEVEL_MULTIPLITER[boost]
 
         hmsmead = [0 for _ in range(DEX + 1)]
         for stat in range(DEX + 1):
-            hmsmead[stat] = randint(self._min_hmsmead[stat] * multiplier, self._max_hmsmead[stat] * multiplier)
+            hmsmead[stat] = randint(self._min_hsmead[stat] * multiplier, self._max_hsmead[stat] * multiplier)
 
-        return BattleEnemy(self._id, self._name, self._skel_path, self._attack_type, hmsmead[HEALTH], hmsmead[MANA], hmsmead[STR], hmsmead[MAG], hmsmead[END], hmsmead[AGI], hmsmead[DEX], boost, self._element, self._sub_element, self._moves, self._move_probabilities)
+        return BattleEnemy(self._id, self._name, self._skel_path, self._attack_type, hmsmead[HEALTH], 0, hmsmead[STR], hmsmead[MAG], hmsmead[END], hmsmead[AGI], hmsmead[DEX], boost, self._element, self._sub_element, self._skills, self._skill_probabilities)

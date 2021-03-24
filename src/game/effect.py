@@ -103,95 +103,22 @@ TYPES = {
 
 
 class Effect:
-    def __init__(self, effect_type):
+    def __init__(self, effect_type, sub_type=None, target=None, amount=None, duration=None):
         self._type = effect_type
         self._sub_type = None
 
-    def is_stat_effect(self):
-        return False
-
-    def is_counter_effect(self):
-        return False
-
-    def is_duration_effect(self):
-        return False
-
-    def is_status_effect_effect(self):
-        return False
-
-
-class StatEffect(Effect):
-    def __init__(self, sub_type, target, amount, duration):
-        super().__init__(STAT)
-        self._sub_type = sub_type
-
-        self._target = target
-        self._amount = amount
-        self._duration = duration
+        self._target = None
+        self._amount = None
+        self._duration = None
 
     def is_stat_effect(self):
-        return True
-
-    def get_target(self):
-        return self._target
-
-    def get_amount(self):
-        return self._amount
-
-    def get_duration(self):
-        return self._duration
-
-    def decrease_duration(self, delta=1):
-        self._duration -= delta
-
-
-class CounterEffect(Effect):
-    def __init__(self, sub_type, count):
-        super().__init__(COUNTER)
-        self._sub_type = sub_type
-
-        self._count = count
+        return self._type == STAT
 
     def is_counter_effect(self):
-        return True
-
-    def get_count(self):
-        return self._count
-
-    def decrease_count(self, delta=1):
-        self._count -= delta
-
-
-class DurationEffect(Effect):
-    def __init__(self, sub_type, duration):
-        super().__init__(DURATION)
-        self._sub_type = sub_type
-
-        self._duration = duration
+        return self._type == COUNTER
 
     def is_duration_effect(self):
-        return True
-
-    def get_duration(self):
-        return self._duration
-
-    def decrease_duration(self, delta=1):
-        self._duration -= delta
-
-
-class CauseStatusEffectEffect:
-    def __init__(self, status_effect_id, status_effect_level, chance):
-        super().__init__(STATUS_EFFECT)
-
-        self._chance = chance
-        self._id = status_effect_id
-        self._level = status_effect_level
+        return self._type == DURATION
 
     def is_status_effect_effect(self):
-        return True
-
-    def get_status_effect(self):
-        return StatusEffect(self._id, self._level)
-
-    def get_chance(self):
-        return self._chance
+        return self._type == STATUS_EFFECT

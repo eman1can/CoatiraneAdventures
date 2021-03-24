@@ -2,63 +2,57 @@
 from game.enemy import Enemy
 from game.skill import Skill
 
-ENEMY_ID            = 0
-ENEMY_NAME          = 1
-ENEMY_SKEL_ID       = 2
-ENEMY_ELEMENT       = 3
-ENEMY_SUB_ELEMENT   = 4
-ENEMY_ATTACK_TYPE   = 5
-ENEMY_HEALTH_MIN    = 6
-ENEMY_HEALTH_MAX    = 7
-ENEMY_STRENGTH_MIN  = 8
-ENEMY_STRENGTH_MAX  = 9
-ENEMY_MAGIC_MIN     = 10
-ENEMY_MAGIC_MAX     = 11
-ENEMY_ENDURANCE_MIN = 12
-ENEMY_ENDURANCE_MAX = 13
-ENEMY_AGILITY_MIN   = 14
-ENEMY_AGILITY_MAX   = 15
-ENEMY_DEXTERITY_MIN = 16
-ENEMY_DEXTERITY_MAX = 17
+ID            = 0
+NAME          = 1
+SKEL_ID       = 2
+ELEMENT       = 3
+SUB_ELEMENT   = 4
+ATTACK_TYPE   = 5
 
-ENEMY_MOVE_SKILL_AMOUNT       = 18
-ENEMY_BASIC_MOVE_ID           = 19
-ENEMY_BASIC_MOVE_CHANCE       = 20
-ENEMY_COUNTER_MOVE_ID         = 21
-ENEMY_COUNTER_MOVE_CHANCE     = 22
-ENEMY_BLOCK_MOVE_ID           = 23
-ENEMY_BLOCK_MOVE_CHANCE       = 24
-ENEMY_MOVE_SKILL_ID_START     = 25
-ENEMY_MOVE_SKILL_CHANCE_START = 26
+HEALTH_MIN    = 6
+HEALTH_MAX    = 7
+STRENGTH_MIN  = 8
+STRENGTH_MAX  = 9
+MAGIC_MIN     = 10
+MAGIC_MAX     = 11
+ENDURANCE_MIN = 12
+ENDURANCE_MAX = 13
+AGILITY_MIN   = 14
+AGILITY_MAX   = 15
+DEXTERITY_MIN = 16
+DEXTERITY_MAX = 17
+
+SKILL_AMOUNT       = 18
+BASIC_ID           = 19
+BASIC_CHANCE       = 20
+SKILL_ID_START     = 21
+SKILL_CHANCE_START = 22
+COUNTER_ID = -2
+BLOCK_ID = -1
 
 
 def get_skill_data(values, loader):
-    skills = []
+    skill_ids = []
     skill_chances = []
 
-    skills.append(int(values[ENEMY_BASIC_MOVE_ID]))
-    skill_chances.append(float(values[ENEMY_BASIC_MOVE_CHANCE]))
-    if values[ENEMY_COUNTER_MOVE_ID] == '-':
-        skills.append(None)
-        skill_chances.append(None)
-    else:
-        skills.append(int(values[ENEMY_COUNTER_MOVE_ID]))
-        skill_chances.append(float(values[ENEMY_COUNTER_MOVE_CHANCE]))
-    if values[ENEMY_BLOCK_MOVE_ID] == '-':
-        skills.append(None)
-        skill_chances.append(None)
-    else:
-        skills.append(int(values[ENEMY_BLOCK_MOVE_ID]))
-        skill_chances.append(float(values[ENEMY_BLOCK_MOVE_CHANCE]))
+    skill_amount = int(values[SKILL_AMOUNT])
+    for index in range(BASIC_ID, SKILL_ID_START + 2 * skill_amount):
+        if index % 2 != 0:
+            skill_ids.append(int(values[index]))
+        else:
+            skill_chances.append(float(values[index]))
 
-    for x in range(int(values[ENEMY_MOVE_SKILL_AMOUNT])):
-        skills.append(int(values[ENEMY_MOVE_SKILL_ID_START + (2 * x)]))
-        skill_chances.append(float(values[ENEMY_MOVE_SKILL_CHANCE_START + (2 * x)]))
-    for x, skill in enumerate(skills):
-        if skill is None:
+    skill_ids.append(int(values[COUNTER_ID]))
+    if values[BLOCK_ID] != '-':
+        skill_ids.append(int(values[BLOCK_ID]))
+    else:
+        skill_ids.append(None)
+
+    for x, skill_id in enumerate(skill_ids):
+        if skill_id is None:
             continue
-        skills[x] = loader.get('skills')[skill]
-    return skills, skill_chances
+        skill_ids[x] = loader.get('skills')[skill_id]
+    return skill_ids, skill_chances
 
 
 def load_enemy_chunk(chunk, loader, program_type, callbacks):
@@ -68,8 +62,6 @@ def load_enemy_chunk(chunk, loader, program_type, callbacks):
         values[x] = values[x].strip()
 
     skills, skill_chances = get_skill_data(values, loader)
-    for x in range(ENEMY_HEALTH_MIN, ENEMY_ENDURANCE_MAX+1):
-        values[x] = int(values[x])
 
     drops = {'guaranteed': [], 'crystal': [], 'falna': [], 'drop': []}
 
@@ -84,12 +76,17 @@ def load_enemy_chunk(chunk, loader, program_type, callbacks):
             else:
                 drops[key] += (item_id, int(rarity))
 
-    min_smead = [int(values[ENEMY_HEALTH_MIN]), 0, int(values[ENEMY_STRENGTH_MIN]), int(values[ENEMY_MAGIC_MIN]), int(values[ENEMY_AGILITY_MIN]), int(values[ENEMY_DEXTERITY_MIN]), int(values[ENEMY_ENDURANCE_MIN])]
-    max_smead = [int(values[ENEMY_HEALTH_MAX]), 0, int(values[ENEMY_STRENGTH_MAX]), int(values[ENEMY_MAGIC_MAX]), int(values[ENEMY_AGILITY_MAX]), int(values[ENEMY_DEXTERITY_MAX]), int(values[ENEMY_ENDURANCE_MAX])]
-    elements = [values[ENEMY_ELEMENT], values[ENEMY_SUB_ELEMENT]]
-    enemy = Enemy(values[ENEMY_ID], values[ENEMY_NAME], values[ENEMY_SKEL_ID], program_type, values[ENEMY_ATTACK_TYPE], min_smead, max_smead, elements, skills, skill_chances, drops)
+    min_hsmead, max_hsmead = [], []
+    for index in range(HEALTH_MIN, DEXTERITY_MAX + 1):
+        if index % 2 == 0:
+            min_hsmead.append(int(values[index]))
+        else:
+            max_hsmead.append(int(values[index]))
 
-    loader.append('enemies', values[ENEMY_ID], enemy)
+    elements = [values[ELEMENT], values[SUB_ELEMENT]]
+    enemy = Enemy(values[ID], values[NAME], values[SKEL_ID], program_type, values[ATTACK_TYPE], min_hsmead, max_hsmead, elements, skills, skill_chances, drops)
+
+    loader.append('enemies', values[ID], enemy)
     for callback in callbacks:
         if callback is not None:
             callback()
