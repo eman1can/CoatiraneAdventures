@@ -21,8 +21,8 @@ class Material:
         self._name = name
         self._type = material_type
 
-        self._min_hardness = min_hardness
-        self._max_hardness = max_hardness
+        self._min_hardness = float(min_hardness)
+        self._max_hardness = float(max_hardness)
 
         self._effect = effect
         self._sub_effect = sub_effect
@@ -43,6 +43,12 @@ class Material:
 
     def get_max_hardness(self):
         return self._max_hardness
+
+    def get_raw_id(self):
+        return self._raw_id
+
+    def get_processed_id(self):
+        return self._processed_id
 
     def is_hard(self):
         return self._type in [NATURAL_HARD, ALLOY_HARD, MONSTER_HARD]

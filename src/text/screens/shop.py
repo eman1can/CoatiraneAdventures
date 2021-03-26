@@ -1,5 +1,6 @@
 from math import ceil, floor
 
+from game.equipment import EQUIPMENT_TOOL, EQUIPMENT_WEAPON
 from refs import END_OPT_C, OPT_C, Refs
 from text.screens.town import get_town_header
 
@@ -109,13 +110,16 @@ def bspage_list(sub_categories, page_name, id_to_string):
 
 
 def shop(console):
-    display_text = get_town_header()
-    display_text += '\n\t'
+    console.header_callback = get_town_header
+    display_text = '\n\t'
     _options = {'0': 'back'}
 
     pages = {'main': ['general', 'dungeon_materials', 'ingredients', 'potions_medicines', 'equipment', 'home_supplies', 'other'],
              'general': ['floor_maps'],
              'equipment': ['tools', 'weapons', 'armor'],
+             'tools': [],
+             'weapons': [],
+             'armor': [],
              'dungeon_materials': [],
              'magic_stones': [],
              'monster_drops': [],
@@ -131,7 +135,10 @@ def shop(console):
 
     # Sub header display options
     sub_headers = {'main':    'Where you you like to browse today?\n',
-               'equipment': 'What form of equipment are you looking for?',
+               'equipment': 'What form of equipment are you looking for?\n',
+               'tools': 'What kind of tool are you looking for?\n',
+               'weapons': 'What kind of weapon are you looking for?\n',
+               'armor': 'What kind of armor are you looking for?\n',
                'general': 'What would you like to purchase?\n',
                'floor_maps': 'Which floor are you interested in?\n',
                'dungeon_materials': 'Which type of transaction would you like?\n'}
@@ -160,14 +167,33 @@ def shop(console):
                   'magic_stones': lambda category: Refs.gc.get_magic_stone_types(),
                   'monster_drops': lambda category: Refs.gc.get_monster_drop_types(),
                   'raw_materials': lambda category: Refs.gc.get_raw_materials(),
-                  'processed_materials': lambda category: Refs.gc.get_processed_materials(),
-                  'tools': lambda category: Refs.gc.get_store_tools()}
+                  'processed_materials': lambda category: Refs.gc.get_processed_materials()}
 
     for floor_id in range(1, min(len(Refs.gc['floors']), Refs.gc.get_lowest_floor()) + 1):
         pages[f'floor_{floor_id}'] = []
         headers[f'floor_{floor_id}'] = 'Which map type are you interested in?\n'
         page_to_string[f'floor_{floor_id}'] = f'Floor {floor_id}'
         item_lists[f'floor_{floor_id}'] = Refs.gc.get_shop_items
+
+    for item_id, equipment_class in Refs.gc['equipment'].items():
+        if equipment_class.get_type() == EQUIPMENT_TOOL:
+            pages['tools'].append(item_id)
+            pages[item_id] = []
+            page_to_string[item_id] = equipment_class.get_name()
+            headers[item_id] = f'What kind of {equipment_class.get_name()} are you interested in?\n\n'
+            item_lists[item_id] = lambda category, id=item_id: Refs.gc.get_store_tools(id)
+        elif equipment_class.get_type() == EQUIPMENT_WEAPON:
+            pages['weapons'].append(item_id)
+            pages[item_id] = []
+            page_to_string[item_id] = equipment_class.get_name()
+            headers[item_id] = f'What kind of {equipment_class.get_name()} are you interested in?\n\n'
+            item_lists[item_id] = lambda category, id=item_id: Refs.gc.get_store_weapons(id)
+        else:
+            pages['armor'].append(item_id)
+            pages[item_id] = []
+            page_to_string[item_id] = equipment_class.get_name()
+            headers[item_id] = f'What kind of {equipment_class.get_name()} are you interested in?\n\n'
+            item_lists[item_id] = lambda category, id=item_id: Refs.gc.get_store_armor(id)
 
     texts = {
         'sell_start': 'Which of your {0}s would you like to sell?\n',
@@ -250,7 +276,6 @@ def shop(console):
                     page += '_sell'
                     page_type = 'sell'
                 else:
-                    page += '_buy'
                     page_type = 'buy'
 
                 page_data, item_id, item_count = current_screen_name.split('#')
@@ -272,9 +297,7 @@ def shop(console):
 
 
 def do_transaction(item_id, count, selling):
-    item = Refs.gc.get_shop_item(item_id)
-    if item is None:
-        item = Refs.gc.get_drop_item(item_id)
+    item = Refs.gc.find_item(item_id)
     if not selling:
         # Check if we have enough money
         # print(item.get_name(), item.get_max_price(), ' - ', Refs.gc.get_varenth())
@@ -285,7 +308,10 @@ def do_transaction(item_id, count, selling):
     if selling:
         Refs.gc.get_inventory().remove_item(item_id, count)
     else:
-        Refs.gc.get_inventory().add_item(item_id, count)
+        if item.is_equipment():
+            Refs.gc.get_inventory().add_item(item.get_class().get_id(), count, {'material_id': item.get_material_id(), 'hash': None})
+        else:
+            Refs.gc.get_inventory().add_item(item_id, count)
 
     # Adjust Varenth
     if selling:

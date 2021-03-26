@@ -9,18 +9,18 @@ def get_town_header():
     name = Refs.gc.get_name()
     domain = Refs.gc.get_domain()
     renown = Refs.gc.get_renown()
-    varenth = Refs.gc.format_number(Refs.gc.get_varenth())
+    varenth = Refs.gc.format_number(int(Refs.gc.get_varenth()))
     skill_level = Refs.gc.get_skill_level()
     if Refs.gc.get_inventory().has_item('pocket_watch'):
         time = Refs.gc.get_time()
-        return '\n' + f'{name} - {domain} - Perks Unlocked {skill_level}'.rjust(40).ljust(100) + f'{time} - {varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
+        return '\n\t' + f'{name} - {domain} - Perks Unlocked {skill_level}'.rjust(40).ljust(100) + f'{time} - {varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
     else:
-        return '\n' + f'{name} - {domain} - Perks Unlocked {skill_level}'.rjust(40).ljust(100) + f'{varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
+        return '\n\t' + f'{name} - {domain} - Perks Unlocked {skill_level}'.rjust(40).ljust(100) + f'{varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
 
 
 def town_main(console):
-    display_text = get_town_header()
-    display_text += '\n\tYou are currently in the town center.\n\tWhere would you like to go?\n'
+    console.header_callback = get_town_header
+    display_text = '\n\tYou are currently in the town center.\n\tWhere would you like to go?\n'
     if Refs.gc.get_housing().get_bill_due() < 0:
         display_text += f'\n\t{RED_C}Your housing bill is overdue!{END_OPT_C}\n'
     elif Refs.gc.get_housing().get_bill_due() < 5:
@@ -45,7 +45,7 @@ def town_main(console):
         '1': 'shop_main',
         '2': 'quests_main',
         '3': 'crafting_main',
-        '4': 'inventory0page',
+        '4': 'inventory*0',
         '5': 'profile_main',
         '6': 'housing_main',
         '7': 'almanac_main',
@@ -57,6 +57,7 @@ def town_main(console):
 
 
 def profile_main(console):
+    console.header_callback = None
     display_text = f'\n\n\n\t{Refs.gc.get_name()}'
     display_text += f'\n\t{Refs.gc.get_domain()} {Refs.gc.get_gender()}'
     domain = Refs.gc.get_domain_info()
@@ -73,8 +74,8 @@ def profile_main(console):
 
 
 def tavern_main(console):
-    display_text = get_town_header()
-    display_text += '\n\tWelcome to the tavern!\n\tWhat would you like to do?\n'
+    console.header_callback = get_town_header
+    display_text = '\n\tWelcome to the tavern!\n\tWhat would you like to do?\n'
 
     display_text += f'\n\t{OPT_C}1:{END_OPT_C} Relax\n'
     display_text += f'\t{OPT_C}2:{END_OPT_C} Chat with others\n'
@@ -92,7 +93,8 @@ def tavern_main(console):
 
 
 def tavern_relax(console):
-    display_text = get_town_header()
+    console.header_callback = get_town_header
+    display_text = ''
 
     texts = ['You enjoy a hearty ale and relax among the crowd.',
              'Good thing you aren\'t lactose intolerent, as you love cheese.',
@@ -132,9 +134,9 @@ def tavern_relax(console):
 
 
 def tavern_recruit(console):
-    display_text = get_town_header()
+    console.header_callback = get_town_header
 
-    display_text += '\n\tThrowing a party for recruitment will cost 25,000V.\n\tAre you sure you would like to throw a party?'
+    display_text = '\n\tThrowing a party for recruitment will cost 25,000V.\n\tAre you sure you would like to throw a party?'
 
     _options = {'0': 'back', '1': 'tavern_recruit_start'}
     display_text += f'\n\n\t{OPT_C}1:{END_OPT_C} Yes! Party time!'
@@ -241,8 +243,8 @@ def tavern_recruit_show(console):
 
 
 def quests_main(console):
-    display_text = get_town_header()
-    display_text += 'Not yet Implemented.\n'
+    console.header_callback = get_town_header
+    display_text = 'Not yet Implemented.\n'
     _options = {'0': 'back'}
     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} back\n'
     return display_text, _options

@@ -1,4 +1,4 @@
-from game.effect import AGILITY, DEFENSE, DEXTERITY, ENDURANCE, MAGIC, MAGICAL_ATTACK, PHYSICAL_ATTACK, STRENGTH
+from game.effect import AGILITY, DEFENSE, DEXTERITY, ENDURANCE, MAGIC, MAGICAL_ATTACK, PHYSICAL_ATTACK, STAT_TYPES, STRENGTH
 from game.skill import MAGICAL, PHYSICAL
 from refs import Refs
 
@@ -64,6 +64,7 @@ class BattleEntity:
         if STRENGTH in self._status_effects:
             strength_effects = self._status_effects[STRENGTH]
             for effect in strength_effects:
+                print('Str. Effect', effect.get_amount())
                 strength *= 1 + effect.get_amount()
         return strength
 
@@ -146,9 +147,11 @@ class BattleEntity:
         return self._status_effects
 
     def update_effects(self, delta=1):
-        for effects in self._status_effects.values():
+        for effect_type, effects in self._status_effects.items():
+            # print(STAT_TYPES[effect_type], len(effects))
             dead_effects = []
             for effect in effects:
+                # print(effect.get_amount(), effect.get_duration())
                 effect.reduce_duration(delta)
                 if effect.get_duration() < 0:
                     dead_effects.append(effect)

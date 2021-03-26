@@ -6,8 +6,8 @@ from text.screens.town import get_town_header
 
 
 def housing_main(console):
-    display_text = get_town_header()
-    display_text += f'\n\tCurrent housing - {Refs.gc.get_housing().get_name()}'
+    console.header_callback = get_town_header
+    display_text = f'\n\tCurrent housing - {Refs.gc.get_housing().get_name()}'
     display_text += f'\n\t{Refs.gc.get_housing().get_description()}'
     display_text += f'{Refs.gc.get_housing().get_info()}'
     _options = {'0': 'back', }
@@ -61,7 +61,7 @@ def get_housing_string(item, index, current_text, page_name, page_num):
 
 
 def housing_browse(console):
-    display_text = get_town_header()
+    console.header_callback = get_town_header
     item_list = Refs.gc.get_housing_options()
 
     page_num = int(console.get_current_screen()[len('housing_browse'):-len('page')])
@@ -72,7 +72,7 @@ def housing_browse(console):
 
     _options = {'0': 'back'}
     _options.update(ip_options)
-    display_text += ip_text + f'\n\n\t{OPT_C}0:{END_OPT_C} back\n'
+    display_text = ip_text + f'\n\n\t{OPT_C}0:{END_OPT_C} back\n'
     return display_text, _options
 
 
@@ -85,8 +85,8 @@ def housing_rent(console):
     else:
         money_back = current_housing.get_cost() - (current_housing.get_bill_count() * current_housing.get_bill_cost(True))
 
-    display_text = get_town_header()
-    display_text += f'\n\tTo rent {housing.get_name()}, it will cost {Refs.gc.format_number(housing.get_cost())} per month.'
+    console.header_callback = get_town_header
+    display_text = f'\n\tTo rent {housing.get_name()}, it will cost {Refs.gc.format_number(housing.get_cost())} per month.'
     display_text += f'\n\tYou will get {Refs.gc.format_number(money_back)} back from your {current_housing.get_name()}.'
     display_text += 'Are you sure that you want to do this?'
     display_text += f'\n\n\t{OPT_C}1:{END_OPT_C} Confirm'
@@ -106,7 +106,8 @@ def housing_buy(console):
     else:
         money_back = current_housing.get_cost() - (current_housing.get_bill_count() * current_housing.get_bill_cost(True))
 
-    display_text = get_town_header()
+    console.header_callback = get_town_header
+    display_text = ''
     cost = housing.get_cost()
     if housing == current_housing:
         # We are buying our rented place.

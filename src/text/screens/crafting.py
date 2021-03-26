@@ -14,8 +14,8 @@ Craft Potions - Required Fledgling Alchemist
 
 
 def crafting_main(console):
-    display_text = get_town_header()
-    display_text += '\n\tWhat kind of crafting would you like to do?\n'
+    console.header_callback = get_town_header
+    display_text = '\n\tWhat kind of crafting would you like to do?\n'
     _options = {'0': 'back'}
 
     display_text += f'\n\t{OPT_C}1:{END_OPT_C} Process Materials'
@@ -78,8 +78,8 @@ def get_craft_equipment_item(recipe, index, current_text, page_name, page_num):
 
 
 def crafting_process_materials(console):
-    display_text = get_town_header()
-    display_text += '\n\tWhat type of finished material would you like to make?\n'
+    console.header_callback = get_town_header
+    display_text = '\n\tWhat type of finished material would you like to make?\n'
 
     recipes = Refs.gc.get_process_recipes()
 
@@ -131,8 +131,8 @@ def craft_items(recipe_count, recipe_id, recipe, page_name):
 
 
 def crafting_process_material(console):
-    display_text = get_town_header()
-    display_text += '\n\tHow many would you like to create?\n'
+    console.header_callback = get_town_header
+    display_text = '\n\tHow many would you like to create?\n'
 
     page_name, recipe_id, recipe_count = console.get_current_screen().split('#')
     page_num = int(page_name[len('crafting_process_material'):-len('page')])
@@ -149,8 +149,8 @@ def crafting_process_material(console):
 
 
 def crafting_alloys(console):
-    display_text = get_town_header()
-    display_text += '\n\tWhat type of finished alloy would you like to make?\n'
+    console.header_callback = get_town_header
+    display_text = '\n\tWhat type of finished alloy would you like to make?\n'
 
     recipes = Refs.gc.get_alloy_recipes()
 
@@ -167,8 +167,8 @@ def crafting_alloys(console):
 
 
 def crafting_equipment(console):
-    display_text = get_town_header()
-    display_text += '\n\tWhat type of equipment would you like to make?\n'
+    console.header_callback = get_town_header
+    display_text = '\n\tWhat type of equipment would you like to make?\n'
 
     recipes = Refs.gc.get_equipment_recipes()
 

@@ -241,7 +241,7 @@ def skill_tree_main(console):
         perk_count += 1
     display_text, _options = '', {}
 
-    display_text += get_town_header()
+    console.header_callback = get_town_header
     display_text += f'\n\n\tYou have {Refs.gc.get_perk_points()} Perk Points\n'
 
     tree_widths = {}
@@ -288,10 +288,10 @@ def perk_info(console):
 
     perk_cost = perk.get_cost()
 
-    display_text = get_town_header()
+    console.header_callback = get_town_header
     _options = {}
 
-    display_text += f'\n\n\t{perk.get_name()} - {perk.get_tree().title()}'
+    display_text = f'\n\n\t{perk.get_name()} - {perk.get_tree().title()}'
     display_text += f'\n\t\t' + perk.get_description().replace('\n', '\n\t\t')
     display_text += f'\n\n\t\tCosts {perk_cost} Perk Points to unlock\n'
 
@@ -318,9 +318,9 @@ def perk_bestow(console):
     perk = Refs.gc['perks'][perk_id]
 
     # A perk can only be bestowed on an adventurer who has the required perks
-    display_text = get_town_header()
+    console.header_callback = get_town_header
     _options = {}
-    display_text += f'\n\n\t{perk.get_name()} - {perk.get_tree().title()} - Level {perk.get_level()}'
+    display_text = f'\n\n\t{perk.get_name()} - {perk.get_tree().title()} - Level {perk.get_level()}'
 
     display_text += '\n\n\tEligible Adventurers:'
     characters = list(Refs.gc.get_obtained_characters(False))

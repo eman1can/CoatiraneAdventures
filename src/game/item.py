@@ -30,6 +30,9 @@ class Item:
         else:
             self._unlock_type, self._unlock_requirement = unlock_requirement.split(', ')
 
+    def is_equipment(self):
+        return False
+
     def is_unlocked(self):
         if self._unlock_type is None:
             return True
@@ -68,6 +71,9 @@ class DropItem:
     def get_id(self):
         return self._id
 
+    def is_equipment(self):
+        return False
+
     def get_name(self):
         return self._name
 
@@ -104,6 +110,9 @@ class Ingredient:
 
     def get_category(self):
         return 'ingredients'
+
+    def is_equipmetn(self):
+        return False
 
     def is_single(self):
         return self._purchase_type == 'single'

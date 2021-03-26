@@ -362,9 +362,9 @@ class FloorData:
     def end_encounter(self):
         self._in_encounter = False
         for item, count in self._battle_data.get_dropped_items().items():
-            if item.get_id() not in self._gained_items:
-                self._gained_items[item.get_id()] = 0
-            self._gained_items[item.get_id()] += count
+            if item not in self._gained_items:
+                self._gained_items[item] = 0
+            self._gained_items[item] += count
         for enemy in self._battle_data.get_enemies():
             if enemy.get_name() not in self._killed_monsters:
                 self._killed_monsters[enemy.get_name()] = 0

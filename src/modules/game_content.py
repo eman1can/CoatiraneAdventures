@@ -336,19 +336,20 @@ class GameContent:
         return perks
 
     def find_item(self, item_id):
+        print('Find', item_id)
         if item_id in self._data['items'].keys():
             return self._data['items'][item_id]
         if item_id in self._data['drop_items'].keys():
             return self._data['drop_items'][item_id]
+        material_ids = item_id.split('/')[:-1]
+        material = self._data['materials'][material_ids[0]]
+        sub_material1 = None
+        sub_material2 = None
+        if len(material_ids) > 1:
+            sub_material1 = self._data['materials'][material_ids[1]]
+            if len(material_ids) > 2:
+                sub_material2 = self._data['materials'][material_ids[2]]
         for equipment_id, equipment_class in self._data['equipment'].items():
-            material_ids = equipment_id.split('/')
-            material = self._data['materials'][material_ids[0]]
-            sub_material1 = None
-            sub_material2 = None
-            if len(material_ids) > 1:
-                sub_material1 = self._data['materials'][material_ids[1]]
-                if len(material_ids) > 2:
-                    sub_material2 = self._data['materials'][material_ids[2]]
             if item_id.endswith(equipment_id):
                 if isinstance(equipment_class, WeaponClass):
                     return UngeneratedWeapon(equipment_class, material, sub_material1, sub_material2)
@@ -431,13 +432,28 @@ class GameContent:
                 items.append(item)
         return items
 
-    def get_store_tools(self):
-        # Generate Ungenerated Equipment for each type
+    def get_store_tools(self, item_id):
         items = []
-        for item_id, equipment_class in self._data['equipment'].items():
-            for material_id, material in self._data['materials'].items():
-                if equipment_class.get_type() == EQUIPMENT_TOOL:
-                    items.append(UngeneratedTool(equipment_class, material))
+        equipment_class = self._data['equipment'][item_id]
+        for material_id, material in self._data['materials'].items():
+            if material.is_hard() and material.is_natural():
+                items.append(UngeneratedTool(equipment_class, material))
+        return items
+
+    def get_store_weapons(self, item_id):
+        items = []
+        equipment_class = self._data['equipment'][item_id]
+        for material_id, material in self._data['materials'].items():
+            if material.is_hard() and material.is_natural():
+                items.append(UngeneratedWeapon(equipment_class, material, None, None))
+        return items
+
+    def get_store_armor(self, item_id):
+        items = []
+        equipment_class = self._data['equipment'][item_id]
+        for material_id, material in self._data['materials'].items():
+            if material.is_natural() and not material.is_gem():
+                items.append(UngeneratedArmor(equipment_class, material, None, None))
         return items
 
     def get_shop_item(self, item_id):

@@ -171,7 +171,7 @@ class BattleData:
 
     def _get_targets(self, target_type, is_character):
         targets = []
-        if is_character and target_type in [FOE, FOES]:
+        if is_character and target_type in [FOE, FOES] or not is_character and target_type in [ALLY, ALLIES]:
             for entity in self._enemies:
                 if not entity.is_dead():
                     targets.append(entity)
@@ -241,6 +241,10 @@ class BattleData:
                 boost_value = TEMP_BOOST_BY_TARGET[boost.get_type()][skill.get_target()]
                 # print('\\t\t\tApply Boost of ', boost_value, 'to', STAT_TYPES[boost.get_stat_type()])
                 entity.apply_effect(boost.get_stat_type(), AppliedEffect(boost_value, 1))
+
+        # if skill.get_effects():
+        #     for effect in skill.get_effects():
+        #         print(effect)
 
         # Get targets
         if skill.get_target() in [FOE, FOES]:
