@@ -20,6 +20,12 @@ SAFE_ZONES = 'safe_zones'
 MARKER_COLORS = {'safe_zones': SAFE_ZONE_COLOR, 'entrance': ENTRANCE_COLOR, 'exit': EXIT_COLOR,
                  'goblin': GOBLIN_COLOR, 'kobold': KOBOLD_COLOR, 'jack_bird': JACK_BIRD_COLOR}
 
+# Boss Types
+INDIVIDUAL_BOSS          = 0
+MULTIPLE_BOSS            = 1
+MULTIPLE_BOOSTED_BOSS    = 2
+MULTIPLE_ENEMIES         = 3
+MULTIPLE_BOOSTED_ENEMIES = 4
 
 class Floor:
     """
@@ -80,61 +86,27 @@ class Floor:
     def get_resources(self):
         return self._resources
 
-    # def generateBoss(self):
-    #     if self.bossType == 0:
-    #         return [self.boss]
-    #     elif self.bossType == 1:
-    #         min = int(self.max_enemies * self.MINMAXENEMIES)
-    #         if not min > 1:
-    #             min = 1
-    #         num = random.randint(min, self.max_enemies)
-    #         enemies = []
-    #         for x in range(num):
-    #             enemies.append(self.boss)
-    #         return enemies
-    #     elif self.bossType == 2:
-    #         min = int(self.max_enemies * (self.MINMAXENEMIES + self.BOSSMULTIPLIER))
-    #         if not min > 1:
-    #             min = 1
-    #         num = random.randint(min,
-    #                              int(self.max_enemies * (1 + self.BOSSMULTIPLIER)))
-    #         enemies = []
-    #         for x in range(num):
-    #             enemies.append(self.boss)
-    #         return enemies
-    #     elif self.bossType == 3:
-    #         min = int(self.max_enemies * (self.MINMAXENEMIES + self.BOSSMULTIPLIER))
-    #         if not min > 1:
-    #             min = 1
-    #         num = random.randint(min, int(self.max_enemies * (1 + self.BOSSMULTIPLIER)))
-    #         enemies = []
-    #         for x in range(num):
-    #             num = random.randint(0, self.PERCENT100)
-    #             for y in range(len(self.probabilities)):
-    #                 if num < (self.probabilities[y] * self.PERCENT100):
-    #                     enemies.append(self.enemies[y].new_instance(1))
-    #                     break
-    #                 else:
-    #                     num -= (self.probabilities[y] * self.PERCENT100)
-    #         return enemies
-    #     elif self.bossType == 4:
-    #         min = int(self.max_enemies * (self.MINMAXENEMIES + self.BOSSMULTIPLIER))
-    #         if not min > 1:
-    #             min = 1
-    #         num = random.randint(min, int(self.max_enemies * (1 + self.BOSSMULTIPLIER)))
-    #         enemies = []
-    #         for x in range(num):
-    #             num = random.randint(0, self.PERCENT100)
-    #             for y in range(len(self.probabilities)):
-    #                 if num < (self.probabilities[y] * self.PERCENT100):
-    #                     enemies.append(self.enemies[y].new_instance(1 + self.BOSSSTATMULTIPLIER))
-    #                     break
-    #                 else:
-    #                     num -= (self.probabilities[y] * self.PERCENT100)
-    #         return enemies
+    def get_boss_type(self):
+        return self._boss_type
 
-    def generate_enemies(self, node_type):
-        rarities = choices([1, 2, 3, 4, 5], [1 / (2 ** (x + 1)) for x in range(5)], k=randint(max(1, int(self._max_enemies * 0.25)), self._max_enemies))
+    def generate_boss(self):
+        if self._boss_type == INDIVIDUAL_BOSS:
+            pass
+        elif self._boss_type == MULTIPLE_BOSS:
+            pass
+        elif self._boss_type == MULTIPLE_BOOSTED_BOSS:
+            pass
+        elif self._boss_type == MULTIPLE_ENEMIES:
+            return self.generate_enemies(None, boss=self._boss_type)
+        elif self._boss_type == MULTIPLE_BOOSTED_ENEMIES:
+            return self.generate_enemies(None, boss=self._boss_type)
+
+    def generate_enemies(self, node_type, boss=-1):
+        if boss == -1:
+            spawn_count = randint(max(1, int(self._max_enemies * 0.25)), self._max_enemies)
+        else:
+            spawn_count = self._max_enemies
+        rarities = choices([1, 2, 3, 4, 5], [1 / (2 ** (x + 1)) for x in range(5)], k=spawn_count)
         enemies = []
         spawn_lists = {spawn_rarity: [] for spawn_rarity in range(1, max(rarities) + 1)}
         if node_type is None:
@@ -146,26 +118,24 @@ class Floor:
                     rarity_adjustment = 2
                     break
         for spawn_rarity in set(rarities):
-            print('Spawn Rarity is', spawn_rarity)
             for (enemy, rarity) in self._enemies.values():
                 if rarity_adjustment == 0:
                     if rarity <= spawn_rarity:
-                        print(enemy.get_name(), rarity, 'Boost', rarity + 1 - spawn_rarity)
                         spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
                 elif rarity_adjustment == 1:
                     if enemy.get_id() == node_type:
                         if rarity - 1 <= spawn_rarity:
-                            print(enemy.get_name(), rarity, 'Boost', rarity + 1 - spawn_rarity)
                             spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
                     elif min(rarity + 1, 5) <= spawn_rarity:
-                        print(enemy.get_name(), rarity, 'Boost', rarity + 1 - spawn_rarity)
                         spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
                 elif min(rarity + 2, 5) <= spawn_rarity:
-                    print(enemy.get_name(), rarity, 'Boost', rarity + 1 - spawn_rarity)
                     spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
         for spawn_rarity in rarities:
             enemy, boost = spawn_lists[spawn_rarity][randint(0, len(spawn_lists[spawn_rarity]) - 1)]
-            enemies.append(enemy.new_instance(boost))
+            if boss == MULTIPLE_BOOSTED_ENEMIES:
+                enemies.append(enemy.new_instance(boost))
+            else:
+                enemies.append(enemy.new_instance(boost + 1))
         return enemies
 
     def generate_resource(self, node_type, metal_skew=True):
@@ -438,8 +408,8 @@ class Map:
                     route.pop()
                 else:
                     route.append(self._current_node)
-                if layer == 'kobold':
-                    print(route)
+                # if layer == 'kobold':
+                #     print(route)
 
         self._calculate_path()
 

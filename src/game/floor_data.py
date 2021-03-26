@@ -50,11 +50,20 @@ class FloorData:
         self._gained_items = {}
         self._killed_monsters = {}
         self._party_perks = []
+        self._beaten_boss = False
+        self._next_floor = self._floor.get_id() + 1
+        self._is_boss_fight = False
         self._generate_characters()
 
     # Basic getter functions
     def get_floor(self):
         return self._floor
+
+    def set_next_floor(self, next_floor):
+        self._next_floor = next_floor
+
+    def get_next_floor(self):
+        return self._next_floor
 
     def get_characters(self):
         return self._adventurers
@@ -64,6 +73,9 @@ class FloorData:
 
     def get_increases(self):
         return self._increases
+
+    def have_beaten_boss(self):
+        return self._beaten_boss
 
     def get_gained_items(self):
         return self._gained_items
@@ -145,7 +157,7 @@ class FloorData:
         # On node, chance +50%
         # For every rest count, chance + 20%
         # For every time you mine / dig, chance +40%
-        if (x, y) not in self._activated_safe_zones:
+        if (x, y) not in self._activated_safe_zones and not floor_map.is_marker(EXIT):
             chance = 15
             node = None
             for enemy_id in self._floor.get_enemies().keys():
@@ -359,7 +371,11 @@ class FloorData:
             self._killed_monsters[enemy.get_name()] += 1
         self._special_amount = self._battle_data.get_special_amount()
         self._battle_data = None
+        if not self._beaten_boss and self._is_boss_fight:
+            self._beaten_boss = self._is_boss_fight
         # Clear status effects from characters
+        for character in self._adventurers:
+            character.clear_effects()
 
     def generate_encounter(self, node_type):
         self._in_encounter = True
@@ -373,6 +389,20 @@ class FloorData:
         self._battle_data = BattleData(adventurers, supporters, self._special_amount)
         self._battle_data.set_state('start')
         self._battle_data.set_enemies(self._floor.generate_enemies(node_type))
+
+    def generate_boss_encounter(self):
+        self._in_encounter = True
+        self._is_boss_fight = True
+        adventurers = []
+        supporters = []
+        for index, adventurer in enumerate(self._adventurers):
+            if not adventurer.is_dead():
+                adventurers.append(adventurer)
+                if index < len(supporters):
+                    supporters.append(self._supporters[index])
+        self._battle_data = BattleData(adventurers, supporters, self._special_amount, True)
+        self._battle_data.set_state('battle')
+        self._battle_data.set_enemies(self._floor.generate_boss())
 
     # The characters keep the same special skill charge, health, mana, and status effects encounter to encounter
     def _generate_characters(self):

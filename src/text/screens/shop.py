@@ -11,7 +11,7 @@ def get_item_string(item, index, current_text, page_name, page_num):
         if Refs.gc.get_inventory().has_item(item.get_id()):
             return f'\n\t[s]{OPT_C}{index}:{END_OPT_C} {name}[/s] - Already purchased\n', None
         elif item.is_unlocked():
-            return f'\n\t{OPT_C}{index}:{END_OPT_C} {name}\n\t\t- ' + desc.replace('\n', '\n\t\t- ') + f'\n\t{current_text}: {price}V\n', f'{page_name}_page{page_num}_confirm1#{item.get_id()}'
+            return f'\n\t{OPT_C}{index}:{END_OPT_C} {name}\n\t\t- ' + desc.replace('\n', '\n\t\t- ') + f'\n\t{current_text}: {price}V\n', f'{page_name}*{page_num}#{item.get_id()}#1#confirm'
         return '', None
     else:
         # Multi item item string
@@ -20,7 +20,7 @@ def get_item_string(item, index, current_text, page_name, page_num):
             count = Refs.gc.get_inventory().get_item_count(item.get_id())
         else:
             count = min(floor(Refs.gc.get_varenth() / max_price), 50)
-        return f'\n\t{OPT_C}{index}:{END_OPT_C} {name}\n\t\t- ' + desc.replace('\n', '\n\t\t- ') + f'\n\t{current_text}: {min_price}V\n\tIn Inventory: {count}\n', f'{page_name}_page{page_num}_{max(int(count / 2), 1)}#{item.get_id()}'
+        return f'\n\t{OPT_C}{index}:{END_OPT_C} {name}\n\t\t- ' + desc.replace('\n', '\n\t\t- ') + f'\n\t{current_text}: {min_price}V\n\tIn Inventory: {count}\n', f'{page_name}*{page_num}#{item.get_id()}#{max(int(count / 2), 1)}'
 
 
 def item_page_list(option_index, page_name, page_num, item_list, fail_text, current_text, item_string_function=get_item_string):
@@ -36,12 +36,12 @@ def item_page_list(option_index, page_name, page_num, item_list, fail_text, curr
         right_string = f'Next Page {OPT_C}{option_index + 1}{END_OPT_C}'
 
         if left:
-            _options[str(option_index)] = f'{page_name}{page_num - 1}page'
+            _options[str(option_index)] = f'{page_name}*{page_num - 1}'
         else:
             left_string = f'[s]{left_string}[/s]'
 
         if right:
-            _options[str(option_index + 1)] = f'{page_name}{page_num + 1}page'
+            _options[str(option_index + 1)] = f'{page_name}*{page_num + 1}'
         else:
             right_string = f'[s]{right_string}[/s]'
 
@@ -67,16 +67,19 @@ def item_page_list(option_index, page_name, page_num, item_list, fail_text, curr
 
 
 def item_transaction(item_count, item_id, page_name, current_text, future_text):
-    item = Refs.gc.get_drop_item(item_id)
+    item = Refs.gc.find_item(item_id)
     if 'sell' in page_name:
         count = Refs.gc.get_inventory().get_item_count(item_id)
     else:
         count = min(floor(Refs.gc.get_varenth() / item.get_max_price()), 50)
     _options = {}
 
-    display_text = f'\n\t{current_text}: {item.get_min_price()}V\n'
-    arrow_string = f'\n\t 1  ←───────→ {count}'
-    display_text += f'{int(item_count)}'.center(len(arrow_string))
+    display_text = f'\n\t{current_text}: {item.get_min_price()}V'
+    left_string = '1'
+    right_string = f'{count}'
+    padding = max(len(left_string), len(right_string))
+    arrow_string = left_string.rjust(padding) + '  ←───────→ ' + f'{count}'.ljust(padding)
+    display_text += '\n\n\t' + f'{int(item_count)}'.center(len(arrow_string))
     display_text += f'\n\t{arrow_string}\n\n'
     display_text += f'\n\t{future_text}: {int(item_count) * item.get_min_price()}V\n'
 
@@ -86,11 +89,11 @@ def item_transaction(item_count, item_id, page_name, current_text, future_text):
             display_text += f'\n\t[s]{OPT_C}{option_index}:{END_OPT_C} {option_string}[/s]'
         else:
             display_text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {option_string}'
-            _options[str(option_index)] = f'{page_name}_{new_number}#{item_id}'
+            _options[str(option_index)] = f'{page_name}#{item_id}#{new_number}'
         option_index += 1
 
     display_text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Confirm'
-    _options[str(option_index)] = f'{page_name}_confirm{item_count}#{item_id}'
+    _options[str(option_index)] = f'{page_name}#{item_id}#{item_count}#confirm'
     return display_text, _options
 
 
@@ -100,7 +103,7 @@ def bspage_list(sub_categories, page_name, id_to_string):
     for sub_category in sub_categories:
         for type in ['sell', 'buy']:
             display_text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {type.title()} {id_to_string[sub_category]}s'
-            _options[str(option_index)] = f'shop_{sub_category}_{type}0page'
+            _options[str(option_index)] = f'shop_{sub_category}_{type}*0'
             option_index += 1
     return display_text, _options
 
@@ -191,7 +194,7 @@ def shop(console):
             for page_link in page_list:
                 sub_text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {page_to_string[page_link]}'
                 if page_link in item_lists.keys():
-                    sub_options[str(option_index)] = f'shop_{page_link}0page'
+                    sub_options[str(option_index)] = f'shop_{page_link}*0'
                 else:
                     sub_options[str(option_index)] = f'shop_{page_link}'
                 option_index += 1
@@ -205,7 +208,7 @@ def shop(console):
                 sub_options.update(ip_options)
 
             # If ends with page, then we have a list of items
-            if 'page' in current_screen_name and '#' not in current_screen_name:
+            if '*' in current_screen_name and '#' not in current_screen_name:
                 # Divide page links from lists
                 if sub_text != '':
                     sub_text += '\n'
@@ -221,8 +224,8 @@ def shop(console):
                     item_list = Refs.gc.get_owned_items(item_list)
 
                 # Page with a list in it
-                print(current_screen_name)
-                page_num = int(current_screen_name[len(f'shop_{page}'):-len('page')])
+                page_name, page_num = current_screen_name.split('*')
+                page_num = int(page_num)
 
                 if 'buy' in page:
                     sub_header = texts['buy_start'].format(page_to_string[page[:-4]])
@@ -250,10 +253,10 @@ def shop(console):
                     page += '_buy'
                     page_type = 'buy'
 
-                page_data, item_id = current_screen_name[len(f'shop_{page}_page'):].split('#')
-                page_num, item_count = page_data.split('_')
-                sub_header = texts[f'{page_type}_start'].format(Refs.gc.get_drop_item(item_id).get_name())
-                sub_text, sub_options = item_transaction(item_count, item_id, f'shop_{page}{page_num}page', texts[f'{page_type}_current'], texts[f'{page_type}_future'])
+                page_data, item_id, item_count = current_screen_name.split('#')
+                page_name, page_num = page_data.split('*')
+                sub_header = texts[f'{page_type}_start'].format(Refs.gc.find_item(item_id).get_name())
+                sub_text, sub_options = item_transaction(item_count, item_id, f'shop_{page}*{page_num}', texts[f'{page_type}_current'], texts[f'{page_type}_future'])
             break
 
     display_text += header

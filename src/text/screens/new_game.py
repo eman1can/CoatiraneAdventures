@@ -1,3 +1,5 @@
+from kivy.resources import resource_find
+
 from game.save_load import load_save_info
 from game.skill import ELEMENTS
 from game.character import CHARACTER_ATTACK_TYPES, RACES, GENDERS
@@ -64,8 +66,6 @@ def intro_domain(console):
     desc = console.memory.domains[console.memory.current_domain].get_large_description().replace('\n', '\n\t\t')
     display_text += f'\n\t{OPT_C}1:{END_OPT_C} {console.memory.domains[console.memory.current_domain].title}\n\t\t{desc}\n'
     _options['1'] = f'domain_{console.memory.domains[console.memory.current_domain].title}'
-    print(console.memory.current_domain, console.memory.current_domain - 1, (console.memory.current_domain + 2) % len(console.memory.domains))
-    print(console.memory.domains)
     display_text += f'\n\n\t←────── {OPT_C}2{END_OPT_C} {console.memory.domains[console.memory.current_domain - 1].title} | {console.memory.domains[(console.memory.current_domain + 2) % len(console.memory.domains)].title} {OPT_C}3{END_OPT_C} ──────→\n'
     _options['2'] = 'domain_prev'
     _options['3'] = 'domain_next'
@@ -76,7 +76,7 @@ def intro_select(console):
     display_text = f'\n\t{OPT_C}0:{END_OPT_C} back\n\n\tOh almighty {console.memory.game_info["name"]}, you have two adventurers interested in your fledgling family.\n\tYou only have the finances to support yourself and one adventurer. Which one do you choose?\n'
     _options = {'0': 'back'}
 
-    with open(f'data/{Refs.gc.get_program_type()}/CharacterDefinitions.txt', 'r') as file:
+    with open(resource_find(f'data/{Refs.gc.get_program_type()}/CharacterDefinitions.txt'), 'r') as file:
         ais = file.readline().split(',')
         ais_description = file.readline()
         file.readline()
