@@ -192,12 +192,13 @@ def character_attribute_main(console):
         display_string += '┴'
     display_string = display_string[:-1] + '┘'
 
-    display_string += f'\n\n\t{OPT_C}1:{END_OPT_C} Change Equip'
-    display_string += f'\n\t{OPT_C}2:{END_OPT_C} Status Board'
+    if Refs.gc.get_floor_data() is None:
+        display_string += f'\n\n\t{OPT_C}1:{END_OPT_C} Change Equip'
+        _options['1'] = f'change_equip_main_{character_id}'
+        display_string += f'\n\t{OPT_C}2:{END_OPT_C} Status Board'
+        _options['2'] = f'status_board_main_{character_id}_{character.get_current_rank()}'
     display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
 
-    _options['1'] = f'change_equip_main_{character_id}'
-    _options['2'] = f'status_board_main_{character_id}_{character.get_current_rank()}'
     _options['0'] = 'back'
 
     return display_string, _options

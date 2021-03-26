@@ -8,6 +8,13 @@ from kivy.storage.jsonstore import JsonStore
 from loading.config_loader import GAME_VERSION
 
 SAVE_PATH = expanduser('~/Saved Games/Coatirane Adventures/saves/')
+if not exists(expanduser('~/Saved Games/')):
+    mkdir(expanduser('~/Saved Games/'))
+if not exists(expanduser('~/Saved Games/Coatirane Adventures/')):
+    mkdir(expanduser('~/Saved Games/Coatirane Adventures/'))
+if not exists(expanduser('~/Saved Games/Coatirane Adventures/saves/')):
+    mkdir(expanduser('~/Saved Games/Coatirane Adventures/saves/'))
+
 SAVE_SLOT_1_PATH = f'{SAVE_PATH}/save1/'
 SAVE_SLOT_2_PATH = f'{SAVE_PATH}/save2/'
 SAVE_SLOT_3_PATH = f'{SAVE_PATH}/save3/'
@@ -228,7 +235,8 @@ def save_game(save_slot, game_content):
     for floor in game_content['floors'].values():
         explored_array = {}
         for node, discovered in floor.get_map().get_explored().items():
-            explored_array[str(node)] = discovered
+            if discovered:
+                explored_array[str(node)] = discovered
         save_file['map_data'][str(floor.get_id())] = explored_array
 
         explored_nodes, explored_node_counters = floor.get_map().get_node_exploration()

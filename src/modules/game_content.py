@@ -127,9 +127,11 @@ class GameContent:
     def set_save_slot(self, save_slot):
         self._save_slot = save_slot
 
-    def save_game(self):
+    def save_game(self, callback):
         self._last_save_time = self._calendar.get_int_time()
         save_game(self._save_slot, self)
+        if callback is not None:
+            callback()
 
     def get_time(self):
         return self._calendar.get_time()

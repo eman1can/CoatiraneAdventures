@@ -139,6 +139,9 @@ class BattleEntity:
             for dead_effect in dead_effects:
                 effects.remove(dead_effect)
 
+    def clear_effects(self):
+        self._status_effects = {}
+
     def get_effects(self):
         return self._status_effects
 

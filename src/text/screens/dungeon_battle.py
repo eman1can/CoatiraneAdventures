@@ -176,6 +176,10 @@ def get_battle_display(floor_data):
             if special_count > special_possible:
                 character.select_skill(0)
 
+        mcost = character.get_mana_cost(character.get_selected_skill())
+        if mcost > character.get_battle_mana():
+            character.select_skill(0)
+
     for character in battle_data.get_characters():
         name = character.get_name()
         count = 18 * character.get_battle_health() / character.get_health()
@@ -297,6 +301,9 @@ def get_battle_display(floor_data):
                         special_blocked = True
                 if special_blocked:
                     screen_string += f'\n\t{OPT_C}[s]{option_index}: {skill.get_name()}[/s]{END_OPT_C}'
+                else:
+                    screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {skill.get_name()}'
+                    _options[str(option_index)] = f'dungeon_battle_encounter_select_{char_index}_{skill_index}'
             else:
                 mana_cost = character.get_mana_cost(skill)
                 if mana_cost == 0:
@@ -341,6 +348,8 @@ def dungeon_battle(console):
     # If we are in an encounter, show battle screen, else show movement screen based on current position
 
     floor_data = Refs.gc.get_floor_data()
+
+    # Make sure that if we are on the exit node that we trigger the boss
 
     if not floor_data.is_in_encounter():
         display_string, _options = get_tunnel_descriptions(floor_data)
@@ -589,15 +598,26 @@ def dungeon_battle_action(console, action):
     action = action[len('dungeon_battle_'):]
 
     if action == 'ascend':
-        Refs.gc.get_floor_data().get_floor().get_map().clear_current_node()
-        # Keep items in inventory
-        # Keep items used
-        # Keep exploration
-        # Clear the current value on the map
-        console.set_screen('dungeon_result_ascend')
+        floor_data = Refs.gc.get_floor_data()
+        floor_id = floor_data.get_floor.get_id()
+        if floor_data.get_floor().get_id() == 1:
+            Refs.gc.get_floor_data().get_floor().get_map().clear_current_node()
+            # Keep items in inventory
+            # Keep items used
+            # Keep exploration
+            # Clear the current value on the map
+            console.set_screen('dungeon_result_ascend')
+        else:
+            floor_id = floor_data.get_floor.get_id()
+            floor_data.set_next_floor(floor_id - 1)
+            console.set_screen('locked_dungeon_main')
         return
     elif action == 'descend':
-        pass
+        floor_data = Refs.gc.get_floor_data()
+        floor_id = floor_data.get_floor.get_id()
+        floor_data.set_next_floor(floor_id + 1)
+        console.set_screen('locked_dungeon_main')
+        return
     elif action == 'end_encounter':
         Refs.gc.get_floor_data().end_encounter()
         Refs.app.scroll_widget.opacity = 0
@@ -620,7 +640,9 @@ def dungeon_battle_action(console, action):
         return
     elif action == 'North' or action == 'East' or action == 'South' or action == 'West':
         Refs.gc.get_floor_data().progress_by_direction(DIRECTIONS_FROM_STRING[action])
-
+    elif action == 'fight_boss':
+        Refs.gc.get_floor_data().generate_boss_encounter()
+        # Refs.gc.get_floor_data().get_battle_data().progress_encounter()
     elif action.startswith('encounter'):
         action = action[len('encounter_'):]
         if action == 'start':

@@ -73,7 +73,6 @@ class Inventory:
                 output[item_id]['items'] = {}
                 for item_hash, item in metadata['items'].items():
                     output[item_id]['items'][item_hash] = item.get_metadata()
-        print(output)
         return output
 
     def add_item(self, item_id, count, metadata=None):
