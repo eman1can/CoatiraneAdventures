@@ -11,7 +11,7 @@ def get_town_header():
     renown = Refs.gc.get_renown()
     varenth = Refs.gc.format_number(Refs.gc.get_varenth())
     skill_level = Refs.gc.get_skill_level()
-    if Refs.gc.in_inventory('pocket_watch'):
+    if Refs.gc.get_inventory().has_item('pocket_watch'):
         time = Refs.gc.get_time()
         return '\n' + f'{name} - {domain} - Perks Unlocked {skill_level}'.rjust(40).ljust(100) + f'{time} - {varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
     else:
@@ -143,20 +143,25 @@ def tavern_recruit(console):
 
 
 def get_character_string(character):
-    '''
-    Pumpkin Patch - Lexi Buhr - Female Human
-    Adventurer - Water Physical Type
-    HP.  110
-    MP.  54
-    Str. 15
-    Mag. 15
-    End. 11
-    Agi. 3
-    Dex. 1
-
-    It will cost you 5k Varenth, 5 Topaz, and 4 Emeralds to convince this person to join your family.
-    '''
-    pass
+    string = f'\n\t\t{character.get_display_name()} - {character.get_name()} - {character.get_age()} - {character.get_gender()} - {character.get_race()}'
+    if not character.is_support():
+        string += f'\n\t\tFavorite Weapons: {character.get_favorite_weapon()}'
+        sub_weapon = character.get_favorite_sub_weapon()
+        if sub_weapon is not None:
+            string += f', {sub_weapon}'
+    string += f'\n\t\t{character.get_description()}'
+    if not character.is_support():
+        string += f'\n\n\t\tAdventurer - {character.get_attack_type_string()} - {character.get_element_string()}'
+    else:
+        string += f'\n\n\t\tSupporter'
+    string += f'\n\n\t\tHealth    - {character.get_health()}'
+    string += f'\n\t\tMana      - {character.get_mana()}'
+    string += f'\n\t\tStrength  - {character.get_strength()}'
+    string += f'\n\t\tMagic     - {character.get_magic()}'
+    string += f'\n\t\tEndurance - {character.get_endurance()}'
+    string += f'\n\t\tAgility   - {character.get_agility()}'
+    string += f'\n\t\tDexterity - {character.get_dexterity()}\n'
+    return string
 
 
 def tavern_recruit_show(console):
@@ -194,25 +199,44 @@ def tavern_recruit_show(console):
             text = success_texts[randint(0, len(success_texts) - 1)] + '\n\tYou got a potential recruit!\n'
 
     display_text = f'\n\t{text}\n\t'
-
     if 'failure' not in character_ids:
         character_id = character_ids[0]
-        character = Refs.gc['chars'][character_id]
+        character = Refs.gc.get_char_by_id(character_id)
 
         display_text += get_character_string(character)
+        display_text += f'\n\tIt will cost you '
 
-        display_text += f'\n\tIt will cost you 5k Varenth, 5 Topaz and 4 Emeralds to convince this person to join your family.\n'
+        recruitment_items = character.get_recruitment_items()
+        list = len(recruitment_items) >= 3
+        for index, (item_id, count) in enumerate(recruitment_items.items()):
+            print(item_id, count)
+            if index == len(recruitment_items) - 1:
+                if not list:
+                    display_text += ' '
+                display_text += 'and '
+            if item_id == 'varenth':
+                display_text += f'{count} Varenth'
+            else:
+                item = Refs.gc.find_item(item_id)
+                if item is None:
+                    continue
+                display_text += f'{count} {item.get_name()}'
+            if list and index != len(recruitment_items) - 1:
+                display_text += ', '
 
+        display_text += f' to convince this person to join your family.\n'
+
+        next_screen = f'tavern_recruit_show{text}#'
+        _options['1'] = f'tavern_recruit_end#{character_id}'
+        for char_id in character_ids[1:]:
+            next_screen += char_id + '#'
         display_text += f'\n\t{OPT_C}1:{END_OPT_C} Recruit this person\n'
-        display_text += f'\t{OPT_C}2:{END_OPT_C} Continue the party'
-
-        next_screen = f'tavern_recruit_show_{text}#'
-        for character_id in character_ids[1:]:
-            next_screen += character_id + '#'
-        _options['1'] = f'tavern_recruit_end#{character_id}',
-        _options['2'] = next_screen[:-1]
-
-    display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Cancel\n'
+        if len(character_ids) > 1:
+            display_text += f'\t{OPT_C}2:{END_OPT_C} Continue the party'
+            _options['2'] = next_screen[:-1]
+        display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Cancel\n'
+    else:
+        display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Continue\n'
     return display_text, _options
 
 

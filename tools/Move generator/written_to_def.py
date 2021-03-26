@@ -28,7 +28,7 @@ class Skill:
         self.move_id = -1
         self.type = None
         self.target = None
-        self.attack_speed = None
+        self.attack_speed = NORMAL
         self.attack_power = None
         self.attack_type = None
         self.element = 0
@@ -82,7 +82,7 @@ class Effect:
         self.type = None
         self.sub_type = None
         self.amount = None
-        self.duration = None
+        self.duration = -1
 
     def __str__(self):
         return f'<Effect [{TARGETS[self.target]}] {TYPES[self.type][self.sub_type]} {self.amount if self.amount else ""} {self.duration}>'
@@ -143,7 +143,7 @@ class MoveReader:
     def get_attack_speed(self, optional=False):
         self.next_section(overwrite=not optional)
         if optional and self._section not in ATTACK_SPEEDS.values():
-            return None
+            return NORMAL
         attack_speed = list(ATTACK_SPEEDS.values()).index(self._section)
         if optional:
             self.next_section()
@@ -315,6 +315,7 @@ class MoveReader:
                 has_next = self.has_more()
                 if has_next:
                     self.swallow('and', True)
+        print(effects)
         return effects
 
     def process_move(self, move_string, support_skill=False):
@@ -514,7 +515,7 @@ for character in character_data.split('\n\n'):
                 skill_id = list(skills.keys()).index(f'{skill_name} - {skill_def}')
             else:
                 skill_id = len(skills.keys())
-                skills[f'{skill_name} - {skill_def}'] = move_reader.process_move(skill_def, True)
+                skills[f'{skill_name} - {skill_def}'] = move_reader.process_move(skill_def)
                 character_skills[name][skill_name] = skill_def
             if mana_costs[index] != 0:
                 string += f', {skill_id}, {mana_costs[index]}'
@@ -590,6 +591,7 @@ skills_lines = []
 skill_lengths = []
 for index, (skill_name, skill) in enumerate(skills.items()):
     skill_name, skill_def = skill_name.split(' - ', 1)
+    print('Process ', skill_name)
     if skill_name in ['Basic Attack', 'Counter', 'Block']:
         skill_name = skill_def
     string = f'{index}, {skill_name}, -, '
@@ -614,6 +616,7 @@ for index, (skill_name, skill) in enumerate(skills.items()):
     if skill.effect_list is not None:
         string += f', {len(skill.effect_list)}'
         for effect in skill.effect_list:
+            print('\nProcess', effect)
             string += f', {effect.type}'
             if effect.type == STAT:
                 string += f', {effect.sub_type}'

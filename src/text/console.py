@@ -12,11 +12,11 @@ from text.memory import Memory
 from text.screens.map_options import map_options
 from text.screens.change_equip import change_equip_main
 from text.screens.character_attribute_screen import character_attribute_main
-from text.screens.crafting import crafting_main
+from text.screens.crafting import crafting_alloys, crafting_equipment, crafting_main, crafting_process_material, crafting_process_materials
 from text.screens.dungeon_main import dungeon_main, dungeon_main_confirm
 from text.screens.gear import gear_main
 from text.screens.housing import housing_browse, housing_buy, housing_main, housing_rent
-from text.screens.inventory import inventory
+from text.screens.inventory import inventory, inventory_battle, inventory_battle_select
 from text.screens.new_game import game_loading, intro_domain, intro_domain_gender, intro_domain_name, intro_news, intro_select, new_game, save_select
 from text.screens.select_char import select_screen_char
 from text.screens.shop import do_transaction, shop
@@ -25,9 +25,15 @@ from text.screens.status_board import status_board_main, status_board_unlock, st
 from text.screens.town import profile_main, quests_main, tavern_main, tavern_recruit, tavern_recruit_show, tavern_relax, town_main
 from text.screens.dungeon_battle import dungeon_battle, dungeon_battle_action, dungeon_dig_result, dungeon_mine_result, dungeon_result
 
-TEST_TEXT = 'Level 1 Goblin entered the battle!\nLevel 1 Goblin entered the battle!\nLevel 1 Goblin entered the battle!\nLevel 1 Goblin entered the battle!\nAis Wallenstein joined the battle!\nLexi Buhr joined the battle!\nSofi joined' \
-            ' the battle!\nSophie Nicholson joined the battle!\nSophie Nicholson used support skill Invigoration!\nMaya Lurch joined the battle!\nMaya Lurch used support skill Invigoration!\nSophie Nicholson joined the battle!\nSophie Nicholson ' \
-            'used support skill Invigoration!'
+SCREEN_NAMES = ['new_game', 'save_select', 'intro_domain_name', 'intro_domain_gender', 'intro_domain', 'intro_select', 'game_loading', 'town_main', 'tavern_main', 'shop', 'quests_main', 'crafting_main', 'dungeon_main', 'select_screen_char',
+                'dungeon_confirm', 'dungeon_battle', 'dungeon_result', 'tavern_recruit_show', 'tavern_recruit', 'tavern_relax', 'intro_news', 'profile_main', 'housing_main', 'housing_browse', 'housing_rent', 'housing_buy',
+                'character_attribute_main', 'status_board_main', 'status_board_unlock', 'status_board_view_falna', 'change_equip_main', 'gear_main', 'map_options', 'skill_tree_main', 'perk_info', 'perk_bestow', 'dungeon_mine_result',
+                'dungeon_dig_result', 'inventory_battle_select', 'inventory_battle', 'inventory', 'crafting_process_materials', 'crafting_alloys', 'crafting_process_material', 'crafting_equipment']
+SCREENS = [new_game, save_select, intro_domain_name, intro_domain_gender, intro_domain, intro_select, game_loading, town_main, tavern_main, shop, quests_main, crafting_main, dungeon_main, select_screen_char,
+           dungeon_main_confirm, dungeon_battle, dungeon_result, tavern_recruit_show, tavern_recruit, tavern_relax, intro_news, profile_main, housing_main, housing_browse, housing_rent, housing_buy, character_attribute_main,
+           status_board_main, status_board_unlock, status_board_view_falna, change_equip_main, gear_main, map_options, skill_tree_main, perk_info, perk_bestow, dungeon_mine_result, dungeon_dig_result, inventory_battle_select,
+           inventory_battle, inventory, crafting_process_materials, crafting_alloys, crafting_process_material, crafting_equipment]
+
 
 Builder.load_string("""
 <Console>:
@@ -226,32 +232,43 @@ class Console(TextInput):
         # print('Delete something')
         self.current_text = self.current_text[:-1]
 
+    def save_screen(self, current_screen):
+        if self._current_screen is not None and self._current_screen != current_screen:
+            if current_screen in self._back_list:
+                while self._back_list[-1] != current_screen:
+                    self._back_list.pop(-1)
+                self._back_list.pop(-1)
+                return False
+            else:
+                if self._current_screen in ['town_main', 'profile_main', 'skill_tree_main', 'crafting_main', 'dungeon_main', 'dungeon_battle', 'map_options']:
+                    self._back_list.append(self._current_screen)
+                    return True
+                else:
+                    for key in ['perk_info']:
+                        if self._current_screen.startswith(key):
+                            self._back_list.append(self._current_screen)
+                            return True
+                    for key in ['crafting_process_materials', 'crafting_alloys', 'inventory', 'inventory_battle']:
+                        if self._current_screen.startswith(key):
+                            if self._back_list[-1].startswith(key):
+                                self._back_list[-1] = self._current_screen
+                                return True
+        return False
+
     # Screen manager options
     def set_screen(self, screen_name):
+        if screen_name != 'game_loading':
+            print('Set Screen', screen_name)
         if screen_name == 'back':
             screen_name = self._back_list.pop()
-            self._current_screen = screen_name
         else:
-            if self._current_screen is not None and self._current_screen != screen_name:
-                if len(self._back_list) == 0 or self._back_list[-1] != self._current_screen:
-                # for whitelist_name in ['new_name', 'save_select', 'intro_domain', 'intro_select', 'town_main', 'dungeon_main', 'shop', 'tavern_main', 'inventory']:
-                #     if self._current_screen.startswith(whitelist_name) and ('page' not in self._current_screen or '0page' in self._current_screen):
-                    self._back_list.append(self._current_screen)
+            if self.save_screen(screen_name):
+                print('Add', self._current_screen, 'to backlist.')
         self._current_screen = screen_name
-        # if len(self._back_list) > 0:
-        #     if self._current_screen == self._back_list[-1]:
-        #         self._back_list.pop()
 
-        names = ['new_game', 'save_select', 'intro_domain_name', 'intro_domain_gender', 'intro_domain', 'intro_select', 'game_loading', 'town_main', 'tavern_main', 'shop', 'quests_main', 'crafting_main', 'inventory', 'dungeon_main',
-                 'select_screen_char', 'dungeon_confirm', 'dungeon_battle', 'dungeon_result', 'tavern_recruit_show', 'tavern_recruit', 'tavern_relax', 'intro_news', 'profile_main', 'housing_main', 'housing_browse', 'housing_rent', 'housing_buy',
-                 'character_attribute_main', 'status_board_main', 'status_board_unlock', 'status_board_view_falna', 'change_equip_main', 'gear_main', 'map_options', 'skill_tree_main', 'perk_info', 'perk_bestow', 'dungeon_mine_result',
-                 'dungeon_dig_result']
-        screens = [new_game, save_select, intro_domain_name, intro_domain_gender, intro_domain, intro_select, game_loading, town_main, tavern_main, shop, quests_main, crafting_main, inventory, dungeon_main, select_screen_char,
-                   dungeon_main_confirm, dungeon_battle, dungeon_result, tavern_recruit_show, tavern_recruit, tavern_relax, intro_news, profile_main, housing_main, housing_browse, housing_rent, housing_buy, character_attribute_main,
-                   status_board_main, status_board_unlock, status_board_view_falna, change_equip_main, gear_main, map_options, skill_tree_main, perk_info, perk_bestow, dungeon_mine_result, dungeon_dig_result]
-        for index, screen in enumerate(names):
+        for index, screen in enumerate(SCREEN_NAMES):
             if screen_name.startswith(screen):
-                self.display_text, self._options = screens[index](self)
+                self.display_text, self._options = SCREENS[index](self)
                 return
         print('Unknown Screen:', screen_name)
 
@@ -264,7 +281,6 @@ class Console(TextInput):
         Refs.gc.set_calendar_callback(self._refresh)
 
     def _refresh(self):
-        return
         if self._current_screen is None:
             return
         self.set_screen(self._current_screen)
@@ -285,7 +301,9 @@ class Console(TextInput):
         elif action == 'goto_new_game':
             self.memory.loading_progress = {}
             Refs.app.reset_loader()
-            self.set_screen('new_game')
+            self.text = '\n\tSaving Game...'
+            Clock.schedule_once(lambda dt: Refs.gc.save_game(), 0.5)
+            Clock.schedule_once(lambda dt: self.set_screen('new_game'), 2.5)
         elif action == 'intro_domain_gender':
             self.memory.game_info['name'] = self.current_text.strip()
             self.current_text = ""
@@ -350,11 +368,11 @@ class Console(TextInput):
 
             Refs.gc.get_current_party()[index] = char
             self.set_screen('dungeon_main')
-        if action.startswith('dungeon_battle_start'):
+        elif action.startswith('dungeon_battle_start'):
             Refs.gc.set_next_floor(bool(action[6:]))
             self.text = '\n\tSaving Game...'
             Clock.schedule_once(lambda dt: Refs.gc.save_game(), 0.5)
-            Clock.schedule_once(lambda dt: self.set_screen('dungeon_battle'), 1)
+            Clock.schedule_once(lambda dt: self.set_screen('dungeon_battle'), 2.5)
         elif action.startswith('dungeon_battle'):
             dungeon_battle_action(self, action)
         elif action.startswith('shop') and 'confirm' in action:
@@ -368,7 +386,7 @@ class Console(TextInput):
         elif action == 'save_game':
             self.text = '\n\tSaving Game...'
             Clock.schedule_once(lambda dt: Refs.gc.save_game(), 0.5)
-            Clock.schedule_once(lambda dt: self.set_screen('town_main'), 1)
+            Clock.schedule_once(lambda dt: self.set_screen('town_main'), 2.5)
         elif action == 'crafting_main':
             if Refs.gc.is_crafting_locked():
                 self.error_time = 2.5
@@ -403,7 +421,7 @@ class Console(TextInput):
                 success = randint(1, 99) < 33
                 if success:
                     chars = Refs.gc.get_non_obtained_characters()
-                    count = choices([x for x in range(len(chars))], [len(chars) - x for x in range(len(chars))])[0]
+                    count = choices([x + 1 for x in range(len(chars))], [len(chars) - x for x in range(len(chars))])[0]
                     # Change to choose characters based on a recruitment weight
                     recruited = choices(chars, k=count)
                     string = ''
@@ -412,6 +430,27 @@ class Console(TextInput):
                 else:
                     string = 'failure#'
                 self.set_screen(f'tavern_recruit_show#{string[:-1]}')
+        elif action.startswith('tavern_recruit_end'):
+            character_id = action.split('#')[1]
+            character = Refs.gc.get_char_by_id(character_id)
+            for item_id, count in character.get_recruitment_items().items():
+                material_ids = item_id.split('/')
+                item_id = material_ids.pop(-1)
+                if len(material_ids) > 0:
+                    metadata = {'material_id': material_ids[0]}
+                    if len(material_ids) > 1:
+                        metadata['sub_material1_id'] = material_ids[1]
+                        if len(material_ids) > 2:
+                            metadata['sub_material2_id'] = material_ids[2]
+                else:
+                    metadata = None
+
+                if Refs.gc.get_inventory().get_item_count(item_id, metadata) < count:
+                    self.error_time = 2.5
+                    self.error_text = 'You don\'t have the required items!'
+                else:
+                    Refs.gc.obtain_character(character.get_index(), character.is_support())
+                    self.set_screen('tavern_recruit')
         elif action == 'housing_pay_bill':
             if not Refs.gc.get_housing().pay_bill():
                 self.error_time = 2.5
@@ -482,7 +521,77 @@ class Console(TextInput):
             perk = Refs.gc['perks'][perk_id]
             character = Refs.gc.get_char_by_id(character_id)
             character.bestow_perk(perk)
+            print('Give', perk, 'to', character.get_name(), character.get_display_name())
             Refs.gc.unlock_perk(perk)
             self.set_screen('perk_info_' + perk_id)
+        elif action == 'dungeon_result_harvest_materials':
+            current_harvesting_knife = Refs.gc.get_inventory().get_current_harvesting_knife()
+            if current_harvesting_knife is None:
+                self.error_time = 2.5
+                self.error_text = 'You have no harvesting knife selected!'
+            else:
+                self.set_screen(action)
+        elif action == 'dungeon_mine_result':
+            current_pickaxe = Refs.gc.get_inventory().get_current_pickaxe()
+            if current_pickaxe is None:
+                self.error_time = 2.5
+                self.error_text = 'You have no pickaxe selected!'
+            else:
+                if current_pickaxe.get_hardness() < Refs.gc.get_floor_data().get_floor().get_hardness():
+                    self.error_time = 2.5
+                    self.error_text = 'Your pickaxe is not hard enough!'
+                else:
+                    self.set_screen(action)
+        elif action == 'dungeon_dig_result':
+            current_shovel = Refs.gc.get_inventory().get_current_shovel()
+            if current_shovel is None:
+                self.error_time = 2.5
+                self.error_text = 'You have no shovel selected!'
+            else:
+                if current_shovel.get_hardness() < Refs.gc.get_floor_data().get_floor().get_hardness():
+                    self.error_time = 2.5
+                    self.error_text = 'Your shovel is not hard enough!'
+                else:
+                    self.set_screen(action)
+        elif action.startswith('inventory_battle_use'):
+            pass  # TODO Implement potions
+        elif action.startswith('inventory_battle_set'):
+            page_data, item_id = action[len('inventory_battle_set'):].split('/')
+            inventory = Refs.gc.get_inventory()
+
+            page_key = None
+            for key in ['shovel', 'pickaxe', 'harvesting_knife']:
+                if page_data.endswith(key):
+                    page_key = key
+                    break
+
+            page_num = page_data[:-len(page_key)]
+
+            if item_id == 'none':
+                item_hash = None
+            else:
+                item_id, item_hash = item_id.split('#')
+                item_hash = int(item_hash)
+
+            if page_key == 'pickaxe':
+                item = inventory.set_current_pickaxe(item_hash)
+            elif page_key == 'shovel':
+                item = inventory.set_current_shovel(item_hash)
+            else:
+                item = inventory.set_current_harvesting_knife(item_hash)
+            if item is None:
+                self.set_screen(f'inventory_battle_select_{page_key}{page_num}page/none')
+            else:
+                self.set_screen(f'inventory_battle_select_{page_key}{page_num}page/{item.get_full_id()}')
+        elif action.startswith('crafting_process_material') and 'confirm' in action:
+            page_name, recipe_id, recipe_count = action.split('#')
+            page_num = int(page_name[len('crafting_process_material'):-len('page_confirm')])
+            recipe = Refs.gc['recipes'][recipe_id]
+            recipe_count = int(recipe_count)
+            inventory = Refs.gc.get_inventory()
+            for ingredient, count in recipe.get_ingredients().items():
+                inventory.remove_item(ingredient, count * recipe_count)
+            inventory.add_item(recipe.get_item_id(), recipe_count)
+            self.set_screen(f'crafting_process_materials{page_num}page')
         else:
             self.set_screen(action)

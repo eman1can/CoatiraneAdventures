@@ -1,4 +1,3 @@
-from kivy.resources import resource_find
 from loading.base import CALoader, CURRENT_INDEX, LOADING_SECTIONS, STARTING_CURRENT_INDEX, STARTING_TOTAL_INDEX
 
 

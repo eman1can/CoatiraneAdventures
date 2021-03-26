@@ -44,6 +44,9 @@ class BattleEnemy(BattleEntity, Entity):
     def get_skill_chances(self):
         return self._move_chances
 
+    def get_mana_cost(self, skill):
+        return 0
+
     def is_character(self):
         return False
 
@@ -60,7 +63,7 @@ class BattleEnemy(BattleEntity, Entity):
                 return 0.5
             elif self._sub_element == THUNDER:
                 return 0.75
-        if element == FIRE:
+        elif element == FIRE:
             if self._element == WIND:
                 return 2.0
             elif self._sub_element == WIND:
@@ -69,7 +72,7 @@ class BattleEnemy(BattleEntity, Entity):
                 return 0.5
             elif self._sub_element == WATER:
                 return 0.75
-        if element == THUNDER:
+        elif element == THUNDER:
             if self._element == WATER:
                 return 2.0
             elif self._sub_element == WATER:
@@ -78,7 +81,7 @@ class BattleEnemy(BattleEntity, Entity):
                 return 0.5
             elif self._sub_element == THUNDER:
                 return 0.75
-        if element == WIND:
+        elif element == WIND:
             if self._element == EARTH:
                 return 2.0
             elif self._sub_element == EARTH:
@@ -87,7 +90,7 @@ class BattleEnemy(BattleEntity, Entity):
                 return 0.5
             elif self._sub_element == FIRE:
                 return 0.75
-        if element == EARTH:
+        elif element == EARTH:
             if self._element == THUNDER:
                 return 2.0
             elif self._sub_element == THUNDER:
@@ -96,13 +99,14 @@ class BattleEnemy(BattleEntity, Entity):
                 return 0.5
             elif self._sub_element == WIND:
                 return 0.75
-        if element == LIGHT:
+        elif element == LIGHT:
             if self._element == DARK:
                 return 2.0
             elif self._sub_element == DARK:
                 return 1.5
-        if element == DARK:
+        elif element == DARK:
             if self._element == LIGHT:
                 return 2.0
             elif self._sub_element == LIGHT:
                 return 1.5
+        return 1.0

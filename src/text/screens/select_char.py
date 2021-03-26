@@ -1,5 +1,5 @@
-from game.character import CHARACTER_TYPE_INDEX_TO_STRING
-from game.skill import ATTACK_TYPE_INDEX_TO_STRING, ELEMENT_INDEX_TO_STRING
+from game.character import CHARACTER_ATTACK_TYPES, CHARACTER_TYPES
+from game.skill import ATTACK_TYPES, ELEMENTS
 from refs import END_OPT_C, OPT_C, Refs
 from text.screens.dungeon_main import box_to_string
 
@@ -11,8 +11,8 @@ def center_stat(char, index):
         if index == 6:
             return '-'.center(BOX_WIDTH)
         return ''.center(BOX_WIDTH)
-    element = ELEMENT_INDEX_TO_STRING[char.get_element()]
-    attack = CHARACTER_TYPE_INDEX_TO_STRING[char.get_attack_type()]
+    element = ELEMENTS[char.get_element()]
+    attack = CHARACTER_ATTACK_TYPES[char.get_attack_type()]
     stat = [char.get_name(), char.get_current_rank(), element, attack, char.get_health(), char.get_mana(), char.get_physical_attack(), char.get_magical_attack(),
             char.get_defense(), char.get_strength(), char.get_magic(), char.get_endurance(), char.get_agility(), char.get_dexterity()]
     stat_labels = ['', 'Rank', '', '', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
@@ -97,7 +97,9 @@ def select_screen_char(console):
     char_id_and_index = console._current_screen[len('select_screen_char_'):]
     index = int(char_id_and_index[:char_id_and_index.index('_')])
     character_id = char_id_and_index[char_id_and_index.index('_') + 1:]
-    single_char = Refs.gc.get_char_by_id(character_id)
+    single_char = None
+    if character_id != 'none':
+        single_char = Refs.gc.get_char_by_id(character_id)
 
     obtained_chars = Refs.gc.get_obtained_characters(index >= 8)
     if single_char is not None:

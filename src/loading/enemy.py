@@ -65,7 +65,11 @@ def load_enemy_chunk(chunk, loader, program_type, callbacks):
 
     drops = {'guaranteed': [], 'crystal': [], 'falna': [], 'drop': []}
 
-    for drop_list in item_data.split(';'):
+    drop_lists = item_data.split(';')
+
+    harvest_hardness = float(drop_lists[0])
+
+    for drop_list in drop_lists[1:]:
         if len(drop_list) == 0:
             continue
         key = list(drops.keys())[0]
@@ -84,7 +88,7 @@ def load_enemy_chunk(chunk, loader, program_type, callbacks):
             max_hsmead.append(int(values[index]))
 
     elements = [values[ELEMENT], values[SUB_ELEMENT]]
-    enemy = Enemy(values[ID], values[NAME], values[SKEL_ID], program_type, values[ATTACK_TYPE], min_hsmead, max_hsmead, elements, skills, skill_chances, drops)
+    enemy = Enemy(values[ID], values[NAME], values[SKEL_ID], program_type, values[ATTACK_TYPE], min_hsmead, max_hsmead, elements, harvest_hardness, skills, skill_chances, drops)
 
     loader.append('enemies', values[ID], enemy)
     for callback in callbacks:

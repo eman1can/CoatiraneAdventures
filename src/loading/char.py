@@ -4,6 +4,8 @@ from game.rank import Rank
 from game.skill import Skill
 from kivy.resources import resource_find
 
+from refs import Refs
+
 TYPE           = 0
 ID             = 1
 NAME           = 2
@@ -13,17 +15,18 @@ RACE           = 5
 GENDER         = 6
 AGE            = 7
 
-ATTACK_TYPE     = 8
-ELEMENT         = 9
-WEAPON_TYPE     = 10
-SUB_WEAPON_TYPE = 11
-HEALTH          = 12
-MANA            = 13
-STRENGTH        = 14
-MAGIC           = 15
-ENDURANCE       = 16
-AGILITY         = 17
-DEXTERITY       = 18
+HEALTH          = 8
+MANA            = 9
+STRENGTH        = 10
+MAGIC           = 11
+ENDURANCE       = 12
+AGILITY         = 13
+DEXTERITY       = 14
+
+ATTACK_TYPE     = 15
+ELEMENT         = 16
+WEAPON_TYPE     = 17
+SUB_WEAPON_TYPE = 18
 
 BASE_MOVE        = 19
 MOVE_1           = 20
@@ -38,15 +41,14 @@ BLOCK_MOVE       = 28
 COMBO_AMOUNT     = 29
 COMBO_START      = 30
 
-EFFECT_1 = 17
-EFFECT_2 = 18
-EFFECT_3 = 19
-EFFECT_4 = 20
-EFFECT_5 = 21
+EFFECT_1 = 15
+EFFECT_2 = 16
+EFFECT_3 = 17
+EFFECT_4 = 18
+EFFECT_5 = 19
 
-RECRUITMENT_ITEM = -3
-RECRUITMENT_ITEM_COUNT = -2
-DESCRIPTION = -1
+RECRUITMENT_ITEM = -2
+RECRUITMENT_ITEM_COUNT = -1
 
 
 def get_skills(loader, values):
@@ -61,11 +63,17 @@ def get_skills(loader, values):
         skills.append(int(values[MOVE_3_MANA_COST]))
         skills.append(int(values[MOVE_SPECIAL]))
         skills.append(int(values[COUNTER_MOVE]))
-        skills.append(int(values[BLOCK_MOVE]))
+        if values[BLOCK_MOVE] != '-':
+            skills.append(int(values[BLOCK_MOVE]))
+        else:
+            skills.append(None)
         for x in range(int(values[COMBO_AMOUNT])):
             skills.append(int(values[COMBO_START + x]))
-        for x, skill in enumerate(skills):
-            skills[x] = loader.get('skills')[skill]
+        for skill_index in [0, 1, 3, 5, 7, 8, 9]:
+            skill = skills[skill_index]
+            if skill is None:
+                continue
+            skills[skill_index] = loader.get('skills')[skill]
     else:
         skills.append(int(values[EFFECT_1]))
         skills.append(int(values[EFFECT_2]))
@@ -78,74 +86,90 @@ def get_skills(loader, values):
 
 
 def load_char_chunk(line, loader, program_type, callbacks):
-    if line[0] != '/':
-        values = line.split(",", -1)
-        for index in range(len(values)):
-            values[index] = values[index].strip()
+    line, description = line.split('\n')
+    values = line.split(',')
+    for index in range(len(values)):
+        values[index] = values[index].strip()
+    res_path = 'res/characters/' + values[ID] + '/' + values[ID]
+    skel_path = 'res/characters/' + values[ID] + '/' + values[SKEL_ID] + '.skel'
 
-        res_path = 'res/characters/' + values[ID] + '/' + values[ID]
-        skel_path = 'res/characters/' + values[ID] + '/' + values[SKEL_ID] + '.skel'
+    skills = get_skills(loader, values)
 
-        skills = get_skills(loader, values)
+    char_id, name, display_name, skel_id = values[ID:SKEL_ID + 1]
+    race = int(values[RACE])
+    gender = int(values[GENDER])
+    age = int(values[AGE])  # TODO: Adjust age based on played game time
 
-        character_development = None
-        if str(len(loader.get('chars'))) in loader.get('save')['character_development']:
-            character_development = loader.get('save')['character_development'][str(len(loader.get('chars')))]
+    character_development = None
+    if char_id in loader.get('save')['character_development']:
+        character_development = loader.get('save')['character_development'][char_id]
 
-        path = resource_find('data/' + program_type + '/grids/' + values[ID] + '.txt')
-        if path:
-            ranks = Rank.load_ranks(path, character_development)
-        else:
-            ranks = Rank.load_ranks(resource_find('data/' + program_type + '/grids/base.txt'), character_development)
-        # TODO - Add rank loading from save/load
+    path = resource_find('data/' + program_type + '/grids/' + values[ID] + '.txt')
+    if path:
+        ranks = Rank.load_ranks(path, character_development)
+    else:
+        ranks = Rank.load_ranks(resource_find('data/' + program_type + '/grids/base.txt'), character_development)
+    # TODO - Add rank loading from save/load
 
-        char_id, name, display_name, skel_id = values[ID:SKEL_ID + 1]
-        race = int(values[RACE])
-        gender = int(values[GENDER])
-        age = int(values[AGE])  # TODO: Adjust age based on played game time
-        description = values[DESCRIPTION]
+    hp, mp, s, m, e, a, d = values[HEALTH:DEXTERITY + 1]
 
-        hp, mp, s, m, e, a, d = values[HEALTH:DEXTERITY + 1]
+    element = 0
+    attack_type = None
+    favorite_weapon = None
+    favorite_sub_weapon = None
+    if values[TYPE] == 'A':
+        attack_type = int(values[ATTACK_TYPE])
+        element = int(values[ELEMENT])
 
-        element = 0
-        attack_type = None
-        favorite_weapon = None
-        favorite_sub_weapon = None
-        if values[TYPE] == 'A':
-            attack_type = int(values[ATTACK_TYPE])
-            element = int(values[ELEMENT])
+        favorite_weapon = int(values[WEAPON_TYPE])
+        if values[SUB_WEAPON_TYPE] != '-':
+            favorite_sub_weapon = int(values[SUB_WEAPON_TYPE])
 
-            favorite_weapon = int(values[WEAPON_TYPE])
-            if values[SUB_WEAPON_TYPE] != '-':
-                favorite_sub_weapon = int(values[SUB_WEAPON_TYPE])
+    recruitment_items = {}
+    for index in range(int(values[RECRUITMENT_ITEM_COUNT])):
+        item_id, count = values[RECRUITMENT_ITEM - index].split('#')
+        recruitment_items[item_id] = int(count)
 
-        recruitment_items = {}
-        for index in range(int(values[RECRUITMENT_ITEM_COUNT])):
-            item_id, count = values[RECRUITMENT_ITEM - index].split('#')
-            recruitment_items[loader.get('items')[item_id]] = count
+    is_support = values[TYPE] == 'S'
+    full, slide, preview, slide_support, bustup = f'{res_path}_full.png', f'{res_path}_slide.png', f'{res_path}_preview.png', f'{res_path}_slide_support.png', f'{res_path}_bustup.png'
 
-        is_support = values[TYPE] == 'S'
-        full, slide, preview, slide_support, bustup = f'{res_path}_full.png', f'{res_path}_slide.png', f'{res_path}_preview.png', f'{res_path}_slide_support.png', f'{res_path}_bustup.png'
-
-        rank = 0
-        for rank_status in character_development['unlocked']:
+    rank = 1
+    familiarities = {}
+    abilities = []
+    if character_development is not None:
+        for rank_status in character_development['ranks']['unlocked'][1:]:
             if rank_status:
                 rank += 1
+        familiarities = character_development['familiarities']
+        abilities = character_development['abilities']
+        print(abilities)
 
-        # TODO Add unlocked perks/abilities to save/load and character_development
-        # TODO Add equiped items to save/load and character_development
+    # TODO Add unlocked perks/abilities to save/load and character_development
+    # TODO Add equiped items to save/load and character_development
 
+    if character_development is not None:
         family, high_damage, floor_depth, monsters_slain, people_slain = character_development['family'], character_development['high_damage'], character_development['floor_depth'], character_development['monsters_slain'], character_development['people_slain']
+    else:
+        family, high_damage, floor_depth, monsters_slain, people_slain = '', 0, 0, 0, 0
 
-        char = Character(name, skel_path, int(hp), int(mp), int(s), int(m), int(e), int(a), int(d), element, skills,
-                         _race=race, _gender=gender, _age=age, _description=description,
-                         _familiarities=character_development['familiarities'],
-                         _character_id=char_id, _display_name=display_name, _index=len(loader.get('chars')), _is_support=is_support, _ranks=ranks, _rank=rank, _attack_type=attack_type,
-                         _slide=slide, _slide_support=slide_support, _preview=preview, _full=full, _bust_up=bustup,
-                         _family=family, _high_damage=high_damage, _floor_depth=floor_depth, _monsters_slain=monsters_slain, _people_slain=people_slain,
-                         _recruitment_items=recruitment_items, _favorite_weapon=favorite_weapon, _favorite_sub_weapon=favorite_sub_weapon)
+    char = Character(name, skel_path, int(hp), int(mp), int(s), int(m), int(e), int(a), int(d), element, skills,
+                     _race=race, _gender=gender, _age=age, _description=description,
+                     _familiarities=familiarities, _abilities=abilities,
+                     _character_id=char_id, _display_name=display_name, _index=len(loader.get('chars')), _is_support=is_support, _ranks=ranks, _rank=rank, _attack_type=attack_type,
+                     _slide=slide, _slide_support=slide_support, _preview=preview, _full=full, _bust_up=bustup,
+                     _family=family, _high_damage=high_damage, _lowest_floor=floor_depth, _monsters_slain=monsters_slain, _people_slain=people_slain,
+                     _recruitment_items=recruitment_items, _favorite_weapon=favorite_weapon, _favorite_sub_weapon=favorite_sub_weapon)
 
-        loader.append('chars', char_id, char)
+    outfit = char.get_outfit()
+    inventory = Refs.gc.get_inventory()
+    if character_development is not None:
+        for index, equipment_id in enumerate(character_development['equipment']):
+            if equipment_id is None:
+                continue
+            item_id, item_hash = equipment_id.split('#')
+            outfit.set_equipment(index, inventory.get_item(item_id, item_hash))
+
+    loader.append('chars', char_id, char)
     for callback in callbacks:
         if callback is not None:
             callback()

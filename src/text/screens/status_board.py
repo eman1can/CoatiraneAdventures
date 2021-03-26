@@ -161,15 +161,15 @@ def status_board_main(console):
     display_string += f'\n\t{OPT_C}3:{END_OPT_C} Unlock All'
     display_string += f'\n\t{OPT_C}4:{END_OPT_C} View Available Falna'
 
-    display_string += f'\n\n\t{OPT_C}5:{END_OPT_C} Upgrade Combat Skills'
-    display_string += f'\n\t{OPT_C}6:{END_OPT_C} View All Abilities'
+    # display_string += f'\n\n\t{OPT_C}5:{END_OPT_C} Upgrade Combat Skills'
+    # display_string += f'\n\t{OPT_C}6:{END_OPT_C} View All Abilities'
 
     display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
 
     _options['3'] = f'status_board_unlock_{character_id}_{page}_all'
     _options['4'] = 'status_board_view_falna'
-    _options['5'] = 'status_board_upgrade_combat_skills'
-    _options['6'] = 'status_board_view_all_abilities'
+    # _options['5'] = 'status_board_upgrade_combat_skills'
+    # _options['6'] = 'status_board_view_all_abilities'
     _options['0'] = 'back'
     return display_string, _options
 
@@ -246,11 +246,11 @@ def status_board_unlock(console):
         display_string += f'{character.get_dexterity()} → {character.get_dexterity() + db}'.center(10)
     display_string += '\n\n\tCost:'
 
-    hsc = Refs.gc.get_inventory_count(f"{falna_type}_strength_falna")
-    hmc = Refs.gc.get_inventory_count(f"{falna_type}_magic_falna")
-    hec = Refs.gc.get_inventory_count(f"{falna_type}_endurance_falna")
-    hac = Refs.gc.get_inventory_count(f"{falna_type}_agility_falna")
-    hdc = Refs.gc.get_inventory_count(f"{falna_type}_dexterity_falna")
+    hsc = Refs.gc.get_inventory().get_item_count(f"{falna_type}_strength_falna")
+    hmc = Refs.gc.get_inventory().get_item_count(f"{falna_type}_magic_falna")
+    hec = Refs.gc.get_inventory().get_item_count(f"{falna_type}_endurance_falna")
+    hac = Refs.gc.get_inventory().get_item_count(f"{falna_type}_agility_falna")
+    hdc = Refs.gc.get_inventory().get_item_count(f"{falna_type}_dexterity_falna")
 
     if sc > 0:
         display_string += f'\n\t\t{falna_type.title()} Strength Falna x{sc}'
@@ -294,7 +294,7 @@ def status_board_view_falna(console):
     for falna_size in ['tiny', 'small', 'regular', 'large', 'huge']:
         display_string += falna_size.title().rjust(7)
         for falna_type in ['strength', 'magic', 'endurance', 'agility', 'dexterity']:
-            count = Refs.gc.get_inventory_count(f"{falna_size}_{falna_type}_falna")
+            count = Refs.gc.get_inventory().get_item_count(f"{falna_size}_{falna_type}_falna")
             display_string += f'{count}'.center(10)
         display_string += '\n\t'
 

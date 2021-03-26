@@ -48,7 +48,7 @@ Adventurer
 Race: Human
 Gender: Female
 Age: 20
-Description: A Young adventurer who loves sclicing things and doesn't show much emotion.
+Description: A Young adventurer who loves slicing things and doesn't show much emotion.
 Favorite Weapon: Rapier
 Physical - Wind
 HMSMEAD - 175, 60, 15, 10, 15, 10, 12
@@ -139,7 +139,7 @@ Race: Elf
 Gender: Female
 Age: 25
 Description: Generally referred to as motherly by those she parties with, Alicia gives her best at supporting her teammates.
-Favorite Weapon: Curved Dagger, Short Staff
+Favorite Weapon: Dagger, Short Staff
 Hybrid - Light
 HMSMEAD - 150, 90, 15, 15, 11, 9, 10
 Basic Attack                             - [Foes] Mid H. Atk.

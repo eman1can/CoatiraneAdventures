@@ -105,20 +105,18 @@ def dungeon_main(console):
     for _ in range(BOX_WIDTH * 4 - 14):
         display_text += ' '
     display_text += f'←──── {OPT_C}5{END_OPT_C} Prev Party | Next Party {OPT_C}6{END_OPT_C} ────→'
-    display_text += f'\n\t{OPT_C}1:{END_OPT_C} Ascend'
-    if not Refs.gc.can_ascend():
-        display_text += ' - Not Possible'
+    if Refs.gc.can_ascend():
+        display_text += f'\n\t{OPT_C}1:{END_OPT_C} Ascend'
+        # display_text += ' - Not Possible'
     display_text += f'\n\t{OPT_C}2:{END_OPT_C} Descend'
     if not Refs.gc.can_descend():
         display_text += ' - Not Possible'
-    display_text += f'\n\t{OPT_C}3:{END_OPT_C} Inventory'
-    display_text += f'\n\t{OPT_C}4:{END_OPT_C} Gear' + '\n'
+    display_text += f'\n\t{OPT_C}3:{END_OPT_C} Inventory\n'
     if Refs.gc.can_ascend():
         _options['1'] = 'dungeon_confirm_up'
     if Refs.gc.can_descend():
         _options['2'] = 'dungeon_confirm_down'
-    _options['3'] = 'inventory0page'
-    _options['4'] = 'gear_main'
+    _options['3'] = 'inventory_battle0page'
     _options['5'] = 'dungeon_main_prev'
     _options['6'] = 'dungeon_main_next'
     for index, char in enumerate(party):

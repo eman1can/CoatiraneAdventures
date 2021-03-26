@@ -1,5 +1,5 @@
 from game.effect import COUNTER, DURATION, Effect, SPECIFIC_TARGET, STAT, STATUS_EFFECT
-from game.skill import AILMENT_CURE, ATTACK, Boost, HEAL, Skill
+from game.skill import AILMENT_CURE, ATTACK, Boost, HEAL, NORMAL, Skill
 
 ID      = 0
 NAME    = 1
@@ -18,15 +18,14 @@ BOOST_STAT_TYPE = 1
 
 def load_move_chunk(line, loader, program_type, callbacks):
     debug = False
-    values = [x.strip() for x in line[:-1].split(',')]
-
+    values = [x.strip() for x in line.split(',')]
     skill_id = int(values[ID])
     name = values[NAME]
     anim_id = values[ANIM_ID]
     skill_type = int(values[TYPE])
     target = int(values[TARGET])
 
-    attack_speed = None
+    attack_speed = NORMAL
     attack_power = None
     attack_type = None
     element = None

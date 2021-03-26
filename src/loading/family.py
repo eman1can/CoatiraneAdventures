@@ -1,3 +1,5 @@
+from kivy.resources import resource_find
+
 from game.domain import Domain
 
 
@@ -14,7 +16,7 @@ def load_family_chunk(chunk, loader, program_type, callbacks):
 
 def load_domains(program_type):
     file_string = ""
-    with open(f'data/{program_type}/Domains.txt', 'r') as file:
+    with open(resource_find(f'data/{program_type}/Domains.txt'), 'r') as file:
         for line in file:
             file_string += line
     domains = []

@@ -1,7 +1,8 @@
 from math import floor
 from random import choices
 
-from game.skill import ALL_ALLIES, ALL_FOES, FOE, SELF
+from game.effect import AppliedEffect, COUNTER, DURATION, HEALTH_DOT, HEALTH_REGEN, MANA_DOT, MANA_REGEN, SPECIFIC_TARGET, STAT, STATUS_EFFECT, STAT_TYPES
+from game.skill import AILMENT_CURE, ALLIES, ALLY, ATTACK, ATTACK_POWERS, CAUSE_EFFECT, FOES, FOE, HEAL, SELF, TARGETS, TEMP_BOOST_BY_TARGET
 from refs import Refs
 
 
@@ -39,6 +40,9 @@ class BattleData:
 
     def get_dropped_items(self):
         return self._dropped_items
+
+    def set_dropped_items(self, items):
+        self._dropped_items = items
 
     def get_pre_battle_status(self):
         return self._pre_battle_status
@@ -79,7 +83,30 @@ class BattleData:
         print('Special gauge', self._special_amount, '→', self._special_amount+1)
         if self._special_amount < 25:
             self._special_amount += 1
-        # Decrease effect counters and apply EOT effects
+
+        # Do HP Regen and MP Regen and DOT
+        for entity in self._enemies + self._adventurers:
+            for effect_type, effects in entity.get_effects().items():
+                if effect_type == HEALTH_REGEN:
+                    for applied_effect in effects:
+                        health = applied_effect.get_amount() * entity.get_health()
+                        entity.decrease_health(-health)
+                elif effect_type == MANA_REGEN:
+                    for applied_effect in effects:
+                        mana = applied_effect.get_amount() * entity.get_mana()
+                        entity.decrease_health(-mana)
+                elif effect_type == HEALTH_DOT:
+                    for applied_effect in effects:
+                        health = applied_effect.get_amount() * entity.get_health()
+                        entity.decrease_health(health)
+                elif effect_type == MANA_DOT:
+                    for applied_effect in effects:
+                        mana = applied_effect.get_amount() * entity.get_mana()
+                        entity.decrease_health(mana)
+        # Decrease effect counters
+        for entity in self._enemies + self._adventurers:
+            entity.update_effects()
+
         if win:
             return True
         elif loss:
@@ -117,21 +144,6 @@ class BattleData:
     def get_supporters(self):
         return self._supporters
 
-    # def use_skill(self, caller, skill):
-    #     self._log += f'{caller.get_name()} used skill {skill.get_name()}!\n'
-    #     if skill.get_target() == ALL_FOES:
-    #         for enemy in self._enemies:
-    #             for effect in skill.get_effects():
-    #                 enemy.apply_effect(effect)
-    #     elif skill.get_target() == ALL_FOES:
-    #         pass
-    #     elif skill.get_target() == ALL_ALLIES:
-    #         for character in self._adventurers:
-    #             for effect in skill.get_effects():
-    #                 character.apply_effect(effect)
-    #     elif skill.get_target() == SELF:
-    #         pass
-
     def _calculate_agility(self, entity):
         agility = entity.get_agility()
         modifier = entity.get_selected_skill().get_speed()
@@ -154,15 +166,11 @@ class BattleData:
         for key in sorted(turn_order.keys(), reverse=True):
             entities.append(turn_order[key])
 
-        # print(entities[0].get_name(), end=' ')
-        # for entity in entities[1:]:
-        #     print('→', entity.get_name(), end=' ')
-        # print()
         return entities
 
     def _get_targets(self, target_type, is_character):
         targets = []
-        if is_character:
+        if is_character and target_type in [FOE, FOES]:
             for entity in self._enemies:
                 if not entity.is_dead():
                     targets.append(entity)
@@ -171,7 +179,7 @@ class BattleData:
                 if not entity.is_dead():
                     targets.append(entity)
 
-        if target_type is ALL_FOES:
+        if target_type in [FOES, ALLIES]:
             return targets
         else:
             return choices(targets, k=1)
@@ -180,7 +188,7 @@ class BattleData:
         info = TargetInfo()
         random_modifier = Refs.gc.get_random_attack_modifier()
         print('\t\t\t\tRandom Modifier:', random_modifier)
-        element_modifier = skill.element_modifier(target)
+        element_modifier = target.element_modifier(skill.get_element())
         print('\t\t\t\tElement Modifier:', element_modifier)
         effective_attack *= element_modifier
         info.effective_attack = effective_attack
@@ -202,7 +210,7 @@ class BattleData:
             info.effective_attack = 0
             self._log += f'      Evade\n'
         info.counter = self._get_counter(info, entity, target)
-        return max(info.effective_attack - info.defense, 0) * random_modifier, info.counter
+        return max(info.effective_attack - info.defense, 0) * random_modifier, info.counter, info.evade
 
     def _process_move(self, entity, counter=False):
         if entity.is_dead():
@@ -215,44 +223,160 @@ class BattleData:
             self._log += f'   {entity.get_name()} counters with {skill.get_name()}\n'
         else:
             skill = entity.get_selected_skill()
-            print(f'\t\tUses {skill.get_name()}')
+            print(f'\t\tUses {skill.get_name()} ({TARGETS[skill.get_target()]})')
             self._log += f'   {entity.get_name()} used {skill.get_name()}\n'
 
+        if skill.is_special():
+            self._special_amount -= 5
+            print('\t\t\tSpecial Gauge -5')
+
+        mana_cost = entity.get_mana_cost(skill)
+        if mana_cost > 0:
+            self._log += f'      -{mana_cost} Mana\n'
+            entity.decrease_mana(mana_cost)
+
+        if skill.get_boosts() is not None:
+            for boost in skill.get_boosts():
+                boost_value = TEMP_BOOST_BY_TARGET[boost.get_type()][skill.get_target()]
+                print('\\t\t\tApply Boost of ', boost_value, 'to', STAT_TYPES[boost.get_stat_type()])
+                entity.apply_effect(boost.get_stat_type(), AppliedEffect(boost_value, 1))
+
         # Get targets
-        if skill.get_target() in [FOE, ALL_FOES]:
-            # Pre-attack effects to skill
-
-            # Get targets
+        if skill.get_target() in [FOE, FOES]:
             targets = self._get_targets(skill.get_target(), entity.is_character())
-            # Apply attack
-            base_attack = entity.get_attack(skill.get_attack_type())
-            print('\t\t\tBase Attack:', base_attack)
-            skill_modifier = skill.get_modifier()
-            print('\t\t\tSkill Modifier:', skill_modifier)
+            if skill.get_type() == ATTACK:
+                self._process_attack(entity, skill, targets, counter)
+            else:
+                self._process_cause_effect(entity, skill, targets, counter)
+        elif skill.get_target() in [ALLIES, ALLY]:
+            targets = self._get_targets(skill.get_target(), entity.is_character())
+            if skill.get_type() == CAUSE_EFFECT:
+                self._process_cause_effect(entity, skill, targets, True)
+            elif skill.get_type() == HEAL:
+                self._process_heal(entity, skill, targets)
+            elif skill.get_type() == AILMENT_CURE:
+                self._process_ailment_cure(entity, skill, targets)
+        else:
+            if skill.get_type() == CAUSE_EFFECT:
+                self._process_cause_effect(entity, skill, [entity], True)
+            elif skill.get_type() == HEAL:
+                self._process_heal(entity, skill, [entity])
+            elif skill.get_type() == AILMENT_CURE:
+                self._process_ailment_cure(entity, skill, [entity])
 
-            effective_attack = base_attack * skill_modifier
+    def _process_attack(self, entity, skill, targets, counter):
+        # Apply attack
+        base_attack = entity.get_attack(skill.get_attack_type())
+        print('\t\t\tBase Attack:', base_attack)
+        skill_power = skill.get_power()
+        print('\t\t\tSkill Modifier:', skill_power)
 
-            if skill.is_special():
-                self._special_amount -= 5
+        effective_attack = base_attack * skill_power
 
-            if skill.get_mana_cost() > 0:
-                self._log += f'      -{skill.get_mana_cost()} Mana\n'
-                entity.decrease_mana(skill.get_mana_cost())
+        counters = []
+        for target in targets:
+            print(f'\t\t\t{target.get_name()}:')
+            damage, do_counter, evade = self._get_damage(effective_attack, entity, target, skill)
+            print('\t\t\t\tDamage: ', damage)
+            self._log += f'      {round(damage, 1)} damage to {target.get_name()}\n'
+            target.decrease_health(damage)
 
-            for target in targets:
-                print(f'\t\t\t{target.get_name()}:')
-                damage, do_counter = self._get_damage(effective_attack, entity, target, skill)
-                print('\t\t\t\tDamage: ', damage)
-                self._log += f'      {round(damage, 1)} damage to {target.get_name()}\n'
-                target.decrease_health(damage)
-                if target.is_dead():
-                    if target.is_character():
-                        self._log += f'   {target.get_name()} has been incapacitated!\n'
-                    else:
-                        self._log += f'   {target.get_name()} has been killed!\n'
+            if target.is_dead():
+                if target.is_character():
+                    self._log += f'   {target.get_name()} has been incapacitated!\n'
+                else:
+                    self._log += f'   {target.get_name()} has been killed!\n'
+            else:
                 if do_counter and not counter:
-                    if not target.is_dead():
-                        self._process_move(target, True)
+                    counters.append(lambda t=target: self._process_move(t, True))
+                if skill.get_effects() and not evade:
+                    for effect in skill.get_effects():
+                        if effect.get_target() == FOE:
+                            self._apply_effects(effect, target)
+        self._process_effects(skill, entity)
+        for counter in counters:
+            counter()
+
+    def _process_heal(self, entity, skill, targets):
+        base_heal = entity.get_magical_attack()
+        print('\t\t\tBase Heal:', base_heal)
+        skill_power = skill.get_power()
+        print('\t\t\tSkill Modifier:', skill_power)
+        effective_heal = base_heal * skill_power
+
+        for target in targets:
+            print(f'\t\t\t{target.get_name()}:')
+
+            random_modifier = Refs.gc.get_random_attack_modifier()
+            print('\t\t\t\tRandom Modifier:', random_modifier)
+
+            target_effective_heal = effective_heal * random_modifier
+            print('\t\t\t\tHeal: ', target_effective_heal)
+            self._log += f'      {round(target_effective_heal, 1)} heal to {target.get_name()}\n'
+            target.decrease_health(-target_effective_heal)
+            if skill.get_effects():
+                for effect in skill.get_effects():
+                    if effect.get_target() == ALLY:
+                        self._apply_effects(effect, target)
+        self._process_effects(skill, entity)
+
+    def _process_ailment_cure(self, entity, skill, targets):
+        for target in targets:
+            print(f'\t\t\t{target.get_name()}:')
+            print('\t\t\t\tAilment Cure')
+            if skill.get_effects():
+                for effect in skill.get_effects():
+                    if effect.get_target() == ALLY:
+                        self._apply_effects(effect, target)
+        self._process_effects(skill, entity)
+
+    def _process_cause_effect(self, entity, skill, targets, counter):
+        counters = []
+        for target in targets:
+            print(f'\t\t\t{target.get_name()}:')
+            info = TargetInfo()
+            if entity.is_character() != target.is_character():
+                info.evade = self._get_evade(info, entity, target)
+                info.counter = self._get_counter(info, entity, target)
+
+            if info.counter and not counter:
+                if not target.is_dead():
+                    counters.append(lambda t=target: self._process_move(t, True))
+                    if skill.get_effects() and not info.evade:
+                        for effect in skill.get_effects():
+                            if effect.get_target() == FOE:
+                                self._apply_effects(effect, target)
+        self._process_effects(skill, entity)
+        for counter in counters:
+            counter()
+
+    def _process_effects(self, skill, entity):
+        if skill.get_effects():
+            for effect in skill.get_effects():
+                if effect.get_target() == SELF:
+                    self._apply_effects(effect, entity)
+                elif effect.get_target() == ALLIES:
+                    for target in self._get_targets(ALLIES, entity.is_character()):
+                        self._apply_effects(effect, target)
+                elif effect.get_target() == FOES:
+                    for target in self._get_targets(FOES, entity.is_character()):
+                        self._apply_effects(effect, target)
+                else:
+                    for target in self._get_targets(ALLY, False):
+                        self._apply_effects(effect, target)
+
+    def _apply_effects(self, effect, target):
+        if effect.get_type() == STAT:
+            print('\t\t\tApply Effect', STAT_TYPES[effect.get_sub_type()], 'to', target.get_name())
+            target.apply_effect(effect.get_sub_type(), AppliedEffect(effect.get_amount(), effect.get_duration()))
+        elif effect.get_type() == COUNTER:
+            pass
+        elif effect.get_type() == DURATION:
+            pass
+        elif effect.get_type() == SPECIFIC_TARGET:
+            pass
+        elif effect.get_type() == STATUS_EFFECT:
+            pass
 
     def _make_choice(self, chance):
         return choices([True, False], [chance, 1 / chance])[0]

@@ -12,6 +12,7 @@ from loading.config_loader import PROGRAM_TYPE
 from loading.crafting_recipe import load_crafting_recipe_chunk
 from loading.data import load_screen_chunk
 from loading.enemy import load_enemy_chunk
+from loading.equipment import load_equipment_chunk
 from loading.family import load_family_chunk
 from loading.housing import load_housing_chunk
 from loading.floor import load_floor_chunk
@@ -30,9 +31,9 @@ STARTING_CURRENT_INDEX = 0
 
 OPAQUE = 1
 
-LOADING_LAYERS = ['skills', 'abilities', 'enemies', 'families', 'chars', 'perks', 'floors', 'shop_items', 'drop_items', 'save', 'housing', 'materials', 'crafting_recipes']
-LOADING_SECTIONS = ['Game Data', 'Skills and Abilities', 'Enemies', 'Families', 'Housing Options', 'Materials', 'Crafting Recipes', 'Skill Trees', 'Chars', 'Floors', 'Items', 'Game Data']
-LOADING_FUNCTIONS = [load_save_chunk, load_move_chunk, load_enemy_chunk, load_family_chunk, load_housing_chunk, load_material_chunk, load_crafting_recipe_chunk, load_perk_chunk, load_char_chunk, load_floor_chunk, load_shop_item_chunk, load_screen_chunk]
+LOADING_LAYERS = ['skills', 'abilities', 'enemies', 'families', 'chars', 'perks', 'floors', 'items', 'drop_items', 'equipment', 'save', 'housing', 'materials', 'recipes']
+LOADING_SECTIONS = ['Game Data', 'Skills and Abilities', 'Enemies', 'Families', 'Housing Options', 'Materials', 'Crafting Recipes', 'Skill Trees', 'Items', 'Equipment Types', 'Chars', 'Floors', 'Game Data']
+LOADING_FUNCTIONS = [load_save_chunk, load_move_chunk, load_enemy_chunk, load_family_chunk, load_housing_chunk, load_material_chunk, load_crafting_recipe_chunk, load_perk_chunk, load_shop_item_chunk, load_equipment_chunk, load_char_chunk, load_floor_chunk, load_screen_chunk]
 LOADING_FILES = [False] + [True for _ in range(len(LOADING_FUNCTIONS) - 2)] + [False]
 LOADING_FILENAMES = [
     f'',
@@ -43,9 +44,11 @@ LOADING_FILENAMES = [
     f"data/{PROGRAM_TYPE}/Materials.txt",
     f"data/{PROGRAM_TYPE}/CraftingRecipes.txt",
     f"data/{PROGRAM_TYPE}/Perks.txt",
+    f"data/{PROGRAM_TYPE}/items.txt",
+    f"data/{PROGRAM_TYPE}/Equipment.txt",
     f"data/{PROGRAM_TYPE}/CharacterDefinitions.txt",
-    f"data/{PROGRAM_TYPE}/Floors.txt",
-    f"data/{PROGRAM_TYPE}/items.txt"]
+    f"data/{PROGRAM_TYPE}/Floors.txt"
+]
 
 DELIMITERS = ['\n',     # Skills/Abilities
               '#\n',    # Enemies
@@ -54,9 +57,12 @@ DELIMITERS = ['\n',     # Skills/Abilities
               '\n#\n',  # Materials
               '\n#\n',  # Crafting Recipes
               '\n#\n',  # Perks
-              '\n',     # Chars
+              '\n\n',   # Shop Items
+              '\n#\n',  # Equipment
+              '\n\n',   # Chars
               '\n#\n',  # Floors
-              '\n\n']   # Shop Items
+
+              ]
 
 
 class CALoader(Widget):

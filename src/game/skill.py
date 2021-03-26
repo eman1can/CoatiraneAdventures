@@ -149,14 +149,17 @@ class Skill:
     def get_type(self):
         return self._type
 
+    def get_attack_type(self):
+        return self._attack_type
+
     def get_target(self):
         return self._target
 
     def get_speed(self):
-        return self._speed
+        return ATTACK_SPEED_MODIFIER[self._speed]
 
     def get_power(self):
-        return self._power
+        return ATTACK_POWERS_EFFECT_BY_TARGET[self._target][self._power]
 
     def get_element(self):
         return self._element
@@ -164,8 +167,17 @@ class Skill:
     def get_effects(self):
         return self._effect_list
 
+    def get_boosts(self):
+        return self._boosts
+
 
 class Boost:
     def __init__(self, type, stat_type):
         self._type = type
         self._stat_type = stat_type
+
+    def get_type(self):
+        return self._type
+
+    def get_stat_type(self):
+        return self._stat_type

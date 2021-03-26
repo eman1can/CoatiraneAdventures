@@ -1,5 +1,7 @@
 from game.save_load import load_save_info
-from game.skill import ATTACK_TYPE_INDEX_TO_STRING, ELEMENT_INDEX_TO_STRING
+from game.skill import ELEMENTS
+from game.character import CHARACTER_ATTACK_TYPES, RACES, GENDERS
+from loading.char import ATTACK_TYPE, DISPLAY_NAME, ELEMENT, NAME, AGE, GENDER, RACE, HEALTH, MANA, STRENGTH, MAGIC, ENDURANCE, DEXTERITY, AGILITY
 from loading.family import load_domains
 from refs import END_OPT_C, OPT_C, Refs
 
@@ -76,24 +78,29 @@ def intro_select(console):
 
     with open(f'data/{Refs.gc.get_program_type()}/CharacterDefinitions.txt', 'r') as file:
         ais = file.readline().split(',')
+        ais_description = file.readline()
+        file.readline()
         bell = file.readline().split(',')
+        bell_description = file.readline()
 
-    display_text += f'\n\t{OPT_C}1:{END_OPT_C} Ais Wallenstein'
+    display_text += f'\n\t{OPT_C}1:{END_OPT_C} {ais[DISPLAY_NAME].strip()} - {ais[NAME].strip()}'
 
-    def print_char_stuff(char):
-        string = f'\n\t\t{ATTACK_TYPE_INDEX_TO_STRING[int(char[1].strip())]} - {ELEMENT_INDEX_TO_STRING[int(char[2].strip())]}'
-        string += f'\n\t\tHealth    - {char[3].strip()}'
-        string += f'\n\t\tMana      - {char[4].strip()}'
-        string += f'\n\t\tStrength  - {char[5].strip()}'
-        string += f'\n\t\tMagic     - {char[6].strip()}'
-        string += f'\n\t\tEndurance - {char[7].strip()}'
-        string += f'\n\t\tAgility   - {char[8].strip()}'
-        string += f'\n\t\tDexterity - {char[9].strip()}\n'
+    def print_char_stuff(char, description):
+        string = f'\n\t\tAge - {char[AGE].strip()} - Race - {RACES[int(char[RACE].strip())]} - Gender - {GENDERS[int(char[GENDER].strip())]}'
+        string += f'\n\t\t{description}'
+        string += f'\n\t\t{CHARACTER_ATTACK_TYPES[int(char[ATTACK_TYPE].strip())]} - {ELEMENTS[int(char[ELEMENT].strip())]}'
+        string += f'\n\t\tHealth    - {char[HEALTH].strip()}'
+        string += f'\n\t\tMana      - {char[MANA].strip()}'
+        string += f'\n\t\tStrength  - {char[STRENGTH].strip()}'
+        string += f'\n\t\tMagic     - {char[MAGIC].strip()}'
+        string += f'\n\t\tEndurance - {char[ENDURANCE].strip()}'
+        string += f'\n\t\tAgility   - {char[AGILITY].strip()}'
+        string += f'\n\t\tDexterity - {char[DEXTERITY].strip()}\n'
         return string
 
-    display_text += print_char_stuff(ais)
-    display_text += f'\n\t{OPT_C}2:{END_OPT_C} Bell Cranel'
-    display_text += print_char_stuff(bell)
+    display_text += print_char_stuff(ais, ais_description)
+    display_text += f'\n\t{OPT_C}2:{END_OPT_C} {bell[DISPLAY_NAME].strip()} - {bell[NAME].strip()}'
+    display_text += print_char_stuff(bell, bell_description)
     _options['1'] = 'select_ais'
     _options['2'] = 'select_bell'
     return display_text, _options

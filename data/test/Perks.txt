@@ -20,7 +20,7 @@ Process soft materials hardness 5.5 and below
 Craft soft material based equipment using soft materials hardness 5.5 and below
 #
 skilled_blacksmith, Skilled Blacksmith, crafting, 2
-basic_blacksmith
+apprentice_blacksmith
 Process hard materials and craft alloys with hardness 8.0 and below
 Craft hard material based equipment using hard materials hardness 8.0 and below
 #

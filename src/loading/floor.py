@@ -48,7 +48,8 @@ def load_floor_chunk(chunk, loader, program_type, callbacks):
     enemies = {}
     for enemy in monsters:
         enemy_id, rarity = enemy.split(',')
-        enemies[enemy_id] = (loader.get('enemies')[enemy_id], int(rarity))
+        if enemy_id in loader.get('enemies'):
+            enemies[enemy_id] = (loader.get('enemies')[enemy_id], int(rarity))
 
     if debug:
         print('Floor ID:', floor_id)

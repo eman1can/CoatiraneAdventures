@@ -324,26 +324,27 @@ def perk_bestow(console):
 
     display_text += '\n\n\tEligible Adventurers:'
     characters = list(Refs.gc.get_obtained_characters(False))
-    for character in characters:
-        if character.has_perk(perk_id):
-            characters.remove(character)
-            continue
 
-        meets_requirements = True
+    valid_characters = []
+    for character in characters:
+        meets_requirements = not character.has_perk(perk_id)
+
         for requirement in perk.get_requirements():
             if requirement == 'none':
                 continue
             meets_requirements &= character.has_perk(requirement)
-        for perk_id in character.get_perks():
-            if Refs.gc['perks'][perk_id].get_tree() != perk.get_tree():
-                meets_requirements &= False
-        if not meets_requirements:
-            characters.remove(character)
 
-    if len(characters) == 0:
+        for char_perk_id in character.get_perks():
+            print(Refs.gc['perks'][char_perk_id].get_tree(), perk.get_tree())
+            meets_requirements &= Refs.gc['perks'][char_perk_id].get_tree() == perk.get_tree()
+
+        if meets_requirements:
+            valid_characters.append(character)
+
+    if len(valid_characters) == 0:
         display_text += f'\n\tNo Eligible Adventurers.'
 
-    for index, character in enumerate(characters):
+    for index, character in enumerate(valid_characters):
         display_text += f'\n\t{OPT_C}{index + 1}:{END_OPT_C} {character.get_display_name()} {character.get_name()}'
         _options[str(index + 1)] = f'perk_bestow_{perk_id}#{character.get_id()}'
 

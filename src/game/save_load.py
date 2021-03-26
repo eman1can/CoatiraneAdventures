@@ -6,7 +6,6 @@ from time import strftime, localtime, time
 from kivy.storage.jsonstore import JsonStore
 
 from loading.config_loader import GAME_VERSION
-from game.skill import RANKS
 
 SAVE_PATH = expanduser('~/Saved Games/Coatirane Adventures/saves/')
 SAVE_SLOT_1_PATH = f'{SAVE_PATH}/save1/'
@@ -44,7 +43,7 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     if not exists(SAVE_PATHS[save_slot - 1]):
         mkdir(SAVE_PATHS[save_slot - 1])
 
-    starting_rank = RANKS[0]
+    starting_rank = 'I'
     starting_varenth = 3000
     starting_chars = 1
     starting_quests = 0
@@ -100,13 +99,16 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
             'floor_depth': 0,
             'monsters_slain': 0,
             'people_slain': 0,
-            'equipment': [],
+            'equipment': [None, None, None, None, None, None, None, None, None, None],
             'abilities': [],
             'familiarities': {}
         }
     }
-    save_file['equipment'] = []
-    save_file['inventory'] = {}
+    save_file['inventory'] = {
+        'current_pickaxe_hash': None,
+        'current_shovel_hash': None,
+        'current_harvesting_knife_hash': None
+    }
     save_file['map_data'] = {}
     save_file['varenth'] = starting_varenth
     save_file['parties'] = [0] + [[None for _ in range(16)] for _ in range(10)]
@@ -197,7 +199,7 @@ def save_game(save_slot, game_content):
     save_file['obtained_characters_a'] = game_content.get_obtained_character_indexes(False)
     save_file['obtained_characters_s'] = game_content.get_obtained_character_indexes(True)
     character_development = {}
-    for character in game_content['chars'].values():
+    for index, character in enumerate(game_content['chars'].values()):
         char_develop = {'ranks': {}, 'equipment': [], 'abilities': [], 'familiarities': {}}
         char_develop['ranks']['unlocked'] = [rank.is_unlocked() for rank in character.get_ranks()]
         char_develop['ranks']['broken'] = [rank.is_broken() for rank in character.get_ranks()]
@@ -208,13 +210,18 @@ def save_game(save_slot, game_content):
         char_develop['floor_depth'] = character.get_floor_depth()
         char_develop['monsters_slain'] = character.get_monsters_killed()
         char_develop['people_slain'] = character.get_people_killed()
-        character_development[str(character.get_index())] = char_develop
-    save_file['equipment'] = []
+        char_develop['familiarities'] = character.get_familiarities()
+        equipment = []
+        for item in character.get_outfit().items:
+            if item is None:
+                equipment.append(None)
+            else:
+                equipment.append(item.get_full_id())
+        char_develop['equipment'] = equipment
+        char_develop['abilities'] = character.get_abilities()
+        character_development[character.get_id()] = char_develop
 
-    inventory = {}
-    for item in game_content.get_inventory_list():
-        inventory[item.get_id()] = game_content.get_inventory_count(item.get_id())
-    save_file['inventory'] = inventory
+    save_file['inventory'] = game_content.get_inventory().get_save_output()
     save_file['map_data'] = {}
     save_file['map_node_data'] = {}
     save_file['map_node_counters'] = {}

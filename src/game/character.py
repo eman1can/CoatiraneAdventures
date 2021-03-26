@@ -1,4 +1,5 @@
 from game.entity import Entity
+from game.equipment import WEAPON_TYPES
 from game.outfit import Outfit
 from game.rank import MAX_RANK
 from game.scale import Scale
@@ -13,6 +14,7 @@ MAGICAL_ATTACK = 1
 HYBRID_ATTACK = 2
 DEFENSIVE = 3
 HEALING = 4
+
 CHARACTER_ATTACK_TYPES = {
     PHYSICAL_ATTACK: 'Physical',
     MAGICAL_ATTACK: 'Magical',
@@ -89,6 +91,8 @@ class Character(Entity):
         self._gender = ''
         self._race = ''
         self._age = 0
+        self._description = ''
+
         self._high_damage = 0  # Not yet implemented
         self._lowest_floor = 0  # Not yet implemented
         self._monsters_slain = 0  # Not yet implemented
@@ -110,6 +114,10 @@ class Character(Entity):
         self._familiarities = {}
         self._familiarity_bonus = 1
 
+        self._recruitment_items = {}
+        self._favorite_weapon = -1
+        self._favorite_sub_weapon = -1
+
         self._outfit = Outfit()
 
         self._abilities = []
@@ -128,7 +136,7 @@ class Character(Entity):
         self._worth = 0  # Not yet implemented
 
         if not self._is_support:
-            skills[6].set_special()
+            skills[7].set_special()
 
         super().__init__(name, skel_path, hp, mp, s, m, e, s, m, e, a, d, element, skills)
 
@@ -144,7 +152,10 @@ class Character(Entity):
     def update_score(self):
         self._score = 0
         weights = [[7.5, 10, 8.5, 9, 9], [10, 7.5, 10, 9, 9], [8.5, 8.5, 9.5, 9, 9], [8.5, 10, 7.5, 9, 9], [10, 8.5, 10, 9, 9]]
-        weight_set = weights[self._attack_type]
+        if self._attack_type is not None:
+            weight_set = weights[self._attack_type]
+        else:
+            weight_set = [9, 9, 9, 9, 9]
         value_array = [self.strength, self.magic, self.endurance, self.dexterity, self.agility]
         for index in range(5):
             self._score += value_array[index] / weight_set[index]
@@ -159,6 +170,9 @@ class Character(Entity):
         if char_id in self._familiarities:
             return self._familiarities[char_id]
         return 0
+
+    def get_familiarities(self):
+        return self._familiarities
 
     def add_familiarity(self, key, value):
         if key in self._familiarities:
@@ -177,7 +191,14 @@ class Character(Entity):
     # Basic info functions
 
     def get_skills(self):
-        return self._moves[:2] + self._moves[3:4] + self._moves[5:6] + self._moves[7:-2]
+        # 0 Basic 1 Move1 2 Move1 Mana 3 Move2 4 Move2 Mana 5 Move3 6 Move3 Mana 7 Special
+        return self._moves[:2] + self._moves[3:4] + self._moves[5:6] + self._moves[7:8]
+
+    def get_mana_cost(self, skill):
+        index = self._moves.index(skill)
+        if index == 0 or index == 7:
+            return 0
+        return self._moves[index + 1]
 
     def get_counter_skill(self):
         return self._moves[-2]
@@ -225,10 +246,27 @@ class Character(Entity):
         return self._family
 
     def get_race(self):
-        return self._race
+        return RACES[self._race]
 
     def get_gender(self):
-        return self._gender
+        return GENDERS[self._gender]
+
+    def get_age(self):
+        return self._age
+
+    def get_description(self):
+        return self._description
+
+    def get_recruitment_items(self):
+        return self._recruitment_items
+
+    def get_favorite_weapon(self):
+        return WEAPON_TYPES[self._favorite_weapon]
+
+    def get_favorite_sub_weapon(self):
+        if self._favorite_sub_weapon is None:
+            return None
+        return WEAPON_TYPES[self._favorite_sub_weapon]
 
     def get_worth(self):
         return self._worth
@@ -307,6 +345,9 @@ class Character(Entity):
     def add_ability(self, ability):
         self._abilities.append(ability)
 
+    def get_abilities(self):
+        return self._abilities
+
     # HMPMD & SMEAD Functions
     def get_physical_attack(self, rank=0):
         if rank > 0:
@@ -382,7 +423,7 @@ class Character(Entity):
         return self.strength
 
     def update_strength(self):
-        strength = self._strength + self._outfit.get_strength()
+        strength = self._strength
         for rank in self._ranks:
             if rank.is_unlocked():
                 strength += rank.get_strength()
@@ -399,7 +440,7 @@ class Character(Entity):
         return self.magic
 
     def update_magic(self):
-        magic = self._magic + self._outfit.get_magic()
+        magic = self._magic
         for rank in self._ranks:
             if rank.is_unlocked():
                 magic += rank.get_magic()
@@ -416,7 +457,7 @@ class Character(Entity):
         return self.endurance
 
     def update_endurance(self):
-        endurance = self._endurance + self._outfit.get_endurance()
+        endurance = self._endurance
         for rank in self._ranks:
             if rank.is_unlocked():
                 endurance += rank.get_endurance()
@@ -433,7 +474,7 @@ class Character(Entity):
         return self.agility
 
     def update_agility(self):
-        agility = self._agility + self._outfit.get_agility()
+        agility = self._agility
         for rank in self._ranks:
             if rank.is_unlocked():
                 agility += rank.get_agility()
@@ -449,7 +490,7 @@ class Character(Entity):
         return self.dexterity
 
     def update_dexterity(self):
-        dexterity = self._dexterity + self._outfit.get_dexterity()
+        dexterity = self._dexterity
         for rank in self._ranks:
             if rank.is_unlocked():
                 dexterity += rank.get_dexterity()
@@ -509,7 +550,6 @@ class Character(Entity):
         if rank > 1:
             return Scale.get_scale_as_character(self.get_agility(rank), 100)
         return Scale.get_scale_as_character(self.get_agility(), 1000)
-
 
 
     # Equipment functions

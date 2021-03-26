@@ -583,3 +583,196 @@ Ex: Dagger
 # Generate Home Supplies
 # Forge
 # Blacksmithing tools
+
+
+S, tin_harvesting_knife, Tin Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, tin_pickaxe, Tin Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, tin_shovel, Tin Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, copper_harvesting_knife, Copper Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, copper_pickaxe, Copper Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, copper_shovel, Copper Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, platinum_harvesting_knife, Platinum Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, platinum_pickaxe, Platinum Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, platinum_shovel, Platinum Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, iron_harvesting_knife, Iron Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, iron_pickaxe, Iron Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, iron_shovel, Iron Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, titanium_harvesting_knife, Titanium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, titanium_pickaxe, Titanium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, titanium_shovel, Titanium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, tungsten_harvesting_knife, Tungsten Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, tungsten_pickaxe, Tungsten Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, tungsten_shovel, Tungsten Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, meteoric_iron_harvesting_knife, Meteoric Iron Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, meteoric_iron_pickaxe, Meteoric Iron Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, meteoric_iron_shovel, Meteoric Iron Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, golanthium_harvesting_knife, Golanthium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, golanthium_pickaxe, Golanthium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, golanthium_shovel, Golanthium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, bronze_harvesting_knife, Bronze Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, bronze_pickaxe, Bronze Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, bronze_shovel, Bronze Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, steel_harvesting_knife, Steel Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, steel_pickaxe, Steel Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, steel_shovel, Steel Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, hardened_steel_harvesting_knife, Hardened Steel Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, hardened_steel_pickaxe, Hardened Steel Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, hardened_steel_shovel, Hardened Steel Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, tungsten_carbide_harvesting_knife, Tungsten Carbide Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, tungsten_carbide_pickaxe, Tungsten Carbide Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, tungsten_carbide_shovel, Tungsten Carbide Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, dark_steel_harvesting_knife, Dark Steel Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, dark_steel_pickaxe, Dark Steel Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, dark_steel_shovel, Dark Steel Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, mithril_harvesting_knife, Mithril Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, mithril_pickaxe, Mithril Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, mithril_shovel, Mithril Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, adamantite_harvesting_knife, Adamantite Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, adamantite_pickaxe, Adamantite Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, adamantite_shovel, Adamantite Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, trinium_harvesting_knife, Trinium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, trinium_pickaxe, Trinium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, trinium_shovel, Trinium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.

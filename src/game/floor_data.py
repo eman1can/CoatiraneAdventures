@@ -68,6 +68,12 @@ class FloorData:
     def get_gained_items(self):
         return self._gained_items
 
+    def add_gained_items(self, item_id, count):
+
+        if item_id not in self._gained_items:
+            self._gained_items[item_id] = 0
+        self._gained_items[item_id] += count
+
     def get_killed(self):
         return self._killed_monsters
 
@@ -177,7 +183,7 @@ class FloorData:
 
     def get_last_node_description(self, node):
         char = self._floor.get_map().get_node_char(node)
-        compass = Refs.gc.in_inventory('compass')
+        compass = Refs.gc.get_inventory().has_item('compass')
         # Get the direction that we may have turned
         if self._last_direction == self._current_direction:
             if not compass:
@@ -210,7 +216,7 @@ class FloorData:
 
     def get_node_description(self, node):
         char = self._floor.get_map().get_node_char(node)
-        compass = Refs.gc.in_inventory('compass')
+        compass = Refs.gc.get_inventory().has_item('compass')
 
         if self._floor.get_map().is_marker(ENTRANCE):
             return f'You encounter the stairs to the {INDEX_TO_STRING[self._floor.get_id()]} floor.'
@@ -343,10 +349,10 @@ class FloorData:
 
     def end_encounter(self):
         self._in_encounter = False
-        for key, count in self._battle_data.get_dropped_items().items():
-            if key not in self._gained_items:
-                self._gained_items[key] = 0
-            self._gained_items[key] += count
+        for item, count in self._battle_data.get_dropped_items().items():
+            if item.get_id() not in self._gained_items:
+                self._gained_items[item.get_id()] = 0
+            self._gained_items[item.get_id()] += count
         for enemy in self._battle_data.get_enemies():
             if enemy.get_name() not in self._killed_monsters:
                 self._killed_monsters[enemy.get_name()] = 0

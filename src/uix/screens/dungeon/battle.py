@@ -1085,9 +1085,9 @@ class DungeonBattle(Screen):
         # Reduce all effect duration by 1 turn
         # Change moves avaliable based on mana
         for character in self.characters:
-            character.update_status_effects()
+            character.update_effects()
         for enemy in self.enemies:
-            enemy.update_status_effects()
+            enemy.update_effects()
         return
 
         # Go to the next entity in the turn order

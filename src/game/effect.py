@@ -1,5 +1,4 @@
 # Effect Types
-from game.status_effect import StatusEffect
 
 STAT            = 0
 COUNTER         = 1
@@ -42,19 +41,20 @@ CRITICAL_CHANCE    = 24
 BLOCK_CHANCE       = 25
 EVADE_CHANCE       = 26
 
+# TODO SMEAD Grabbing Doesn't Affect HMPMD in battle entities
 STAT_TYPES = {
-    STRENGTH: 'Str.',
-    MAGIC: 'Mag.',
-    ENDURANCE: 'End.',
-    AGILITY: 'Agi.',
-    DEXTERITY: 'Dex.',
-    HEALTH_REGEN: 'HP Regen',
-    HEALTH_DOT: 'HP DOT',
-    MANA_REGEN: 'MP Regen',
-    MANA_DOT: 'MP DOT',
-    PHYSICAL_ATTACK: 'Phy. Atk.',
-    MAGICAL_ATTACK: 'Mag. Atk.',
-    DEFENSE: 'Def.',
+    STRENGTH: 'Str.',  # Implemented
+    MAGIC: 'Mag.',  # Implemented
+    ENDURANCE: 'End.',  # Implemented
+    AGILITY: 'Agi.',  # Implemented
+    DEXTERITY: 'Dex.',  # Implemented
+    HEALTH_REGEN: 'HP Regen',  # Implemented
+    HEALTH_DOT: 'HP DOT',  # Implemented
+    MANA_REGEN: 'MP Regen',  # Implemented
+    MANA_DOT: 'MP DOT',  # Implemented
+    PHYSICAL_ATTACK: 'Phy. Atk.',  # Implemented
+    MAGICAL_ATTACK: 'Mag. Atk.',  # Implemented
+    DEFENSE: 'Def.',  # Implemented
     PHYSICAL_RESIST: 'Phy. Resist',
     MAGICAL_RESIST: 'Mag. Resist',
     HYBRID_RESIST: 'Hyb. Resist',
@@ -105,11 +105,26 @@ TYPES = {
 class Effect:
     def __init__(self, effect_type, sub_type=None, target=None, amount=None, duration=None):
         self._type = effect_type
-        self._sub_type = None
+        self._sub_type = sub_type
 
-        self._target = None
-        self._amount = None
-        self._duration = None
+        self._target = target
+        self._amount = amount
+        self._duration = duration
+
+    def get_type(self):
+        return self._type
+
+    def get_sub_type(self):
+        return self._sub_type
+
+    def get_target(self):
+        return self._target
+
+    def get_amount(self):
+        return self._amount
+
+    def get_duration(self):
+        return self._duration
 
     def is_stat_effect(self):
         return self._type == STAT
@@ -122,3 +137,18 @@ class Effect:
 
     def is_status_effect_effect(self):
         return self._type == STATUS_EFFECT
+
+
+class AppliedEffect:
+    def __init__(self, amount, duration):
+        self._amount = amount
+        self._duration = duration
+
+    def get_duration(self):
+        return self._duration
+
+    def get_amount(self):
+        return self._amount
+
+    def reduce_duration(self, delta):
+        self._duration -= delta

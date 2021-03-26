@@ -146,17 +146,22 @@ class Floor:
                     rarity_adjustment = 2
                     break
         for spawn_rarity in set(rarities):
+            print('Spawn Rarity is', spawn_rarity)
             for (enemy, rarity) in self._enemies.values():
                 if rarity_adjustment == 0:
                     if rarity <= spawn_rarity:
+                        print(enemy.get_name(), rarity, 'Boost', rarity + 1 - spawn_rarity)
                         spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
                 elif rarity_adjustment == 1:
                     if enemy.get_id() == node_type:
                         if rarity - 1 <= spawn_rarity:
+                            print(enemy.get_name(), rarity, 'Boost', rarity + 1 - spawn_rarity)
                             spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
                     elif min(rarity + 1, 5) <= spawn_rarity:
+                        print(enemy.get_name(), rarity, 'Boost', rarity + 1 - spawn_rarity)
                         spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
                 elif min(rarity + 2, 5) <= spawn_rarity:
+                    print(enemy.get_name(), rarity, 'Boost', rarity + 1 - spawn_rarity)
                     spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
         for spawn_rarity in rarities:
             enemy, boost = spawn_lists[spawn_rarity][randint(0, len(spawn_lists[spawn_rarity]) - 1)]
@@ -320,18 +325,20 @@ class Map:
     def set_start(self, descend):
         self._shortest_key = None
         self._path_solutions = {ENTRANCE: {}, EXIT: {}}
+
         if descend:
-            found = self.set_current_node(self._path_nodes[0])
             self._current_path = 'exit'
             # We KNOW that we are on the entrance, and the path to the exit is just the path
             self._path_solutions[ENTRANCE][self._path_nodes[0]] = [self._path_nodes[0]]
             self._path_solutions[EXIT][self._path_nodes[-1]] = list(reversed(self._path_nodes))
+            found = self.set_current_node(self._path_nodes[0])
         else:
-            found = self.set_current_node(self._path_nodes[-1])
             self._current_path = 'entrance'
             # We KNOW that we are on the exit, and the path to the entrance is just the reversed path
             self._path_solutions[ENTRANCE][self._path_nodes[0]] = list(self._path_nodes)
             self._path_solutions[EXIT][self._path_nodes[-1]] = [self._path_nodes[-1]]
+            found = self.set_current_node(self._path_nodes[-1])
+        self._check_path()
         # Remove starting node from arrays
         self._update_path(self._current_node)
         # Color path
@@ -403,7 +410,7 @@ class Map:
 
     def hide_node(self, node):
         self._explored[node] = False
-        self._map_data.hide_node(node)
+        self._map_data.hide_node(*node)
 
     # Unlock versions of the map
     def unlock_path_map(self):
@@ -452,6 +459,9 @@ class Map:
                     if len(route) < shortest:
                         shortest = len(route)
                         shortest_key = route_end
+            if not self._explored[shortest_key]:
+                self._clear_path()
+                return
             if shortest_key is not None and shortest_key != self._shortest_key:
                 self._clear_path()
                 self._shortest_key = shortest_key
@@ -480,8 +490,7 @@ class Map:
         if self._current_path not in self._path_solutions:
             routes = {}
             for route_end in self._markers[self._current_path]:
-                routes[route_end] = list(reversed(self.solve_path(self._nodes, self._current_path, route_end)))
-                print(routes[route_end])
+                routes[route_end] = list(reversed(self.solve_path(self._nodes, self._current_node, route_end)))
             self._path_solutions[self._current_path] = routes
         # Show the shortest route
         self._calculate_path()

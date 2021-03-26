@@ -3,7 +3,10 @@ __all__ = ('GameContent',)
 # Project Imports
 from game.calendar import Calendar
 from game.battle_character import create_battle_character
+from game.crafting_recipe import CRAFT_ALLOYS, EQUIPMENT, ITEM, PROCESS_MATERIALS
+from game.equipment import EQUIPMENT_TOOL, UngeneratedArmor, UngeneratedTool, UngeneratedWeapon, WeaponClass, ToolClass, ArmorClass
 from game.floor_data import FloorData
+from game.inventory import Inventory
 from game.save_load import load_floor_data, save_game
 from refs import Refs
 # from src.spine.skeleton.skeletonloader import SkeletonLoader
@@ -63,16 +66,13 @@ class GameContent:
 
 
     def get_item_data(self, item_id):
-        if item_id in self._data['shop_items']:
-            return self._data['shop_items'][item_id]
+        if item_id in self._data['items']:
+            return self._data['items'][item_id]
         else:
             return self._data['drop_items'][item_id]
 
     def update_data(self, save_data):
-        self._inventory = {}
-        for item_id, count in save_data['inventory'].items():
-            self._inventory[item_id] = self.get_item_data(item_id)
-            self._inventory[f'{item_id}_count'] = count
+        self._inventory = Inventory(self['items'], self['drop_items'], self['equipment'], save_data['inventory'])
         self._lowest_floor = save_data['lowest_floor']
         self._varenth = save_data['varenth']
         self._name = save_data['family']['name']
@@ -214,7 +214,7 @@ class GameContent:
             self._parties = cp
 
     def initialize(self, loader):
-        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'shop_items', 'drop_items', 'housing', 'perks']
+        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'items', 'drop_items', 'housing', 'perks', 'materials', 'equipment', 'recipes']
         self._data = {}
         for key in keys:
             self._data[key] = loader.get(key)
@@ -250,10 +250,7 @@ class GameContent:
         self._parties[index + 1] = party
 
     def get_char_by_id(self, char_id):
-        for char in list(self._data['chars'].values()):
-            if char.get_id() == char_id:
-                return char
-        return None
+        return self._data['chars'][char_id]
 
     def get_obtained_characters(self, support):
         chars = []
@@ -282,6 +279,7 @@ class GameContent:
         return chars
 
     def obtain_character(self, char_index, is_support):
+        print('Obtain', char_index, is_support)
         if is_support:
             self._obtained_characters_s.append(char_index)
         else:
@@ -335,62 +333,48 @@ class GameContent:
                 perks.append(perk_id)
         return perks
 
-    def get_inventory_list(self):
-        items = []
-        for item_id, item in self._inventory.items():
-            if not item_id.endswith('count'):
-                items.append(item)
-        return items
+    def find_item(self, item_id):
+        if item_id in self._data['items'].keys():
+            return self._data['items'][item_id]
+        if item_id in self._data['drop_items'].keys():
+            return self._data['drop_items'][item_id]
+        for equipment_id, equipment_class in self._data['equipment'].items():
+            material_ids = equipment_id.split('/')
+            material = self._data['materials'][material_ids[0]]
+            sub_material1 = None
+            sub_material2 = None
+            if len(material_ids) > 1:
+                sub_material1 = self._data['materials'][material_ids[1]]
+                if len(material_ids) > 2:
+                    sub_material2 = self._data['materials'][material_ids[2]]
+            if item_id.endswith(equipment_id):
+                if isinstance(equipment_class, WeaponClass):
+                    return UngeneratedWeapon(equipment_class, material, sub_material1, sub_material2)
+                elif isinstance(equipment_class, ArmorClass):
+                    return UngeneratedArmor(equipment_class, material, sub_material1, sub_material2)
+                else:
+                    return UngeneratedTool(equipment_class, material)
+        if item_id in self._data['equipment']:
+            return self._data['equipment'][item_id]
+        return None
 
-    def in_inventory(self, item_id):
-        return item_id in self._inventory
+    def find_items(self, item_id_list):
+        found_items = []
+        for item_id in item_id_list:
+            found_items.append(self.find_item(item_id))
+        return found_items
 
-    def has_pickaxe(self):
-        pickaxes = []
-        for item_id, item in self._inventory.items():
-            if item_id.endswith('pickaxe'):
-                pickaxes.append(item)
-        best_pick = None
-        for pick in pickaxes:
-            if best_pick is None:
-                best_pick = pick
-            else:
-                if pick.get_hardness() > best_pick.get_hardness():
-                    best_pick = pick
-        return best_pick
+    def get_owned_items(self, item_list):
+        remove = []
+        for item in item_list:
+            if self._inventory.get_item_count(item.get_id()) <= 0:
+                remove.append(item)
+        for item in remove:
+            item_list.remove(item)
+        return item_list
 
-    def has_shovel(self):
-        shovels = []
-        for item_id, item in self._inventory.items():
-            if item_id.endswith('shovel'):
-                shovels.append(item)
-        best_shovel = None
-        for shovel in shovels:
-            if best_shovel is None:
-                best_shovel = shovel
-            else:
-                if shovel.get_hardness() > best_shovel.get_hardness():
-                    best_shovel = shovel
-        return best_shovel
-
-    def has_harvesting_knife(self):
-        harvesting_knives = []
-        for item_id, item in self._inventory.items():
-            if item_id.endswith('harvesting_knife'):
-                harvesting_knives.append(item)
-        best_harvesting_knife = None
-        for harvesting_knife in harvesting_knives:
-            if best_harvesting_knife is None:
-                best_harvesting_knife = harvesting_knife
-            else:
-                if harvesting_knife.get_hardness() > best_harvesting_knife.get_hardness():
-                    best_harvesting_knife = harvesting_knife
-        return best_harvesting_knife
-    
-    def get_inventory_count(self, item_id):
-        if item_id in self._inventory:
-            return self._inventory[f'{item_id}_count']
-        return 0
+    def get_inventory(self):
+        return self._inventory
     
     def get_magic_stone_types(self):
         items = []
@@ -402,67 +386,95 @@ class GameContent:
     def get_monster_drop_types(self):
         items = []
         for drop_item_id, drop_item in self._data['drop_items'].items():
-            if drop_item_id.endswith('monster_drop'):
+            if drop_item_id.endswith('wing') or drop_item_id.endswith('venom') or drop_item_id.endswith('blood') or drop_item_id.startswith('egg') or drop_item_id.endswith('tongue') or drop_item_id.endswith('meat'):
+                items.append(drop_item)
+        return items
+
+    def get_raw_materials(self):
+        items = self.get_ore_types()
+        for drop_item_id, drop_item in self._data['drop_items'].items():
+            if drop_item_id.endswith('scale') or drop_item_id.endswith('hide') or drop_item_id.endswith('claw') or drop_item_id.endswith('fang') or drop_item_id.endswith('horn'):
+                if drop_item_id.startswith('raw'):
+                    items.append(drop_item)
+        return items
+
+    def get_processed_materials(self):
+        items = self.get_ingot_types()
+        for drop_item_id, drop_item in self._data['drop_items'].items():
+            if drop_item_id.endswith('processed') or drop_item_id.endswith('ingot'):
                 items.append(drop_item)
         return items
 
     def get_ingredient_types(self):
-        items = []
-        for drop_item_id, drop_item in self._data['drop_items'].items():
-            if drop_item_id.endswith('ingredient'):
-                items.append(drop_item)
-        return items
+        return list(self._data['ingredients'].values())
 
     def get_ore_types(self):
         items = []
-        for drop_item_id, drop_item in self._data['drop_items'].items():
-            if drop_item_id.endswith('ore'):
-                items.append(drop_item)
+        for item_id, item in self._data['items'].items():
+            if item_id.endswith('ore'):
+                items.append(item)
         return items
 
-    def add_to_inventory(self, item_id, count=1):
-        if item_id in self._inventory:
-            self._inventory[f'{item_id}_count'] += count
-        else:
-            self._inventory[item_id] = self.get_item_data(item_id)
-            self._inventory[f'{item_id}_count'] = count
-        return self._inventory[item_id]
-
-    def remove_from_inventory(self, item_id, count=1):
-        if item_id not in self._inventory:
-            return
-        else:
-            self._inventory[f'{item_id}_count'] -= count
-            if self._inventory[f'{item_id}_count'] <= 0:
-                self._inventory.pop(item_id)
-                self._inventory.pop(f'{item_id}_count')
+    def get_ingot_types(self):
+        items = []
+        for item_id, item in self._data['items'].items():
+            if item_id.endswith('ingot'):
+                items.append(item)
+        return items
 
     def get_shop_items(self, category):
         items = []
-        for item in self._data['shop_items'].values():
+        for item in self._data['items'].values():
             if item.get_category() == category and item.is_unlocked():
                 items.append(item)
         return items
 
+    def get_store_tools(self):
+        # Generate Ungenerated Equipment for each type
+        items = []
+        for item_id, equipment_class in self._data['equipment'].items():
+            for material_id, material in self._data['materials'].items():
+                if equipment_class.get_type() == EQUIPMENT_TOOL:
+                    items.append(UngeneratedTool(equipment_class, material))
+        return items
+
     def get_shop_item(self, item_id):
-        if item_id in self._data['shop_items']:
-            return self._data['shop_items'][item_id]
+        if item_id in self._data['items']:
+            return self._data['items'][item_id]
         return None
+
+    def get_potions(self):
+        potions = []
+        for item_id in self._data['items'].keys():
+            if item_id.startswith('potion'):
+                potions.append(self._data['items'][item_id])
+        return potions
 
     def get_drop_item(self, item_id):
         if item_id in self._data['drop_items']:
             return self._data['drop_items'][item_id]
         return None
 
-    def get_owned_items(self, item_list):
-        remove = []
-        for item in item_list:
-            if self.get_inventory_count(item.get_id()) <= 0:
-                # item_list.remove(item)
-                remove.append(item)
-        for item in remove:
-            item_list.remove(item)
-        return item_list
+    def get_process_recipes(self):
+        viable_recipes = []
+        for crafting_recipe in self._data['recipes'].values():
+            if crafting_recipe.get_type() == ITEM and crafting_recipe.get_sub_type() == PROCESS_MATERIALS and self.has_perk(crafting_recipe.get_perk_requirement()):
+                viable_recipes.append(crafting_recipe)
+        return viable_recipes
+
+    def get_alloy_recipes(self):
+        viable_recipes = []
+        for crafting_recipe in self._data['recipes'].values():
+            if crafting_recipe.get_type() == ITEM and crafting_recipe.get_sub_type() == CRAFT_ALLOYS and self.has_perk(crafting_recipe.get_perk_requirement()):
+                viable_recipes.append(crafting_recipe)
+        return viable_recipes
+
+    def get_equipment_recipes(self):
+        viable_recipes = []
+        for crafting_recipe in self._data['recipes'].values():
+            if crafting_recipe.get_type() == EQUIPMENT:
+                viable_recipes.append(crafting_recipe)
+        return viable_recipes
 
     def get_char_list(self, current_char):
         party = self.get_current_party()
@@ -586,3 +598,9 @@ class GameContent:
     """
     def get_random_critical_modifier(self):
         return random.choices([1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.5, 2.75, 3, 3.5, 3.75, 4, 4.75], k=1)[0]
+
+    def get_random_modifier(self):
+        return random.choices([1.0, 1.1, 1.2, 1.3, 1.4, 1.5], k=1)[0]
+
+    def get_random_wear_amount(self):
+        return random.uniform(0.5, 3.0)
