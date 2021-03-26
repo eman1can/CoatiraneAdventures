@@ -1,26 +1,25 @@
 __all__ = ('Settings',)
 
 from kivy.app import App
-from kivy.metrics import dp
 from kivy.config import Config, ConfigParser
 from kivy.core.window import Window
+from kivy.metrics import dp, platform
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
-from kivy.metrics import platform
-from kivy.uix.settings import SettingsWithSidebar, SettingSpacer
+from kivy.uix.settings import SettingSpacer, SettingsWithSidebar
 
 
 class Settings(SettingsWithSidebar):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         settings_config = ConfigParser()
-        settings_config.read('../save/settings.ini')
+        settings_config.read('data/settings.ini')
         if platform == 'win':
-            self.add_json_panel('General', settings_config, '../save/settings/general.json')
+            self.add_json_panel('General', settings_config, 'data/settings/general.json')
         elif platform == 'android':
-            self.add_json_panel('General', settings_config, '../save/settings/general_android.json')
+            self.add_json_panel('General', settings_config, 'data/settings/general_android.json')
 
     def on_config_change(self, config, section, key, value):
         app = App.get_running_app()

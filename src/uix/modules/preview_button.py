@@ -1,8 +1,9 @@
 from time import time
 
+from kivy.properties import NumericProperty
+
 from kivy.clock import Clock
 from kivy.input.providers.wm_touch import WM_MotionEvent
-from kivy.properties import NumericProperty
 from kivy.uix.buttonversions import PPCHoverPathButton
 
 

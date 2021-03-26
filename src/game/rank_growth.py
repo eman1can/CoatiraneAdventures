@@ -20,6 +20,9 @@ class RankGrowth(SMEAD, HMPMD):
         SMEAD.refresh_stats(self)
         HMPMD.refresh_stats(self)
 
+    def get_stats(self):
+        return [self.health, self.mana, self.strength, self.magic, self.endurance, self.agility, self.dexterity]
+
     def increase_health(self, delta):
         if self._health + delta < HEALTH_RANK_MAX:
             self._health += delta

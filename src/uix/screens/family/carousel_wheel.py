@@ -1,8 +1,8 @@
+from kivy.properties import ListProperty, NumericProperty, StringProperty
+
 from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.properties import ListProperty, NumericProperty, StringProperty
 from kivy.uix.floatlayout import FloatLayout
-from uix.screens.family.domain_display import SmallDomainDisplay
 
 
 class CarouselWheel(FloatLayout):

@@ -1,9 +1,10 @@
 # Kivy Imports
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import ObjectProperty, StringProperty, ListProperty, NumericProperty
+from kivy.properties import ListProperty, NumericProperty, ObjectProperty, StringProperty
 
+from kivy.uix.relativelayout import RelativeLayout
 # KV Import
 from loading.kv_loader import load_kv
+
 load_kv(__name__)
 
 
@@ -44,6 +45,6 @@ class StatBox(RelativeLayout):
             return
         self.health = self.char.get_health()
         self.mana = self.char.get_mana()
-        self.phy_attack = self.char.get_phyatk()
-        self.mag_attack = self.char.get_magatk()
+        self.phy_attack = self.char.get_physical_attack()
+        self.mag_attack = self.char.get_magical_attack()
         self.defense = self.char.get_defense()

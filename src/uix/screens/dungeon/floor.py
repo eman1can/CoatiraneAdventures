@@ -1,10 +1,9 @@
 from kivy.uix.screenmanager import FadeTransition
-
+# KV Import
+from loading.kv_loader import load_kv
 from refs import Refs
 from uix.screens.dungeon.battle import DungeonBattle
 
-# KV Import
-from loading.kv_loader import load_kv
 load_kv(__name__)
 
 

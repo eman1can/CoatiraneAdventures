@@ -1,10 +1,11 @@
 # Kivy Imports
-from kivy.clock import Clock
-from kivy.properties import StringProperty, BooleanProperty, ObjectProperty
-from kivy.uix.screenmanager import Screen as ScreenBase
+from kivy.properties import BooleanProperty, ObjectProperty, StringProperty
 
+from kivy.clock import Clock
+from kivy.uix.screenmanager import Screen as ScreenBase
 # KV Import
 from loading.kv_loader import load_kv
+
 load_kv(__name__)
 
 

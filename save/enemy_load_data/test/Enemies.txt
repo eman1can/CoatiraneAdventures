@@ -1,8 +1,0 @@
-kobold, Kobold, 350100201, 40, 70, 0, 8, 20, 0, 0, 2, 14, 2, 6, 3, 14, 2,  8, 0.25, 8, 1, -, -, 65, 0.40, 66, 0.35
-fang_kobold_monster_drop/.2, claw_kobold_monster_drop/.3; .8; tiny_tiny_magic_stone/3,small_tiny_magic_stone/2,medium_tiny_magic_stone/1
-#
-goblin, Goblin, 350100103, 30, 45, 0, 6, 15, 0, 0, 3, 13, 3, 8, 2,  9, 2,  8, 0.50, 8, 1, -, -, 65, 0.35, 66, 0.15
-fang_goblin_monster_drop/.25, claw_goblin_monster_drop/.25; .8; tiny_tiny_magic_stone/3,small_tiny_magic_stone/2,medium_tiny_magic_stone/1
-#
-jack_bird, Jack Bird, -, 10, 20, 0, 3, 5,  0, 0, 3, 5,  3, 5, 3,  5, 0, 14, 1, 14, 1, -, -
-egg_jack_bird_monster_drop/1; 1; small_tiny_magic_stone/3,medium_tiny_magic_stone/2,large_tiny_magic_stone/1

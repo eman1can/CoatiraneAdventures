@@ -3,36 +3,49 @@ from random import choices
 
 from game.battle_entity import BattleEntity
 from game.entity import Entity
+from game.skill import DARK, EARTH, FIRE, LIGHT, THUNDER, WATER, WIND
 
 
 class BattleEnemy(BattleEntity, Entity):
-    def __init__(self, level, id, name, skeleton_path, attack_type, health, mana, strength, magic, endurance, dexterity, agility, element, moves, move_chances):
-        print(strength, magic, endurance, dexterity, agility)
-        Entity.__init__(self, name, skeleton_path, health, mana, strength, magic, endurance, strength, magic, endurance, dexterity, agility, element, moves)
+    def __init__(self, identifier, name, skeleton_path, attack_type, health, mana, strength, magic, endurance, agility, dexterity, boost, element, sub_element, moves, move_chances):
+        Entity.__init__(self, name, skeleton_path, health, mana, strength, magic, endurance, strength, magic, endurance, agility, dexterity, element, moves)
         BattleEntity.__init__(self)
-        self._level = level
-        self._id = id
+        self._id = identifier
         self._move_chances = move_chances
         self._attack_type = attack_type
+        self._boost = boost
+
+        self._element = element
+        self._sub_element = sub_element
+
         self._bhealth = self.get_health()
 
     def get_id(self):
         return self._id
 
+    def get_boost(self):
+        return self._boost
+
     def get_idle_animation(self):
         return 'idle'
-
-    def get_level(self):
-        return self._level
 
     def get_selected_skill(self):
         return choices(self.get_skills(), self.get_skill_chances(), k=1)[0]
 
-    def get_skills(self):
-        return self._moves[0:1] + self._moves[3:]
+    def get_skills(self):  # Exclude counter and block, which are last 2
+        return self._moves[:-2]
+
+    def get_counter_skill(self):
+        return self._moves[-2]
+
+    def get_block_skill(self):
+        return self._moves[-1]
 
     def get_skill_chances(self):
-        return self._move_chances[0:1] + self._move_chances[3:]
+        return self._move_chances
+
+    def get_mana_cost(self, skill):
+        return 0
 
     def is_character(self):
         return False
@@ -40,51 +53,60 @@ class BattleEnemy(BattleEntity, Entity):
     def is_enemy(self):
         return True
 
-    # def generateSpeed(self):
-    #     return random.randint(int(self.agi * .85 * 21), int(self.agi * 21))
-    #
-    # def processDamage(self, damage, char):
-    #     print("Damage is " + str(damage))
-    #     # base damage calculation
-    #
-    #     # Penetration
-    #     pen = random.randint(0, 100) <= 20 * (1 + (Scale.getScale_as_number(char.totalStrength, char.ranks[
-    #         char.currentRank - 1].StrengthMax) + Scale.getScale_as_number(char.totalDexterity, char.ranks[
-    #         char.currentRank - 1].dexterityMax) / 2))
-    #     if pen:
-    #         print("Penetration.")
-    #         damage *= 1.5
-    #     # Guarding
-    #     guard = random.randint(0, 100) <= 20 * (1 + (Scale.getScale_as_number(char.totalAgility, char.ranks[
-    #         char.currentRank - 1].agilityMax) + Scale.getScale_as_number(char.totalDexterity, char.ranks[
-    #         char.currentRank - 1].dexterityMax) / 2))
-    #     if guard and not pen:
-    #         print("Guard.")
-    #         damage *= 0.5
-    #     # Calculating Critical dex & agi
-    #     crit = random.randint(0, 100) <= 20 * (1 + (Scale.getScale_as_number(char.totalAgility, char.ranks[
-    #         char.currentRank - 1].agilityMax) + Scale.getScale_as_number(char.totalDexterity, char.ranks[
-    #         char.currentRank - 1].dexterityMax) / 2))
-    #
-    #     if crit:
-    #         print("Critical hit.")
-    #         damage *= 1.5
-    #
-    #     # Penetration
-    #     if agi > self.dex:
-    #         topShelf = 0
-    #         print("No Miss. Damage mult 2.4")
-    #         damage *= 2.4
-    #     else:
-    #         topShelf = agi / self.dex
-    #     print("Hit Chance is " + str((topShelf * 100) - 20))
-    #     if not topShelf == 0:
-    #         hit = random.randint(0, int(topShelf * 100)) > 20
-    #     else:
-    #         hit = True
-    #     print("Hit: " + str(hit) + " for " + str(damage))
-    #     if hit:
-    #         self.health -= damage
-    #     else:
-    #         damage = 0
-    #     return damage
+    def element_modifier(self, element):
+        if element == WATER:
+            if self._element == FIRE:
+                return 2.0
+            elif self._sub_element == FIRE:
+                return 1.5
+            elif self._element == THUNDER:
+                return 0.5
+            elif self._sub_element == THUNDER:
+                return 0.75
+        elif element == FIRE:
+            if self._element == WIND:
+                return 2.0
+            elif self._sub_element == WIND:
+                return 1.5
+            elif self._element == WATER:
+                return 0.5
+            elif self._sub_element == WATER:
+                return 0.75
+        elif element == THUNDER:
+            if self._element == WATER:
+                return 2.0
+            elif self._sub_element == WATER:
+                return 1.5
+            elif self._element == THUNDER:
+                return 0.5
+            elif self._sub_element == THUNDER:
+                return 0.75
+        elif element == WIND:
+            if self._element == EARTH:
+                return 2.0
+            elif self._sub_element == EARTH:
+                return 1.5
+            elif self._element == FIRE:
+                return 0.5
+            elif self._sub_element == FIRE:
+                return 0.75
+        elif element == EARTH:
+            if self._element == THUNDER:
+                return 2.0
+            elif self._sub_element == THUNDER:
+                return 1.5
+            elif self._element == WIND:
+                return 0.5
+            elif self._sub_element == WIND:
+                return 0.75
+        elif element == LIGHT:
+            if self._element == DARK:
+                return 2.0
+            elif self._sub_element == DARK:
+                return 1.5
+        elif element == DARK:
+            if self._element == LIGHT:
+                return 2.0
+            elif self._sub_element == LIGHT:
+                return 1.5
+        return 1.0

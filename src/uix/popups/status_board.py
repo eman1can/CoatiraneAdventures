@@ -1,12 +1,12 @@
 # UIX Imports
-from uix.popups.view import View
-from uix.screens.character_display.attributes.abilities import AbilityChoice
-
 # Kivy Imports
-from kivy.properties import StringProperty, ListProperty, ObjectProperty
+from kivy.properties import ListProperty, ObjectProperty, StringProperty
 
 # KV Import
 from loading.kv_loader import load_kv
+from uix.popups.view import View
+from uix.screens.character_display.attributes.abilities import AbilityChoice
+
 load_kv(__name__)
 
 

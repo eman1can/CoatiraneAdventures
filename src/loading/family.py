@@ -1,8 +1,9 @@
+from kivy.resources import resource_find
+
 from game.domain import Domain
-from game.family import Family
 
 
-def load_family_chunk(line, loader, program_type, callbacks):
+def load_family_chunk(chunk, loader, program_type, callbacks):
     # Need to flush out WHAT a family actually is before this will take shape.
     # Will most likely be families of friends that this person has encountered?
     #   That data would be better kept in a database though.
@@ -14,9 +15,8 @@ def load_family_chunk(line, loader, program_type, callbacks):
 
 
 def load_domains(program_type):
-    path = f"../save/family_load_data/{program_type}/Domains.txt"
     file_string = ""
-    with open(path, 'r') as file:
+    with open(resource_find(f'data/{program_type}/Domains.txt'), 'r') as file:
         for line in file:
             file_string += line
     domains = []

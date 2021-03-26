@@ -1,16 +1,15 @@
 # UIX Imports
-from uix.modules.filterable import Filterable
-from uix.modules.sortable import Sortable
+from kivy.properties import ListProperty, ObjectProperty, StringProperty
 
 # Kivy Imports
 from kivy.clock import Clock
-from kivy.properties import ObjectProperty, ListProperty, StringProperty
 from kivy.uix.recyclegridlayout import RecycleGridLayout
 from kivy.uix.recycleview import RecycleView
-from kivy.uix.behaviors import HoverBehavior
-
 # KV Import
 from loading.kv_loader import load_kv
+from uix.modules.filterable import Filterable
+from uix.modules.sortable import Sortable
+
 load_kv(__name__)
 
 

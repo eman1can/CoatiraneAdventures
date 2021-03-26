@@ -1,7 +1,7 @@
 __all__ = ('TextureBase', 'Texture', 'TextureFragmentBase', 'TextureFragment', 'TextureFragmentCompat', 'TextureFragmentReplacement',)
 
 from .base import TextureBase
-from .fragment import TextureFragmentBase, TextureFragment, TextureFragmentCompat, convert_filename
+from .fragment import TextureFragment, TextureFragmentBase, TextureFragmentCompat, convert_filename
 from .fragment.replacement import TextureFragmentReplacement
 
 

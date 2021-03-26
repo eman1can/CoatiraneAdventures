@@ -1,19 +1,18 @@
 # Project Imports
-from refs import Refs
-
-# UIX Imports
-from uix.modules.screen import Screen
-
 # Standard Library Imports
 import random
 
+from kivy.properties import ObjectProperty
+
 # Kivy Imports
 from kivy.core.audio import SoundLoader
-from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import SwapTransition
-
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
+# UIX Imports
+from uix.modules.screen import Screen
+
 load_kv(__name__)
 
 

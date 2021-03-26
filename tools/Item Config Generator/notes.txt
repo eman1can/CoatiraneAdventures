@@ -1,0 +1,778 @@
+"""
+When a monster is killed:
+- Non-havesting items dropped (Such as Egg)
+- Use harvesting knife:
+  - Magic Stones
+  - Harvest Drops
+    - Might consume items such as vials (for blood, venom), container (meat, tongue)
+  - Falna
+
+On a floor, every time you move there is a 15% chance to have an encounter.
+On specific nodes for each monster, the chance for that monster appearing is increased 10%, and all other monsters are reduced in equal amounts. On a node, monsters are 15% stronger, and encounters have a 25% chance to happen.
+When mining/digging/chopping at the dungeon, there is a 5% chance to get a resource (1-2 units), and the resource is either a random gem, or a metal with the hardness corresponding to the floor. When mining/digging/chopping on a resource node, there is an 85% chance to get the corresponding resource. (2-10 units)
+A tile that has a safe zone node has to made into a safe zone, and then will have a 0% encounter chance and allow for rest for 5 movement turns.
+When using a material that has a hardness lower than the resource, success is reduced by 10% for every 1 hardness below. For every 1 hardness above a resource type, increase yield by 5% and increase chance of success by 5%.
+
+When crafting an item, whatever equipment you are trying to craft will have a material unit amount for each type of material needed, and the higher the hardness of the ingredients, the higher the item stats.
+An item can have up to three materials for the main material, and a main materials for the other requirements.
+Each material will give effects to the resulting item.
+The current softest (hard)material is tin at 1.5 hardness. The current hardest (hard)material is Trinium at 15.0-16.0 hardness.
+
+Ex: Longsword
+ - 15 Units hard material
+ - 2 Units soft material
+
+ - 10 Units Bronze (Hardness 3.0)
+ - 2.5 Units Unicorn Horn (Hardness 3.5)
+ - 2.5 Units Goblin Fang (Hardness 2.0)
+ - 2 Units Imp Hide
+
+    Hardness:
+     Max: (3.0 * 10 + 3.5 * 2.5 + 2.0 * 2.5) / 15 = 2.9
+     Min: (3.0 * 10 + 3.5 * 2.5 + 2.0 * 2.5) / 15 = 2.9
+     Random from 2.9 → 2.9
+    Effects:
+        Element: Normal (Bronze - Defining)
+        - Ailment Resist 100% (Unicorn Horn - Sub)
+        - 10% Chance to inflict weak sickness (Goblin Fang - Sub)
+        - 10% Chance to attack with dark element (Imp Hide - Sub)
+
+Ex: Dagger
+ - 5 Units hard material
+ - 1 Unit soft material
+
+ - 3 Units Goblin Fang (Hardness 2.0)
+ - 1 Unit Titanium (Hardness 6.0)
+ - 1 Unit Siren Fang (Hardness 5.5)
+
+    Hardness:
+    Max: (2.0 * 3 + 6.0 * 1 + 5.5 * 1) / 5 = 3.5
+    Min: (2.0 * 3 + 6.0 * 1 + 5.5 * 1) / 5 = 3.5
+    Random from 3.5 → 3.5
+    Effects:
+        Element: Dark (Goblin Fang - Defining)
+        - 50% Chance to inflict strong sickness (Goblin Fang - Defining)
+        - 10% Chance to inflict daze (Siren Fang - Sub)
+"""
+
+# List of current materials (soft) (natural)
+# Cloth 0.5
+# Padded 0.75
+# Leather 1.0
+# Hardened Leather 1.5
+#
+# List of current materials (hard) (natural)
+# Tin 1.5
+# Cadmium 2.0
+# Coal 2.0-2.5
+# Zinc 2.5
+# Silver 2.5-3.0
+# Copper 3.0
+# Iron 4.5
+# Platinum 4.0-4.5
+# Titanium 6.0
+# Tungsten 7.5
+# Meteoric Iron 10.5-11.0
+# Golanthium 13.0-15.0
+#
+# Item weight = Hardness * item units
+# Weight limit = Str * 5
+# Ex. A adventurer with Str. 4 can carry total equipment worth
+# 20 weight units.
+# For every 2.5 weights units above weight limit, reduce stats by 5%
+
+# List of current materials (hard) (alloys)
+# Bronze 3.0
+# - 3 units copper
+# - 1 units tin
+# → 3 units bronze
+# Defining Effect (weapon): Elemental Boost Damage +100%
+# Defining Effect (armor): Elemental Resist +50%
+# Sub Effect (weapon): Elemental Boost Damage +50%
+# Sub Effect (armor): Elemental Resist +15%
+# Steel 5.0-5.5
+# - 3 units iron
+# - 2 units coal
+# → 2 units steel
+# Defining Effect: Durability +100%
+# Sub Effect: Durability +50%
+# Hardened Steel 7.0-8.0
+# - 5 units iron
+# - 3 units coal
+# - 2 units titanium
+# → 5 units hardened steel
+# Defining Effect: End. +100% (Item only)
+# Sub Effect: End. +25%
+# Tungsten Carbide 8.5-9.0
+# - 2 units tungsten
+# - 2 units coal
+# → 2 units tungsten carbide
+# Defining Effect: All equipment weight reduced by half.
+# Sub Effect: All equipment weight reduced by a quarter.
+# Dark Steel 9.0-9.5
+# - 2 units hardened steel
+# - 2 units tungsten carbide
+# → 2 units dark steel
+# Defining Effect: Increase Dark Atk. Dmg. by 100%. Dark Resist 100%.
+# Sub Effect: Increase Dark Atk. Dmg. by 25%. Increase Dark Resist by 25%.
+# Mithril 9.5-10.5
+# - 2 units silver
+# - 2 units dark steel
+# → 2 units mithril
+# Defining Effect: Mag. +50%
+# Sub Effect: Mag. +50% (Item Only)
+# Adamantite 11.0-13.0
+# - 2 units mithril
+# - 2 units meteoric iron
+# → 2 units adamantite
+# Defining Effect: Increase power level by 2 when using skill. (Can only happen once) Ex. Lo → High, High → Super
+# Sub Effect: Increase power level by 1 when using skill. (Can only happen once) Ex. Lo → Mid, Mid → High
+# Trinium 15.0-16.0
+# - 2 units Adamantite
+# - 2 units golanthium
+# → 2 units Trinium
+# Defining Effect: All Stats +25%
+# Sub Effect: All Stats +25% (Item Only)
+
+# Chrysocolla 2.5-3.5
+# Serpentine 3.0-6.0
+# Azurite 3.5-4.0
+# Malachite 3.5-4.0
+# Rhodochrosite 3.5-4.0
+# Ammolite 3.5-4.5
+# Fluorite 4.0
+# Kyanite 4.5-7.0
+# Apatite 5.0
+# Lapis Lazuli 5.0-5.5
+# Titanite 5.0-5.5
+# Obsidian 5.0-6.0
+# Turquoise 5.0-6.0
+# Opal 5.5-6.0
+# Rhodonite 5.5-6.0
+# Sodalite 5.5-6.0
+# Diopside 5.5-6.5
+# Tanzanite 6-6.5
+# Indraneelam 6.0
+# Andesine 6.0-6.5
+# Labradorite 6.0-6.5
+# Moonstone 6.0-6.5
+# Prehnite 6.0-6.5
+# Sunstone 6.0-6.5
+# Zoisite 6.0-6.5
+# Blizzard Stone 6.0-7.0
+# Jade 6.0-7.0
+# Zoisite 6.0-7.0
+# Aventurine 6.5
+# Petalite 6.5
+# Spectrolite 6.5
+# Agate 6.5-7.0
+# Jasper 6.5-7.0
+# Kunzite 6.5-7.0
+# Onyx 6.5-7.0
+# Peridot 6.5-7.0
+# Garnet 6.5-7.5
+# Garnet 6.5-7.5
+# Hessonite 6.5-7.5
+# Amethyst 7.0
+# Ametrine 7.0
+# Bloodstone 7.0
+# Citrine 7.0
+# Quartz 7.0
+# Rutilated Quartz 7.0
+# Spessartite 7.0
+# eye 7.0 Tiger
+# Danburite 7.0-7.5
+# Iolite 7.0-7.5
+# Tsavorite 7.0-7.5
+# Zircon 7.5
+# Aquamarine 7.5-8.0
+# Beryl 7.5-8.0
+# Bixbite 7.5-8.0
+# Emerald 7.5-8.0
+# Goshenite 7.5-8.0
+# Heliodor 7.5-8.0
+# Morganite 7.5-8.0
+# Spinel 7.5-8.0
+# Topaz 8.0
+# Chrysoberyl 8.5
+# Taaffeite 8.5
+# Sang-E-Maryam 8.6
+# Neelam 9.0
+# Padparadscha 9.0
+# Ruby 9.0
+# Sapphire 9.0
+
+
+
+
+# Floor Hardness (What hardness you need to mine / dig (Mining is 60%(ore)/40%(gem), Digging is 40%(ore)/60%(gem)))
+# Floor 1 → Hardness 1.0
+#    - None
+#
+# Floor 2 → Hardness 1.0
+#    - None
+#
+# Floor 3 → Hardness 1.5
+#    - None
+#
+# Floor 4 → Hardness 1.5
+#    - None
+#
+# Floor 5 → Hardness 2.0
+#    - Tin
+#
+# Floor 6 → Hardness 2.0
+#    - Tin
+#
+# Floor 7 → Hardness 2.5
+#    - Cadmium, Tin, Coal
+#
+# Floor 8 → Hardness 3.0
+#    - Zinc, Cadmium, Tin, Silver, Coal
+#    - Chrysocolla
+#
+# Floor 9 → Hardness 3.0
+#    - Zinc, Cadmium, Tin, Silver, Coal
+#    - Chrysocolla
+#
+# Floor 10 → Hardness 3.0
+#    - Zinc, Cadmium, Tin, Silver, Coal
+#    - Chrysocolla
+#
+# Floor 11 → Hardness 3.5
+#    - Zinc, Cadmium, Silver, Coal, Copper
+#    - Serpentine, Chrysocolla
+#
+# Floor 12 → Hardness 3.5
+#    - Zinc, Cadmium, Silver, Coal, Copper
+#    - Serpentine, Chrysocolla
+#
+# Floor 13 → Hardness 3.5
+#    - Zinc, Cadmium, Silver, Coal, Copper
+#    - Serpentine, Chrysocolla
+#
+# Floor 14 → Hardness 4.0
+#    - Zinc, Silver, Coal, Copper
+#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Chrysocolla
+#
+# Floor 15 → Hardness 4.5
+#    - Platinum, Silver, Copper
+#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Chrysocolla, Fluorite
+#
+# Floor 16 → Hardness 4.5
+#    - Platinum, Silver, Copper
+#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Chrysocolla, Fluorite
+#
+# Floor 17 → Hardness 5.0
+#    - Platinum, Iron
+#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Kyanite, Chrysocolla, Fluorite
+#
+# Floor 18 → Hardness 5.0
+#    - Platinum, Iron
+#    - Malachite, Azurite, Ammolite, Serpentine, Rhodochrosite, Kyanite, Chrysocolla, Fluorite
+#
+# Floor 19 → Hardness 5.5
+#    - Platinum, Iron
+#    - Malachite, Apatite, Azurite, Lapis Lazuli, Turquoise, Ammolite, Serpentine, Obsidian, Titanite, Rhodochrosite, Kyanite, Chrysocolla, Fluorite
+#
+# Floor 20 → Hardness 5.5
+#    - Platinum, Iron
+#    - Malachite, Apatite, Azurite, Lapis Lazuli, Turquoise, Ammolite, Serpentine, Obsidian, Titanite, Rhodochrosite, Kyanite, Chrysocolla, Fluorite
+#
+# Floor 21 → Hardness 6.0
+#    - Platinum, Iron
+#    - Malachite, Apatite, Azurite, Lapis Lazuli, Turquoise, Diopside, Ammolite, Rhodonite, Serpentine, Obsidian, Titanite, Rhodochrosite, Kyanite, Chrysocolla, Opal, Sodalite, Fluorite
+#
+# Floor 22 → Hardness 6.0
+#    - Platinum, Iron
+#    - Malachite, Apatite, Azurite, Lapis Lazuli, Turquoise, Diopside, Ammolite, Rhodonite, Serpentine, Obsidian, Titanite, Rhodochrosite, Kyanite, Chrysocolla, Opal, Sodalite, Fluorite
+#
+# Floor 23 → Hardness 6.5
+#    - Titanium
+#    - Malachite, Tanzanite, Prehnite, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Fluorite, Azurite, Lapis Lazuli, Diopside, Obsidian, Chrysocolla, Opal, Blizzard Stone, Turquoise, Sunstone, Moonstone, Zoisite
+#
+# Floor 24 → Hardness 6.5
+#    - Titanium
+#    - Malachite, Tanzanite, Prehnite, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Fluorite, Azurite, Lapis Lazuli, Diopside, Obsidian, Chrysocolla, Opal, Blizzard Stone, Turquoise, Sunstone, Moonstone, Zoisite
+#
+# Floor 25 → Hardness 7.0
+#    - Titanium
+#    - Malachite, Tanzanite, Prehnite, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Onyx, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Spectrolite, Obsidian, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Petalite, Moonstone, Zoisite, Agate, Kunzite
+#
+# Floor 26 → Hardness 7.0
+#    - Titanium
+#    - Malachite, Tanzanite, Prehnite, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Onyx, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Spectrolite, Obsidian, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Petalite, Moonstone, Zoisite, Agate, Kunzite
+#
+# Floor 27 → Hardness 7.0
+#    - Titanium
+#    - Malachite, Tanzanite, Prehnite, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Sodalite, Indraneelam, Apatite, Andesine, Rhodonite, Onyx, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Spectrolite, Obsidian, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Petalite, Moonstone, Zoisite, Agate, Kunzite
+#
+# Floor 28 → Hardness 7.5
+#    - Titanium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Andesine, Rhodonite, Iolite, Onyx, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Tsavorite, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 29 → Hardness 7.5
+#    - Titanium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Andesine, Rhodonite, Iolite, Onyx, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Tsavorite, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 30 → Hardness 7.5
+#    - Titanium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Andesine, Rhodonite, Iolite, Onyx, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Peridot, Sunstone, Tsavorite, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 31 → Hardness 8.0
+#    - Tungsten
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 32 → Hardness 8.0
+#    - Tungsten
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 33 → Hardness 8.0
+#    - Tungsten
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 34 → Hardness 8.5
+#    - Tungsten
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 35 → Hardness 8.5
+#    - Tungsten
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 36 → Hardness 8.5
+#    - Tungsten
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 37 → Hardness 9.0
+#    - Tungsten
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 38 → Hardness 9.0
+#    - Tungsten
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 39 → Hardness 9.0
+#    - Tungsten
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Aquamarine, Citrine, Spectrolite, Obsidian, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 40 → Hardness 9.5
+#    -
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 41 → Hardness 9.5
+#    -
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 42 → Hardness 9.5
+#    -
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 43 → Hardness 10.0
+#    -
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 44 → Hardness 10.5
+#    -
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 45 → Hardness 11.0
+#    - Meteoric Iron
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 46 → Hardness 11.5
+#    - Meteoric Iron
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 47 → Hardness 12.0
+#    - Meteoric Iron
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 48 → Hardness 12.5
+#    - Meteoric Iron
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 49 → Hardness 13.0
+#    -
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 50 → Hardness 13.0
+#    -
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 51 → Hardness 13.5
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 52 → Hardness 13.5
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 53 → Hardness 14.0
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 54 → Hardness 14.0
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 55 → Hardness 14.5
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 56 → Hardness 14.5
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 57 → Hardness 15.0
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 58 → Hardness 15.0
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 59 → Hardness 15.5
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+#
+# Floor 60 → Hardness 16.0
+#    - Golanthium
+#    - Malachite, Tanzanite, Prehnite, Quartz, Garnet, Jasper, Ammolite, Labradorite, Jade, Serpentine, Titanite, Padparadscha, Rhodochrosite, Goshenite, Kyanite, Ametrine, Sodalite, Taaffeite, Indraneelam, Apatite, Amethyst, Spinel, Emerald, Andesine, Rhodonite, Zircon, Iolite, Onyx, Beryl, Danburite, Fluorite, Aventurine, Azurite, Lapis Lazuli, Diopside, Morganite, Neelam, Aquamarine, Citrine, Spectrolite, Obsidian, Sapphire, Bloodstone, Rutilated Quartz, Chrysocolla, Opal, Ruby, Hessonite, Blizzard Stone, Turquoise, Bixbite, Peridot, Sang-E-Maryam, Sunstone, Tsavorite, Topaz, Heliodor, Petalite, Chrysoberyl, Spessartite, Moonstone, Zoisite, Tiger eye, Agate, Kunzite
+
+# Weapon and off-hand weapon types
+# Dagger - 1 hand
+# 5 units hard material
+# 1 unit soft material
+# A small dagger that allows for swift attacks at short range.
+
+# Knuckleduster - 1 hand
+# 5 units hard material
+# For those who like to punch things
+
+# Wood handled Axe - 1 hand
+# 5 units hard material
+# 5 units wood
+# 2 units soft material
+# An axe, good for chopping up your enemies!
+
+# Wood handled Spear - 2 hand
+# 5 units hard material
+# 10 units wood
+# 5 units soft material
+# A big spear, good for poking.
+
+# Wood handled Pike - 2 hand
+# 5 units hard material
+# 15 units wood
+# 5 units soft material
+# A big, big, big spear, good for poking.
+
+# Wood handled Halberd. - 2 hand
+# 10 units hard material
+# 10 units wood
+# 5 unist soft material
+# Love baby between a spear and an axe
+
+# Curved Dagger - 1 hand
+# 6 units hard material
+# 1 unit soft material
+# The tool of assassins
+
+# Claws - 1 hand
+# 6 units hard material
+# 2 units soft material
+# You must like to slash things.
+
+# Kukri - 1 hand
+# 8 units hard material
+# 2 units soft material
+# Curved, long daggers. *slice*
+
+# Cutlass - 1 hand
+# 10 units hard material
+# 2 units soft material
+# A curved sword.
+
+# Short Sword - 1 hand
+# 10 units hard material
+# 1 unit soft material
+# A normal, everyday short sword.
+
+# Short Staff - 1 hand
+# 10 units hard material
+# 5 units soft material
+# 5 units gems
+# A shorter and weaker staff
+
+# Rapier - 2 hand
+# 15 units hard material
+# 1 unit soft material
+# Pokity, poke, poke
+
+# Mace - 1 hand
+# 10 units hard material
+# 2 units soft material
+# Good for smacking things.
+
+# Axe - 1 hand
+# 10 units hard material
+# 2 units soft material
+# An axe, good for chopping up your enemies!
+
+# Spear - 2 hand
+# 15 units hard material
+# 5 units soft material
+# A big spear, good for poking.
+
+# Staff - 2 hand
+# 15 units hard material
+# 5 units soft material
+# 10 units gems
+# Exploosssiiooonnn
+
+# Pike - 2 hand
+# 20 units hard material
+# 5 units soft material
+# A big, big, big spear, good for poking.
+
+# Halberd. - 2 hand
+# 20 units hard material
+# 5 unist soft material
+# Love baby between a spear and an axe
+
+# Longsword - 2 hand
+# 15 units hard material
+# 2 units soft material
+# A normal, everyday sword, that's longer than a short sword.
+
+# Katana - 1 hand
+# 15 units hard material
+# 2 units soft material
+# A long, curved sword.
+
+# Broadsword - 2 hand
+# 20 units hard material
+# 3 units soft material
+# A large broadsword that allows you to bash your enemies.
+
+# Giant Axe
+# 30 units hard material
+# 5 units soft material
+# Even better for chopping.
+
+# Double-ended broadsword - 2 hand
+# 50 units hard material
+# 5 units soft material
+# An absolute beast of a sword.
+
+# Double-headed Giant Axe
+# 50 units hard material
+# 5 units soft material
+# An absolute beast of an axe, best for chopping heads.
+
+# Hammer - 2 hand
+# 30 units hard material
+# 5 units soft material
+# A giant hammer than allows you to pulverize your enemies.
+
+# Double-headed Hammer - 2 hand
+# 50 units hard material
+# 5 units soft material
+# A giant hammer than allows you to pulverize your enemies.
+
+# Generate Home Supplies
+# Forge
+# Blacksmithing tools
+
+
+S, tin_harvesting_knife, Tin Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, tin_pickaxe, Tin Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, tin_shovel, Tin Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, copper_harvesting_knife, Copper Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, copper_pickaxe, Copper Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, copper_shovel, Copper Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, platinum_harvesting_knife, Platinum Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, platinum_pickaxe, Platinum Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, platinum_shovel, Platinum Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, iron_harvesting_knife, Iron Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, iron_pickaxe, Iron Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, iron_shovel, Iron Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, titanium_harvesting_knife, Titanium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, titanium_pickaxe, Titanium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, titanium_shovel, Titanium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, tungsten_harvesting_knife, Tungsten Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, tungsten_pickaxe, Tungsten Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, tungsten_shovel, Tungsten Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, meteoric_iron_harvesting_knife, Meteoric Iron Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, meteoric_iron_pickaxe, Meteoric Iron Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, meteoric_iron_shovel, Meteoric Iron Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, golanthium_harvesting_knife, Golanthium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, golanthium_pickaxe, Golanthium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, golanthium_shovel, Golanthium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, bronze_harvesting_knife, Bronze Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, bronze_pickaxe, Bronze Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, bronze_shovel, Bronze Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, steel_harvesting_knife, Steel Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, steel_pickaxe, Steel Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, steel_shovel, Steel Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, hardened_steel_harvesting_knife, Hardened Steel Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, hardened_steel_pickaxe, Hardened Steel Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, hardened_steel_shovel, Hardened Steel Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, tungsten_carbide_harvesting_knife, Tungsten Carbide Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, tungsten_carbide_pickaxe, Tungsten Carbide Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, tungsten_carbide_shovel, Tungsten Carbide Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, dark_steel_harvesting_knife, Dark Steel Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, dark_steel_pickaxe, Dark Steel Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, dark_steel_shovel, Dark Steel Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, mithril_harvesting_knife, Mithril Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, mithril_pickaxe, Mithril Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, mithril_shovel, Mithril Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, adamantite_harvesting_knife, Adamantite Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, adamantite_pickaxe, Adamantite Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, adamantite_shovel, Adamantite Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, trinium_harvesting_knife, Trinium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, trinium_pickaxe, Trinium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, trinium_shovel, Trinium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.

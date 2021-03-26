@@ -1,9 +1,10 @@
 # Relative Layouts
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import BooleanProperty, ObjectProperty, StringProperty, ListProperty, NumericProperty
+from kivy.properties import BooleanProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
 
+from kivy.uix.relativelayout import RelativeLayout
 # KV Import
 from loading.kv_loader import load_kv
+
 load_kv(__name__)
 
 
@@ -43,23 +44,23 @@ class AbilityStatBox(RelativeLayout):
             return
         if not self.rank:
             self.strength = self.char.get_strength()
-            self.strength_path = self.char.get_strength_rank()
+            self.strength_path = self.char.get_strength_rank_image()
             self.magic = self.char.get_magic()
-            self.magic_path = self.char.get_magic_rank()
+            self.magic_path = self.char.get_magic_rank_image()
             self.endurance = self.char.get_endurance()
-            self.endurance_path = self.char.get_endurance_rank()
+            self.endurance_path = self.char.get_endurance_rank_image()
             self.dexterity = self.char.get_dexterity()
-            self.dexterity_path = self.char.get_dexterity_rank()
+            self.dexterity_path = self.char.get_dexterity_rank_image()
             self.agility = self.char.get_agility()
-            self.agility_path = self.char.get_agility_rank()
+            self.agility_path = self.char.get_agility_rank_image()
         else:
             self.strength = self.char.get_strength(self.char.get_current_rank())
-            self.strength_path = self.char.get_strength_rank(self.char.get_current_rank())
+            self.strength_path = self.char.get_strength_rank_image(self.char.get_current_rank())
             self.magic = self.char.get_magic(self.char.get_current_rank())
-            self.magic_path = self.char.get_magic_rank(self.char.get_current_rank())
+            self.magic_path = self.char.get_magic_rank_image(self.char.get_current_rank())
             self.endurance = self.char.get_endurance(self.char.get_current_rank())
-            self.endurance_path = self.char.get_endurance_rank(self.char.get_current_rank())
+            self.endurance_path = self.char.get_endurance_rank_image(self.char.get_current_rank())
             self.dexterity = self.char.get_dexterity(self.char.get_current_rank())
-            self.dexterity_path = self.char.get_dexterity_rank(self.char.get_current_rank())
+            self.dexterity_path = self.char.get_dexterity_rank_image(self.char.get_current_rank())
             self.agility = self.char.get_agility(self.char.get_current_rank())
-            self.agility_path = self.char.get_agility_rank(self.char.get_current_rank())
+            self.agility_path = self.char.get_agility_rank_image(self.char.get_current_rank())

@@ -1,13 +1,13 @@
 # UIX Imports
+# Kivy Imports
+from kivy.properties import BooleanProperty, NumericProperty
+
+# KV Import
+from loading.kv_loader import load_kv
 from refs import Refs
 from uix.modules.screen import Screen
 from uix.screens.character_display.portfolio import CharacterPortfolio
 
-# Kivy Imports
-from kivy.properties import NumericProperty, BooleanProperty
-
-# KV Import
-from loading.kv_loader import load_kv
 load_kv(__name__)
 
 

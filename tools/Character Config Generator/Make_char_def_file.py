@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     max_lengths = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     file_array = []
-    # Type, Type, health, mana, strength, magic, endurance, dexterity, agility, Full Name, Display Name, ID, Moves
+    # Type, Type, health, mana, strength, magic, endurance, agility, dexterity, Full Name, Display Name, ID, Moves
     for name in adventurers:
         line = []
         print("Adding ", name, "To the File as an Adventurer")

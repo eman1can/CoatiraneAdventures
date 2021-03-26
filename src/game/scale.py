@@ -15,29 +15,29 @@ class Scale:
     def get_scale(value, max_val):
         val = value / max_val
         if val > Scale.threshSSS:
-            return "SSS"
+            return 'SSS'
         elif val > Scale.threshSS:
-            return "SS"
+            return 'SS'
         elif val > Scale.threshS:
-            return "S"
+            return 'S'
         elif val > Scale.threshA:
-            return "A"
+            return 'A'
         elif val > Scale.threshB:
-            return "B"
+            return 'B'
         elif val > Scale.threshC:
-            return "C"
+            return 'C'
         elif val > Scale.threshD:
-            return "D"
+            return 'D'
         elif val > Scale.threshE:
-            return "E"
+            return 'E'
         elif val > Scale.threshF:
-            return "F"
+            return 'F'
         elif val > Scale.threshG:
-            return "G"
+            return 'G'
         elif val > Scale.threshH:
-            return "H"
+            return 'H'
         else:
-            return "I"
+            return 'I'
 
     @staticmethod
     def get_scale_as_number(value, max_val):
@@ -69,4 +69,8 @@ class Scale:
 
     @staticmethod
     def get_scale_as_image_path(value, max_val):
-        return "screens/stats/" + Scale.get_scale(value, max_val) + ".png"
+        return 'screens/stats/' + Scale.get_scale(value, max_val) + '.png'
+
+    @staticmethod
+    def get_scale_as_character(value, max_val):
+        return Scale.get_scale(value, max_val)

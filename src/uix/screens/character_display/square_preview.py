@@ -1,7 +1,7 @@
 # Kivy Imports
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.properties import DictProperty, ListProperty, ObjectProperty, BooleanProperty, StringProperty, OptionProperty, NumericProperty
+from kivy.properties import BooleanProperty, DictProperty, ListProperty, NumericProperty, ObjectProperty, OptionProperty, StringProperty
 
+from kivy.uix.relativelayout import RelativeLayout
 # KV Import
 from loading.kv_loader import load_kv
 from refs import Refs

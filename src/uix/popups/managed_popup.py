@@ -1,14 +1,14 @@
 __all__ = ('ManagedPopup',)
 
+# Kivy Imports
+from kivy.properties import ObjectProperty, StringProperty
+
+from kivy.uix.modalview import ModalView
+# KV Import
+from loading.kv_loader import load_kv
 # UIX Imports
 from uix.modules.screen import Screen
 
-# Kivy Imports
-from kivy.properties import ObjectProperty, StringProperty
-from kivy.uix.modalview import ModalView
-
-# KV Import
-from loading.kv_loader import load_kv
 load_kv(__name__)
 
 

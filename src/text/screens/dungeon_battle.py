@@ -1,14 +1,9 @@
 from random import randint
 
-from game.floor_data import DIRECTIONS_FROM_STRING, E, N, S, W
-from refs import Refs
+from game.floor import ENTRANCE, EXIT, SAFE_ZONES
+from game.floor_data import DIRECTIONS_FROM_STRING, E, LEFT, N, OPPOSITE, RIGHT, S, STRING_DIRECTIONS, W
+from refs import BLUE_C, END_OPT_C, OPT_C, RED_C, Refs, SEA_FOAM_C
 
-
-OPT_C = '[color=#CA353E]'
-HEALTH_C = '[color=#FF0000]'
-MANA_C = '[color=#0000FF]'
-SPECIAL_C = '[color=#64FAD4]'
-END_OPT_C = '[/color]'
 COUNT_TO_STRING = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
 
 
@@ -48,12 +43,11 @@ def rjust(string, length, size):
 
 
 def get_tunnel_descriptions(floor_data):
+    floor_map = floor_data.get_floor().get_map()
     facing, options = floor_data.get_directions()
-    display_string = ''
-    option_index = 0
-    _options = {}
+    display_string, _options = '', {}
 
-    compass = Refs.gc.in_inventory('compass')
+    compass = Refs.gc.get_inventory().has_item('compass')
 
     # Currently facing direction
     if compass:
@@ -65,76 +59,82 @@ def get_tunnel_descriptions(floor_data):
             display_string = f'\n\tCurrently facing: South\n'
         elif facing == W:
             display_string = f'\n\tCurrently facing: West\n'
-
     # Get possible options
     display_string += '\n\t' + floor_data.get_descriptions()
     display_string += '\n\tWhat do you choose to do?'
 
     # Ascend or descend
-    if floor_data.at_exit():
-        display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Descend to the next floor'
-        _options[str(option_index)] = 'dungeon_battle_descend'
-        option_index += 1
-    elif floor_data.at_entrance():
-        display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Turn back and ascend.'
-        _options[str(option_index)] = 'dungeon_battle_ascend'
-        option_index += 1
+    if floor_map.is_marker(EXIT):
+        display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Descend to the next floor'
+        _options['0'] = 'dungeon_battle_descend'
+    elif floor_map.is_marker(ENTRANCE):
+        display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Turn back and ascend.'
+        _options['0'] = 'dungeon_battle_ascend'
 
     # Walk in different directions
     display_string += '\n'
-    numbers = {'North': 8, 'East': 6, 'South': 2, 'West': 4}
-    for direction in options:
-        if compass:
-            display_string += f'\n\t{OPT_C}{numbers[direction]}:{END_OPT_C} Proceed {direction}, {floor_data.get_basic_direction(direction)} down the hallway.'
-        else:
-            display_string += f'\n\t{OPT_C}{numbers[direction]}:{END_OPT_C} Proceed {floor_data.get_basic_direction(direction)} down the hallway.'
-        _options[str(numbers[direction])] = f'dungeon_battle_{direction}'
-        option_index += 1
 
-    # Get map and display it
-    map_rows = floor_data.get_map().get_rows(floor_data.get_current_node())
-    display_string_rows = display_string.split('\n')
-    display_string = ''
-    for x in range(len(display_string_rows)):
-        if x < len(map_rows):
-            row = display_string_rows[x].replace('\t', '    ')
-            display_string += ljust(row, get_plain_size(row), 140) + '[font=CourierNew]' + map_rows[x] + '[/font]'
-        else:
-            display_string += display_string_rows[x]
-    if len(display_string_rows) < len(map_rows):
-        for x in range(len(display_string_rows), len(map_rows)):
-            display_string += ljust('', 0, 140) + '[font=CourierNew]' + map_rows[x] + '[/font]'
-
+    # If we have compass, order = N E S W
+    # Else, order = FACING, !FACING, LEFT, RIGHT
+    if compass:
+        for index, direction in {8: 'North', 4: 'West', 6: 'East', 2: 'South'}.items():
+            if direction in options:
+                display_string += f'\n\t{OPT_C}{index}:{END_OPT_C} Proceed {direction}, {floor_data.get_basic_direction(direction)} down the hallway.'
+                _options[str(index)] = f'dungeon_battle_{direction}'
+    else:
+        for index, direction_number in {3: facing, 4: OPPOSITE[facing], 5: LEFT[facing], 6: RIGHT[facing]}.items():
+            direction = STRING_DIRECTIONS[direction_number]
+            if direction in options:
+                display_string += f'\n\t{OPT_C}{index}:{END_OPT_C} Proceed {floor_data.get_basic_direction(direction)} down the hallway.'
+                _options[str(index)] = f'dungeon_battle_{direction}'
+    display_string += '\n'
     return display_string, _options
 
 
 def get_extra_actions(floor_data):
-    return '\n', {}
-    # To be able to
-    # To be able to inspect the walls, the player needs to have a pickaxe in their inventory.
-    # To be able to inspect the environment, the player needs to have able adventurers and the appropriate equipment.
-    # For a node that is made of stone or dirt, the player requires a shovel.
-    # For a node that is wood based, the player requires an axe
-    # For a node that is plant based, the player requires a harvesting dagger
-    # For a node that is liquid based, the player requires a container
-    # For a node that is loose, such as small plants or dropped resources, the player only needs able adventurers.
+    text, options = '', {}
 
-    # To be able to undertake an action, at least one adventurer needs to have > 25% health
-    # For every adventurer that is above 25% health, a randomized health decrease from 5-10,
-    # will be instituted to be distributed among every able adventurer.
+    compass = Refs.gc.get_inventory().has_item('compass')
 
-    # pickaxe = False
-    # shovel = False
-    # adventurers_able = False
-    # if adventurers_able:
-    #     if pickaxe:
-    #         display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Inspect the dungeon walls. (Mine for resource)'
-    #         _options[str(option_index)] = 'dungeon_battle_mine'
-    #         option_index += 1
-    #     if shovel:
-    #         display_string += f'\n\n\t{OPT_C}{option_index}:{END_OPT_C} Inspect the dungeon environment. (Dig and Scrounge for resource)'
-    #         _options[str(option_index)] = 'dungeon_battle_mine'
-    #         option_index += 1
+    if compass:
+        inventory_index = 5
+        safe_zone_index = 1
+        action_index1 = 7
+        action_index2 = 9
+    else:
+        inventory_index = 1
+        safe_zone_index = 7
+        action_index1 = 8
+        action_index2 = 9
+
+    text += f'\n\t{OPT_C}{inventory_index}:{END_OPT_C} Inventory\n'
+    options[str(inventory_index)] = 'inventory_battle0page'
+
+    safe_zone = floor_data.get_floor().get_map().is_marker(SAFE_ZONES)
+    activated_safe_zone = floor_data.is_activated_safe_zone()
+
+    if safe_zone and not activated_safe_zone:
+        text += f'\n\n\t{OPT_C}{safe_zone_index}:{END_OPT_C} Create Safe Zone'
+        options[str(safe_zone_index)] = 'dungeon_battle_create_safe_zone'
+
+    if activated_safe_zone:
+        text += f'\n\n\t{OPT_C}{safe_zone_index}:{END_OPT_C} Rest'
+        options[str(safe_zone_index)] = 'dungeon_battle_rest'
+
+    adventurers_able = False
+    for character in floor_data.get_characters():
+        if character.can_take_action():
+            adventurers_able = True
+
+    if adventurers_able:
+        if Refs.gc.get_inventory().has_pickaxe():
+            text += f'\n\n\t{OPT_C}{action_index1}:{END_OPT_C} Inspect the dungeon walls. (Mine for resource)'
+            options[str(action_index1)] = 'dungeon_battle_mine'
+        if Refs.gc.get_inventory().has_shovel():
+            text += f'\n\n\t{OPT_C}{action_index2}:{END_OPT_C} Inspect the dungeon environment. (Dig and Scrounge for resource)'
+            options[str(action_index2)] = 'dungeon_battle_dig'
+
+    return text, options
 
 
 def get_battle_display(floor_data):
@@ -150,7 +150,6 @@ def get_battle_display(floor_data):
     # Display Enemies
     for enemy in battle_data.get_enemies():
         name = enemy.get_name()
-        level = f'Level {enemy.get_level()}'
         count = 18 * enemy.get_battle_health() / enemy.get_health()
         health_string = ''
         for index in range(18):
@@ -161,13 +160,10 @@ def get_battle_display(floor_data):
         health_string = f'[{health_string}]'
         if enemy.is_dead():
             enemy_rows.append((f'[s]{name}[/s]', len(name)))
-            enemy_rows.append((f'[s]{level}[/s]', len(level)))
-            enemy_rows.append((f'[s]{HEALTH_C}{health_string}{END_OPT_C}[/s]', len(health_string)))
+            enemy_rows.append((f'[s]{RED_C}{health_string}{END_OPT_C}[/s]', len(health_string)))
         else:
             enemy_rows.append((name, len(name)))
-            enemy_rows.append((level, len(level)))
-            enemy_rows.append((f'{HEALTH_C}{health_string}{END_OPT_C}', len(health_string)))
-        enemy_rows.append(('', 0))
+            enemy_rows.append((f'{RED_C}{health_string}{END_OPT_C}', len(health_string)))
         enemy_rows.append(('', 0))
 
     # Display Characters
@@ -198,7 +194,7 @@ def get_battle_display(floor_data):
             else:
                 mana_string += ' '
         mana_string = f'[{mana_string}]'
-        skill_name = f'Sel. Skill: {character.get_selected_skill().get_name()}'
+        skill_name = f'S.S.: {character.get_selected_skill().get_name()}'
         if not battle_data.get_state().startswith('battle_select') and not character.is_dead():
             character_rows.append((f'{OPT_C}{option_index}:{END_OPT_C} {name}', len(name) + 3))
             _options[str(option_index)] = f'dungeon_battle_encounter_select_show_{option_index - 1}'
@@ -209,20 +205,20 @@ def get_battle_display(floor_data):
             else:
                 character_rows.append((f'{name}', len(name)))
         if character.is_dead():
-            character_rows.append((f'[s]{HEALTH_C}{health_string}{END_OPT_C}[/s]', 20))
-            character_rows.append((f'[s]{MANA_C}{mana_string}{END_OPT_C}[/s]', 20))
+            character_rows.append((f'[s]{RED_C}{health_string}{END_OPT_C}[/s]', 20))
+            character_rows.append((f'[s]{BLUE_C}{mana_string}{END_OPT_C}[/s]', 20))
             character_rows.append(('', 0))
             character_rows.append((f'[s]{skill_name}[/s]', len(skill_name)))
         else:
-            character_rows.append((f'{HEALTH_C}{health_string}{END_OPT_C}', 20))
-            character_rows.append((f'{MANA_C}{mana_string}{END_OPT_C}', 20))
+            character_rows.append((f'{RED_C}{health_string}{END_OPT_C}', 20))
+            character_rows.append((f'{BLUE_C}{mana_string}{END_OPT_C}', 20))
             character_rows.append(('', 0))
             character_rows.append((skill_name, len(skill_name)))
         character_rows.append(('', 0))
         character_rows.append(('', 0))
     # Display Status Effects
     for character in battle_data.get_characters():
-        status_effects = character.get_status_effects()
+        status_effects = character.get_effects()
         for effect_list in status_effects.values():
             for effect in effect_list:
                 pass
@@ -247,7 +243,7 @@ def get_battle_display(floor_data):
             special_string += '='
         else:
             special_string += ' '
-    screen_string += f'\t{SPECIAL_C}[b][{special_string}] {battle_data.get_special_count()}[/b]{END_OPT_C}\n\n'
+    screen_string += f'\t{SEA_FOAM_C}[b][{special_string}] {battle_data.get_special_count()}[/b]{END_OPT_C}\n\n'
 
     for index in range(max(len(enemy_rows), len(character_rows), len(effect_rows))):
         screen_string += '\t'
@@ -274,16 +270,21 @@ def get_battle_display(floor_data):
     # Add Actions
     screen_string += '\n'
     if battle_data.get_state().startswith('battle_select'):
-        index = int(battle_data.get_state()[len('battle_select_'):])
-        character = battle_data.get_characters()[index]
+        char_index = int(battle_data.get_state()[len('battle_select_'):])
+        character = battle_data.get_characters()[char_index]
         selected_skill = character.get_selected_skill()
-        for skill in character.get_skills():
-            print(skill.get_name(), skill.is_special())
+
+        skills = character.get_skills()
+        skill_indexes = [0, 1, 3, 5, 7]
+        for index, skill in enumerate(skills):
+            skill_index = skill_indexes[index]
+
             if skill == selected_skill:
                 screen_string += f'\n\t{OPT_C}[s]{option_index}: {skill.get_name()}[/s]{END_OPT_C}'
-                option_index += 1
-                continue
-            if skill.is_special():
+                _options[str(0)] = f'dungeon_battle_encounter_select_{char_index}_{skill_index}'
+            elif character.get_battle_mana() < character.get_mana_cost(skill):
+                screen_string += f'\n\t{OPT_C}[s]{option_index}: {skill.get_name()}[/s]{END_OPT_C}'
+            elif skill.is_special():
                 # Do we have any special gauge points?
                 special_blocked = battle_data.get_special_count() < 0
                 if not special_blocked:
@@ -296,14 +297,18 @@ def get_battle_display(floor_data):
                         special_blocked = True
                 if special_blocked:
                     screen_string += f'\n\t{OPT_C}[s]{option_index}: {skill.get_name()}[/s]{END_OPT_C}'
-                    option_index += 1
-                    continue
-            screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {skill.get_name()}'
-            _options[str(option_index)] = f'dungeon_battle_encounter_select_{index}_{option_index}'
+            else:
+                mana_cost = character.get_mana_cost(skill)
+                if mana_cost == 0:
+                    screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {skill.get_name()}'
+                else:
+                    screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {skill.get_name()} - {character.get_mana_cost(skill)}'
+                _options[str(option_index)] = f'dungeon_battle_encounter_select_{char_index}_{skill_index}'
             option_index += 1
+        screen_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Back'
     else:
         _options['0'] = 'dungeon_battle_encounter_attack'
-        _options[str(option_index)] = 'dungeon_battle_encounter_inventory'
+        _options[str(option_index)] = 'inventory_battle0page'
         screen_string += f'\n\t{OPT_C}{0}:{END_OPT_C} Attack'
         screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Inventory'
     screen_string += '\n'
@@ -340,8 +345,46 @@ def dungeon_battle(console):
     if not floor_data.is_in_encounter():
         display_string, _options = get_tunnel_descriptions(floor_data)
         tool_string, tool_options = get_extra_actions(floor_data)
+
         _options.update(tool_options)
-        return display_string + tool_string, _options
+
+        compass = Refs.gc.get_inventory().has_item('compass')
+        if Refs.gc.get_inventory().has_item('pocket_watch'):
+            display_string = f'\n\t{Refs.gc.get_time()}\n' + display_string
+
+        if compass:
+            map_index = 3
+        else:
+            map_index = 2
+
+        # Get map and display it
+        floor_map = floor_data.get_floor().get_map()
+        floor_id = floor_data.get_floor().get_id()
+        if floor_data.party_has_perk('mapping') or Refs.gc.get_inventory().has_item(f'path_map_floor_{floor_id}') or Refs.gc.get_inventory().has_item(f'full_map_floor_{floor_id}'):
+            if floor_map.get_enabled():
+                display_string_rows = (display_string + tool_string).split('\n')
+                map_rows, radius = floor_map.get_rows()
+                display_string = ''
+
+                display_string_width = 140 - ((radius - 5) * 4)
+
+                for x in range(len(display_string_rows)):
+                    if x < len(map_rows):
+                        row = display_string_rows[x].replace('\t', '    ')
+                        display_string += ljust(row, get_plain_size(row), display_string_width) + '[font=CourierNew]' + map_rows[x] + '\n'
+                    else:
+                        display_string += display_string_rows[x] + '\n'
+
+                if len(display_string_rows) < len(map_rows):
+                    for x in range(len(display_string_rows), len(map_rows)):
+                        display_string += ljust('', 0, display_string_width) + '[font=CourierNew]' + map_rows[x] + '\n'
+                    display_string += ljust('', 0, display_string_width) + f'       {OPT_C}{map_index}:{END_OPT_C} Map Options'
+                else:
+                    display_string += ljust('', 0, display_string_width) + f'       {OPT_C}{map_index}:{END_OPT_C} Map Options'
+            else:
+                display_string = display_string + f'\n\t{OPT_C}{map_index}:{END_OPT_C} Map Options\n' + tool_string
+            _options[str(map_index)] = 'dungeon_battle_map_options'
+        return display_string, _options
     else:
         display_string = '\n\t' + floor_data.get_descriptions()
         _options = {}
@@ -375,9 +418,6 @@ def dungeon_result(console):
             counts[enemy.get_name()] += 1
         for enemy, count in counts.items():
             display_string += f'\n\t\t{enemy} x {count}'
-        display_string += '\n\n\tItems Dropped:'
-        for item, count in battle_data.get_dropped_items().items():
-            display_string += f'\n\t\t{item.get_name()} x {count}'
 
         display_string += '\n\n'
         pre_battle = battle_data.get_pre_battle_status()
@@ -389,11 +429,51 @@ def dungeon_result(console):
                 display_string += f'\t{character.get_name()} - Health: {pre_battle[char_id + "_health"]} / {health} → {character.get_battle_health()} / {health} - Mana: {pre_battle[char_id + "_mana"]} / {mana} → {character.get_battle_mana()} / {mana}\n'
             else:
                 display_string += f'\t{character.get_name()} - Health: {pre_battle[char_id + "_health"]} / {health} - Mana: {pre_battle[char_id + "_mana"]} / {mana} → Incapacitated\n'
-        display_string += f'\n\t{OPT_C}{0}:{END_OPT_C} Continue\n'
+
         _options = {'0': 'dungeon_battle_end_encounter'}
+        if Refs.gc.get_inventory().has_harvesting_knife():
+            _options['1'] = 'dungeon_result_harvest_materials'
+            display_string += f'\n\t{OPT_C}1:{END_OPT_C} Harvest Materials'
+            display_string += f'\n\t{OPT_C}3:{END_OPT_C} Inventory'
+            _options['2'] = 'inventory_battle0page'
+        else:
+            display_string += f'\n\t[s]{OPT_C}1:{END_OPT_C} Harvest Materials[/s]'
+        display_string += f'\n\t{OPT_C}0:{END_OPT_C} Continue\n'
 
         Refs.app.scroll_widget.ids.label.text = battle_data.get_battle_log()
         Refs.app.scroll_widget.opacity = 1
+    elif console.get_current_screen().endswith('harvest_materials'):
+        floor_data = Refs.gc.get_floor_data()
+        battle_data = floor_data.get_battle_data()
+        display_string = '\n\tMaterial Harvest Result:'
+
+        counts = {}
+        for enemy in battle_data.get_enemies():
+            if enemy.get_name() not in counts:
+                counts[enemy.get_name()] = 0
+            counts[enemy.get_name()] += 1
+
+        item_counts = {}
+        knife = Refs.gc.get_inventory().get_current_harvesting_knife()
+        knife.remove_durability(Refs.gc.get_random_wear_amount())
+        for enemy, count in counts.items():
+            display_string += f'\n\t{enemy} x {count}:'
+            for _ in range(count):
+                drops = Refs.gc['enemies'][enemy.get_id()].generate_drop(enemy.get_boost(), knife.get_hardness())
+                if len(drops) == 0:
+                    display_string += f'\n\t\tNo items were dropped.'
+                for (drop_id, drop_count) in drops:
+                    item = Refs.gc.get_drop_item(drop_id)
+                    if item not in item_counts:
+                        item_counts[item] = 0
+                    item_counts[item] += drop_count
+                    display_string += f'\n\t\t{item.get_name()} x {drop_count}'
+        display_string += '\n\n\tAll Items Dropped:'
+        for item, count in item_counts.items():
+            display_string += f'\n\t\t{item.get_name()} x {count}'
+        battle_data.set_dropped_items(item_counts)
+        display_string += f'\n\t{OPT_C}0:{END_OPT_C} Continue\n'
+        _options = {'0': 'dungeon_battle_end_encounter'}
     elif console.get_current_screen().endswith('loss'):
         # floor_data = Refs.gc.get_floor_data()
         # battle_data = floor_data.get_battle_data()
@@ -404,7 +484,7 @@ def dungeon_result(console):
         _options = {'0': 'dungeon_battle_restore_save'}
     elif console.get_current_screen().endswith('ascend'):
         floor_data = Refs.gc.get_floor_data()
-        if floor_data.get_id() > 1:
+        if floor_data.get_floor().get_id() > 1:
             return show_locked_dungeon_main()
         else:
             display_string = '\n\tYou successfully escaped the dungeon!\n\n\t'
@@ -414,6 +494,7 @@ def dungeon_result(console):
                 enemy_rows.append(f'{enemy} x {count}')
             for item, count in floor_data.get_gained_items().items():
                 items_gained.append(f'{item.get_name()} x {count}')
+                Refs.gc.get_inventory().add_item(item.get_id(), count)
             if len(enemy_rows) == 0:
                 enemy_rows.append('None'.center(25))
             if len(items_gained) == 0:
@@ -506,15 +587,13 @@ def dungeon_battle_action(console, action):
     - We can handle a battle action, a battle result
     """
     action = action[len('dungeon_battle_'):]
-    if action.startswith('start'):
-        Refs.gc.set_next_floor(bool(action[6:]))
+
     if action == 'ascend':
-        floor_data = Refs.gc.get_floor_data()
+        Refs.gc.get_floor_data().get_floor().get_map().clear_current_node()
         # Keep items in inventory
         # Keep items used
         # Keep exploration
         # Clear the current value on the map
-        floor_data.clear_current()
         console.set_screen('dungeon_result_ascend')
         return
     elif action == 'descend':
@@ -525,29 +604,22 @@ def dungeon_battle_action(console, action):
     elif action == 'restore_save':
         # Remove gained items from inventory
         floor_data = Refs.gc.get_floor_data()
-        for item, count in floor_data.get_gained_items().items():
-            Refs.gc.remove_from_inventory(item.get_id(), count)
-        for item, count in floor_data.get_battle_data().get_dropped_items().items():
-            Refs.gc.remove_from_inventory(item.get_id(), count)
+        # for item, count in floor_data.get_gained_items().items():
+        #     Refs.gc.remove_from_inventory(item.get_id(), count)
+        # for item, count in floor_data.get_battle_data().get_dropped_items().items():
+        #     Refs.gc.remove_from_inventory(item.get_id(), count)
         # Remove gained status points from characters
         # Add back used items to inventory
         # Remove explored map data
+        floor_map = floor_data.get_floor().get_map()
         for node in floor_data.get_explored():
-            floor_data.hide_node(node)
-        floor_data.clear_current()
+            floor_map.hide_node(node)
+        floor_map.clear_current_node()
+        Refs.app.scroll_widget.opacity = 0
         console.set_screen('dungeon_main')
         return
     elif action == 'North' or action == 'East' or action == 'South' or action == 'West':
-        floor_data = Refs.gc.get_floor_data()
-        print('Go ', action)
-        floor_data.progress_by_direction(DIRECTIONS_FROM_STRING[action])
-
-        # On floor 1, there are 47 nodes to the next floor.
-        # I want people to encounter maybe 5-6 roaving hordes of monsters.
-        # Therefore, a 0.15% Chance is decent, I think
-
-        if randint(1, 100) <= 15:
-            floor_data.generate_encounter()
+        Refs.gc.get_floor_data().progress_by_direction(DIRECTIONS_FROM_STRING[action])
 
     elif action.startswith('encounter'):
         action = action[len('encounter_'):]
@@ -558,12 +630,14 @@ def dungeon_battle_action(console, action):
         elif action == 'attack':
             result = Refs.gc.get_floor_data().get_battle_data().make_turn()
             if result is not None:
-                Refs.app.scroll_widget.opacity = 0
                 Refs.gc.get_floor_data().get_battle_data().progress_encounter()
                 if result:
                     console.set_screen('dungeon_result_win')
+                    Refs.app.scroll_widget.opacity = 0
                 else:
                     console.set_screen('dungeon_result_loss')
+                    Refs.app.scroll_widget.ids.label.text = Refs.gc.get_floor_data().get_battle_data().get_battle_log()
+                    Refs.app.scroll_widget.opacity = 1
                 return
         elif action.startswith('select_'):
             if action.startswith('select_show_'):
@@ -571,12 +645,115 @@ def dungeon_battle_action(console, action):
             else:
                 character_index, select_index = action[len("select_"):].split('_')
                 battle_data = Refs.gc.get_floor_data().get_battle_data()
-                skill_index = int(select_index)
-                if skill_index == 1:
-                    skill_index = 0
-                else:
-                    skill_index += 1
-                battle_data.get_characters()[int(character_index)].select_skill(skill_index)
+                battle_data.get_characters()[int(character_index)].select_skill(int(select_index))
                 battle_data.set_state('battle')
+    elif action == 'create_safe_zone':
+        floor_data = Refs.gc.get_floor_data()
+        floor_data.activate_safe_zone()
 
+        # Random character takes the action
+        index = randint(0, len(floor_data.get_characters()) - 1)
+        character = floor_data.get_characters()[index]
+        character.take_action()
+    elif action == 'rest':
+        floor_data = Refs.gc.get_floor_data()
+        for character in floor_data.get_characters():
+            character.rest()
+        floor_data.decrease_safe_zones()
+        floor_data.increase_rest_count()
+    elif action == 'mine':
+        floor_data = Refs.gc.get_floor_data()
+        index = randint(0, len(floor_data.get_characters()) - 1)
+        character = floor_data.get_characters()[index]
+        character.take_action()
+        floor_data.increase_rest_count(2)
+        console.set_screen(f'dungeon_mine_result_{character.get_id()}')
+        return
+    elif action == 'dig':
+        floor_data = Refs.gc.get_floor_data()
+        index = randint(0, len(floor_data.get_characters()) - 1)
+        character = floor_data.get_characters()[index]
+        character.take_action()
+        floor_data.increase_rest_count(2)
+        console.set_screen(f'dungeon_dig_result_{character.get_id()}')
+        return
+    elif action == 'map_options':
+        console.set_screen('map_options')
+        return
     console.set_screen('dungeon_battle')
+
+
+def dungeon_mine_result(console):
+    display_string, _options = '', {}
+    character_id = console.get_current_screen()[len('dungeon_mine_result_'):]
+    character = Refs.gc.get_char_by_id(character_id)
+
+    floor = Refs.gc.get_floor_data().get_floor()
+    node = None
+    for resource_type, resource_list in floor.get_resources().items():
+        for resource in resource_list:
+            if floor.get_map().is_marker(resource):
+                node = resource
+
+    resource, count = floor.generate_resource(node, True)
+    Refs.gc.get_inventory().get_current_pickaxe().remove_durability(Refs.gc.get_random_wear_amount())
+
+    if count == 0:
+        # We didn't get anything!
+        display_string += '\n\t' + character.get_name() + ' mined as hard as they could but found nothing.'
+    else:
+        # We found something!
+        if resource in floor.get_resources()['metals']:
+            display_string += '\n\t' + character.get_name() + f' mined as hard as they could and found {resource.title()} Ore!'
+            display_string += '\n\n\tItems Gained:'
+            display_string += f'\n\t\tRaw {resource.title()} Ore x {count}'
+            Refs.gc.get_floor_data().add_gained_items(f'{resource}_ore', count)
+        else:
+            display_string += '\n\t' + character.get_name() + f' mined as hard as they could and found {resource.title()} Gems!'
+            display_string += '\n\n\tItems Gained:'
+            display_string += f'\n\t\tRaw {resource.title()} Gems x {count}'
+            Refs.gc.get_floor_data().add_gained_items(f'raw_{resource}', count)
+    display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Continue\n'
+    return display_string, {'0': 'back'}
+
+
+def dungeon_dig_result(console):
+    display_string, _options = '', {}
+    character_id = console.get_current_screen()[len('dungeon_dig_result_'):]
+    character = Refs.gc.get_char_by_id(character_id)
+
+    floor_data = Refs.gc.get_floor_data()
+    floor = floor_data.get_floor()
+    floor_map = floor.get_map()
+    node = None
+    for resource_type, resource_list in floor.get_resources():
+        for resource in resource_list:
+            if floor.get_map().is_marker(resource):
+                node = resource
+
+    resource, count = floor.generate_resource(node, False)
+    Refs.gc.get_inventory().get_current_shovel().remove_durability(Refs.gc.get_random_wear_amount())
+
+    if count == 0:
+        # We didn't get anything!
+        display_string += '\n\t' + character.get_name() + ' dug as hard as they could but found nothing.'
+    else:
+        # We found something!
+        if resource == node:
+            # Decrease node counter
+            if floor_data.party_has_perk('miners_bearings'):
+                floor_map.decrease_node_counter(2)
+            else:
+                floor_map.decrease_node_counter(1)
+        if resource in floor.get_resources()['metals']:
+            display_string += '\n\t' + character.get_name() + f' dug as hard as they could and found {resource.title()} Ore!'
+            display_string += '\n\n\tItems Gained:'
+            display_string += f'\n\t\tRaw {resource.title()} Ore x {count}'
+            Refs.gc.get_floor_data().add_gained_items(f'{resource}_ore', count)
+        else:
+            display_string += '\n\t' + character.get_name() + f' dug as hard as they could and found {resource.title()} Gems!'
+            display_string += '\n\n\tItems Gained:'
+            display_string += f'\n\t\tRaw {resource.title()} Gems x {count}'
+            Refs.gc.get_floor_data().add_gained_items(f'raw_{resource}', count)
+    display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Continue\n'
+    return display_string, {'0', 'back'}

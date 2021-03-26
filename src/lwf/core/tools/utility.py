@@ -1,9 +1,9 @@
 __all__ = ('Utility',)
 
-from math import sqrt, atan2, pi
+from math import atan2, pi, sqrt
 
-from ..type import ColorTransform, Matrix
 from ..format import Constant
+from ..type import ColorTransform, Matrix
 
 
 class Utility:

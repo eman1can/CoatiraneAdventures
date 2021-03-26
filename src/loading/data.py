@@ -1,3 +1,4 @@
+from loading.family import load_domains
 from refs import Refs
 
 
@@ -32,6 +33,7 @@ def load_screen_chunk(loader, program_type, filename, callbacks):
                     cp[p + 1][c] = chars[cp[p + 1][c]]
         Refs.gc.load_parties(oc, oca, ocs, cp)
         Refs.gc.update_data(save)
+        Refs.gc.set_domains(load_domains(Refs.gc.get_program_type()))
 
     if Refs.gs is not None:
         Refs.gs.make_screens()

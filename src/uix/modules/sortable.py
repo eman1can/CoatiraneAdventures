@@ -1,8 +1,8 @@
 # Project Imports
-from refs import Refs
-
 # Kivy Imports
 from kivy.properties import BooleanProperty, ListProperty, OptionProperty
+
+from refs import Refs
 
 
 class Sortable(object):

@@ -1,0 +1,40 @@
+25 - [Foe]         Low           M. Atk.
+20 - [Foes]        Low           P. Atk.
+35 - [Foes]        Mid           H. Atk.
+11 - [Foes]   Fast Mid           P. Atk.
+7  - [Foe]    Fast High          P. Atk.
+14 - [Foe]    Fast High          P. Atk.
+0  - [Foe]         Low   Dark    P. Atk.
+6  - [Foes]        Low   Light   M. Atk.
+9  - [Foes]        Low   Earth   P. Atk.
+12 - [Foes]        Low   Earth   P. Atk.
+31 - [Foes]        Mid   Thunder H. Atk.
+30 - [Foe]         Mid   Thunder M. Atk.
+3  - [Foes]        Mid   Earth   P. Atk.
+18 - [Foes]        High  Wind    P. Atk.
+32 - [Foe]         Super Thunder H. Atk.
+15 - [Foe]    Fast Low   Wind    P. Atk.
+21 - [Foe]    Slow Super Fire    H. Atk.
+24 - [Foes]        Ultra Fire    H. Atk. with temp. Mag. Boost
+17 - [Foe]    Fast Mid   Wind    P. Atk. with temp. Str. Boost
+27 - [Foes]        Mid   Water   M. Atk. with temp. Mag. Boost
+1  - [Foe]         Mid   Dark    P. Atk. with 15% Weak Sickness
+13 - [Foe]         Mid   Water   P. Atk. with 15% Stun
+4  - [Foe]         Mid           P. Atk. with 15% Weak Bleed
+10 - [Foe]         Mid           P. Atk. with 15% Weak Bleed
+19 - [Foes]        Ultra         P. Atk.                                and [Allies] Str. and Agi. +50% for 3 turns
+39 - [Foe]         Ultra Light   M. Atk. with temp. Mag. Boost          and [Allies] End.          +50% for 5 turns
+34 - [Foes]        Ultra Thunder H. Atk. with temp. Str. and Mag. Boost and [Allies] Agi. and Dex. +50% for 2 turns
+5  - [Foes]   Phy. Resist      -50% for 2 turns
+36 - [Foes]   Agi. and Dex.    -30% for 3 turns
+16 - [Self]   Str. and Agi.    +50% for 4 turns
+23 - [Self]   Str., Agi., Dex. +50% for 2 turns
+33 - [Allies] Agi. and Dex.    +30% for 4 turns
+2  - [Allies] Phy. Atk.        +50% for 2 turns
+22 - [Allies] End.             +25% for 5 turns
+28 - [Allies] Ailment Cure and Mag. +25% for 2 turns
+26 - [Allies] Low Heal and 10% HP Regen for 2 turns
+8  - [Allies] Mid Heal
+29 - [Allies] High Heal and Str., Mag., Agi., and Dex. +25% for 2 turns
+37 - [Allies] Null Atk. x2
+38 - [Allies] 15% MP Regen for 3 turns

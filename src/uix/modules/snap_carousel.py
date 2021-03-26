@@ -1,9 +1,10 @@
+from kivy.properties import BooleanProperty
+
 from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.properties import ObjectProperty, BooleanProperty, NumericProperty
 from kivy.uix.carousel import Carousel
-
 from loading.kv_loader import load_kv
+
 load_kv(__name__)
 
 

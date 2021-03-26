@@ -1,64 +1,92 @@
-from random import choices, randint
+from copy import copy
+from random import choices, randint, uniform
 
 from game.battle_enemy import BattleEnemy
+from refs import Refs
+
+LEVEL_MULTIPLIER = [1, 1.5, 2, 2.75, 3.5, 4.75, 6, 8, 10]
+NICKNAMES = ['', 'Uncommon ', 'Abnormal ', 'Scary ', 'Freaky ', 'Menacing ', 'Nightmarish ', 'Titan ', 'World Devourer ']
 
 STAT_INDEX = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 6, 8, 12]
+HEALTH, STR, MAG, END, AGI, DEX = 0, 1, 2, 3, 4, 5
 
 
 class Enemy:
-    def __init__(self, eid, name, skeleton_id, program_type, attack_type, min_health, max_health, min_strength, max_strength, min_magic, max_magic, min_agility, max_agility, min_dexterity,
-                 max_dexterity, min_endurance, max_endurance, moves, move_probabilities):
-        self.id = eid
-        self.name = name
-        self.skel_id = skeleton_id
-        self.skel_path = f'res/enemies/{program_type}/{name.lower()}/{skeleton_id}.skel'
-        self.moves = moves
-        self.move_probabilities = move_probabilities
-        self.attack_type = attack_type
-        self.min_health = min_health
-        self.max_health = max_health
-        self.min_strength = min_strength
-        self.max_strength = max_strength
-        self.min_magic = min_magic
-        self.max_magic = max_magic
-        self.min_agility = min_agility
-        self.max_agility = max_agility
-        self.min_dexterity = min_dexterity
-        self.max_dexterity = max_dexterity
-        self.min_endurance = min_endurance
-        self.max_endurance = max_endurance
-        self.element = None
-        self._crystal_chance = None
-        self._crystal_drops = None
-        self._optional_drops = None
+    def __init__(self, identifier, name, skeleton_id, program_type, attack_type, min_hsmead, max_hsmead, elements, harvest_hardness, skills, skill_probabilities, drops):
+        self._id = identifier
+        self._name = name
+        self._skel_id = skeleton_id
+        self._skel_path = f'res/enemies/{program_type}/{name.lower()}/{skeleton_id}.skel'
 
-    def set_drops(self, crystal_drop_chance, crystal_drops, optional_drops):
-        self._crystal_chance = crystal_drop_chance
-        self._crystal_drops = crystal_drops
-        self._optional_drops = optional_drops
+        self._skills = skills
+        self._skill_probabilities = skill_probabilities
+        self._attack_type = attack_type
+        self._harvest_hardness = harvest_hardness
 
-    def generate_drop(self):
-        drops = []
-        print(randint(1, 100), self._crystal_chance * 100)
-        if randint(1, 100) <= self._crystal_chance * 100:
-            drops += choices(list(self._crystal_drops.keys()), list(self._crystal_drops.values()))
-        drops += choices(list(self._optional_drops.keys()), list(self._optional_drops.values()), k=choices([1, 2, 3], [3, 2, 1])[0])
-        return drops
+        self._min_hsmead = min_hsmead
+        self._max_hsmead = max_hsmead
+
+        self._element = elements[0]
+        self._sub_element = elements[1]
+
+        self._drops = {'guaranteed': drops['guaranteed']}
+
+        for index, key in enumerate(['crystal', 'falna', 'drop']):
+            rarity_list = []
+            for rarity in range(1, 6):
+                drop_list = []
+                if rarity == 1:
+                    drop_list = [None]
+                for (item_id, rarity) in drops[key]:
+                    if rarity <= rarity:
+                        drop_list += (item_id, rarity + 1 - int(rarity))
+                rarity_list.append(drop_list)
+            self._drops[key] = rarity_list
 
     def get_id(self):
-        return self.id
+        return self._id
 
-    def get_score(self):
-        return (self.max_strength + self.max_magic + self.max_agility + self.max_dexterity + self.max_endurance) / 15
+    def get_name(self):
+        return self._name
 
-    def new_instance(self, level):
-        stat_multiplier = STAT_INDEX[level - 1]
-        return BattleEnemy(level, self.id, self.name, self.skel_path, self.attack_type,
-                           randint(int(self.min_health * stat_multiplier), int(self.max_health * stat_multiplier)),
-                           0,
-                           randint(int(self.min_strength * stat_multiplier), int(self.max_strength * stat_multiplier)),
-                           randint(int(self.min_magic * stat_multiplier), int(self.max_magic * stat_multiplier)),
-                           randint(int(self.min_endurance * stat_multiplier), int(self.max_endurance * stat_multiplier)),
-                           randint(int(self.min_dexterity * stat_multiplier), int(self.max_dexterity * stat_multiplier)),
-                           randint(int(self.min_agility * stat_multiplier), int(self.max_agility * stat_multiplier)),
-                           self.element, self.moves, self.move_probabilities)
+    def generate_drop(self, boost, hardness):
+        if hardness < self._harvest_hardness:
+            return []
+        drops = []
+        rarities = choices([1, 2, 3, 4, 5], [1 / (2 ** (x + 1)) for x in range(5)], k=3)
+        # Generate guaranteed drops
+        for item_id in self._drops['guaranteed']:
+            drops.append((item_id, 1))
+        # Generate other drops
+        for index, key in enumerate(['crystal', 'falna', 'drop']):
+            drop_list = copy(self._drops[key][rarities[index]])
+            # TODO Remove Materials if hardness not enough
+            if key == 'drop':
+                remove = []
+                for (drop_id, count) in drop_list:
+                    if Refs.gc['materials'][drop_id].get_hardness() > hardness:
+                        remove.append((drop_id, count))
+                for id in remove:
+                    drop_list.remove(id)
+
+            if boost > 2:
+                for sub_boost in [randint(2, int(boost / 2)), randint(2, int(boost / 2))]:
+                    drop_id, count = drop_list[randint(0, len(drop_list) - 1)]
+                    drops.append((drop_id, count * sub_boost))
+            else:
+                drop_id, count = drop_list[randint(0, len(drop_list) - 1)]
+                drops.append((drop_id, count * boost))
+        return drops
+
+    def get_score(self, boost):
+        return (sum(self._min_hsmead) + (sum(self._max_hsmead) - sum(self._min_hsmead)) / 2) / 5 * LEVEL_MULTIPLIER[boost]
+
+    def new_instance(self, boost):
+        multiplier = LEVEL_MULTIPLIER[boost]
+        nickname = NICKNAMES[boost]
+
+        hmsmead = [0.0 for _ in range(DEX + 1)]
+        for stat in range(DEX + 1):
+            hmsmead[stat] = uniform(self._min_hsmead[stat] * multiplier, self._max_hsmead[stat] * multiplier)
+
+        return BattleEnemy(self._id, f'{nickname}{self._name}', self._skel_path, self._attack_type, hmsmead[HEALTH], 0, hmsmead[STR], hmsmead[MAG], hmsmead[END], hmsmead[AGI], hmsmead[DEX], boost, self._element, self._sub_element, self._skills, self._skill_probabilities)

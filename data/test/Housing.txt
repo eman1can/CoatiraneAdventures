@@ -1,0 +1,31 @@
+two_room_flat, Two Room Flat, 2, 1000000
+A small two room flat, with enough room for a living room and kitchen combo and a bedroom.
+none#none
+#
+four_room_flat, Four Room Flat, 6, 2500000
+A small two room flat, with enough room for a living room and kitchen combo and three bedrooms.
+none#none
+#
+two_room_house_with_backyard, Two Room House with Backyard, 2, 3000000
+A small two room house, with enough room for a living room and kitchen combo and a bedroom.
+You also have a small backyard.
+forge#none
+#
+five_room_house, Five Room House, 8, 4000000
+A five room house, with enough room for a living room and kitchen combo and four miscellaneous rooms.
+mixing_room#none
+#
+five_room_house_with_backyard, Five Room House with Backyard, 8, 5000000
+A five room house, with enough room for a living room and kitchen combo and four miscellaneous rooms.
+There is also a small backyard.
+mixing_room, forge#none
+#
+five_room_house_with_shop, Five Room House with Adjacent Storefront, 8, 7500000
+A five room house, with enough room for a living room and kitchen combo and four miscellaneous rooms.
+There is also a small storefront in the adjacent building.
+mixing_room, storefront#none
+#
+five_room_house_with_shop_and_backyard, Five Room House with Adjacent Storefront and Backyard, 8, 7500000
+A five room house, with enough room for a living room and kitchen combo and four miscellaneous rooms.
+There is also a small storefront in the adjacent building and a small backyard.
+mixing_room, storefront, forge#none

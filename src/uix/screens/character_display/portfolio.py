@@ -1,9 +1,9 @@
-from kivy.properties import ListProperty, NumericProperty, BooleanProperty
-from kivy.uix.relativelayout import RelativeLayout
+from kivy.properties import BooleanProperty, ListProperty, NumericProperty
 
+from kivy.uix.relativelayout import RelativeLayout
+from loading.kv_loader import load_kv
 from uix.screens.character_display.preview import CharacterPreview
 
-from loading.kv_loader import load_kv
 load_kv(__name__)
 
 

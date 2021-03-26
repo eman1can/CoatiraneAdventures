@@ -1,7 +1,6 @@
 # Project Imports
-from refs import Refs
 from lists import POPUP_LIST, POPUP_WHITELIST
-
+from refs import Refs
 # UIX Imports
 from uix.popups.managed_popup import ManagedPopup
 

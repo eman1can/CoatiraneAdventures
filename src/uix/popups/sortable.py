@@ -1,9 +1,9 @@
 from kivy.properties import StringProperty
 
-from uix.popups.view import View
-
 # KV Import
 from loading.kv_loader import load_kv
+from uix.popups.view import View
+
 load_kv(__name__)
 
 

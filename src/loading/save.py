@@ -1,5 +1,4 @@
 from game.save_load import load_game
-from refs import Refs
 
 
 def load_save_chunk(loader, program_type, filename, callbacks):

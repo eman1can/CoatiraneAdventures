@@ -1,7 +1,8 @@
-from game.skill import Effect
 from kivy.config import Config
 from kivy.uix.button import Button
 from kivy.uix.relativelayout import RelativeLayout
+
+from game.effect import Effect
 
 Config.set('kivy', 'keyboard_mode', 'system')
 from kivy.app import App

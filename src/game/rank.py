@@ -35,6 +35,9 @@ class Rank(SMEAD, HMPMD):
     def get_board(self):
         return self._board
 
+    def get_growth(self):
+        return self._rank_growth
+
     def get_index(self):
         return self._index
 
@@ -118,7 +121,7 @@ class Rank(SMEAD, HMPMD):
         self.dexterity = floor((self._rank_growth.get_dexterity() + self._board.get_dexterity()) * self._dexterity)
 
     @staticmethod
-    def load_ranks(rank_path):
+    def load_ranks(rank_path, character_development):
         file = open(rank_path, 'r')
         ranks = []
         level = 0

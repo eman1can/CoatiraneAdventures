@@ -1,7 +1,7 @@
 __all__ = ('Control', 'ControlMoveM', 'ControlMoveC', 'ControlMoveMC', 'ControlMoveMCB',)
 
-from .control_move_m import ControlMoveM
 from .control_move_c import ControlMoveC
+from .control_move_m import ControlMoveM
 from .control_move_mc import ControlMoveMC
 from .control_move_mcb import ControlMoveMCB
 

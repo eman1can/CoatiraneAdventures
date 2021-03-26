@@ -1,13 +1,10 @@
 __all__ = ('Data',)
 
-from .format import Constant, ControlMoveMCB, Bitmap, Place, TextureFragment
-from .tools import read_header, read_header_compat, read_array
-from .tools import read_translate, read_matrix, read_color, read_alpha_transform, read_color_transform
-from .tools import read_object, read_texture, read_texture_fragment, read_texture_fragment_compat, read_bitmap, read_bitmap_ex
-from .tools import read_font, read_text_property, read_text, read_particle_data, read_particle, read_program_object
-from .tools import read_graphic_object, read_graphic, read_animation_data, read_animation, read_button_condition, read_button
-from .tools import read_label, read_instance_name, read_event, read_place_compat, read_control_move_m, read_control_move_c, read_control_move_mc, read_control_move_mcb
-from .tools import read_control, read_frame, read_movie_clip_event, read_movie, read_movie_linkage, read_string_data, read_string
+from .format import Bitmap, Constant, ControlMoveMCB, Place, TextureFragment
+from .tools import read_alpha_transform, read_animation, read_animation_data, read_array, read_bitmap, read_bitmap_ex, read_button, read_button_condition, read_color, read_color_transform, read_control, read_control_move_c, read_control_move_m, \
+    read_control_move_mc, read_control_move_mcb, read_event, read_font, read_frame, read_graphic, read_graphic_object, read_header, read_header_compat, read_instance_name, read_label, read_matrix, read_movie, read_movie_clip_event, \
+    read_movie_linkage, read_object, read_particle, read_particle_data, read_place_compat, read_program_object, read_string, read_string_data, read_text, read_text_property, read_texture, read_texture_fragment, read_texture_fragment_compat, \
+    read_translate
 
 
 class Data:

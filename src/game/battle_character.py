@@ -1,14 +1,15 @@
+from random import randint
+
 from game.battle_entity import BattleEntity
 
-
 # Change character instance to a battle character
-from game.status_effect import AGILITY, DEFENSE, DEXTERITY, ENDURANCE, MAGIC, MAGICAL_ATTACK, PHYSICAL_ATTACK, STRENGTH
-from spine.animation.animationstate import AnimationState
-from spine.animation.animationstatedata import AnimationStateData
+from game.effect import AGILITY, DEFENSE, DEXTERITY, ENDURANCE, MAGIC, MAGICAL_ATTACK, PHYSICAL_ATTACK, STRENGTH
+from game.skill import DARK, EARTH, FIRE, LIGHT, THUNDER, WATER, WIND
+# from spine.animation.animationstate import AnimationState
+# from spine.animation.animationstatedata import AnimationStateData
 
 
 def create_battle_character(character, support):
-    # character.__class__ = BattleCharacter
     return BattleCharacter(character, support)
 
 
@@ -25,9 +26,24 @@ class BattleCharacter(BattleEntity):
         super().__init__()
         self._bhealth = self._character.get_health()
         self._bmana = self._character.get_mana()
+        self._stamina = 100
 
-    # def rollback(self):
-    #     self.__class__ = Character
+    def take_action(self):
+        # Taking an action reduces stamina by 3 - 10
+        self._stamina -= randint(3, 10)
+
+    def walk(self):
+        # Walking reduces stamina by 1 - 5
+        self._stamina -= randint(1, 3)
+
+    def rest(self):
+        self._stamina += randint(20, 30)
+
+    def can_take_action(self):
+        return self._stamina > 25
+
+    def get_stamina(self):
+        return self._stamina
 
     def c(self):
         return self._character
@@ -44,6 +60,9 @@ class BattleCharacter(BattleEntity):
     def get_mana(self):
         return self._character.get_mana()
 
+    def get_mana_cost(self, skill):
+        return self._character.get_mana_cost(skill)
+
     def is_character(self):
         return True
 
@@ -55,17 +74,17 @@ class BattleCharacter(BattleEntity):
             return 'idleBattle'
         return 'idle_side'
 
-    def load_skeleton(self, loader):
-        self._skeleton = loader.load_skeleton(self._character.get_skeleton_path(), False, 0.125)
-        self._skeleton.setWidth(self._skeleton.getData().getWidth() * 0.125)
-        self._skeleton.setHeight(self._skeleton.getData().getHeight() * 0.125)
-        data = AnimationStateData(self._skeleton.getData())
-        data.setDefaultMix(0.25)
-        self._animation_state = AnimationState(data)
-        self._skeleton.setSkin(self._skeleton.getData().getSkins()[0].getName())
-        self.set_animation_idle(loop=True)
-        self.reset_battle_effects()
-        return self._animation_state, self._skeleton
+    # def load_skeleton(self, loader):
+    #     self._skeleton = loader.load_skeleton(self._character.get_skeleton_path(), False, 0.125)
+    #     self._skeleton.setWidth(self._skeleton.getData().getWidth() * 0.125)
+    #     self._skeleton.setHeight(self._skeleton.getData().getHeight() * 0.125)
+    #     data = AnimationStateData(self._skeleton.getData())
+    #     data.setDefaultMix(0.25)
+    #     self._animation_state = AnimationState(data)
+    #     self._skeleton.setSkin(self._skeleton.getData().getSkins()[0].getName())
+    #     self.set_animation_idle(loop=True)
+    #     self.reset_battle_effects()
+    #     return self._animation_state, self._skeleton
 
     def reset_battle_effects(self):
         self._status_effects = {}
@@ -90,6 +109,7 @@ class BattleCharacter(BattleEntity):
         self.set_animation_idle(loop=True)
 
     def select_skill(self, index):
+        print('Select', index)
         self._selected_skill = self._character.get_skill(index)
 
     def get_selected_skill(self):
@@ -116,7 +136,7 @@ class BattleCharacter(BattleEntity):
         if PHYSICAL_ATTACK in self._status_effects:
             physical_attack_effects = self._status_effects[PHYSICAL_ATTACK]
             for effect in physical_attack_effects:
-                physical_attack *= 1 + effect.st[0]
+                physical_attack *= 1 + effect.get_amount()
         return physical_attack
 
     def get_magical_attack(self):
@@ -127,7 +147,7 @@ class BattleCharacter(BattleEntity):
         if MAGICAL_ATTACK in self._status_effects:
             magical_attack_effects = self._status_effects[MAGICAL_ATTACK]
             for effect in magical_attack_effects:
-                magical_attack *= 1 + effect.st[0]
+                magical_attack *= 1 + effect.get_amount()
         return magical_attack
 
     def get_defense(self):
@@ -138,7 +158,7 @@ class BattleCharacter(BattleEntity):
         if DEFENSE in self._status_effects:
             defense_effects = self._status_effects[DEFENSE]
             for effect in defense_effects:
-                defense *= 1 + effect.st[0]
+                defense *= 1 + effect.get_amount()
         return defense
 
     def get_strength(self):
@@ -149,7 +169,7 @@ class BattleCharacter(BattleEntity):
         if STRENGTH in self._status_effects:
             strength_effects = self._status_effects[STRENGTH]
             for effect in strength_effects:
-                strength *= 1 + effect.st[0]
+                strength *= 1 + effect.get_amount()
         return strength
 
     def get_magic(self):
@@ -160,7 +180,7 @@ class BattleCharacter(BattleEntity):
         if MAGIC in self._status_effects:
             magic_effects = self._status_effects[MAGIC]
             for effect in magic_effects:
-                magic *= 1 + effect.st[0]
+                magic *= 1 + effect.get_amount()
         return magic
 
     def get_endurance(self):
@@ -171,7 +191,7 @@ class BattleCharacter(BattleEntity):
         if ENDURANCE in self._status_effects:
             endurance_effects = self._status_effects[ENDURANCE]
             for effect in endurance_effects:
-                endurance *= 1 + effect.st[0]
+                endurance *= 1 + effect.get_amount()
         return endurance
 
     def get_dexterity(self):
@@ -182,7 +202,7 @@ class BattleCharacter(BattleEntity):
         if DEXTERITY in self._status_effects:
             dexterity_effects = self._status_effects[DEXTERITY]
             for effect in dexterity_effects:
-                dexterity *= 1 + effect.st[0]
+                dexterity *= 1 + effect.get_amount()
         return dexterity
 
     def get_agility(self):
@@ -193,7 +213,7 @@ class BattleCharacter(BattleEntity):
         if AGILITY in self._status_effects:
             agility_effects = self._status_effects[AGILITY]
             for effect in agility_effects:
-                agility *= 1 + effect.st[0]
+                agility *= 1 + effect.get_amount()
         return agility
 
     def get_element(self):
@@ -201,3 +221,37 @@ class BattleCharacter(BattleEntity):
 
     def get_counter_skill(self):
         self._character.get_counter_skill()
+
+    def element_modifier(self, element):
+        if element == WATER:
+            if self._character.get_element() == FIRE:
+                return 2.0
+            elif self._character.get_element() == THUNDER:
+                return 0.5
+        elif element == FIRE:
+            if self._character.get_element() == WIND:
+                return 2.0
+            elif self._character.get_element() == WATER:
+                return 0.5
+        elif element == THUNDER:
+            if self._character.get_element() == WATER:
+                return 2.0
+            elif self._character.get_element() == THUNDER:
+                return 0.5
+        elif element == WIND:
+            if self._character.get_element() == EARTH:
+                return 2.0
+            elif self._character.get_element() == FIRE:
+                return 0.5
+        elif element == EARTH:
+            if self._character.get_element() == THUNDER:
+                return 2.0
+            elif self._character.get_element() == WIND:
+                return 0.5
+        elif element == LIGHT:
+            if self._character.get_element() == DARK:
+                return 2.0
+        elif element == DARK:
+            if self._character.get_element() == LIGHT:
+                return 2.0
+        return 1.0

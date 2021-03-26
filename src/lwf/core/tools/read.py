@@ -6,11 +6,10 @@ __all__ = ('read_animation', 'read_item_array', 'read_header', 'read_header_comp
            'read_control_move_mcb', 'read_control', 'read_frame', 'read_movie_clip_event', 'read_movie', 'read_movie_linkage', 'read_string_data', 'read_string')
 
 from .binary_reader import read_byte, read_int32, read_single
-from ..format import Header, HeaderCompat, ItemArray, Object, Texture, TextureFragment, TextureFragmentCompat, Bitmap, BitmapEx, Font, TextProperty, Text, ParticleData,\
-    Particle, ProgramObject, GraphicObject, Graphic, Animation, ButtonCondition, Button, Label, InstanceName, Event, PlaceCompat, ControlMoveM, ControlMoveC, ControlMoveMC,\
-    ControlMoveMCB, Control, Frame, MovieClipEvent, MovieLinkage, Movie, String
-from ..type import Translate, Matrix, Color, AlphaTransform, ColorTransform
 from ..constructs import Animation
+from ..format import Animation, Bitmap, BitmapEx, Button, ButtonCondition, Control, ControlMoveC, ControlMoveM, ControlMoveMC, ControlMoveMCB, Event, Font, Frame, Graphic, GraphicObject, Header, HeaderCompat, InstanceName, ItemArray, Label, Movie, \
+    MovieClipEvent, MovieLinkage, Object, Particle, ParticleData, PlaceCompat, ProgramObject, String, Text, TextProperty, Texture, TextureFragment, TextureFragmentCompat
+from ..type import AlphaTransform, Color, ColorTransform, Matrix, Translate
 
 
 def read_item_array(data_bytes, p):
