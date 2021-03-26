@@ -45,6 +45,22 @@ class BattleCharacter(BattleEntity):
     def get_stamina(self):
         return self._stamina
 
+    def get_stamina_message(self):
+        if self._bhealth <= 0:
+            return 'Incapacitated'
+        if self._stamina > 95:
+            return ' - Pumped'
+        elif self._stamina > 75:
+            return ' - Awake'
+        elif self._stamina > 50:
+            return ' - Sleepy'
+        elif self._stamina > 25:
+            return ' - Tired'
+        elif self._stamina > 0:
+            return ' - Exhausted'
+        else:
+            return ' - Asleep'
+
     def c(self):
         return self._character
 

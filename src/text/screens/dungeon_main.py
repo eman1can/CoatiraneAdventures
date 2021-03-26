@@ -90,6 +90,7 @@ def box_to_string(box):
 
 
 def dungeon_main(console):
+    console.header_callback = None
     display_text = f'\n\t{OPT_C}0:{END_OPT_C} back\n'
     if Refs.gc.get_floor_data() is None:
         display_text += f'\n\tFloor - Surface\n'
@@ -129,6 +130,7 @@ def dungeon_main(console):
 
 
 def locked_dungeon_main(console):
+    console.header_callback = None
     floor_data = Refs.gc.get_floor_data()
     if floor_data.get_floor().get_id() > floor_data.get_next_floor():
         # Ascending

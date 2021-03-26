@@ -69,16 +69,16 @@ def load_enemy_chunk(chunk, loader, program_type, callbacks):
 
     harvest_hardness = float(drop_lists[0])
 
-    for drop_list in drop_lists[1:]:
+    for index, drop_list in enumerate(drop_lists[1:]):
         if len(drop_list) == 0:
             continue
-        key = list(drops.keys())[0]
+        key = list(drops.keys())[index]
         for drop in drop_list.split(','):
             item_id, rarity = drop.split('/')
-            if rarity == '':
-                drops[key] += item_id
+            if rarity == '':  # Guaranteed
+                drops[key].append(item_id)
             else:
-                drops[key] += (item_id, int(rarity))
+                drops[key].append((item_id, int(rarity)))
 
     min_hsmead, max_hsmead = [], []
     for index in range(HEALTH_MIN, DEXTERITY_MAX + 1):

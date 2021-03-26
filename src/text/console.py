@@ -53,9 +53,10 @@ CURSOR = '\n\t>> '
 
 
 class Console(TextInput):
-    display_text = StringProperty("")
-    error_text = StringProperty("")
-    current_text = StringProperty("")
+    header_text = StringProperty('')
+    display_text = StringProperty('')
+    error_text = StringProperty('')
+    current_text = StringProperty('')
 
     global_font_size = StringProperty('15pt')
 
@@ -69,6 +70,7 @@ class Console(TextInput):
         self.memory.loading_progress = {}
         self.memory.party_box = None
         self.memory.select_box = None
+        self.header_callback = None
 
         self.memory.domains = None
         self.memory.current_domain = 0
@@ -90,16 +92,16 @@ class Console(TextInput):
         return self._back_list[-1]
 
     def on_display_text(self, *args):
-        self.text = f'{self.display_text}{CURSOR}{self.current_text}'
+        self.text = f'{self.header_text}{self.display_text}{CURSOR}{self.current_text}'
 
     def on_current_text(self, *args):
-        self.text = f'{self.display_text}{CURSOR}{self.current_text}'
+        self.text = f'{self.header_text}{self.display_text}{CURSOR}{self.current_text}'
 
     def on_error_text(self, *args):
         if self.error_text == '':
-            self.text = f'{self.display_text}{CURSOR}{self.current_text}'
+            self.text = f'{self.header_text}{self.display_text}{CURSOR}{self.current_text}'
         else:
-            self.text = f'{self.display_text}\n\t{self.error_text}\n{CURSOR}{self.current_text}'
+            self.text = f'{self.header_text}{self.display_text}\n\t{self.error_text}\n{CURSOR}{self.current_text}'
             Clock.schedule_once(self.clear_error_text, self.error_time)
 
     def clear_error_text(self, *args):
@@ -239,16 +241,19 @@ class Console(TextInput):
                 self._back_list.pop(-1)
                 return False
             else:
-                if '*' in self._current_screen and '#' in current_screen:
-                    self._back_list.append(self._current_screen)
-                    return False
                 if '*' in self._current_screen:
-                    screen_name = self._current_screen.split('*')[0]
-                    if self._back_list[-1].startswith(screen_name):
-                        self._back_list[-1] = self._current_screen
-                        return True
-                    else:
-                        return False
+                    if '#' not in self._current_screen:
+                        if '#' in current_screen:
+                            print('Add', self._current_screen, 'to list')
+                            self._back_list.append(self._current_screen)
+                            return True
+                        else:
+                            screen_name = self._current_screen.split('*')[0]
+                            if self._back_list[-1].startswith(screen_name):
+                                print('Replace', self._back_list[-1], 'with', self._current_screen, 'to list')
+                                self._back_list[-1] = self._current_screen
+                                return True
+                    return False
                 self._back_list.append(self._current_screen)
                 return True
         return False
@@ -258,6 +263,7 @@ class Console(TextInput):
         # if screen_name != 'game_loading':
             # print('Set Screen', screen_name)
         if screen_name == 'back':
+            print(self._back_list, '←', self._current_screen)
             screen_name = self._back_list.pop()
         else:
             self.save_screen(screen_name)
@@ -267,8 +273,8 @@ class Console(TextInput):
         for index, screen in enumerate(SCREEN_NAMES):
             if screen_name.startswith(screen):
                 self.display_text, self._options = SCREENS[index](self)
+                self._refresh_header()
                 return
-        # print('Unknown Screen:', screen_name)
 
     def set_loading_progress(self, type, label, value, max):
         # print(type, label, value, max)
@@ -276,12 +282,24 @@ class Console(TextInput):
         self.set_screen('game_loading')
 
     def update_calendar_callback(self):
-        Refs.gc.set_calendar_callback(self._refresh)
+        Refs.gc.set_calendar_callback(self._refresh_header)
 
     def _refresh(self):
         if self._current_screen is None:
             return
         self.set_screen(self._current_screen)
+
+    def _refresh_header(self):
+        if self._current_screen is None:
+            return
+        if self.header_callback:
+            self.header_text = self.header_callback()
+        else:
+            self.header_text = ''
+        if self.error_text == '':
+            self.text = f'{self.header_text}{self.display_text}{CURSOR}{self.current_text}'
+        else:
+            self.text = f'{self.header_text}{self.display_text}\n\t{self.error_text}\n{CURSOR}{self.current_text}'
 
     def get_options(self):
         return self._options
@@ -385,7 +403,7 @@ class Console(TextInput):
             if not do_transaction(item_id, int(count), 'sell' in screen_name):
                 self.error_text = 'Not enough Money!'
                 return
-            self.set_screen(screen_name + f'*{page_num}')
+            self.set_screen(screen_data)
         elif action == 'save_game':
             self.text = '\n\tSaving Game...'
             Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: self.set_screen('town_main')), 0.5)
@@ -557,42 +575,36 @@ class Console(TextInput):
         elif action.startswith('inventory_battle_use'):
             pass  # TODO Implement potions
         elif action.startswith('inventory_battle_set'):
-            page_data, item_id = action[len('inventory_battle_set'):].split('/')
-            inventory = Refs.gc.get_inventory()
+            page_data, key, item_id = action.split('#', 2)
+            page_name, page_num = page_data.split('*')
+            page_num = int(page_num)
 
-            page_key = None
-            for key in ['shovel', 'pickaxe', 'harvesting_knife']:
-                if page_data.endswith(key):
-                    page_key = key
-                    break
-
-            page_num = page_data[:-len(page_key)]
-
-            if item_id == 'none':
-                item_hash = None
-            else:
+            item_hash = None
+            if item_id != 'none':
                 item_id, item_hash = item_id.split('#')
                 item_hash = int(item_hash)
 
-            if page_key == 'pickaxe':
+            inventory = Refs.gc.get_inventory()
+
+            if item_id == 'pickaxe':
                 item = inventory.set_current_pickaxe(item_hash)
-            elif page_key == 'shovel':
+            elif item_id == 'shovel':
                 item = inventory.set_current_shovel(item_hash)
             else:
                 item = inventory.set_current_harvesting_knife(item_hash)
             if item is None:
-                self.set_screen(f'inventory_battle_select_{page_key}{page_num}page/none')
+                self.set_screen(f'inventory_battle_select{key}*{page_num}#none')
             else:
-                self.set_screen(f'inventory_battle_select_{page_key}{page_num}page/{item.get_full_id()}')
+                self.set_screen(f'inventory_battle_select{key}*{page_num}#{item.get_full_id()}')
         elif action.startswith('crafting_process_material') and 'confirm' in action:
             page_name, recipe_id, recipe_count = action.split('#')
-            page_num = int(page_name[len('crafting_process_material'):-len('page_confirm')])
+            page_num = page_name.split('*')
             recipe = Refs.gc['recipes'][recipe_id]
             recipe_count = int(recipe_count)
             inventory = Refs.gc.get_inventory()
             for ingredient, count in recipe.get_ingredients().items():
                 inventory.remove_item(ingredient, count * recipe_count)
             inventory.add_item(recipe.get_item_id(), recipe_count)
-            self.set_screen(f'crafting_process_materials{page_num}page')
+            self.set_screen(f'crafting_process_materials*{page_num}')
         else:
             self.set_screen(action)

@@ -159,6 +159,9 @@ class EquipmentClass:
     def get_name(self):
         return self._name
 
+    def get_description(self):
+        return self._description
+
     def get_type(self):
         return self._type
 
@@ -231,8 +234,32 @@ class UngeneratedTool:
         self._tool_class = tool_class
         self._material = material
 
+    def get_class(self):
+        return self._tool_class
+
+    def is_equipment(self):
+        return True
+
+    def get_material_id(self):
+        return self._material.get_id()
+
+    def get_id(self):
+        return f'{self._material.get_id()}/{self._tool_class.get_id()}'
+
     def get_name(self):
         return f'{self._material.get_name()} {self._tool_class.get_name()}'
+
+    def get_display(self):
+        return self.get_name(), self._tool_class.get_description(), 500 * self._material.get_hardness(), 500 * self._material.get_max_hardness()
+
+    def is_single(self):
+        return False
+
+    def get_max_price(self):
+        return 500 * self._material.get_max_hardness()
+
+    def get_min_price(self):
+        return 500 * self._material.get_hardness()
 
 
 class WeaponClass(EquipmentClass):
@@ -324,11 +351,29 @@ class UngeneratedWeapon:
         self._sub_material1 = sub_material1
         self._sub_material2 = sub_material2
 
+    def get_class(self):
+        return self._tool_class
+
+    def is_equipment(self):
+        return True
+
+    def get_material_id(self):
+        return self._material.get_id()
+
+    def get_id(self):
+        return f'{self._material.get_id()}/{self._weapon_class.get_id()}'
+
     def get_name(self):
         if self._sub_material1 is None:
             return f'{self._material.get_name()} {self._weapon_class.get_name()}'
         else:
             return f'{self._material.get_name()}-{self._sub_material1.get_name()} {self._weapon_class.get_name()}'
+
+    def get_display(self):
+        return self.get_name(), self._weapon_class.get_description(), 100, 200
+
+    def is_single(self):
+        return False
 
 
 class ArmorClass(EquipmentClass):
@@ -420,11 +465,29 @@ class UngeneratedArmor:
         self._sub_material1 = sub_material1
         self._sub_material2 = sub_material2
 
+    def get_class(self):
+        return self._tool_class
+
+    def is_equipment(self):
+        return True
+
+    def get_material_id(self):
+        return self._material.get_id()
+
+    def get_id(self):
+        return f'{self._material.get_id()}/{self._armor_class.get_id()}'
+
     def get_name(self):
         if self._sub_material1 is None:
             return f'{self._material.get_name()} {self._armor_class.get_name()}'
         else:
             return f'{self._material.get_name()}-{self._sub_material1.get_name()} {self._armor_class.get_name()}'
+
+    def get_display(self):
+        return self.get_name(), self._armor_class.get_description(), 100, 200
+
+    def is_single(self):
+        return False
 
 
 class Equipment(HMPMD):
@@ -488,6 +551,9 @@ class Equipment(HMPMD):
     def remove_durability(self, wear_value):
         self._durability_current -= wear_value
 
+    def get_hardness(self):
+        return self._hardness
+
     def get_element(self):
         return self._element
 
@@ -499,6 +565,12 @@ class Equipment(HMPMD):
 
     def get_rank(self):
         return self._rank
+
+    def get_display(self):
+        return self.get_name(), self._class.get_description() + f'\n{round(self._durability_current, 1)} / {round(self._durability, 1)}', 500 * self._hardness
+
+    def is_single(self):
+        return True
 
 
 class Tool(Equipment):

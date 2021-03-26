@@ -108,7 +108,7 @@ def get_extra_actions(floor_data):
         action_index2 = 9
 
     text += f'\n\t{OPT_C}{inventory_index}:{END_OPT_C} Inventory\n'
-    options[str(inventory_index)] = 'inventory_battle0page'
+    options[str(inventory_index)] = 'inventory_battle*0'
 
     safe_zone = floor_data.get_floor().get_map().is_marker(SAFE_ZONES)
     activated_safe_zone = floor_data.is_activated_safe_zone()
@@ -315,7 +315,7 @@ def get_battle_display(floor_data):
         screen_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Back'
     else:
         _options['0'] = 'dungeon_battle_encounter_attack'
-        _options[str(option_index)] = 'inventory_battle0page'
+        _options[str(option_index)] = 'inventory_battle*0'
         screen_string += f'\n\t{OPT_C}{0}:{END_OPT_C} Attack'
         screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Inventory'
     screen_string += '\n'
@@ -324,6 +324,15 @@ def get_battle_display(floor_data):
     Refs.app.scroll_widget.opacity = 1
 
     return screen_string, _options
+
+
+def get_dungeon_header():
+    string = '\n\t'
+    if Refs.gc.get_inventory().has_item('pocket_watch'):
+        string += f'{Refs.gc.get_time()} | '
+    for character in Refs.gc.get_floor_data().get_characters():
+        string += character.get_name().split(' ')[0] + character.get_stamina_message() + ' | '
+    return string[:-3] + '\n'
 
 
 def dungeon_battle(console):
@@ -350,16 +359,15 @@ def dungeon_battle(console):
     floor_data = Refs.gc.get_floor_data()
 
     # Make sure that if we are on the exit node that we trigger the boss
-
+    console.header_callback = None
     if not floor_data.is_in_encounter():
+        console.header_callback = get_dungeon_header
         display_string, _options = get_tunnel_descriptions(floor_data)
         tool_string, tool_options = get_extra_actions(floor_data)
 
         _options.update(tool_options)
 
         compass = Refs.gc.get_inventory().has_item('compass')
-        if Refs.gc.get_inventory().has_item('pocket_watch'):
-            display_string = f'\n\t{Refs.gc.get_time()}\n' + display_string
 
         if compass:
             map_index = 3
@@ -443,8 +451,8 @@ def dungeon_result(console):
         if Refs.gc.get_inventory().has_harvesting_knife():
             _options['1'] = 'dungeon_result_harvest_materials'
             display_string += f'\n\t{OPT_C}1:{END_OPT_C} Harvest Materials'
-            display_string += f'\n\t{OPT_C}3:{END_OPT_C} Inventory'
-            _options['2'] = 'inventory_battle0page'
+            display_string += f'\n\t{OPT_C}2:{END_OPT_C} Inventory'
+            _options['2'] = 'inventory_battle*0'
         else:
             display_string += f'\n\t[s]{OPT_C}1:{END_OPT_C} Harvest Materials[/s]'
         display_string += f'\n\t{OPT_C}0:{END_OPT_C} Continue\n'
@@ -458,21 +466,21 @@ def dungeon_result(console):
 
         counts = {}
         for enemy in battle_data.get_enemies():
-            if enemy.get_name() not in counts:
-                counts[enemy.get_name()] = 0
-            counts[enemy.get_name()] += 1
+            if enemy not in counts:
+                counts[enemy] = 0
+            counts[enemy] += 1
 
         item_counts = {}
         knife = Refs.gc.get_inventory().get_current_harvesting_knife()
         knife.remove_durability(Refs.gc.get_random_wear_amount())
         for enemy, count in counts.items():
-            display_string += f'\n\t{enemy} x {count}:'
+            display_string += f'\n\t{enemy.get_name()} x {count}:'
             for _ in range(count):
                 drops = Refs.gc['enemies'][enemy.get_id()].generate_drop(enemy.get_boost(), knife.get_hardness())
                 if len(drops) == 0:
                     display_string += f'\n\t\tNo items were dropped.'
                 for (drop_id, drop_count) in drops:
-                    item = Refs.gc.get_drop_item(drop_id)
+                    item = Refs.gc.find_item(drop_id)
                     if item not in item_counts:
                         item_counts[item] = 0
                     item_counts[item] += drop_count
@@ -577,6 +585,7 @@ def dungeon_result(console):
                 for character_id in list(char_rows.keys())[8:]:
                     display_string += char_rows[character_id][index].center(STAT_WIDTH)
                 display_string += '\n'
+        Refs.gc.reset_floor_data()
         display_string += f'\n\n\t{OPT_C}{0}:{END_OPT_C} Continue\n'
         _options = {'0': 'dungeon_main'}
     else:
@@ -599,8 +608,8 @@ def dungeon_battle_action(console, action):
 
     if action == 'ascend':
         floor_data = Refs.gc.get_floor_data()
-        floor_id = floor_data.get_floor.get_id()
-        if floor_data.get_floor().get_id() == 1:
+        floor_id = floor_data.get_floor().get_id()
+        if floor_id == 1:
             Refs.gc.get_floor_data().get_floor().get_map().clear_current_node()
             # Keep items in inventory
             # Keep items used
@@ -608,7 +617,6 @@ def dungeon_battle_action(console, action):
             # Clear the current value on the map
             console.set_screen('dungeon_result_ascend')
         else:
-            floor_id = floor_data.get_floor.get_id()
             floor_data.set_next_floor(floor_id - 1)
             console.set_screen('locked_dungeon_main')
         return

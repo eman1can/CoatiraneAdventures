@@ -138,6 +138,9 @@ class Effect:
     def is_status_effect_effect(self):
         return self._type == STATUS_EFFECT
 
+    def __str__(self):
+        return f'<{STAT_TYPES[self._sub_type]} {self._amount}% {self._duration} turns>'
+
 
 class AppliedEffect:
     def __init__(self, amount, duration):

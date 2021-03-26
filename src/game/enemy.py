@@ -37,11 +37,12 @@ class Enemy:
                 drop_list = []
                 if rarity == 1:
                     drop_list = [None]
-                for (item_id, rarity) in drops[key]:
-                    if rarity <= rarity:
-                        drop_list += (item_id, rarity + 1 - int(rarity))
+                for (item_id, item_rarity) in drops[key]:
+                    if item_rarity <= rarity:
+                        drop_list.append((item_id, rarity + 1 - int(item_rarity)))
                 rarity_list.append(drop_list)
             self._drops[key] = rarity_list
+        print(self._drops)
 
     def get_id(self):
         return self._id
@@ -60,14 +61,19 @@ class Enemy:
         # Generate other drops
         for index, key in enumerate(['crystal', 'falna', 'drop']):
             drop_list = copy(self._drops[key][rarities[index]])
-            # TODO Remove Materials if hardness not enough
             if key == 'drop':
                 remove = []
                 for (drop_id, count) in drop_list:
-                    if Refs.gc['materials'][drop_id].get_hardness() > hardness:
-                        remove.append((drop_id, count))
+                    for material in Refs.gc['materials'].values():
+                        if material.get_raw_id() == drop_id:
+                            if material.get_hardness() > hardness:
+                                remove.append((drop_id, count))
+                            break
                 for id in remove:
                     drop_list.remove(id)
+
+            if len(drop_list) == 0:
+                continue
 
             if boost > 2:
                 for sub_boost in [randint(2, int(boost / 2)), randint(2, int(boost / 2))]:
