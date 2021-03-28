@@ -1,4 +1,4 @@
-goblin        , Goblin        , -, Dark , Earth, 0, 40, 60, 5, 8 , 0, 0, 3, 4, 3 , 5 , 3 , 5 , 2, 0, 0.6, 1 , 0.3 , 2 , 0.1 , 0, -
+goblin        , Goblin        , -, Dark , Earth, 0, 40, 60, 9, 17 , 0, 0, 3, 4, 3 , 5 , 3 , 5 , 2, 0, 0.6, 1 , 0.3 , 2 , 0.1 , 0, -
 1.0;;tiny_regular_magic_stone/1,tiny_medium_magic_stone/2,tiny_small_magic_stone/3,tiny_tiny_magic_stone/4;tiny_strength_falna/1,tiny_magic_falna/1,tiny_endurance_falna/1,tiny_agility_falna/1,tiny_dexterity_falna/1,small_strength_falna/2,small_magic_falna/2,small_endurance_falna/2,small_agility_falna/2,small_dexterity_falna/2;raw_goblin_claw/1,raw_goblin_fang/1
 #
 kobold        , Kobold        , -, Earth, None , 0, 45, 70, 7, 9 , 0, 0, 5, 7, 5 , 6 , 5 , 6 , 2, 3, 0.5, 4 , 0.3 , 5 , 0.2 , 3, -

@@ -1,4 +1,5 @@
 from copy import copy
+from math import ceil
 from random import choices, randint, uniform
 
 from game.battle_enemy import BattleEnemy
@@ -42,7 +43,6 @@ class Enemy:
                         drop_list.append((item_id, rarity + 1 - int(item_rarity)))
                 rarity_list.append(drop_list)
             self._drops[key] = rarity_list
-        print(self._drops)
 
     def get_id(self):
         return self._id
@@ -60,28 +60,37 @@ class Enemy:
             drops.append((item_id, 1))
         # Generate other drops
         for index, key in enumerate(['crystal', 'falna', 'drop']):
-            drop_list = copy(self._drops[key][rarities[index]])
+            drop_list = copy(self._drops[key][rarities[index] - 1])
             if key == 'drop':
                 remove = []
-                for (drop_id, count) in drop_list:
-                    for material in Refs.gc['materials'].values():
-                        if material.get_raw_id() == drop_id:
-                            if material.get_hardness() > hardness:
-                                remove.append((drop_id, count))
-                            break
-                for id in remove:
-                    drop_list.remove(id)
+                for drop in drop_list:
+                    if drop is not None:
+                        (drop_id, count) = drop
+                        for material in Refs.gc['materials'].values():
+                            if material.get_raw_id() == drop_id and material.get_hardness() > hardness:
+                                remove.append(drop)
+                                break
+                    else:
+                        remove.append(drop)
+                for drop in remove:
+                    drop_list.remove(drop)
 
             if len(drop_list) == 0:
                 continue
 
-            if boost > 2:
-                for sub_boost in [randint(2, int(boost / 2)), randint(2, int(boost / 2))]:
-                    drop_id, count = drop_list[randint(0, len(drop_list) - 1)]
-                    drops.append((drop_id, count * sub_boost))
+            if boost >= 2:  # Boost goes from 0 → 4
+                for sub_boost in [randint(0, ceil(boost / 2)), randint(0, ceil(boost / 2))]:
+                    drop = drop_list[randint(0, len(drop_list) - 1)]
+                    if drop is None:
+                        continue
+                    drop_id, count = drop
+                    drops.append((drop_id, count * (sub_boost + 1)))
             else:
-                drop_id, count = drop_list[randint(0, len(drop_list) - 1)]
-                drops.append((drop_id, count * boost))
+                drop = drop_list[randint(0, len(drop_list) - 1)]
+                if drop is None:
+                    continue
+                drop_id, count = drop
+                drops.append((drop_id, count * (boost + 1)))
         return drops
 
     def get_score(self, boost):

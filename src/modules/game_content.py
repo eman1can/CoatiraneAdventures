@@ -64,7 +64,6 @@ class GameContent:
             string = char + string
         return string
 
-
     def get_item_data(self, item_id):
         if item_id in self._data['items']:
             return self._data['items'][item_id]
@@ -336,7 +335,6 @@ class GameContent:
         return perks
 
     def find_item(self, item_id):
-        print('Find', item_id)
         if item_id in self._data['items'].keys():
             return self._data['items'][item_id]
         if item_id in self._data['drop_items'].keys():
@@ -509,6 +507,15 @@ class GameContent:
     def get_abilities(self):
         return self._data['abilities']
 
+    def get_stamina_weight(self):
+        stamina_weight = 0
+        for character in self._floor_data.get_characters():
+            if character.is_dead():
+                stamina_weight += 0.35
+            elif character.get_stamina() <= 0:
+                stamina_weight += 0.25
+        return stamina_weight
+
     def get_floor_score(self, descend=True):
         if descend:
             return self._data['floors'][self._current_floor + 1].get_score()
@@ -622,3 +629,6 @@ class GameContent:
 
     def get_random_wear_amount(self):
         return random.uniform(0.5, 3.0)
+
+    def get_random_stat_increase(self):
+        return random.uniform(0.01, 0.1)

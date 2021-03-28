@@ -1,7 +1,6 @@
-from game.character import CHARACTER_ATTACK_TYPES, CHARACTER_TYPES
-from game.skill import ATTACK_TYPES, ELEMENTS
+from game.character import CHARACTER_ATTACK_TYPES
+from game.skill import ELEMENTS
 from refs import END_OPT_C, OPT_C, Refs
-from text.screens.dungeon_main import box_to_string
 
 BOX_WIDTH = 13
 
@@ -9,18 +8,23 @@ BOX_WIDTH = 13
 def center_stat(char, index):
     if char is None:
         if index == 6:
-            return '-'.center(BOX_WIDTH)
+            return '+'.center(BOX_WIDTH)
         return ''.center(BOX_WIDTH)
-    element = ELEMENTS[char.get_element()]
-    attack = CHARACTER_ATTACK_TYPES[char.get_attack_type()]
-    stat = [char.get_name(), char.get_current_rank(), element, attack, char.get_health(), char.get_mana(), char.get_physical_attack(), char.get_magical_attack(),
-            char.get_defense(), char.get_strength(), char.get_magic(), char.get_endurance(), char.get_agility(), char.get_dexterity()]
-    stat_labels = ['', 'Rank', '', '', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
-    if index == 0 or index == 2 or index == 3:
-        if ' ' in stat[index]:
-            stat[index] = stat[index].split(' ')[0]
-        return f'{stat[index]}'.center(BOX_WIDTH)
-    return f"{stat_labels[index]}{f'{stat[index]}'.rjust(BOX_WIDTH - 2 - len(stat_labels[index]))}".center(BOX_WIDTH)
+    if char.is_support():
+        stat = [char.get_name, char.get_current_rank, char.get_health, char.get_mana, char.get_physical_attack, char.get_magical_attack,
+                char.get_defense, char.get_strength, char.get_magic, char.get_endurance, char.get_agility, char.get_dexterity]
+        stat_labels = ['', 'Rank', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
+        stat_string = stat[index]()
+    else:
+        stat = [char.get_name, char.get_current_rank, char.get_element_string, char.get_attack_type_string, char.get_health, char.get_mana, char.get_physical_attack, char.get_magical_attack,
+                char.get_defense, char.get_strength, char.get_magic, char.get_endurance, char.get_agility, char.get_dexterity]
+        stat_labels = ['', 'Rank', '', '', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
+        stat_string = stat[index]()
+        if index == 0 or index == 2 or index == 3:
+            if ' ' in stat_string:
+                stat_string = stat_string.split(' ')[0]
+            return f'{stat_string}'.center(BOX_WIDTH)
+    return f"{stat_labels[index]}{f'{stat_string}'.rjust(BOX_WIDTH - 2 - len(stat_labels[index]))}".center(BOX_WIDTH)
 
 
 def create_bar(left, right, middle, divider, size):
@@ -37,15 +41,21 @@ def create_bar(left, right, middle, divider, size):
     return string + right
 
 
+def box_to_string(console, box):
+    string = ''
+    for index in range(len(box)):
+        string += box[index]
+    return string
+
+
 def create_box(size):
-    # TODO - Add Selected Labels to box
-    box = ['\n\t' + create_bar('┌', '┐', '┬', '─', 1) + '   ' + create_bar('┌', '┐', '┬', '─', size)]
+    box = ['\n\t' + ''.ljust(BOX_WIDTH + 2) + '   '] + ['Selected'.center(BOX_WIDTH + 1) for _ in range(size)] + ['\n\t' + create_bar('┌', '┐', '┬', '─', 1) + '   ' + create_bar('┌', '┐', '┬', '─', size)]
     for stat in range(12):
         box.append('\n\t│')
         box.append('')
         if stat == 6:
             if size == 0:
-                box.append('│ ← No Characters obtained')
+                box.append('│ ← No Characters available.')
             else:
                 box.append('│ ← │')
         else:
@@ -56,7 +66,6 @@ def create_box(size):
         for _ in range(size):
             box.append('')
             box.append('│')
-        # box.append('\t')
     box.append('\n\t│')
     if size == 0:
         box.append(f'{OPT_C}' + '0'.center(BOX_WIDTH) + f'{END_OPT_C}│')
@@ -66,30 +75,37 @@ def create_box(size):
         box.append(f'{OPT_C}' + f'{3 + index}'.center(BOX_WIDTH) + f'{END_OPT_C}')
         box.append('│')
     box.append('\n\t' + create_bar('└', '┘', '┴', '─', 1) + '   ' + create_bar('└', '┘', '┴', '─', size))
-    # print(box)
     return box
 
 
 def populate_box(box, single_char, party, size):
     string = ''.center(BOX_WIDTH)
     gap = 3 + size * 2
-    for stat in range(12): # 2 → 9 → 16  7 7
+
+    for index, char in enumerate(party):
+        if char in Refs.gc.get_current_party():
+            box[index + 1] = 'Selected'.center(BOX_WIDTH + 1)
+        else:
+            box[index + 1] = ''.center(BOX_WIDTH + 1)
+
+    OFFSET = size + 3
+    for stat in range(12):
         if single_char is not None:
-            box[2 + gap * stat] = center_stat(single_char, stat)
+            box[OFFSET + gap * stat] = center_stat(single_char, stat)
         else:
             if stat == 6:
-                box[2 + gap * stat] = '-'.center(BOX_WIDTH)
+                box[OFFSET + gap * stat] = '+'.center(BOX_WIDTH)
             else:
-                box[2 + gap * stat] = string
+                box[OFFSET + gap * stat] = string
         for x in range(size):
             char = party[x]
             if char is not None:
-                box[(2 * x + 4) + gap * stat] = center_stat(char, stat)
+                box[(2 * x + OFFSET + 2) + gap * stat] = center_stat(char, stat)
             else:
                 if stat == 6:
-                    box[(2 * x + 4) + gap * stat] = '-'.center(BOX_WIDTH)
+                    box[(2 * x + OFFSET + 2) + gap * stat] = '+'.center(BOX_WIDTH)
                 else:
-                    box[(2 * x + 4) + gap * stat] = string
+                    box[(2 * x + OFFSET + 2) + gap * stat] = string
     return box
 
 
@@ -104,6 +120,12 @@ def select_screen_char(console):
     obtained_chars = Refs.gc.get_obtained_characters(index >= 8)
     if single_char is not None:
         obtained_chars.remove(single_char)
+    else:
+        # Remove party chars
+        for char in Refs.gc.get_current_party():
+            if char in obtained_chars:
+                obtained_chars.remove(char)
+
     display_text = '\n\tChoose a character to put in this slot\n\n'
 
     if console.memory.select_box is None:
@@ -114,7 +136,7 @@ def select_screen_char(console):
             console.memory.select_box_size = len(obtained_chars) if len(obtained_chars) < 9 else 8
             console.memory.select_box = create_box(console.memory.select_box_size)
 
-    display_text += box_to_string(populate_box(console.memory.select_box, single_char, obtained_chars, console.memory.select_box_size))
+    display_text += box_to_string(console, populate_box(console.memory.select_box, single_char, obtained_chars, console.memory.select_box_size))
     _options = {'0': 'back'}
     if single_char is not None:
         display_text += f'\n\n\t{OPT_C}1:{END_OPT_C} Remove character'

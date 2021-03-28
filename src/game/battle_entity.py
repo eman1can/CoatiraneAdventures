@@ -21,7 +21,6 @@ class BattleEntity:
         return self._bmana
 
     def decrease_health(self, damage):
-        print(self.get_name(), self._bhealth, '→', self._bhealth-damage)
         self._bhealth -= damage
 
     def decrease_mana(self, mana_cost):
@@ -36,69 +35,41 @@ class BattleEntity:
             return (self.get_physical_attack() + self.get_magical_attack()) / 2
 
     def get_physical_attack(self):
-        physical_attack = self._physical_attack
-        if PHYSICAL_ATTACK in self._status_effects:
-            physical_attack_effects = self._status_effects[PHYSICAL_ATTACK]
-            for effect in physical_attack_effects:
-                physical_attack *= 1 + effect.get_amount()
-        return physical_attack
+        physical_attack = self._physical_attack - self._strength + self.get_strength()
+        return self._get_boosted_stat(PHYSICAL_ATTACK, physical_attack)
 
     def get_magical_attack(self):
-        magical_attack = self._magical_attack
-        if MAGICAL_ATTACK in self._status_effects:
-            magical_attack_effects = self._status_effects[MAGICAL_ATTACK]
-            for effect in magical_attack_effects:
-                magical_attack *= 1 + effect.get_amount()
-        return magical_attack
+        magical_attack = self._magical_attack - self._magic + self.get_magic()
+        return self._get_boosted_stat(MAGICAL_ATTACK, magical_attack)
 
     def get_defense(self):
-        defense = self._defense
-        if DEFENSE in self._status_effects:
-            defense_effects = self._status_effects[DEFENSE]
-            for effect in defense_effects:
-                defense *= 1 + effect.get_amount()
-        return defense
+        return self._get_boosted_stat(DEFENSE, self._defense)
 
     def get_strength(self):
-        strength = self._strength
-        if STRENGTH in self._status_effects:
-            strength_effects = self._status_effects[STRENGTH]
-            for effect in strength_effects:
-                print('Str. Effect', effect.get_amount())
-                strength *= 1 + effect.get_amount()
-        return strength
+        return self._get_boosted_stat(STRENGTH, self._strength)
 
     def get_magic(self):
-        magic = self._magic
-        if MAGIC in self._status_effects:
-            magic_effects = self._status_effects[MAGIC]
-            for effect in magic_effects:
-                magic *= 1 + effect.get_amount()
-        return magic
+        return self._get_boosted_stat(MAGIC, self._magic)
 
     def get_endurance(self):
-        endurance = self._endurance
-        if ENDURANCE in self._status_effects:
-            endurance_effects = self._status_effects[ENDURANCE]
-            for effect in endurance_effects:
-                endurance *= 1 + effect.get_amount()
-        return endurance
-
-    def get_dexterity(self):
-        dexterity = self._dexterity
-        if DEXTERITY in self._status_effects:
-            dexterity_effects = self._status_effects[DEXTERITY]
-            for effect in dexterity_effects:
-                dexterity *= 1 + effect.get_amount()
-        return dexterity
+        return self._get_boosted_stat(ENDURANCE, self._endurance)
 
     def get_agility(self):
-        agility = self._agility
-        if AGILITY in self._status_effects:
-            agility_effects = self._status_effects[AGILITY]
-            for effect in agility_effects:
-                agility *= 1 + effect.get_amount()
-        return agility
+        return self._get_boosted_stat(AGILITY, self._agility)
+
+    def get_dexterity(self):
+        return self._get_boosted_stat(DEXTERITY, self._dexterity)
+
+    def _get_boosted_stat(self, stat_type, stat):
+        return stat * (1 + min(max(self.get_total_boost(stat_type), 0), 1))
+
+    def get_total_boost(self, stat_type):
+        amount = 0
+        if stat_type not in self._status_effects:
+            return amount
+        for effect in self._status_effects[stat_type].values():
+            amount += effect.get_amount()
+        return amount
 
     def get_idle_animation(self):
         return ''
@@ -126,19 +97,19 @@ class BattleEntity:
             marker.fade_out(fade_time)
         self._markers = {}
 
-    def apply_effect(self, effect_type, effect):
+    def apply_effect(self, name, effect_type, effect):
         if effect_type not in self._status_effects:
-            self._status_effects[effect_type] = []
-        self._status_effects[effect_type].append(effect)
+            self._status_effects[effect_type] = {}
+        self._status_effects[effect_type][name] = effect
 
     def clear_negative_effects(self):
         for effects in self._status_effects.values():
             dead_effects = []
-            for effect in effects:
+            for effect_name, effect in effects.items():
                 if effect.get_amount() < 0:
-                    dead_effects.append(effect)
+                    dead_effects.append(effect_name)
             for dead_effect in dead_effects:
-                effects.remove(dead_effect)
+                effects.pop(dead_effect)
 
     def clear_effects(self):
         self._status_effects = {}
@@ -146,14 +117,23 @@ class BattleEntity:
     def get_effects(self):
         return self._status_effects
 
+    def reduce_effect_amount(self, effect_type, delta):
+        list(self._status_effects[effect_type].values())[0].reduce_amount(delta)
+
     def update_effects(self, delta=1):
+        dead_effect_types = []
         for effect_type, effects in self._status_effects.items():
-            # print(STAT_TYPES[effect_type], len(effects))
-            dead_effects = []
-            for effect in effects:
-                # print(effect.get_amount(), effect.get_duration())
-                effect.reduce_duration(delta)
-                if effect.get_duration() < 0:
-                    dead_effects.append(effect)
-            for dead_effect in dead_effects:
-                effects.remove(dead_effect)
+            if effect_type in STAT_TYPES:
+                dead_effects = []
+                for effect_name, effect in effects.items():
+                    if effect.get_duration() <= 0:
+                        continue
+                    effect.reduce_duration(delta)
+                    if effect.get_duration() <= 0:
+                        dead_effects.append(effect_name)
+                for dead_effect in dead_effects:
+                    effects.pop(dead_effect)
+            if len(effects) == 0:
+                dead_effect_types.append(effect_type)
+        for dead_effect_type in dead_effect_types:
+            self._status_effects.pop(dead_effect_type)

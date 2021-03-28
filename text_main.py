@@ -61,7 +61,7 @@ class CoatiraneAdventures(App):
         layout.add_widget(Console())
         self.scroll_widget = Builder.load_string("""
 ClickableScrollView:
-    size_hint: 0.35, 1
+    size_hint: 0.6, 0.45
     pos_hint: {'right': 1}
     do_scroll_x: False
     effect_cls: 'ScrollEffect'
@@ -70,7 +70,7 @@ ClickableScrollView:
         size_hint: None, None
         size: self.texture_size
         font_name: 'Fantasque'
-        font_size: str(int(root.width / 0.35 * 15 / 1706)) + 'pt'
+        font_size: str(int(root.width / 0.6 * 15 / 1706)) + 'pt'
         line_height: 1.15
         markup: True
         color: 1, 1, 1, 1

@@ -10,10 +10,10 @@ MAX_RANK = 10
 
 
 class Rank(SMEAD, HMPMD):
-    def __init__(self, index, rank_growth, board, unlocked, broken, h=1, ma=1, s=1, m=1, e=1, a=1, d=1):
+    def __init__(self, index, rank_growth, board, unlocked, broken, hp=1, mp=1, s=1, m=1, e=1, a=1, d=1):
         self._initialized = False
         SMEAD.__init__(self, s, m, e, a, d)
-        HMPMD.__init__(self, h, ma, 0, 0, 0)
+        HMPMD.__init__(self, hp, mp, 0, 0, 0)
         self._rank_growth = rank_growth
         self._board = board
         self._unlocked = unlocked
@@ -27,10 +27,10 @@ class Rank(SMEAD, HMPMD):
     def refresh_stats(self):
         if not self._initialized:
             return
-        SMEAD.refresh_stats(self)
-        HMPMD.refresh_stats(self)
         self._rank_growth.refresh_stats()
         self._board.refresh_stats()
+        SMEAD.refresh_stats(self)
+        HMPMD.refresh_stats(self)
 
     def get_board(self):
         return self._board
@@ -132,10 +132,10 @@ class Rank(SMEAD, HMPMD):
             values = line.split(' ')
             for index in range(len(values)):
                 values[index] = int(values[index].strip())
-            growth = RankGrowth()
-            board = Board(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9])
-            unlocked = level == 0
-            broken = False
+            growth = RankGrowth(*character_development['growth'][level])
+            board = Board(values[9], values[8], values[7], values[6], values[5], values[4], values[3], values[2], values[1], values[0], character_development['boards'][level])
+            unlocked = character_development['unlocked'][level]
+            broken = character_development['broken'][level]
             ranks.append(Rank(level, growth, board, unlocked, broken))
             level += 1
         return ranks

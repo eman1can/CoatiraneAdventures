@@ -82,6 +82,14 @@ RACES = {
     XENOS: 'Xenos'
 }
 
+HEALTH    = 0
+MANA      = 1
+STRENGTH  = 2
+MAGIC     = 3
+ENDURANCE = 4
+AGILITY   = 5
+DEXTERITY = 6
+
 
 class Character(Entity):
     def __init__(self, name, skel_path, hp, mp, s, m, e, a, d, element, skills, **kwargs):
@@ -145,6 +153,8 @@ class Character(Entity):
     # Refresh and calculation functions
 
     def refresh_stats(self):
+        for rank in self._ranks:
+            rank.refresh_stats()
         super().refresh_stats()
         self.update_score()
         self.update_worth()

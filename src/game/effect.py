@@ -34,12 +34,11 @@ LIGHT_RESIST    = 19
 DARK_RESIST     = 20
 
 # Chances
-GUARD_CHANCE       = 21
-COUNTER_CHANCE     = 22
-PENETRATION_CHANCE = 23
-CRITICAL_CHANCE    = 24
-BLOCK_CHANCE       = 25
-EVADE_CHANCE       = 26
+COUNTER_CHANCE     = 21
+PENETRATION_CHANCE = 22
+CRITICAL_CHANCE    = 23
+BLOCK_CHANCE       = 24
+EVADE_CHANCE       = 25
 
 # TODO SMEAD Grabbing Doesn't Affect HMPMD in battle entities
 STAT_TYPES = {
@@ -55,42 +54,43 @@ STAT_TYPES = {
     PHYSICAL_ATTACK: 'Phy. Atk.',  # Implemented
     MAGICAL_ATTACK: 'Mag. Atk.',  # Implemented
     DEFENSE: 'Def.',  # Implemented
-    PHYSICAL_RESIST: 'Phy. Resist',
-    MAGICAL_RESIST: 'Mag. Resist',
-    HYBRID_RESIST: 'Hyb. Resist',
-    WATER_RESIST: 'Water Resist',
-    FIRE_RESIST: 'Fire Resist',
-    THUNDER_RESIST: 'Thunder Resist',
-    WIND_RESIST: 'Wind Resist',
-    EARTH_RESIST: 'Earth Resist',
-    LIGHT_RESIST: 'Light Resist',
-    DARK_RESIST: 'Dark Resist',
-    GUARD_CHANCE: 'Guard',
-    COUNTER_CHANCE: 'Counter',
-    PENETRATION_CHANCE: 'Penetration',
-    CRITICAL_CHANCE: 'Critical',
-    BLOCK_CHANCE: 'Block',
-    EVADE_CHANCE: 'Evade'
+    PHYSICAL_RESIST: 'Phy. Resist',  # Implemented
+    MAGICAL_RESIST: 'Mag. Resist',  # Implemented
+    HYBRID_RESIST: 'Hyb. Resist',  # Implemented
+    WATER_RESIST: 'Water Resist',  # Implemented
+    FIRE_RESIST: 'Fire Resist',  # Implemented
+    THUNDER_RESIST: 'Thunder Resist',  # Implemented
+    WIND_RESIST: 'Wind Resist',  # Implemented
+    EARTH_RESIST: 'Earth Resist',  # Implemented
+    LIGHT_RESIST: 'Light Resist',  # Implemented
+    DARK_RESIST: 'Dark Resist',  # Implemented
+    COUNTER_CHANCE: 'Counter',  # Implemented
+    PENETRATION_CHANCE: 'Penetration',  # Implemented
+    CRITICAL_CHANCE: 'Critical',  # Implemented
+    BLOCK_CHANCE: 'Block',  # Implemented
+    EVADE_CHANCE: 'Evade'  # Implemented
 }
 
 # Counter Types
-NULL_ATK     = 0
-NULL_PHY_ATK = 1
-NULL_MAG_ATK = 2
-NULL_HYB_ATK = 3
+NULL_ATK     = 26
+NULL_PHY_ATK = 27
+NULL_MAG_ATK = 28
+NULL_HYB_ATK = 29
 
 COUNTER_TYPES = {
-    NULL_ATK: 'Null Atk.',
-    NULL_PHY_ATK: 'Null P. Atk.',
-    NULL_MAG_ATK: 'Null M. Atk.',
-    NULL_HYB_ATK: 'Null H. Atk.'
+    NULL_ATK: 'Null Atk.',  # Implemented
+    NULL_PHY_ATK: 'Null P. Atk.',  # Implemented
+    NULL_MAG_ATK: 'Null M. Atk.',  # Implemented
+    NULL_HYB_ATK: 'Null H. Atk.'  # Implemented
 }
 
 # Duration Types
-SPECIAL_BLOCK = 0
-HEAL_BLOCK    = 1
-POTION_BLOCK  = 2
-ATTACK_ALLY   = 3
+SPECIAL_BLOCK = 30
+HEAL_BLOCK    = 31
+POTION_BLOCK  = 32
+ATTACK_ALLY   = 33
+
+
 
 # Specific Target Types
 SKILL_BLOCK = 0  # Counter is skill #
@@ -143,7 +143,7 @@ class Effect:
 
 
 class AppliedEffect:
-    def __init__(self, amount, duration):
+    def __init__(self, amount=0, duration=-1):
         self._amount = amount
         self._duration = duration
 
@@ -152,6 +152,9 @@ class AppliedEffect:
 
     def get_amount(self):
         return self._amount
+
+    def reduce_amount(self, delta):
+        self._amount -= delta
 
     def reduce_duration(self, delta):
         self._duration -= delta

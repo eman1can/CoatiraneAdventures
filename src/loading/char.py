@@ -106,9 +106,9 @@ def load_char_chunk(line, loader, program_type, callbacks):
 
     path = resource_find('data/' + program_type + '/grids/' + values[ID] + '.txt')
     if path:
-        ranks = Rank.load_ranks(path, character_development)
+        ranks = Rank.load_ranks(path, character_development['ranks'])
     else:
-        ranks = Rank.load_ranks(resource_find('data/' + program_type + '/grids/base.txt'), character_development)
+        ranks = Rank.load_ranks(resource_find('data/' + program_type + '/grids/base.txt'), character_development['ranks'])
     # TODO - Add rank loading from save/load
 
     hp, mp, s, m, e, a, d = values[HEALTH:DEXTERITY + 1]

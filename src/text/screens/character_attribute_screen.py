@@ -28,8 +28,14 @@ def character_attribute_main(console):
         star_string += '☆ '
     display_string += '[font=NanumGothic]' + star_string[:-1].ljust(BOX_SIZE) + '[/font]'
 
-    display_string += f'\n\t  [color={TYPE_COLORS[character.get_attack_type()]}]' + (character.get_attack_type_string() + ' Type').ljust(BOX_SIZE) + '[/color]'
-    display_string += f'   [color={ELEMENT_COLORS[character.get_element()]}]' + character.get_element_string().rjust(BOX_SIZE) + '[/color]   '
+    if not character.is_support():
+        display_string += f'\n\t  [color={TYPE_COLORS[character.get_attack_type()]}]' + (character.get_attack_type_string() + ' Type').ljust(BOX_SIZE) + '[/color]'
+    else:
+        display_string += f'\n\t  ' + ''.ljust(BOX_SIZE)
+    if not character.is_support():
+        display_string += f'   [color={ELEMENT_COLORS[character.get_element()]}]' + character.get_element_string().rjust(BOX_SIZE) + '[/color]   '
+    else:
+        display_string += f'   ' + ''.rjust(BOX_SIZE) + '   '
 
     star_string = ''
     for index in range(character.get_current_rank()):

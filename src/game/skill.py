@@ -1,4 +1,4 @@
-__all__ = ('Skill',)
+__all__ = ('Skill', 'AILMENT_CURE', 'ALLIES', 'ALLY', 'ATTACK', 'CAUSE_EFFECT', 'ELEMENTS', 'FOES', 'FOE', 'HEAL', 'MAGICAL', 'PHYSICAL', 'SELF', 'TEMP_BOOST_BY_TARGET')
 
 # Skill Types
 ATTACK       = 0
@@ -38,39 +38,39 @@ ATTACK_POWERS = {LOW: 'Low', MID: 'Mid', HIGH: 'High', SUPER: 'Super', ULTRA: 'U
 
 ATTACK_POWERS_EFFECT_BY_TARGET = {
     FOE: {
-        LOW: 0.5,
-        MID: 0.7,
-        HIGH: 0.9,
-        SUPER: 1.1,
+        LOW:   0.6,
+        MID:   0.8,
+        HIGH:  1.0,
+        SUPER: 1.3,
         ULTRA: 3.0
     },
     ALLY: {
-        LOW: 0.5,
-        MID: 0.7,
-        HIGH: 0.9,
-        SUPER: 1.1,
+        LOW:   0.6,
+        MID:   0.8,
+        HIGH:  1.0,
+        SUPER: 1.3,
         ULTRA: 3.0
     },
     SELF: {
-        LOW: 0.5,
-        MID: 0.7,
-        HIGH: 0.9,
-        SUPER: 1.1,
+        LOW:   0.6,
+        MID:   0.8,
+        HIGH:  1.0,
+        SUPER: 1.3,
         ULTRA: 3.0
     },
     FOES: {
-        LOW: 0.1,
-        MID: 0.15,
-        HIGH: 0.2,
-        SUPER: 0.4,
-        ULTRA: 2.6
+        LOW:   0.3,
+        MID:   0.5,
+        HIGH:  0.75,
+        SUPER: 1.1,
+        ULTRA: 2.5
     },
     ALLIES: {
-        LOW: 0.1,
-        MID: 0.15,
-        HIGH: 0.2,
-        SUPER: 0.4,
-        ULTRA: 2.6
+        LOW:   0.3,
+        MID:   0.5,
+        HIGH:  0.75,
+        SUPER: 1.1,
+        ULTRA: 2.5
     }
 }
 
@@ -89,7 +89,7 @@ WIND = 4
 EARTH = 5
 LIGHT = 6
 DARK = 7
-ELEMENTS = {NONE: 'None', WATER: 'Water', FIRE: 'Fire', THUNDER: 'Thunder', WIND: 'Wind', EARTH: 'Earth', LIGHT: 'Light', DARK: 'Dark'}
+ELEMENTS = {NONE: '', WATER: 'Water', FIRE: 'Fire', THUNDER: 'Thunder', WIND: 'Wind', EARTH: 'Earth', LIGHT: 'Light', DARK: 'Dark'}
 
 # Temporary Boost
 BOOST       = 0
@@ -114,9 +114,10 @@ TEMP_BOOST_BY_TARGET = {
 
 
 class Skill:
-    def __init__(self, skill_id, name, animation_id, skill_type, target, speed, power, attack_type, element, boosts, effect_list):
+    def __init__(self, skill_id, name, description, animation_id, skill_type, target, speed, power, attack_type, element, boosts, effect_list):
         self._id = skill_id
         self._name = name
+        self._description = description
         self._animation_id = animation_id
 
         self._type = skill_type
@@ -142,6 +143,9 @@ class Skill:
         if self._special:
             return f'Special: {self._name}'
         return self._name
+
+    def get_description(self):
+        return self._description
 
     def get_id(self):
         return self._id
