@@ -1,3 +1,4 @@
+from math import floor
 from random import choices, randint
 
 from game.floor import EXIT
@@ -74,6 +75,7 @@ class Console(TextInput):
 
         self.memory.domains = None
         self.memory.current_domain = 0
+        self._width = None
 
         super().__init__(**kwargs)
 
@@ -284,6 +286,17 @@ class Console(TextInput):
     def update_calendar_callback(self):
         Refs.gc.set_calendar_callback(self._refresh_header)
 
+    def _refresh_text(self, text, *largs):
+        super()._refresh_text(text, *largs)
+        if self._label_cached:
+            width = floor(self.width / self._label_cached.get_extents(' ')[0]) - 1
+            if self._width != width:
+                self._width = width
+                self._refresh()
+
+    def get_width(self):
+        return self._width
+
     def _refresh(self):
         if self._current_screen is None:
             return
@@ -293,7 +306,7 @@ class Console(TextInput):
         if self._current_screen is None:
             return
         if self.header_callback:
-            self.header_text = self.header_callback()
+            self.header_text = self.header_callback(self)
         else:
             self.header_text = ''
         if self.error_text == '':
@@ -366,6 +379,9 @@ class Console(TextInput):
                 index = 9
             Refs.gc.set_current_party_index(index)
             self.set_screen('dungeon_main')
+        elif action == 'dungeon_main' and self._current_screen == 'dungeon_result_experience':
+            self.text = '\n\tSaving Game...'
+            Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: self.set_screen('dungeon_main')), 0.5)
         elif action.startswith('set_char_'):
             char_id_and_index = action[len('set_char_'):]
             index = int(char_id_and_index[:char_id_and_index.index('_')])
@@ -477,16 +493,16 @@ class Console(TextInput):
                 self.error_text = 'You don\'t have enough money to cover the payment!'
             self.set_screen('housing_main')
         elif action.startswith('housing_rent') and 'confirm' in action:
-            housing = Refs.gc['housing'][action[len('housing_rent'):-len('confirm')]]
-            if not Housing.rent_housing(Refs.gc.get_housing(), housing):
+            housing = Refs.gc['housing'][action.split('#')[1]]
+            if Housing.rent_housing(Refs.gc.get_housing(), housing):
                 self.set_screen('housing_main')
             else:
                 self.error_time = 2.5
                 self.error_text = 'You don\'t have enough money to cover the first payment!'
         elif action.startswith('housing_buy') and 'confirm' in action:
-            housing_name, down_payment = action.split('#')
-            housing = Refs.gc['housing'][housing_name[len('housing_buy'):-len('confirm')]]
-            if not Housing.buy_housing(Refs.gc.get_housing(), housing, int(down_payment)):
+            housing_name, down_payment = action.split('#')[1:-1]
+            housing = Refs.gc['housing'][housing_name]
+            if Housing.buy_housing(Refs.gc.get_housing(), housing, int(down_payment)):
                 self.set_screen('housing_main')
             else:
                 self.error_time = 2.5

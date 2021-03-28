@@ -1,5 +1,7 @@
+from math import ceil, floor
 from random import randint
 
+from game.effect import COUNTER_TYPES, STAT_TYPES
 from game.floor import ENTRANCE, EXIT, SAFE_ZONES
 from game.floor_data import DIRECTIONS_FROM_STRING, E, LEFT, N, OPPOSITE, RIGHT, S, STRING_DIRECTIONS, W
 from refs import BLUE_C, END_OPT_C, OPT_C, RED_C, Refs, SEA_FOAM_C
@@ -107,18 +109,18 @@ def get_extra_actions(floor_data):
         action_index1 = 8
         action_index2 = 9
 
-    text += f'\n\t{OPT_C}{inventory_index}:{END_OPT_C} Inventory\n'
+    text += f'\n\t{OPT_C}{inventory_index}:{END_OPT_C} Inventory'
     options[str(inventory_index)] = 'inventory_battle*0'
 
     safe_zone = floor_data.get_floor().get_map().is_marker(SAFE_ZONES)
     activated_safe_zone = floor_data.is_activated_safe_zone()
 
     if safe_zone and not activated_safe_zone:
-        text += f'\n\n\t{OPT_C}{safe_zone_index}:{END_OPT_C} Create Safe Zone'
+        text += f'\n\t{OPT_C}{safe_zone_index}:{END_OPT_C} Create Safe Zone'
         options[str(safe_zone_index)] = 'dungeon_battle_create_safe_zone'
 
     if activated_safe_zone:
-        text += f'\n\n\t{OPT_C}{safe_zone_index}:{END_OPT_C} Rest'
+        text += f'\n\t{OPT_C}{safe_zone_index}:{END_OPT_C} Rest'
         options[str(safe_zone_index)] = 'dungeon_battle_rest'
 
     adventurers_able = False
@@ -128,46 +130,128 @@ def get_extra_actions(floor_data):
 
     if adventurers_able:
         if Refs.gc.get_inventory().has_pickaxe():
-            text += f'\n\n\t{OPT_C}{action_index1}:{END_OPT_C} Inspect the dungeon walls. (Mine for resource)'
+            text += f'\n\t{OPT_C}{action_index1}:{END_OPT_C} Inspect the dungeon walls. (Mine for resource)'
             options[str(action_index1)] = 'dungeon_battle_mine'
         if Refs.gc.get_inventory().has_shovel():
-            text += f'\n\n\t{OPT_C}{action_index2}:{END_OPT_C} Inspect the dungeon environment. (Dig and Scrounge for resource)'
+            text += f'\n\t{OPT_C}{action_index2}:{END_OPT_C} Inspect the dungeon environment. (Dig and Scrounge for resource)'
             options[str(action_index2)] = 'dungeon_battle_dig'
-
+    text += '\n'
     return text, options
 
 
-def get_battle_display(floor_data):
+def get_bar_display(size, filled):
+    string, count = '', (size - 2) * filled
+    for index in range(size - 2):
+        if index < count:
+            string += '='
+        else:
+            string += ' '
+    return f'[{string}]'
+
+
+def _get_enemy_display(enemy, enemy_width, battle_data, enemy_index, option_index, _options):
+    enemy_rows = []
+
+    status_effects = enemy.get_effects()
+    name = enemy.get_name()
+
+    health_string = get_bar_display(int(enemy_width * 0.8), enemy.get_battle_health() / enemy.get_health())
+
+    if status_effects:
+        name += '*'
+
+    if enemy.is_dead():
+        enemy_rows.append((center(f'[s]{name}[/s]', len(name), enemy_width), enemy_width))
+        enemy_rows.append((center(f'[s]{RED_C}{health_string}{END_OPT_C}[/s]', len(health_string), enemy_width), enemy_width))
+    else:
+        if not battle_data.get_state().startswith('battle_select'):
+            enemy_rows.append((center(f'{OPT_C}{option_index}:{END_OPT_C} {name}', len(name) + len(f'{option_index}: '), enemy_width), enemy_width))
+            _options[str(option_index)] = f'dungeon_battle_encounter_select_show_{enemy_index}'
+        else:
+            enemy_rows.append((name.center(enemy_width), enemy_width))
+        enemy_rows.append((center(f'{RED_C}{health_string}{END_OPT_C}', len(health_string), enemy_width), enemy_width))
+    enemy_rows.append(('', 0))
+    return enemy_rows
+
+
+def _get_character_display(character, character_width, battle_data, char_index, option_index, _options):
+    character_rows = []
+
+    status_effects = character.get_effects()
+
+    if ' ' in character.get_name():
+        name = character.get_name().split(' ')[0]
+    else:
+        name = character.get_name()
+
+    health_string = get_bar_display(int(character_width * 0.8), character.get_battle_health() / character.get_health())
+    mana_string = get_bar_display(int(character_width * 0.8), character.get_battle_mana() / character.get_mana())
+    skill_name = f'S.S.: {character.get_selected_skill().get_name()}'
+
+    print(character.get_health(), character.get_battle_health(), character.get_battle_health() / character.get_health())
+
+    if status_effects:
+        name += '*'
+
+    if character.is_dead():
+        character_rows.append((center(f'[s]{name}[/s]', len(name), character_width), character_width))
+
+        character_rows.append((center(f'[s]{skill_name}[/s]', len(skill_name), character_width), character_width))
+        character_rows.append((center(f'[s]{RED_C}{health_string}{END_OPT_C}[/s]', len(health_string), character_width), character_width))
+        character_rows.append((center(f'[s]{BLUE_C}{mana_string}{END_OPT_C}[/s]', len(mana_string), character_width), character_width))
+    else:
+        if not battle_data.get_state().startswith('battle_select'):
+            character_rows.append((center(f'{OPT_C}{option_index}:{END_OPT_C} {name}', len(name) + len(f'{option_index}: '), character_width), character_width))
+            _options[str(option_index)] = f'dungeon_battle_encounter_select_show_{char_index}'
+        else:
+            character_rows.append((f'{name.center(character_width)}', character_width))
+
+        character_rows.append((skill_name.center(character_width), character_width))
+        character_rows.append((f'{RED_C}{health_string.center(character_width)}{END_OPT_C}', character_width))
+        character_rows.append((f'{BLUE_C}{mana_string.center(character_width)}{END_OPT_C}', character_width))
+    character_rows.append(('', 0))
+    return character_rows
+
+
+def get_battle_display(console, floor_data):
     battle_data = floor_data.get_battle_data()
 
     option_index = 1
     _options = {}
 
-    enemy_rows = []
-    character_rows = []
-    effect_rows = []
+    enemy_width = character_width = floor(console.get_width() * 0.25)
+    action_width = effect_width = floor(enemy_width * 2)
 
-    # Display Enemies
-    for enemy in battle_data.get_enemies():
-        name = enemy.get_name()
-        count = 18 * enemy.get_battle_health() / enemy.get_health()
-        health_string = ''
-        for index in range(18):
-            if index < count:
-                health_string += '='
-            else:
-                health_string += ' '
-        health_string = f'[{health_string}]'
-        if enemy.is_dead():
-            enemy_rows.append((f'[s]{name}[/s]', len(name)))
-            enemy_rows.append((f'[s]{RED_C}{health_string}{END_OPT_C}[/s]', len(health_string)))
+    screen_columns = [[], [], [], []]
+    screen_string = '\n'
+
+    enemies = battle_data.get_enemies()
+    characters = battle_data.get_characters()
+
+    first_col_enemies = enemies[:7]
+    second_col_enemies = enemies[7:]
+
+    first_col_characters = characters[:4]
+    second_col_characters = characters[4:]
+
+    # Display the special bar
+    special_string, sides = '', floor(console.get_width() * 0.05)
+    special_width = console.get_width() - (sides * 2) - 2
+
+    special_amount = special_width * battle_data.get_special_amount() / 25
+
+    for index in range(special_width, 0, -1):
+        if index % ceil(special_width / 5) == 0 and index != 0:
+            special_string += '|'
+        elif index <= special_amount:
+            special_string += '='
         else:
-            enemy_rows.append((name, len(name)))
-            enemy_rows.append((f'{RED_C}{health_string}{END_OPT_C}', len(health_string)))
-        enemy_rows.append(('', 0))
+            special_string += ' '
+    for _ in range(sides):
+        screen_string += ' '
+    screen_string += f'{SEA_FOAM_C}[b][{special_string}] {battle_data.get_special_count()}[/b]{END_OPT_C}\n\n'
 
-    # Display Characters
-    # Make sure that if we don't have enough special moves, to reduce the amount
+    # Reset character skills if no special
     special_count = 0
     special_possible = battle_data.get_special_count()
     for character in battle_data.get_characters():
@@ -180,153 +264,156 @@ def get_battle_display(floor_data):
         if mcost > character.get_battle_mana():
             character.select_skill(0)
 
-    for character in battle_data.get_characters():
-        name = character.get_name()
-        count = 18 * character.get_battle_health() / character.get_health()
-        health_string = ''
-        for index in range(18):
-            if index < count:
-                health_string += '='
-            else:
-                health_string += ' '
-        health_string = f'[{health_string}]'
-        mana_string = ''
-        count = 18 * character.get_battle_mana() / character.get_mana()
-        for index in range(18):
-            if index < count:
-                mana_string += '='
-            else:
-                mana_string += ' '
-        mana_string = f'[{mana_string}]'
-        skill_name = f'S.S.: {character.get_selected_skill().get_name()}'
-        if not battle_data.get_state().startswith('battle_select') and not character.is_dead():
-            character_rows.append((f'{OPT_C}{option_index}:{END_OPT_C} {name}', len(name) + 3))
-            _options[str(option_index)] = f'dungeon_battle_encounter_select_show_{option_index - 1}'
-            option_index += 1
+    # Create Actions
+    effect_rows = []
+    action_rows = []
+    if battle_data.get_state().startswith('battle_select'):
+        Refs.app.scroll_widget.opacity = 0
+        entity_index = int(battle_data.get_state()[len('battle_select_'):])
+        if entity_index <= len(battle_data.get_characters()) - 1:
+            entity = battle_data.get_characters()[entity_index]
+            selected_skill = entity.get_selected_skill()
+
+            skills = entity.get_skills()
+            skill_indexes = [0, 1, 3, 5, 7]
+            for index, skill in enumerate(skills):
+                skill_index = skill_indexes[index]
+                mana_cost = entity.get_mana_cost(skill)
+
+                skill_name = skill.get_name()
+                if mana_cost > 0:
+                    skill_name += f' - {mana_cost}'
+                name_length = len(skill_name) + 3
+                skill_description = skill.get_description()
+                description_length = len(skill_description)
+
+                special_blocked = False
+                if skill.is_special():
+                    special_blocked = battle_data.get_special_count() < 0
+                    if not special_blocked:
+                        # If we have gauge points, are they selected already?
+                        possible = battle_data.get_special_count()
+                        for character in battle_data.get_characters():
+                            if character.get_selected_skill().is_special():
+                                possible -= 1
+                        if possible <= 0:
+                            special_blocked = True
+
+                if skill == selected_skill or (skill.is_special() and special_blocked) or (mana_cost > 0 and mana_cost > entity.get_battle_mana()):
+                    skill_name = f'[s]{skill_name}[/s]'
+                    skill_description = f'[s]{skill_description}[/s]'
+
+                action_rows.append((f'{OPT_C}{option_index}:{END_OPT_C} {skill_name}', name_length))
+                action_rows.append((f'    {skill_description}', description_length + 4))
+                action_rows.append((f'', 0))
+
+                if skill != selected_skill:
+                    skill_option = str(option_index)
+                else:
+                    skill_option = '0'
+                _options[skill_option] = f'dungeon_battle_encounter_select_{entity_index}_{skill_index}'
+                option_index += 1
         else:
-            if character.is_dead():
-                character_rows.append((f'[s]{name}[/s]', len(name)))
-            else:
-                character_rows.append((f'{name}', len(name)))
-        if character.is_dead():
-            character_rows.append((f'[s]{RED_C}{health_string}{END_OPT_C}[/s]', 20))
-            character_rows.append((f'[s]{BLUE_C}{mana_string}{END_OPT_C}[/s]', 20))
-            character_rows.append(('', 0))
-            character_rows.append((f'[s]{skill_name}[/s]', len(skill_name)))
+            # What do we display when we are the enemy?
+            entity = battle_data.get_enemies()[entity_index - len(battle_data.get_characters())]
+            _options['0'] = f'dungeon_battle_encounter_select_close'
+        action_rows.append((f'{OPT_C}0:{END_OPT_C} Back', 7))
+
+        # Create the Status Effect Rows
+        name = f'{entity.get_name()} Status Effects'
+        effect_rows.append((name, len(name)))
+        effects = entity.get_effects()
+        if len(effects) == 0:
+            effect_rows.append(('', 0))
+            effect_rows.append(('None', 4))
         else:
-            character_rows.append((f'{RED_C}{health_string}{END_OPT_C}', 20))
-            character_rows.append((f'{BLUE_C}{mana_string}{END_OPT_C}', 20))
-            character_rows.append(('', 0))
-            character_rows.append((skill_name, len(skill_name)))
-        character_rows.append(('', 0))
-        character_rows.append(('', 0))
-    # Display Status Effects
-    for character in battle_data.get_characters():
-        status_effects = character.get_effects()
-        for effect_list in status_effects.values():
-            for effect in effect_list:
-                pass
-
-    # Combine all of the rows into one string
-    goblin_center, goblin_justify, character_center, character_justify, effect_center, effect_justify = 25, 30, 35, 40, 20, 25
-
-    screen_string = '\n'
-
-    special_string = ''
-    special_width = goblin_justify + character_justify + effect_justify - 2
-    if battle_data.get_special_amount() > 0:
-        special_amount = special_width * battle_data.get_special_amount() / 25
+            for effect_type, effect_list in effects.items():
+                for effect in effect_list.values():
+                    if effect_type in STAT_TYPES:
+                        if effect.get_duration() <= 0:
+                            effect_string = f'{STAT_TYPES[effect_type]} {"+" if effect.get_amount() > 0 else ""}{effect.get_amount() * 100}%'
+                        else:
+                            effect_string = f'{STAT_TYPES[effect_type]} {"+" if effect.get_amount() > 0 else ""}{effect.get_amount() * 100}% - {effect.get_duration()} turn{"s" if effect.get_duration() > 1 else ""}'
+                    elif effect_type in COUNTER_TYPES:
+                        effect_string = f'{COUNTER_TYPES[effect_type]} x{effect.get_amount()}'
+                    else:
+                        effect_string = 'Not Implemented'
+                    effect_rows.append((effect_string, len(effect_string)))
     else:
-        special_amount = battle_data.get_special_amount()
+        Refs.app.scroll_widget.opacity = 1
+        _options['0'] = 'dungeon_battle_encounter_attack'
+        _options['1'] = 'inventory_battle*0'
+        action_rows.append((f'{OPT_C}0:{END_OPT_C} Attack', 9))
+        action_rows.append((f'{OPT_C}1:{END_OPT_C} Inventory', 12))
+        option_index += 1
 
-    for index in range(special_width, 0, -1):
-        if index % 19 == 0 and index != 0:
-            special_string += '|'
-            continue
-        if index < special_amount:
-            special_string += '='
-        else:
-            special_string += ' '
-    screen_string += f'\t{SEA_FOAM_C}[b][{special_string}] {battle_data.get_special_count()}[/b]{END_OPT_C}\n\n'
+    # Create the character rows
+    index = 0
+    for character in first_col_characters:
+        character_rows = _get_character_display(character, character_width, battle_data, index, option_index + index, _options)
+        screen_columns[2] += character_rows
+        index += 1
 
-    for index in range(max(len(enemy_rows), len(character_rows), len(effect_rows))):
-        screen_string += '\t'
-        # Add the enemy strings
-        if index < len(enemy_rows) - 1:
-            string, string_length = enemy_rows[index]
-            screen_string += ljust(center(string, string_length, goblin_center), max(goblin_center, string_length), goblin_justify)
-        else:
-            screen_string += ''.center(goblin_center).ljust(goblin_justify)
-        # Add the character strings
-        if index < len(character_rows) - 1:
-            string, string_length = character_rows[index]
-            screen_string += rjust(center(string, string_length, character_center), max(character_center, string_length), character_justify)
-        else:
-            screen_string += ''.center(character_center).ljust(character_justify)
-        # Add the effect strings
-        if index < len(effect_rows) - 1:
-            string, string_length = effect_rows[index]
-            screen_string += ljust(center(string, string_length, effect_center), max(effect_center, string_length), effect_justify)
-        else:
-            screen_string += ''.center(effect_center).ljust(effect_justify)
+    for character in second_col_characters:
+        character_rows = _get_character_display(character, character_width, battle_data, index, option_index + index, _options)
+        screen_columns[3] += character_rows
+        index += 1
+
+    # Create the enemy rows
+    for enemy in first_col_enemies:
+        enemy_rows = _get_enemy_display(enemy, enemy_width, battle_data, index, option_index + index, _options)
+        screen_columns[0] += enemy_rows
+        index += 1
+
+    for enemy in second_col_enemies:
+        enemy_rows = _get_enemy_display(enemy, enemy_width, battle_data, index, option_index + index, _options)
+        screen_columns[1] += enemy_rows
+        index += 1
+
+    option_index += len(first_col_characters)
+    option_index += len(first_col_characters)
+    option_index += len(first_col_enemies)
+    option_index += len(second_col_enemies)
+
+    # Pad the columns
+    for col in screen_columns:
+        for _ in range(len(col), 21):
+            col.append(('', 0))
+
+    # Combine all of the top rows into one string
+    for index in range(21):
+        for col in range(2):
+            string, length = screen_columns[col][index]
+            screen_string += ljust(string, length, enemy_width)
+
+        for col in range(2, 4):
+            string, length = screen_columns[col][index]
+            screen_string += ljust(string, length, character_width)
+
         screen_string += '\n'
 
-    # Add Actions
     screen_string += '\n'
-    if battle_data.get_state().startswith('battle_select'):
-        char_index = int(battle_data.get_state()[len('battle_select_'):])
-        character = battle_data.get_characters()[char_index]
-        selected_skill = character.get_selected_skill()
 
-        skills = character.get_skills()
-        skill_indexes = [0, 1, 3, 5, 7]
-        for index, skill in enumerate(skills):
-            skill_index = skill_indexes[index]
+    # Combine the action rows and the status effect rows
+    for index in range(max(len(action_rows), len(effect_rows))):
+        if index < len(action_rows):
+            string, length = action_rows[index]
+            screen_string += ''.ljust(4) + ljust(string, length, action_width - 4)
+        else:
+            screen_string += ''.ljust(action_width)
+        if index < len(effect_rows):
+            string, length = effect_rows[index]
+            screen_string += center(string, length, effect_width)
+        screen_string += '\n'
 
-            if skill == selected_skill:
-                screen_string += f'\n\t{OPT_C}[s]{option_index}: {skill.get_name()}[/s]{END_OPT_C}'
-                _options[str(0)] = f'dungeon_battle_encounter_select_{char_index}_{skill_index}'
-            elif character.get_battle_mana() < character.get_mana_cost(skill):
-                screen_string += f'\n\t{OPT_C}[s]{option_index}: {skill.get_name()}[/s]{END_OPT_C}'
-            elif skill.is_special():
-                # Do we have any special gauge points?
-                special_blocked = battle_data.get_special_count() < 0
-                if not special_blocked:
-                    # If we have gauge points, are they selected already?
-                    possible = battle_data.get_special_count()
-                    for character in battle_data.get_characters():
-                        if character.get_selected_skill().is_special():
-                            possible -= 1
-                    if possible == 0:
-                        special_blocked = True
-                if special_blocked:
-                    screen_string += f'\n\t{OPT_C}[s]{option_index}: {skill.get_name()}[/s]{END_OPT_C}'
-                else:
-                    screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {skill.get_name()}'
-                    _options[str(option_index)] = f'dungeon_battle_encounter_select_{char_index}_{skill_index}'
-            else:
-                mana_cost = character.get_mana_cost(skill)
-                if mana_cost == 0:
-                    screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {skill.get_name()}'
-                else:
-                    screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {skill.get_name()} - {character.get_mana_cost(skill)}'
-                _options[str(option_index)] = f'dungeon_battle_encounter_select_{char_index}_{skill_index}'
-            option_index += 1
-        screen_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Back'
-    else:
-        _options['0'] = 'dungeon_battle_encounter_attack'
-        _options[str(option_index)] = 'inventory_battle*0'
-        screen_string += f'\n\t{OPT_C}{0}:{END_OPT_C} Attack'
-        screen_string += f'\n\t{OPT_C}{option_index}:{END_OPT_C} Inventory'
-    screen_string += '\n'
+    # screen_string += '\n'
     # Display Battle Log - Will be on a separate scroll
     Refs.app.scroll_widget.ids.label.text = battle_data.get_battle_log()
-    Refs.app.scroll_widget.opacity = 1
 
     return screen_string, _options
 
 
-def get_dungeon_header():
+def get_dungeon_header(console):
     string = '\n\t'
     if Refs.gc.get_inventory().has_item('pocket_watch'):
         string += f'{Refs.gc.get_time()} | '
@@ -401,6 +488,8 @@ def dungeon_battle(console):
             else:
                 display_string = display_string + f'\n\t{OPT_C}{map_index}:{END_OPT_C} Map Options\n' + tool_string
             _options[str(map_index)] = 'dungeon_battle_map_options'
+        else:
+            display_string += tool_string
         return display_string, _options
     else:
         display_string = '\n\t' + floor_data.get_descriptions()
@@ -411,7 +500,7 @@ def dungeon_battle(console):
             _options['0'] = 'dungeon_battle_encounter_start'
             return display_string, _options
         elif floor_data.get_encounter_state().startswith('battle'):
-            return get_battle_display(floor_data)
+            return get_battle_display(console, floor_data)
         # In encounter options
     display_string += '\n'
     return display_string, _options
@@ -443,7 +532,7 @@ def dungeon_result(console):
             health = character.get_health()
             mana = character.get_mana()
             if not character.is_dead():
-                display_string += f'\t{character.get_name()} - Health: {pre_battle[char_id + "_health"]} / {health} → {character.get_battle_health()} / {health} - Mana: {pre_battle[char_id + "_mana"]} / {mana} → {character.get_battle_mana()} / {mana}\n'
+                display_string += f'\t{character.get_name()} - Health: {pre_battle[char_id + "_health"]} / {health} → {round(character.get_battle_health(), 0)} / {health} - Mana: {pre_battle[char_id + "_mana"]} / {mana} → {character.get_battle_mana()} / {mana}\n'
             else:
                 display_string += f'\t{character.get_name()} - Health: {pre_battle[char_id + "_health"]} / {health} - Mana: {pre_battle[char_id + "_mana"]} / {mana} → Incapacitated\n'
 
@@ -474,59 +563,53 @@ def dungeon_result(console):
         knife = Refs.gc.get_inventory().get_current_harvesting_knife()
         knife.remove_durability(Refs.gc.get_random_wear_amount())
         for enemy, count in counts.items():
-            display_string += f'\n\t{enemy.get_name()} x {count}:'
+            display_string += f'\n\t\t{enemy.get_name()} x {count}:'
             for _ in range(count):
                 drops = Refs.gc['enemies'][enemy.get_id()].generate_drop(enemy.get_boost(), knife.get_hardness())
                 if len(drops) == 0:
-                    display_string += f'\n\t\tNo items were dropped.'
+                    display_string += f'\n\t\t\tNo items were dropped.'
                 for (drop_id, drop_count) in drops:
                     item = Refs.gc.find_item(drop_id)
                     if item not in item_counts:
                         item_counts[item] = 0
                     item_counts[item] += drop_count
-                    display_string += f'\n\t\t{item.get_name()} x {drop_count}'
+                    display_string += f'\n\t\t\t{item.get_name()} x {drop_count}'
         display_string += '\n\n\tAll Items Dropped:'
         for item, count in item_counts.items():
             display_string += f'\n\t\t{item.get_name()} x {count}'
         battle_data.set_dropped_items(item_counts)
-        display_string += f'\n\t{OPT_C}0:{END_OPT_C} Continue\n'
+        display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Continue\n'
         _options = {'0': 'dungeon_battle_end_encounter'}
     elif console.get_current_screen().endswith('loss'):
-        # floor_data = Refs.gc.get_floor_data()
-        # battle_data = floor_data.get_battle_data()
-
         display_string = '\n\tYou were defeated!\n\tYou will be restored to your last save point at the start of the dungeon.\n\tSupport characters are an excellent way to boost your strength as well as giving your characters\n\tequipment and ' \
                          'upgrading their status boards.\n\n\tBetter luck next time, my friend.\n'
         display_string += f'\n\t{OPT_C}{0}:{END_OPT_C} Continue\n'
         _options = {'0': 'dungeon_battle_restore_save'}
     elif console.get_current_screen().endswith('ascend'):
         floor_data = Refs.gc.get_floor_data()
-        if floor_data.get_floor().get_id() > 1:
-            return show_locked_dungeon_main()
-        else:
-            display_string = '\n\tYou successfully escaped the dungeon!\n\n\t'
-            enemy_rows = []
-            items_gained = []
-            for enemy, count in floor_data.get_killed().items():
-                enemy_rows.append(f'{enemy} x {count}')
-            for item, count in floor_data.get_gained_items().items():
-                items_gained.append(f'{item.get_name()} x {count}')
-                Refs.gc.get_inventory().add_item(item.get_id(), count)
-            if len(enemy_rows) == 0:
-                enemy_rows.append('None'.center(25))
-            if len(items_gained) == 0:
-                items_gained.append('None'.center(25))
-            display_string += 'Monsters Killed'.center(25) + 'Items Gained'.center(25) + '\n'
-            for x in range(max(len(enemy_rows), len(items_gained))):
-                if x < len(enemy_rows):
-                    display_string += '\t' + enemy_rows[x].ljust(25)
-                else:
-                    display_string += '\t' + ''.ljust(25)
-                if x < len(items_gained):
-                    display_string += items_gained[x]
-                display_string += '\n'
-            display_string += f'\n\n\t{OPT_C}{0}:{END_OPT_C} Continue\n'
-            _options = {'0': 'dungeon_result_experience'}
+        display_string = '\n\tYou successfully escaped the dungeon!\n\n\t'
+        enemy_rows = []
+        items_gained = []
+        for enemy, count in floor_data.get_killed().items():
+            enemy_rows.append(f'{enemy} x {count}')
+        for item, count in floor_data.get_gained_items().items():
+            items_gained.append(f'{item.get_name()} x {count}')
+            Refs.gc.get_inventory().add_item(item.get_id(), count)
+        if len(enemy_rows) == 0:
+            enemy_rows.append('None'.center(25))
+        if len(items_gained) == 0:
+            items_gained.append('None'.center(25))
+        display_string += 'Monsters Killed'.center(25) + 'Items Gained'.center(25) + '\n'
+        for x in range(max(len(enemy_rows), len(items_gained))):
+            if x < len(enemy_rows):
+                display_string += '\t' + enemy_rows[x].ljust(25)
+            else:
+                display_string += '\t' + ''.ljust(25)
+            if x < len(items_gained):
+                display_string += items_gained[x]
+            display_string += '\n'
+        display_string += f'\n\n\t{OPT_C}{0}:{END_OPT_C} Continue\n'
+        _options = {'0': 'dungeon_result_experience'}
     elif console.get_current_screen().endswith('experience'):
         display_string = '\n\tYou successfully escaped the dungeon!\n\n'
         char_rows = {}
@@ -585,11 +668,10 @@ def dungeon_result(console):
                 for character_id in list(char_rows.keys())[8:]:
                     display_string += char_rows[character_id][index].center(STAT_WIDTH)
                 display_string += '\n'
+        console.header_callback = None
         Refs.gc.reset_floor_data()
         display_string += f'\n\n\t{OPT_C}{0}:{END_OPT_C} Continue\n'
         _options = {'0': 'dungeon_main'}
-    else:
-        return show_locked_dungeon_main()
     return display_string, _options
 
 
@@ -650,7 +732,6 @@ def dungeon_battle_action(console, action):
         Refs.gc.get_floor_data().progress_by_direction(DIRECTIONS_FROM_STRING[action])
     elif action == 'fight_boss':
         Refs.gc.get_floor_data().generate_boss_encounter()
-        # Refs.gc.get_floor_data().get_battle_data().progress_encounter()
     elif action.startswith('encounter'):
         action = action[len('encounter_'):]
         if action == 'start':
@@ -670,7 +751,10 @@ def dungeon_battle_action(console, action):
                     Refs.app.scroll_widget.opacity = 1
                 return
         elif action.startswith('select_'):
-            if action.startswith('select_show_'):
+            if action == 'select_close':
+                battle_data = Refs.gc.get_floor_data().get_battle_data()
+                battle_data.set_state('battle')
+            elif action.startswith('select_show_'):
                 Refs.gc.get_floor_data().get_battle_data().set_state(f'battle_select_{action[len("select_show_"):]}')
             else:
                 character_index, select_index = action[len("select_"):].split('_')

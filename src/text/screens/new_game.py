@@ -11,6 +11,7 @@ from refs import END_OPT_C, OPT_C, Refs
 def new_game(console):
     font_size = f'{int(console.get_global_font_size() * 40 / 15)}pt'
     display_text = f'\n\n\n\t[color=#A35C7F][font=Precious][size={font_size}]Welcome to Coatirane Adventures![/size][/font][/color]\n\n\t{OPT_C}0:{END_OPT_C} Start Game\n\t{OPT_C}1:{END_OPT_C} Exit Game\n'
+
     _options = {'0': 'start_game', '1': 'exit_game'}
     return display_text, _options
 
@@ -126,9 +127,10 @@ def game_loading(console):
         if current > maximum:
             current = maximum
         string = '['
-        for x in range(int(30 / maximum * current)):
+        width = console.get_width() - 50
+        for x in range(int(width / maximum * current)):
             string += '='
-        for x in range(int(30 / maximum * current), 30):
+        for x in range(int(width / maximum * current), width):
             string += ' '
         return string + f'] {current} / {maximum}'
 

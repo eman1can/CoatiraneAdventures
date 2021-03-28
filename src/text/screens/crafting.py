@@ -22,27 +22,27 @@ def crafting_main(console):
     if not Refs.gc.has_perk('basic_tailor') and not Refs.gc.has_perk('apprentice_blacksmith'):
         display_text += ' - LOCKED'
     else:
-        _options['1'] = 'crafting_process_materials0page'
+        _options['1'] = 'crafting_process_materials*0'
     display_text += f'\n\t{OPT_C}2:{END_OPT_C} Craft Alloys'
     if not Refs.gc.has_perk('apprentice_blacksmith'):
         display_text += ' - LOCKED'
     else:
-        _options['2'] = 'crafting_alloys0page'
+        _options['2'] = 'crafting_alloys*0'
     display_text += f'\n\t{OPT_C}3:{END_OPT_C} Craft Items'
     if not Refs.gc.has_perk('daedalus_protege'):
         display_text += ' - LOCKED'
     else:
-        _options['3'] = 'crafting_items0page'
+        _options['3'] = 'crafting_items*0'
     display_text += f'\n\t{OPT_C}4:{END_OPT_C} Craft Equipment'
     if not Refs.gc.has_perk('reputable_tailor') and not Refs.gc.has_perk('skilled_blacksmith'):
         display_text += ' - LOCKED'
     else:
-        _options['4'] = 'crafting_equipment0page'
+        _options['4'] = 'crafting_equipment*0'
     display_text += f'\n\t{OPT_C}5:{END_OPT_C} Craft Potions'
     if not Refs.gc.has_perk('fledgling_alchemist'):
         display_text += ' - LOCKED'
     else:
-        _options['5'] = 'crafting_items0page'
+        _options['5'] = 'crafting_items*0'
 
     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} back\n'
     return display_text, _options

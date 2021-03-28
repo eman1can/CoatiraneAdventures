@@ -47,7 +47,7 @@ class BattleCharacter(BattleEntity):
 
     def get_stamina_message(self):
         if self._bhealth <= 0:
-            return 'Incapacitated'
+            return ' - Incapacitated'
         if self._stamina > 95:
             return ' - Pumped'
         elif self._stamina > 75:
@@ -146,91 +146,59 @@ class BattleCharacter(BattleEntity):
 
     def get_physical_attack(self):
         if self._support is not None:
-            physical_attack = self._character.get_physical_attack() + self._support.get_physical_attack()
+            physical_attack = (self._character.get_physical_attack() + self._support.get_physical_attack()) - (self._character.get_strength() + self._support.get_strength()) + self.get_strength()
         else:
-            physical_attack = self._character.get_physical_attack()
-        if PHYSICAL_ATTACK in self._status_effects:
-            physical_attack_effects = self._status_effects[PHYSICAL_ATTACK]
-            for effect in physical_attack_effects:
-                physical_attack *= 1 + effect.get_amount()
-        return physical_attack
+            physical_attack = self._character.get_physical_attack() - self._character.get_strength() + self.get_strength()
+        return self._get_boosted_stat(PHYSICAL_ATTACK, physical_attack)
 
     def get_magical_attack(self):
         if self._support is not None:
-            magical_attack = self._character.get_magical_attack() + self._support.get_magical_attack()
+            magical_attack = (self._character.get_magical_attack() + self._support.get_magical_attack()) - (self._character.get_magic() + self._support.get_magic()) + self.get_magic()
         else:
-            magical_attack = self._character.get_magical_attack()
-        if MAGICAL_ATTACK in self._status_effects:
-            magical_attack_effects = self._status_effects[MAGICAL_ATTACK]
-            for effect in magical_attack_effects:
-                magical_attack *= 1 + effect.get_amount()
-        return magical_attack
+            magical_attack = self._character.get_magical_attack() - self._character.get_magic() + self.get_magic()
+        return self._get_boosted_stat(MAGICAL_ATTACK, magical_attack)
 
     def get_defense(self):
         if self._support is not None:
             defense = self._character.get_defense() + self._support.get_defense()
         else:
             defense = self._character.get_defense()
-        if DEFENSE in self._status_effects:
-            defense_effects = self._status_effects[DEFENSE]
-            for effect in defense_effects:
-                defense *= 1 + effect.get_amount()
-        return defense
+        return self._get_boosted_stat(DEFENSE, defense)
 
     def get_strength(self):
         if self._support is not None:
             strength = self._character.get_strength() + self._support.get_strength()
         else:
             strength = self._character.get_strength()
-        if STRENGTH in self._status_effects:
-            strength_effects = self._status_effects[STRENGTH]
-            for effect in strength_effects:
-                strength *= 1 + effect.get_amount()
-        return strength
+        return self._get_boosted_stat(STRENGTH, strength)
 
     def get_magic(self):
         if self._support is not None:
             magic = self._character.get_magic() + self._support.get_magic()
         else:
             magic = self._character.get_magic()
-        if MAGIC in self._status_effects:
-            magic_effects = self._status_effects[MAGIC]
-            for effect in magic_effects:
-                magic *= 1 + effect.get_amount()
-        return magic
+        return self._get_boosted_stat(MAGIC, magic)
 
     def get_endurance(self):
         if self._support is not None:
             endurance = self._character.get_endurance() + self._support.get_endurance()
         else:
             endurance = self._character.get_endurance()
-        if ENDURANCE in self._status_effects:
-            endurance_effects = self._status_effects[ENDURANCE]
-            for effect in endurance_effects:
-                endurance *= 1 + effect.get_amount()
-        return endurance
-
-    def get_dexterity(self):
-        if self._support is not None:
-            dexterity = self._character.get_dexterity() + self._support.get_dexterity()
-        else:
-            dexterity = self._character.get_dexterity()
-        if DEXTERITY in self._status_effects:
-            dexterity_effects = self._status_effects[DEXTERITY]
-            for effect in dexterity_effects:
-                dexterity *= 1 + effect.get_amount()
-        return dexterity
+        return self._get_boosted_stat(ENDURANCE, endurance)
 
     def get_agility(self):
         if self._support is not None:
             agility = self._character.get_agility() + self._support.get_agility()
         else:
             agility = self._character.get_agility()
-        if AGILITY in self._status_effects:
-            agility_effects = self._status_effects[AGILITY]
-            for effect in agility_effects:
-                agility *= 1 + effect.get_amount()
-        return agility
+        return self._get_boosted_stat(AGILITY, agility)
+
+    def get_dexterity(self):
+        if self._support is not None:
+            dexterity = self._character.get_dexterity() + self._support.get_dexterity()
+        else:
+            dexterity = self._character.get_dexterity()
+        return self._get_boosted_stat(DEXTERITY, dexterity)
 
     def get_element(self):
         return self._character.get_element()

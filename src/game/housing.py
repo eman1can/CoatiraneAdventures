@@ -149,6 +149,7 @@ class Housing:
         Refs.gc.update_varenth(-target_housing.get_rent_cost())
         # Switch housing in Refs
         Refs.gc.set_current_housing(target_housing)
+        return True
 
     @staticmethod
     def buy_housing(current_housing, target_housing, down_payment):
@@ -178,3 +179,4 @@ class Housing:
         Refs.gc.update_varenth(-down_payment)
         # Switch housing in Refs
         Refs.gc.set_current_housing(target_housing)
+        return True

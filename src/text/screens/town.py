@@ -1,9 +1,10 @@
+from math import floor
 from random import randint
 
 from refs import END_OPT_C, OPT_C, RED_C, Refs
 
 
-def get_town_header():
+def get_town_header(console):
     # Return a string that contains Name, Varenth and current Renown
     # 165 is the width of the screen, approximately
     name = Refs.gc.get_name()
@@ -11,11 +12,16 @@ def get_town_header():
     renown = Refs.gc.get_renown()
     varenth = Refs.gc.format_number(int(Refs.gc.get_varenth()))
     skill_level = Refs.gc.get_skill_level()
+
+    time = Refs.gc.get_time()
+    width = console.get_width()
+    sides = floor(width * 0.05)
+    first_string = f'{name} - {domain} - Perks Unlocked {skill_level}'
     if Refs.gc.get_inventory().has_item('pocket_watch'):
-        time = Refs.gc.get_time()
-        return '\n\t' + f'{name} - {domain} - Perks Unlocked {skill_level}'.rjust(40).ljust(100) + f'{time} - {varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
+        second_string = f'{time} - {varenth} Varenth - Renown {renown}'
     else:
-        return '\n\t' + f'{name} - {domain} - Perks Unlocked {skill_level}'.rjust(40).ljust(100) + f'{varenth} Varenth - Renown {renown}'.ljust(30).rjust(55) + '\n'
+        second_string = f'{varenth} Varenth - Renown {renown}'
+    return '\n' + first_string.rjust(sides + len(first_string)) + ''.center(width - sides * 2 - len(first_string) - len(second_string)) + second_string.ljust(sides + len(second_string)) + '\n'
 
 
 def town_main(console):

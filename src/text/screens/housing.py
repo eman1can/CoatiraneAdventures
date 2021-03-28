@@ -28,16 +28,16 @@ def housing_main(console):
             display_text += f'\n\t{OPT_C}2:{END_OPT_C} Buy housing'
             display_text += f'\n\t{OPT_C}3:{END_OPT_C} Browse other housings'
             _options['1'] = 'housing_pay_bill'
-            _options['2'] = f'housing_buy{Refs.gc.get_housing().get_id()}#{Refs.gc.get_housing().get_down_payment_minimum()}'
-            _options['3'] = 'housing_browse0page'
+            _options['2'] = f'housing_buy#{Refs.gc.get_housing().get_id()}#{Refs.gc.get_housing().get_down_payment_minimum()}'
+            _options['3'] = 'housing_browse*0'
         else:
             display_text += f'\n\t{OPT_C}2:{END_OPT_C} Browse other housings'
             _options['1'] = 'housing_pay_bill'
-            _options['2'] = 'housing_browse0page'
+            _options['2'] = 'housing_browse*0'
     else:
         display_text += f'\n\tYou have fully payed for this housing.\n'
         display_text += f'\n\t{OPT_C}1:{END_OPT_C} Browse other housings'
-        _options['1'] = 'housing_browse0page'
+        _options['1'] = 'housing_browse*0'
     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
 
     return display_text, _options
@@ -50,7 +50,7 @@ def get_housing_string(item, index, current_text, page_name, page_num):
         string += f'\n\t{OPT_C}{index}:{END_OPT_C} Cost to rent: {Refs.gc.format_number(item.get_rent_cost())} per month'
         string += f'\n\t{OPT_C}{index + 1}:{END_OPT_C} Cost to buy: {Refs.gc.format_number(item.get_cost())}'
         string += f'\n\t\t- Minimum Downpayment: {Refs.gc.format_number(item.get_down_payment_minimum())}\n'
-        _options = {str(index): f'housing_rent{item.get_id()}', str(index + 1): f'housing_buy{item.get_id()}#{item.get_down_payment_minimum()}'}
+        _options = {str(index): f'housing_rent#{item.get_id()}', str(index + 1): f'housing_buy#{item.get_id()}#{item.get_down_payment_minimum()}'}
     else:
         _options = {}
         if Refs.gc.get_housing().is_renting():
@@ -64,7 +64,7 @@ def housing_browse(console):
     console.header_callback = get_town_header
     item_list = Refs.gc.get_housing_options()
 
-    page_num = int(console.get_current_screen()[len('housing_browse'):-len('page')])
+    page_num = int(console.get_current_screen().split('*')[1])
 
     fail = '\n\tYou cannot buy any housing.'
 
@@ -77,7 +77,7 @@ def housing_browse(console):
 
 
 def housing_rent(console):
-    housing = Refs.gc['housing'][console.get_current_screen()[len('housing_rent'):]]
+    housing = Refs.gc['housing'][console.get_current_screen().split('#')[1]]
 
     current_housing = Refs.gc.get_housing()
     if current_housing.is_renting():
@@ -88,16 +88,16 @@ def housing_rent(console):
     console.header_callback = get_town_header
     display_text = f'\n\tTo rent {housing.get_name()}, it will cost {Refs.gc.format_number(housing.get_cost())} per month.'
     display_text += f'\n\tYou will get {Refs.gc.format_number(money_back)} back from your {current_housing.get_name()}.'
-    display_text += 'Are you sure that you want to do this?'
+    display_text += ' Are you sure that you want to do this?'
     display_text += f'\n\n\t{OPT_C}1:{END_OPT_C} Confirm'
     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
-    _options = {'0': 'back', '1': console.get_current_screen() + 'confirm'}
+    _options = {'0': 'back', '1': console.get_current_screen() + '#confirm'}
     return display_text, _options
 
 
 def housing_buy(console):
-    housing_name, down_payment = console.get_current_screen().split('#')
-    housing = Refs.gc['housing'][housing_name[len('housing_buy'):]]
+    housing_name, down_payment = console.get_current_screen().split('#')[1:]
+    housing = Refs.gc['housing'][housing_name]
     down_payment = int(down_payment)
 
     current_housing = Refs.gc.get_housing()
@@ -152,14 +152,14 @@ def housing_buy(console):
 
     _options = {
         '0': 'back',
-        '6': f'housing_buy{housing.get_id()}confirm#{down_payment}'
+        '6': f'housing_buy#{housing.get_id()}#{down_payment}#confirm'
     }
     if down_payment != cost:
-        _options['1'] = f'housing_buy{housing.get_id()}#{cost}'
-        _options['2'] = f'housing_buy{housing.get_id()}#{down_payment + int(housing.get_cost() * 0.05)}'
+        _options['1'] = f'housing_buy#{housing.get_id()}#{cost}'
+        _options['2'] = f'housing_buy#{housing.get_id()}#{down_payment + int(housing.get_cost() * 0.05)}'
     if down_payment != int(cost / 2):
-        _options['3'] = f'housing_buy{housing.get_id()}#{int(cost / 2)}'
+        _options['3'] = f'housing_buy#{housing.get_id()}#{int(cost / 2)}'
     if down_payment != housing.get_down_payment_minimum():
-        _options['4'] = f'housing_buy{housing.get_id()}#{down_payment - int(housing.get_cost() * 0.05)}'
-        _options['5'] = f'housing_buy{housing.get_id()}#{housing.get_down_payment_minimum()}'
+        _options['4'] = f'housing_buy#{housing.get_id()}#{down_payment - int(housing.get_cost() * 0.05)}'
+        _options['5'] = f'housing_buy#{housing.get_id()}#{housing.get_down_payment_minimum()}'
     return display_text, _options

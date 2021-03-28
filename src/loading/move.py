@@ -1,16 +1,17 @@
 from game.effect import COUNTER, DURATION, Effect, SPECIFIC_TARGET, STAT, STATUS_EFFECT
 from game.skill import AILMENT_CURE, ATTACK, Boost, HEAL, NORMAL, Skill
 
-ID      = 0
-NAME    = 1
-ANIM_ID = 2
-TYPE    = 3
-TARGET  = 4
+ID          = 0
+NAME        = 1
+DESCRIPTION = 2
+ANIM_ID     = 3
+TYPE        = 4
+TARGET      = 5
 
-ATTACK_SPEED = 5
-ATTACK_POWER = 6
-ATTACK_TYPE  = 7
-ELEMENT      = 8
+ATTACK_SPEED = 6
+ATTACK_POWER = 7
+ATTACK_TYPE  = 8
+ELEMENT      = 9
 
 BOOST_TYPE = 0
 BOOST_STAT_TYPE = 1
@@ -18,9 +19,10 @@ BOOST_STAT_TYPE = 1
 
 def load_move_chunk(line, loader, program_type, callbacks):
     debug = False
-    values = [x.strip() for x in line.split(',')]
+    values = [x.strip() for x in line.split('*')]
     skill_id = int(values[ID])
     name = values[NAME]
+    description = values[DESCRIPTION]
     anim_id = values[ANIM_ID]
     skill_type = int(values[TYPE])
     target = int(values[TARGET])
@@ -86,7 +88,7 @@ def load_move_chunk(line, loader, program_type, callbacks):
             effect_amount = int(values[effect_index + 2])
             effect_index += 3
         effects.append(Effect(effect_type, effect_sub_type, effect_target, effect_amount, effect_duration))
-    skill = Skill(skill_id, name, anim_id, skill_type, target, attack_speed, attack_power, attack_type, element, boosts, effects)
+    skill = Skill(skill_id, name, description, anim_id, skill_type, target, attack_speed, attack_power, attack_type, element, boosts, effects)
     loader.append('skills', skill_id, skill)
     for callback in callbacks:
         if callback is not None:

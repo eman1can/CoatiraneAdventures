@@ -108,7 +108,8 @@ class Floor:
             spawn_count = self._max_enemies
         rarities = choices([1, 2, 3, 4, 5], [1 / (2 ** (x + 1)) for x in range(5)], k=spawn_count)
         enemies = []
-        spawn_lists = {spawn_rarity: [] for spawn_rarity in range(1, max(rarities) + 1)}
+        spawn_lists = {spawn_rarity: [] for spawn_rarity in set(rarities)}
+
         if node_type is None:
             rarity_adjustment = 0
         else:
@@ -117,25 +118,35 @@ class Floor:
                 if enemy.get_id() == node_type and rarity == 1:
                     rarity_adjustment = 2
                     break
+            if rarity_adjustment == 1:
+                print('Make', node_type, 'More Common')
+            else:
+                print('Make everything', node_type, 'More Common')
+
         for spawn_rarity in set(rarities):
             for (enemy, rarity) in self._enemies.values():
                 if rarity_adjustment == 0:
                     if rarity <= spawn_rarity:
-                        spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
+                        spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
                 elif rarity_adjustment == 1:
                     if enemy.get_id() == node_type:
-                        if rarity - 1 <= spawn_rarity:
-                            spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
+                        if max(rarity - 1, 1) <= spawn_rarity:
+                            spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
+                    else:
+                        if rarity <= spawn_rarity:
+                            spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
+                else:
+                    if enemy.get_id() == node_type:
+                        if rarity <= spawn_rarity:
+                            spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
                     elif min(rarity + 1, 5) <= spawn_rarity:
-                        spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
-                elif min(rarity + 2, 5) <= spawn_rarity:
-                    spawn_lists[spawn_rarity].append((enemy, rarity + 1 - spawn_rarity))
+                        spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
         for spawn_rarity in rarities:
             enemy, boost = spawn_lists[spawn_rarity][randint(0, len(spawn_lists[spawn_rarity]) - 1)]
             if boss == MULTIPLE_BOOSTED_ENEMIES:
-                enemies.append(enemy.new_instance(boost))
-            else:
                 enemies.append(enemy.new_instance(boost + 1))
+            else:
+                enemies.append(enemy.new_instance(boost))
         return enemies
 
     def generate_resource(self, node_type, metal_skew=True):
@@ -144,10 +155,10 @@ class Floor:
             for material, hard in self._resources['metals'].items():
                 if material == node_type:
                     weights[0] += hard * 0.6
-                    weights.append(hard * 0.6)
+                    weights.append(hard * 2 * 0.6)
                 else:
                     weights[0] += hard * 0.6
-                    weights.append(hard * 2 * 0.6)
+                    weights.append(hard * 0.6)
                 options.append(material)
             for material, hard in self._resources['gems'].items():
                 if material == node_type:
@@ -466,6 +477,7 @@ class Map:
         self._calculate_path()
 
     def is_marker(self, marker_type):
+        print(marker_type, self._current_node, self._markers[SAFE_ZONES])
         return self._current_node in self._markers[marker_type]
 
     # Check markers for a specific node

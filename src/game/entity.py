@@ -35,7 +35,7 @@ class Entity(SMEAD, HMPMD):
         #    Adventurers:
         #       Basic Move, Skill 1, Skill 1 Mana Cost, Skill 2, Skill 2 Mana Cost, Skill 3, Skill 3 Mana Cost, Special Move, Counter Move, Block Move
         #    Supporters:
-        #       Effect Level 1, Effect Level 2, Effect Level 3, Effect Level 4, Effect Level 5
+        #       Effect Level 1, Effect Level 2, Effect Level 3, Effect Level 4, Effect Level 5  #  2 4 6 8 10
         # Enemies:
         #    Basic Move, Skill 1, Skill x - 1, Skill x, Counter Move, Block Move
         return self._moves[skill_index]

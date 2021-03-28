@@ -384,11 +384,12 @@ class FloorData:
         for index, adventurer in enumerate(self._adventurers):
             if not adventurer.is_dead():
                 adventurers.append(adventurer)
-                if index < len(supporters):
+                if self._supporters[index] is not None:
                     supporters.append(self._supporters[index])
         self._battle_data = BattleData(adventurers, supporters, self._special_amount)
         self._battle_data.set_state('start')
-        self._battle_data.set_enemies(self._floor.generate_enemies(node_type))
+        enemies = self._floor.generate_enemies(node_type)
+        self._battle_data.set_enemies(enemies)
 
     def generate_boss_encounter(self):
         self._in_encounter = True
@@ -398,7 +399,7 @@ class FloorData:
         for index, adventurer in enumerate(self._adventurers):
             if not adventurer.is_dead():
                 adventurers.append(adventurer)
-                if index < len(supporters):
+                if self._supporters[index] is not None:
                     supporters.append(self._supporters[index])
         self._battle_data = BattleData(adventurers, supporters, self._special_amount, True)
         self._battle_data.set_state('battle')
@@ -412,17 +413,17 @@ class FloorData:
         self._increases = {}
         self._party_perks = []
 
-        for index in range(16):
+        for index in range(8):
             character = party[index]
+            support = party[index + 8]
             if character is None:
                 continue
-            self._increases[character.get_id()] = [5 for _ in range(7)]
-            if index < 8:
-                support = party[index + 8]
-                self._adventurers.append(create_battle_character(character, support))
-                self._party_perks += character.get_perks()
-            else:
-                self._supporters.append(character)
+            self._increases[character.get_id()] = [0 for _ in range(7)]
+            if support:
+                self._increases[support.get_id()] = [0 for _ in range(7)]
+            self._adventurers.append(create_battle_character(character, support))
+            self._party_perks += character.get_perks()
+            self._supporters.append(support)
 
     def get_battle_data(self):
         return self._battle_data

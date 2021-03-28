@@ -27,8 +27,12 @@ def status_board_main(console):
     display_string += '\n'
     display_string += '\t  ' + character.get_name().ljust(BOX_SIZE) + '   ' + character.get_display_name().rjust(BOX_SIZE) + '   '
 
-    display_string += f'\n\t  [color={TYPE_COLORS[character.get_attack_type()]}]' + (character.get_attack_type_string() + ' Type').ljust(BOX_SIZE) + '[/color]'
-    display_string += f'   [color={ELEMENT_COLORS[character.get_element()]}]' + character.get_element_string().rjust(BOX_SIZE) + '[/color]   '
+    if not character.is_support():
+        display_string += f'\n\t  [color={TYPE_COLORS[character.get_attack_type()]}]' + (character.get_attack_type_string() + ' Type').ljust(BOX_SIZE) + '[/color]'
+    else:
+        display_string += f'\n\t  ' + ''.ljust(BOX_SIZE)
+    if not character.is_support():
+        display_string += f'   [color={ELEMENT_COLORS[character.get_element()]}]' + character.get_element_string().rjust(BOX_SIZE) + '[/color]   '
 
     # Create the first row of the box
     display_string += '\n\t┌'
@@ -289,7 +293,7 @@ def status_board_unlock(console):
 def status_board_view_falna(console):
     _options = {}
     display_string = '\n\tFalna can be gathered by killing monsters'
-    display_string += '\n\n\t             Str.      Mag.      End.      Agi.      Dex.   \n\t'
+    display_string += '\n\n\t          Str.      Mag.      End.      Agi.      Dex.   \n\t'
 
     for falna_size in ['tiny', 'small', 'regular', 'large', 'huge']:
         display_string += falna_size.title().rjust(7)

@@ -50,8 +50,7 @@ def inventory(console):
 
 def inventory_battle(console):
     console.header_callback = None
-    item_id_list = Refs.gc.get_floor_data().get_gained_items()
-    item_list = Refs.gc.find_items(item_id_list)
+    item_list = list(Refs.gc.get_floor_data().get_gained_items().keys())
     item_list += Refs.gc.get_potions()
 
     page_name, page_num = console.get_current_screen().split('*')

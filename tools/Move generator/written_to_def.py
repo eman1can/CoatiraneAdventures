@@ -592,65 +592,65 @@ skill_lengths = []
 for index, (skill_name, skill) in enumerate(skills.items()):
     skill_name, skill_def = skill_name.split(' - ', 1)
     print('Process ', skill_name)
-    if skill_name in ['Basic Attack', 'Counter', 'Block']:
+    if skill_name in ['Counter', 'Block']:
         skill_name = skill_def
-    string = f'{index}, {skill_name}, -, '
-    string += f'{skill.type}, {skill.target}'
+    string = f'{index}* {skill_name}* {skill_def}* -* '
+    string += f'{skill.type}* {skill.target}'
     if skill.type == ATTACK:
-        string += f', {skill.attack_speed}'
-        string += f', {skill.attack_power}'
-        string += f', {skill.attack_type}'
-        string += f', {skill.element}'
+        string += f'* {skill.attack_speed}'
+        string += f'* {skill.attack_power}'
+        string += f'* {skill.attack_type}'
+        string += f'* {skill.element}'
     elif skill.type == HEAL:
-        string += f', {skill.attack_speed}'
-        string += f', {skill.attack_power}'
+        string += f'* {skill.attack_speed}'
+        string += f'* {skill.attack_power}'
     elif skill.type == AILMENT_CURE:
-        string += f', {skill.attack_speed}'
+        string += f'* {skill.attack_speed}'
     if skill.boost is not None:
-        string += f', {len(skill.boost)}'
+        string += f'* {len(skill.boost)}'
         for boost in skill.boost:
-            string += f', {boost.type}'
-            string += f', {boost.stat_type}'
+            string += f'* {boost.type}'
+            string += f'* {boost.stat_type}'
     else:
-        string += f', 0'
+        string += f'* 0'
     if skill.effect_list is not None:
-        string += f', {len(skill.effect_list)}'
+        string += f'* {len(skill.effect_list)}'
         for effect in skill.effect_list:
             print('\nProcess', effect)
-            string += f', {effect.type}'
+            string += f'* {effect.type}'
             if effect.type == STAT:
-                string += f', {effect.sub_type}'
-                string += f', {effect.target}'
-                string += f', {effect.amount}'
-                string += f', {effect.duration}'
+                string += f'* {effect.sub_type}'
+                string += f'* {effect.target}'
+                string += f'* {effect.amount}'
+                string += f'* {effect.duration}'
             elif effect.type == COUNTER:
-                string += f', {effect.sub_type}'
-                string += f', {effect.target}'
-                string += f', {effect.duration}'
+                string += f'* {effect.sub_type}'
+                string += f'* {effect.target}'
+                string += f'* {effect.duration}'
             elif effect.type == DURATION:
-                string += f', {effect.sub_type}'
-                string += f', {effect.target}'
-                string += f', {effect.duration}'
+                string += f'* {effect.sub_type}'
+                string += f'* {effect.target}'
+                string += f'* {effect.duration}'
             elif effect.type == SPECIFIC_TARGET:
                 error('AAAAAH')
             elif effect.type == STATUS_EFFECT:
-                string += f', {effect.type}'
-                string += f', {effect.level}'
+                string += f'* {effect.type}'
+                string += f'* {effect.level}'
     else:
-        string += ', 0'
+        string += '* 0'
     skills_lines.append(string)
-    skill_lengths.append(string.count(',') + 1)
+    skill_lengths.append(string.count('*') + 1)
 
 skill_cols = [[] for x in range(max(skill_lengths))]
 for skill in skills_lines:
-    for index, col in enumerate(skill.split(', ')):
+    for index, col in enumerate(skill.split('* ')):
         skill_cols[index].append(len(col))
 
 for skill_index, skill_line in enumerate(skills_lines):
-    for index, col in enumerate(skill_line.split(', ')):
+    for index, col in enumerate(skill_line.split('* ')):
         print(col.ljust(max(skill_cols[index])), end='')
         if index != skill_lengths[skill_index] - 1:
-            print(', ', end='')
+            print('* ', end='')
     print()
 
 enemy_cols = [[] for x in range(enemies[0].count(',') + 1)]
