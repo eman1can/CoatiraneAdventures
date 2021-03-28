@@ -16,23 +16,29 @@ def create_bar(left, right, middle, divider, size=8):
     return string + right
 
 
+def get_fam_stat(character):
+    total, gold, bonus, hint_text = Refs.gc.calculate_familiarity_bonus(character)
+    left, right = f'{int(total)}R', f'G{int(gold)}'
+    return left + f'{int(bonus)}%'.center(BOX_WIDTH - 2 - len(left) - len(right)) + right
+
+
 def _get_stat_string(char, index):
-    stat = [char.get_name, char.get_current_rank, char.get_attack_type_string, char.get_element_string, char.get_health, char.get_mana, char.get_physical_attack, char.get_magical_attack, char.get_defense, char.get_strength, char.get_magic,
+    stat = [lambda c=char: get_fam_stat(c), char.get_name, char.get_current_rank, char.get_attack_type_string, char.get_element_string, char.get_health, char.get_mana, char.get_physical_attack, char.get_magical_attack, char.get_defense, char.get_strength, char.get_magic,
             char.get_endurance, char.get_agility, char.get_dexterity]
     return stat[index]()
 
 
 def center_stat(index, char, char2=None):
-    stat_labels = ['', 'Rank', '', '', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
+    stat_labels = ['', '', 'Rank', '', '', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
     stat_string = _get_stat_string(char, index)
     if char2 is not None and index >= 4:
         stat_string += _get_stat_string(char, index)
 
-    if index == 0:
+    if index == 1:
         if ' ' in stat_string:
             stat_string = stat_string.split(' ')[0]
         return f'{stat_string}'.center(BOX_WIDTH)
-    if index == 2 or index == 3:
+    if index == 3 or index == 4:
         return f'{stat_string}'.center(BOX_WIDTH)
     return f"{stat_labels[index]}{f'{stat_string}'.rjust(BOX_WIDTH - 2 - len(stat_labels[index]))}".center(BOX_WIDTH)
 
@@ -45,7 +51,7 @@ def create_box():
         adventurers = 7
 
     box = [create_bar('┌', '┐', '┬', '─')]
-    for stat in range(4):
+    for stat in range(5):
         box.append('\n│')
         for _ in range(8):
             box.append('')
@@ -91,7 +97,6 @@ def create_box():
         box.append('│')
     box.append('')
     box.append('\n' + create_bar('└', '┘', '┴', '─'))
-    print(box)
     return box
 
 
@@ -103,27 +108,27 @@ def populate_box(box, party):
 
     for index, char in enumerate(party[:8]):
         top_index = (index + 1) * 2
-        for stat in range(4):
+        for stat in range(5):
             if char:
                 box[top_index + stat * 18] = center_stat(stat, char)
             else:
                 box[top_index + stat * 18] = ''.center(BOX_WIDTH)
-        top_index = (index + 1) * 2 + 146
-        for stat in range(4, 14):
+        top_index = (index + 1) * 2 + 164
+        for stat in range(5, 15):
             if char:
-                box[top_index + (stat - 4) * 18] = center_stat(stat, char, party[index + 8])
+                box[top_index + (stat - 5) * 18] = center_stat(stat, char, party[index + 8])
             else:
                 if (index == 0 or party[index - 1]) and stat == 4:
-                    box[top_index + (stat - 4) * 18] = '+'.center(BOX_WIDTH)
+                    box[top_index + (stat - 5) * 18] = '+'.center(BOX_WIDTH)
                 else:
-                    box[top_index + (stat - 4) * 18] = ''.center(BOX_WIDTH)
+                    box[top_index + (stat - 5) * 18] = ''.center(BOX_WIDTH)
         if index == 0 or party[index - 1]:
             box[top_index + 10 * 18] = OPT_C + f'{6 + index}'.center(BOX_WIDTH) + END_OPT_C
         else:
             box[top_index + 10 * 18] = ''.center(BOX_WIDTH)
     for index, char in enumerate(party[8:]):
-        top_index = (index + 1) * 2 + 73
-        for stat in range(2):
+        top_index = (index + 1) * 2 + 91
+        for stat in range(3):
             if char and party[index]:
                 box[top_index + stat * 18] = center_stat(stat, char)
             else:
@@ -131,7 +136,7 @@ def populate_box(box, party):
                     box[top_index + stat * 18] = '+'.center(BOX_WIDTH)
                 else:
                     box[top_index + stat * 18] = ''.center(BOX_WIDTH)
-        box[top_index + 2 * 18] = ''.center(BOX_WIDTH)
+        # box[top_index + 2 * 18] = ''.center(BOX_WIDTH)
         if party[0] and (index == 0 or party[index + 7]) and party[index]:
             box[top_index + 3 * 18] = OPT_C + f'{6 + adventurers + index + 1}'.center(BOX_WIDTH) + END_OPT_C
         else:
@@ -142,18 +147,7 @@ def populate_box(box, party):
         bar += ''.center(BOX_WIDTH)
         bar += '│'
 
-    box[146] = box[73] = bar
-    #         if char is None:
-    #             string = ''.center(BOX_WIDTH)
-    #             if stat == 6 and party[index] is not None:
-    #                 string = '+'.center(BOX_WIDTH)
-    #         else:
-    #             string = center_stat(char, stat)
-    #         box[top_index + stat * 18] = string
-    #     if party[index] is not None:
-    #         box[top_index + 12 * 18] = OPT_C + f'{14 + index}'.center(BOX_WIDTH) + END_OPT_C
-    #     else:
-    #         box[top_index + 12 * 18] = ''.center(BOX_WIDTH)
+    box[164] = box[91] = bar
     return box
 
 
@@ -214,8 +208,6 @@ def dungeon_main(console):
         char = party[index + gap]
     if party[index + gap - 8]:
         _options[str(index + 6)] = f'dungeon_main_{index + gap}_none'
-    for key, value in _options.items():
-        print(key, value)
 
     return display_text, _options
 

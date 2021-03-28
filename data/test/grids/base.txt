@@ -1,8 +1,8 @@
 # S M E A D SC MC EC AC DC
 # Rank 1 - 9 Total
-2 2 2 1 1 2 2 2 2 2
+2 2 2 2 1 2 2 2 2 2
 # Rank 2 - 9 Total
-2 2 2 1 1 4 4 4 4 4
+2 2 2 2 1 4 4 4 4 4
 # Rank 3 - 16 Total
 4 4 3 3 2 6 6 6 6 6
 # Rank 4 - 16 Total

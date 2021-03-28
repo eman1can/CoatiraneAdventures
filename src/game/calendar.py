@@ -44,6 +44,11 @@ class Calendar:
             Refs.gc.save_game(None)
             Refs.app.log('Auto Save Game')
 
+    def fast_forward(self, dt):
+        self._time += dt
+        if self._callback is not None:
+            self._callback()
+
     def set_callback(self, callback):
         self._callback = callback
 

@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, uniform
 
 from game.battle_entity import BattleEntity
 
@@ -15,32 +15,52 @@ def create_battle_character(character, support):
 
 class BattleCharacter(BattleEntity):
     def __init__(self, character, support):
-        # BattleEntity.__init__(self)
-        # self.refresh_stats()
         self._in_battle = False
         self._skeleton = None
         self._animation_state = None
         self._character = character
         self._support = support
         self._selected_skill = character.get_skill(0)
+
         super().__init__()
+
         self._bhealth = self._character.get_health()
         self._bmana = self._character.get_mana()
-        self._stamina = 100
+        self._stamina = self._character.get_agility() + self._character.get_dexterity()
+        if self._support:
+            self._stamina += self._support.get_agility() + self._support.get_dexterity()
+        self._stamina *= 5
+        self._max_stamina = self._stamina
+        self._rest_counter = 2
 
-    def take_action(self):
+    def take_action(self, weight=1):
         # Taking an action reduces stamina by 3 - 10
-        self._stamina -= randint(3, 10)
+        self.decrease_stamina(uniform(3 * weight, 10 * weight))
 
-    def walk(self):
+    def walk(self, weight=1):
         # Walking reduces stamina by 1 - 5
-        self._stamina -= randint(1, 3)
+        self.decrease_stamina(uniform(1 * weight, 3 * weight))
 
     def rest(self):
-        self._stamina += randint(20, 30)
+        if self._stamina < 0:
+            self._rest_counter -= 1
+            if self._rest_counter == 0:
+                self.wake_up()
+            return
+        self._stamina += min(uniform(20, 30), self._max_stamina - self._stamina)
+        self._bhealth += min(self.get_health() * 0.15, self.get_health() - self._bhealth)
+        self._bmana += min(self.get_mana() * 0.15, self.get_mana() - self._bmana)
+
+    def wake_up(self):
+        self._stamina = self._max_stamina * 0.5
+
+    def decrease_stamina(self, amount):
+        self._stamina -= amount
+        if self._stamina < 0:
+            self._rest_counter = 2
 
     def can_take_action(self):
-        return self._stamina > 25
+        return self._stamina / self._max_stamina > 0.25
 
     def get_stamina(self):
         return self._stamina
@@ -48,18 +68,32 @@ class BattleCharacter(BattleEntity):
     def get_stamina_message(self):
         if self._bhealth <= 0:
             return ' - Incapacitated'
-        if self._stamina > 95:
+        if self._stamina / self._max_stamina > 0.95:
             return ' - Pumped'
-        elif self._stamina > 75:
+        elif self._stamina / self._max_stamina > 0.75:
             return ' - Awake'
-        elif self._stamina > 50:
+        elif self._stamina / self._max_stamina > 0.50:
             return ' - Sleepy'
-        elif self._stamina > 25:
+        elif self._stamina / self._max_stamina > 0.25:
             return ' - Tired'
         elif self._stamina > 0:
             return ' - Exhausted'
         else:
             return ' - Asleep'
+
+    def get_stamina_modifier(self):
+        if self._stamina / self._max_stamina > 0.95:
+            return 1
+        elif self._stamina / self._max_stamina > 0.75:
+            return 1
+        elif self._stamina / self._max_stamina > 0.50:
+            return 0.95
+        elif self._stamina / self._max_stamina > 0.25:
+            return 0.85
+        elif self._stamina > 0:
+            return 0.5
+        else:
+            return 0
 
     def c(self):
         return self._character
@@ -134,6 +168,9 @@ class BattleCharacter(BattleEntity):
     def get_skills(self):
         return self._character.get_skills()
 
+    def get_support(self):
+        return self._support
+
     def get_description_recap(self):
         string = self._character.get_name()
         string += f':\n\tHealth: {self.get_battle_health()}/{self.get_health()} - Mana: {self.get_battle_mana()}/{self.get_mana()}\n\tEffects:'
@@ -149,56 +186,56 @@ class BattleCharacter(BattleEntity):
             physical_attack = (self._character.get_physical_attack() + self._support.get_physical_attack()) - (self._character.get_strength() + self._support.get_strength()) + self.get_strength()
         else:
             physical_attack = self._character.get_physical_attack() - self._character.get_strength() + self.get_strength()
-        return self._get_boosted_stat(PHYSICAL_ATTACK, physical_attack)
+        return self._get_boosted_stat(PHYSICAL_ATTACK, physical_attack * self.get_stamina_modifier())
 
     def get_magical_attack(self):
         if self._support is not None:
             magical_attack = (self._character.get_magical_attack() + self._support.get_magical_attack()) - (self._character.get_magic() + self._support.get_magic()) + self.get_magic()
         else:
             magical_attack = self._character.get_magical_attack() - self._character.get_magic() + self.get_magic()
-        return self._get_boosted_stat(MAGICAL_ATTACK, magical_attack)
+        return self._get_boosted_stat(MAGICAL_ATTACK, magical_attack * self.get_stamina_modifier())
 
     def get_defense(self):
         if self._support is not None:
             defense = self._character.get_defense() + self._support.get_defense()
         else:
             defense = self._character.get_defense()
-        return self._get_boosted_stat(DEFENSE, defense)
+        return self._get_boosted_stat(DEFENSE, defense * self.get_stamina_modifier())
 
     def get_strength(self):
         if self._support is not None:
             strength = self._character.get_strength() + self._support.get_strength()
         else:
             strength = self._character.get_strength()
-        return self._get_boosted_stat(STRENGTH, strength)
+        return self._get_boosted_stat(STRENGTH, strength * self.get_stamina_modifier())
 
     def get_magic(self):
         if self._support is not None:
             magic = self._character.get_magic() + self._support.get_magic()
         else:
             magic = self._character.get_magic()
-        return self._get_boosted_stat(MAGIC, magic)
+        return self._get_boosted_stat(MAGIC, magic * self.get_stamina_modifier())
 
     def get_endurance(self):
         if self._support is not None:
             endurance = self._character.get_endurance() + self._support.get_endurance()
         else:
             endurance = self._character.get_endurance()
-        return self._get_boosted_stat(ENDURANCE, endurance)
+        return self._get_boosted_stat(ENDURANCE, endurance * self.get_stamina_modifier())
 
     def get_agility(self):
         if self._support is not None:
             agility = self._character.get_agility() + self._support.get_agility()
         else:
             agility = self._character.get_agility()
-        return self._get_boosted_stat(AGILITY, agility)
+        return self._get_boosted_stat(AGILITY, agility * self.get_stamina_modifier())
 
     def get_dexterity(self):
         if self._support is not None:
             dexterity = self._character.get_dexterity() + self._support.get_dexterity()
         else:
             dexterity = self._character.get_dexterity()
-        return self._get_boosted_stat(DEXTERITY, dexterity)
+        return self._get_boosted_stat(DEXTERITY, dexterity * self.get_stamina_modifier())
 
     def get_element(self):
         return self._character.get_element()

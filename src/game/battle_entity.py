@@ -21,7 +21,6 @@ class BattleEntity:
         return self._bmana
 
     def decrease_health(self, damage):
-        print(self.get_name(), self._bhealth, '→', self._bhealth-damage)
         self._bhealth -= damage
 
     def decrease_mana(self, mana_cost):
@@ -37,7 +36,6 @@ class BattleEntity:
 
     def get_physical_attack(self):
         physical_attack = self._physical_attack - self._strength + self.get_strength()
-        print(self.get_name(), 'Physical attack', physical_attack, 'boosted to', self._get_boosted_stat(PHYSICAL_ATTACK, physical_attack))
         return self._get_boosted_stat(PHYSICAL_ATTACK, physical_attack)
 
     def get_magical_attack(self):

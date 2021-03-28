@@ -91,21 +91,21 @@ def status_board_main(console):
     tiles = []
     for _ in range(s):
         tiles.append(f'S {sw}')
-    for _ in range(s):
+    for _ in range(m):
         tiles.append(f'M {mw}')
-    for _ in range(s):
+    for _ in range(e):
         tiles.append(f'E {ew}')
-    for _ in range(s):
+    for _ in range(a):
         tiles.append(f'A {aw}')
-    for _ in range(s):
+    for _ in range(d):
         tiles.append(f'D {dw}')
 
     max_width = 0
     option_index = 7
     tile_sizes = []
     size = int(sqrt(s + m + e + a + d))
-    for tile_y in range(size):
-        for tile_x in range(size):
+    for tile_y in range(size):  # 0 1 2
+        for tile_x in range(size):  # 0 1 2
             tile_index = (tile_y * size) + tile_x
             max_width = max(max_width, len(f'{option_index + tile_index} {tiles[tile_index]}'))
             if board.get_unlocked(tile_index):
@@ -275,9 +275,9 @@ def status_board_unlock(console):
     varenth = Refs.gc.get_varenth()
     display_string += f'\n\t\t - Have: {varenth}\n'
 
-    if hsc > sc and hmc > mc and hec > ec and hac > ac and hdc > dc and varenth > vcost:
+    if hsc >= sc and hmc >= mc and hec >= ec and hac >= ac and hdc >= dc and varenth > vcost:
         display_string += f'\n\t{OPT_C}1:{END_OPT_C} Continue'
-        string = f'status_board_unlock_confirm_{hsc}_{hmc}_{hec}_{hac}_{hdc}_{falna_type}_{vcost}_{rank}#'
+        string = f'status_board_unlock_confirm_{sc}_{mc}_{ec}_{ac}_{dc}_{falna_type}_{vcost}_{rank}#'
         for tile_index in tiles_to_unlock:
             string += f'{tile_index}_'
         _options['1'] = string[:-1] + f'#{character_id}'

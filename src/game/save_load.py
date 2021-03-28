@@ -82,8 +82,12 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_file['obtained_characters'] = [choice]
     save_file['obtained_characters_a'] = [choice]
     save_file['obtained_characters_s'] = []
+    if choice == 0:
+        char_id = 'a_whisper_of_wind_ais'
+    else:
+        char_id = 'hero_bell'
     save_file['character_development'] = {
-        f'{choice}': {
+        f'{char_id}': {
             'ranks': {
                 'unlocked': [True, False, False, False, False, False, False, False, False, False],
                 'broken': [False, False, False, False, False, False, False, False, False, False],
@@ -206,7 +210,7 @@ def save_game(save_slot, game_content):
     save_file['obtained_characters_a'] = game_content.get_obtained_character_indexes(False)
     save_file['obtained_characters_s'] = game_content.get_obtained_character_indexes(True)
     character_development = {}
-    for index, character in enumerate(game_content['chars'].values()):
+    for character in game_content['chars'].values():
         char_develop = {'ranks': {}, 'equipment': [], 'abilities': [], 'familiarities': {}}
         char_develop['ranks']['unlocked'] = [rank.is_unlocked() for rank in character.get_ranks()]
         char_develop['ranks']['broken'] = [rank.is_broken() for rank in character.get_ranks()]
@@ -227,6 +231,7 @@ def save_game(save_slot, game_content):
         char_develop['equipment'] = equipment
         char_develop['abilities'] = character.get_abilities()
         character_development[character.get_id()] = char_develop
+    save_file['character_development'] = character_development
 
     save_file['inventory'] = game_content.get_inventory().get_save_output()
     save_file['map_data'] = {}

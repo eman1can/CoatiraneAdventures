@@ -108,10 +108,13 @@ class BattleData:
             if health_dot != 0:
                 self._log += entity.get_name() + f' -{round(health_dot * entity.get_health(), 1)} health.\n'
                 entity.decrease_health(health_dot * entity.get_health())
+                Refs.gc.get_floor_data().increase_stat(entity.get_id(), 0, Refs.gc.get_random_stat_increase())
+                Refs.gc.get_floor_data().increase_stat(entity.get_id(), 4, Refs.gc.get_random_stat_increase())
             mana_dot = entity.get_total_boost(MANA_DOT)
             if mana_dot != 0:
                 self._log += entity.get_name() + f' -{round(mana_dot * entity.get_mana(), 1)} mana.\n'
                 entity.decrease_mana(mana_dot * entity.get_mana())
+                Refs.gc.get_floor_data().increase_stat(entity.get_id(), 1, Refs.gc.get_random_stat_increase())
 
         # Decrease effect counters
         for entity in self._enemies + self._adventurers:
@@ -211,19 +214,33 @@ class BattleData:
         if info.critical:
             info.effective_attack *= Refs.gc.get_random_critical_modifier()
             self._log += f'      Critical\n'
+            if entity.is_character():
+                Refs.gc.get_floor_data().increase_stat(entity.get_id(), 5, Refs.gc.get_random_stat_increase() * 2)
+                Refs.gc.get_floor_data().increase_stat(entity.get_id(), 6, Refs.gc.get_random_stat_increase() * 2)
         info.penetration = self._get_penetration(info, entity, target)
         if info.penetration:
             info.defense *= 0.15
             self._log += f'      Penetration\n'
+            if entity.is_character():
+                Refs.gc.get_floor_data().increase_stat(entity.get_id(), 2, Refs.gc.get_random_stat_increase() * 2)
         info.block = self._get_block(info, target)
         if info.block:
             info.effective_attack *= 0.5
             self._log += f'      Block\n'
+            if target.is_character():
+                Refs.gc.get_floor_data().increase_stat(target.get_id(), 4, Refs.gc.get_random_stat_increase() * 2)
         info.evade = self._get_evade(info, entity, target)
         if info.evade:
             info.effective_attack *= 0.15
             self._log += f'      Evade\n'
+            if target.is_character():
+                Refs.gc.get_floor_data().increase_stat(target.get_id(), 5, Refs.gc.get_random_stat_increase() * 2)
+                Refs.gc.get_floor_data().increase_stat(target.get_id(), 6, Refs.gc.get_random_stat_increase() * 2)
         info.counter = self._get_counter(info, entity, target)
+        if info.counter:
+            if target.is_character():
+                Refs.gc.get_floor_data().increase_stat(target.get_id(), 5, Refs.gc.get_random_stat_increase() * 2)
+                Refs.gc.get_floor_data().increase_stat(target.get_id(), 6, Refs.gc.get_random_stat_increase() * 2)
         return max(info.effective_attack - info.defense, 0), info.counter, info.evade
 
     def _process_move(self, entity, counter=False):
@@ -248,18 +265,14 @@ class BattleData:
         if mana_cost > 0:
             self._log += f'      -{mana_cost} Mana\n'
             entity.decrease_mana(mana_cost)
+            if entity.is_character():
+                Refs.gc.get_floor_data().increase_stat(entity.get_id(), 1, Refs.gc.get_random_stat_increase())
 
         if skill.get_boosts() is not None:
             for boost in skill.get_boosts():
                 effect_name = f'{entity.get_name()}_{skill.get_name()}'
                 boost_value = TEMP_BOOST_BY_TARGET[boost.get_type()][skill.get_target()]
-
-                # print('\\t\t\tApply Boost of ', boost_value, 'to', STAT_TYPES[boost.get_stat_type()])
                 entity.apply_effect(effect_name, boost.get_stat_type(), AppliedEffect(boost_value, 1))
-
-        # if skill.get_effects():
-        #     for effect in skill.get_effects():
-        #         print(effect)
 
         # Get targets
         if skill.get_target() in [FOE, FOES]:
@@ -285,19 +298,13 @@ class BattleData:
                 self._process_ailment_cure(entity, skill, [entity])
 
     def _process_attack(self, entity, skill, targets, counter):
-        # Apply attack
         base_attack = entity.get_attack(skill.get_attack_type())
-        # print('\t\t\tBase Attack:', base_attack)
         skill_power = skill.get_power()
-        # print('\t\t\tSkill Modifier:', skill_power)
-
         effective_attack = base_attack * skill_power
 
         counters = []
         for target in targets:
-            # print(f'\t\t\t{target.get_name()}:')
             damage, do_counter, evade = self._get_damage(effective_attack, entity, target, skill)
-            # print('\t\t\t\tDamage: ', damage)
 
             attack_resist = 0
             if skill.get_attack_type() == PHYSICAL:
@@ -317,9 +324,6 @@ class BattleData:
                 element_resist = target.get_total_boost(element_resist)
             else:
                 element_resist = 0
-
-            print('Attack resist', attack_resist)
-            print('Element resist', element_resist)
 
             if attack_resist > 0:
                 damage *= 1 - min(1, attack_resist)
@@ -358,6 +362,17 @@ class BattleData:
 
             if damage != 0:
                 target.decrease_health(damage)
+                if target.is_character():
+                    Refs.gc.get_floor_data().increase_stat(target.get_id(), 0, Refs.gc.get_random_stat_increase())
+                    Refs.gc.get_floor_data().increase_stat(target.get_id(), 4, Refs.gc.get_random_stat_increase())
+                if entity.is_character():
+                    if skill.get_attack_type() == PHYSICAL:
+                        Refs.gc.get_floor_data().increase_stat(entity.get_id(), 2, Refs.gc.get_random_stat_increase())
+                    elif skill.get_attack_type() == MAGICAL:
+                        Refs.gc.get_floor_data().increase_stat(entity.get_id(), 3, Refs.gc.get_random_stat_increase())
+                    else:
+                        Refs.gc.get_floor_data().increase_stat(entity.get_id(), 2, Refs.gc.get_random_stat_increase())
+                        Refs.gc.get_floor_data().increase_stat(entity.get_id(), 3, Refs.gc.get_random_stat_increase())
                 self._log += f'      {round(damage, 1)} damage to {target.get_name()}\n'
             else:
                 self._log += f'      No damage to {target.get_name()}\n'
@@ -381,21 +396,17 @@ class BattleData:
 
     def _process_heal(self, entity, skill, targets):
         base_heal = entity.get_magical_attack()
-        # print('\t\t\tBase Heal:', base_heal)
         skill_power = skill.get_power()
-        # print('\t\t\tSkill Modifier:', skill_power)
         effective_heal = base_heal * skill_power
 
         for target in targets:
-            # print(f'\t\t\t{target.get_name()}:')
-
             random_modifier = Refs.gc.get_random_attack_modifier()
-            # print('\t\t\t\tRandom Modifier:', random_modifier)
 
             target_effective_heal = min(effective_heal * random_modifier, target.get_health() - target.get_battle_health())
-            # print('\t\t\t\tHeal: ', target_effective_heal)
             self._log += f'      {round(target_effective_heal, 1)} heal to {target.get_name()}\n'
             target.decrease_health(-target_effective_heal)
+            Refs.gc.get_floor_data().increase_stat(entity.get_id(), 3, Refs.gc.get_random_stat_increase())
+
             if skill.get_effects():
                 effect_name = f'{entity.get_name()}_{skill.get_name()}'
                 for effect in skill.get_effects():
@@ -405,8 +416,8 @@ class BattleData:
 
     def _process_ailment_cure(self, entity, skill, targets):
         for target in targets:
-            # print(f'\t\t\t{target.get_name()}:')
-            # print('\t\t\t\tAilment Cure')
+            Refs.gc.get_floor_data().increase_stat(entity.get_id(), 3, Refs.gc.get_random_stat_increase())
+            target.clear_negative_effects()
             if skill.get_effects():
                 effect_name = f'{entity.get_name()}_{skill.get_name()}'
                 for effect in skill.get_effects():
@@ -417,7 +428,6 @@ class BattleData:
     def _process_cause_effect(self, entity, skill, targets, counter):
         counters = []
         for target in targets:
-            # print(f'\t\t\t{target.get_name()}:')
             info = TargetInfo()
             if entity.is_character() != target.is_character():
                 info.evade = self._get_evade(info, entity, target)

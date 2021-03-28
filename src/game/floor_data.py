@@ -45,6 +45,7 @@ class FloorData:
         self._battle_data = None
         self._adventurers = None
         self._supporters = None
+        self._get_supporters = None
         self._increases = None
         self._special_amount = 0
         self._gained_items = {}
@@ -68,11 +69,31 @@ class FloorData:
     def get_characters(self):
         return self._adventurers
 
+    def get_able_characters(self):
+        characters = []
+        for character in self._adventurers:
+            if not character.is_dead() and character.get_stamina() > 0:
+                characters.append(character)
+        return characters
+
+    def get_alive_characters(self):
+        characters = []
+        for character in self._adventurers:
+            if not character.is_dead():
+                characters.append(character)
+        return characters
+
     def get_explored(self):
         return self._explored
 
     def get_increases(self):
         return self._increases
+
+    def increase_stat(self, char_id, index, amount):
+        support = self._get_supporters[char_id]
+        if support is not None:
+            self._increases[support.get_id()][index] += amount
+        self._increases[char_id][index] += amount
 
     def have_beaten_boss(self):
         return self._beaten_boss
@@ -81,7 +102,6 @@ class FloorData:
         return self._gained_items
 
     def add_gained_items(self, item_id, count):
-
         if item_id not in self._gained_items:
             self._gained_items[item_id] = 0
         self._gained_items[item_id] += count
@@ -147,37 +167,40 @@ class FloorData:
         self.decrease_safe_zones()
 
         # Progress Character stamina. Check for incapacitation.
+
         for character in self._adventurers:
-            character.walk()
+            if not character.is_dead() and character.get_stamina() > 0:
+                character.walk(Refs.gc.get_stamina_weight() + 1)
+                self.increase_stat(character.get_id(), 5, Refs.gc.get_random_stat_increase())
 
-        # for character in self._adventurers:
-        #     print(character.get_name(), 'Stamina is', character.get_stamina())
+        all_asleep = True
+        for character in self._adventurers:
+            if character.is_dead():
+                return
+            all_asleep &= character.get_stamina() <= 0
 
-        # On movement, 15% chance for encounter
-        # On node, chance +50%
-        # For every rest count, chance + 20%
-        # For every time you mine / dig, chance +40%
-        if (x, y) not in self._activated_safe_zones and not floor_map.is_marker(EXIT):
-            chance = 15
-            node = None
-            for enemy_id in self._floor.get_enemies().keys():
-                if floor_map.is_marker(enemy_id):
-                    node = enemy_id
-                    chance += 50
-                    break
-            chance += 20 * self._rest_count
-            self._rest_count = 0
-            if randint(1, 100) < min(100, chance):
-                self.generate_encounter(node)
-                if node is not None:
-                    # If we are standing on a node, and we get that enemy generated, reduce positions counter
-                    for enemy in self._battle_data.get_enemies():
-                        if enemy.get_id() == node:
-                            if self.party_has_perk('hunter'):
-                                floor_map.decrease_node_counter(2)
-                            else:
-                                floor_map.decrease_node_counter(1)
-                            break
+        if not all_asleep:
+            if (x, y) not in self._activated_safe_zones and not floor_map.is_marker(EXIT):
+                chance = 15
+                node = None
+                for enemy_id in self._floor.get_enemies().keys():
+                    if floor_map.is_marker(enemy_id):
+                        node = enemy_id
+                        chance += 50
+                        break
+                chance += 20 * self._rest_count
+                self._rest_count = 0
+                if randint(1, 100) < min(100, chance):
+                    self.generate_encounter(node)
+                    if node is not None:
+                        # If we are standing on a node, and we get that enemy generated, reduce positions counter
+                        for enemy in self._battle_data.get_enemies():
+                            if enemy.get_id() == node:
+                                if self.party_has_perk('hunter'):
+                                    floor_map.decrease_node_counter(2)
+                                else:
+                                    floor_map.decrease_node_counter(1)
+                                break
 
     def get_descriptions(self):
         last_node, current_node = self._floor.get_map().get_saved_nodes()
@@ -376,13 +399,15 @@ class FloorData:
         # Clear status effects from characters
         for character in self._adventurers:
             character.clear_effects()
+        # Award Fam Bonus
+        Refs.gc.generate_familiarity_bonuses(Refs.gc.get_current_party())
 
     def generate_encounter(self, node_type):
         self._in_encounter = True
         adventurers = []
         supporters = []
         for index, adventurer in enumerate(self._adventurers):
-            if not adventurer.is_dead():
+            if not adventurer.is_dead() and adventurer.get_stamina() > 0:
                 adventurers.append(adventurer)
                 if self._supporters[index] is not None:
                     supporters.append(self._supporters[index])
@@ -397,7 +422,7 @@ class FloorData:
         adventurers = []
         supporters = []
         for index, adventurer in enumerate(self._adventurers):
-            if not adventurer.is_dead():
+            if not adventurer.is_dead() and adventurer.get_stamina() > 0:
                 adventurers.append(adventurer)
                 if self._supporters[index] is not None:
                     supporters.append(self._supporters[index])
@@ -410,6 +435,7 @@ class FloorData:
         party = Refs.gc.get_current_party()
         self._adventurers = []
         self._supporters = []
+        self._get_supporters = {}
         self._increases = {}
         self._party_perks = []
 
@@ -424,6 +450,7 @@ class FloorData:
             self._adventurers.append(create_battle_character(character, support))
             self._party_perks += character.get_perks()
             self._supporters.append(support)
+            self._get_supporters[character.get_id()] = support
 
     def get_battle_data(self):
         return self._battle_data

@@ -118,10 +118,6 @@ class Floor:
                 if enemy.get_id() == node_type and rarity == 1:
                     rarity_adjustment = 2
                     break
-            if rarity_adjustment == 1:
-                print('Make', node_type, 'More Common')
-            else:
-                print('Make everything', node_type, 'More Common')
 
         for spawn_rarity in set(rarities):
             for (enemy, rarity) in self._enemies.values():
@@ -477,7 +473,6 @@ class Map:
         self._calculate_path()
 
     def is_marker(self, marker_type):
-        print(marker_type, self._current_node, self._markers[SAFE_ZONES])
         return self._current_node in self._markers[marker_type]
 
     # Check markers for a specific node

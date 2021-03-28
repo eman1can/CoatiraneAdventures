@@ -8,23 +8,23 @@ BOX_WIDTH = 13
 def center_stat(char, index):
     if char is None:
         if index == 6:
-            return '-'.center(BOX_WIDTH)
+            return '+'.center(BOX_WIDTH)
         return ''.center(BOX_WIDTH)
     if char.is_support():
-        stat = [char.get_name(), char.get_current_rank(), '', '', char.get_health(), char.get_mana(), char.get_physical_attack(), char.get_magical_attack(),
-                char.get_defense(), char.get_strength(), char.get_magic(), char.get_endurance(), char.get_agility(), char.get_dexterity()]
-        stat_labels = ['', 'Rank', '', '', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
+        stat = [char.get_name, char.get_current_rank, char.get_health, char.get_mana, char.get_physical_attack, char.get_magical_attack,
+                char.get_defense, char.get_strength, char.get_magic, char.get_endurance, char.get_agility, char.get_dexterity]
+        stat_labels = ['', 'Rank', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
+        stat_string = stat[index]()
     else:
-        element = ELEMENTS[char.get_element()]
-        attack = CHARACTER_ATTACK_TYPES[char.get_attack_type()]
-        stat = [char.get_name(), char.get_current_rank(), element, attack, char.get_health(), char.get_mana(), char.get_physical_attack(), char.get_magical_attack(),
-                char.get_defense(), char.get_strength(), char.get_magic(), char.get_endurance(), char.get_agility(), char.get_dexterity()]
+        stat = [char.get_name, char.get_current_rank, char.get_element_string, char.get_attack_type_string, char.get_health, char.get_mana, char.get_physical_attack, char.get_magical_attack,
+                char.get_defense, char.get_strength, char.get_magic, char.get_endurance, char.get_agility, char.get_dexterity]
         stat_labels = ['', 'Rank', '', '', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
-    if index == 0 or index == 2 or index == 3:
-        if ' ' in stat[index]:
-            stat[index] = stat[index].split(' ')[0]
-        return f'{stat[index]}'.center(BOX_WIDTH)
-    return f"{stat_labels[index]}{f'{stat[index]}'.rjust(BOX_WIDTH - 2 - len(stat_labels[index]))}".center(BOX_WIDTH)
+        stat_string = stat[index]()
+        if index == 0 or index == 2 or index == 3:
+            if ' ' in stat_string:
+                stat_string = stat_string.split(' ')[0]
+            return f'{stat_string}'.center(BOX_WIDTH)
+    return f"{stat_labels[index]}{f'{stat_string}'.rjust(BOX_WIDTH - 2 - len(stat_labels[index]))}".center(BOX_WIDTH)
 
 
 def create_bar(left, right, middle, divider, size):

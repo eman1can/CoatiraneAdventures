@@ -1,5 +1,5 @@
 from math import ceil, floor
-from random import randint
+from random import choices, randint
 
 from game.effect import COUNTER_TYPES, STAT_TYPES
 from game.floor import ENTRANCE, EXIT, SAFE_ZONES
@@ -423,29 +423,24 @@ def get_dungeon_header(console):
 
 
 def dungeon_battle(console):
-    """
-    Dungeon Battle will consist of a few main screens.
-    The first is the mvoement screen, that will display the current position,
-    the options available for movement and the action options.
-    For an action option, a user can inspect the local enviroment and the walls for ore.
-    They should both reduce the health just a tiny bit. (1-2 pooints) to discurage from
-    an inspection at every node.
-    Aside from that, you have an encounter screen that will show the enemies showing up,
-    and the activation of assist skills.
-    Then you have the main fight screen which will show enemy healths, character healths
-    and ability and skill options.
-    You also have the battle result screen that will show xp and items gained
-    from fights, and the final result screens which will show all items gained on the floor.
-    You also have the boss transition screen, although that will go back through dungeon main.
-
-    """
-    # The first thing to do during the dungeon battle would be to get the current status
-    # From the floor data
-    # If we are in an encounter, show battle screen, else show movement screen based on current position
 
     floor_data = Refs.gc.get_floor_data()
 
-    # Make sure that if we are on the exit node that we trigger the boss
+    if console.get_current_screen().endswith('asleep'):
+        # All characters have fallen asleep.
+        display_string = '\n\tAll your characters have fallen asleep! Oh no!\n\tWill they wake up or will they be eaten?\n'
+        display_string += f'\n\t{OPT_C}0:{END_OPT_C} Fast Forward\n'
+        _options = {'0': 'dungeon_battle_roll_sleep_chance'}
+        return display_string, _options
+    elif console.get_current_screen().endswith('wake_up'):
+        character = floor_data.get_alive_characters()[randint(0, len(floor_data.get_alive_characters()) - 1)]
+        character.wake_up()
+        floor_data.increase_stat(character.get_id(), 0, Refs.gc.get_random_stat_increase())
+        display_string = f'\n\t{character.get_name()} woke up! Try to get to a safe zone to rest your other adventurers!\n'
+        display_string += f'\n\t{OPT_C}0:{END_OPT_C} Continue\n'
+        _options = {'0': 'dungeon_battle'}
+        return display_string, _options
+
     console.header_callback = None
     if not floor_data.is_in_encounter():
         console.header_callback = get_dungeon_header
@@ -455,6 +450,15 @@ def dungeon_battle(console):
         _options.update(tool_options)
 
         compass = Refs.gc.get_inventory().has_item('compass')
+
+        sleep_string = ''
+        for character in floor_data.get_characters():
+            if character.is_dead():
+                sleep_string += f'\n\t{character.get_name()} is incapacitated! Stamina usage +35%'
+            elif character.get_stamina() <= 0:
+                sleep_string += f'\n\t{character.get_name()} has fallen asleep! Stamina usage +25%'
+
+        display_string = sleep_string + '\n' + display_string
 
         if compass:
             map_index = 3
@@ -527,7 +531,9 @@ def dungeon_result(console):
 
         display_string += '\n\n'
         pre_battle = battle_data.get_pre_battle_status()
+
         for character in battle_data.get_characters():
+            character.take_action(Refs.gc.get_stamina_weight() + 1)
             char_id = character.get_id()
             health = character.get_health()
             mana = character.get_mana()
@@ -562,6 +568,11 @@ def dungeon_result(console):
         item_counts = {}
         knife = Refs.gc.get_inventory().get_current_harvesting_knife()
         knife.remove_durability(Refs.gc.get_random_wear_amount())
+
+        character = floor_data.get_able_characters()[randint(0, len(floor_data.get_able_characters()) - 1)]
+        character.take_action(Refs.gc.get_stamina_weight() + 1)
+        floor_data.increase_stat(character.get_id(), 2, Refs.gc.get_random_stat_increase())
+
         for enemy, count in counts.items():
             display_string += f'\n\t\t{enemy.get_name()} x {count}:'
             for _ in range(count):
@@ -620,42 +631,20 @@ def dungeon_result(console):
                 continue
             rows = [character.get_name().split(' ')[0]]
             char_increases = increases[character.get_id()]
-            if char_increases[0] == 0:
-                rows.append(f'{character.get_health()}')
-            else:
-                rows.append(f'{character.get_health()} → {character.get_health() + char_increases[0]}')
-            if char_increases[1] == 0:
-                rows.append(f'{character.get_mana()}')
-            else:
-                rows.append(f'{character.get_mana()} → {character.get_mana() + char_increases[1]}')
-            if char_increases[2] == 0:
-                rows.append(f'{character.get_strength()}')
-            else:
-                rows.append(f'{character.get_strength()} → {character.get_strength() + char_increases[2]}')
-            if char_increases[3] == 0:
-                rows.append(f'{character.get_magic()}')
-            else:
-                rows.append(f'{character.get_magic()} → {character.get_magic() + char_increases[3]}')
-            if char_increases[4] == 0:
-                rows.append(f'{character.get_endurance()}')
-            else:
-                rows.append(f'{character.get_endurance()} → {character.get_endurance() + char_increases[4]}')
-            if char_increases[5] == 0:
-                rows.append(f'{character.get_agility()}')
-            else:
-                rows.append(f'{character.get_agility()} → {character.get_agility() + char_increases[5]}')
-            if char_increases[6] == 0:
-                rows.append(f'{character.get_dexterity()}')
-            else:
-                rows.append(f'{character.get_dexterity()} → {character.get_dexterity() + char_increases[6]}')
+
+            stats = [character.get_health(), character.get_mana(), character.get_strength(), character.get_magic(), character.get_endurance(), character.get_agility(), character.get_dexterity()]
+            increase_functions = [character.increase_health, character.increase_mana, character.increase_strength, character.increase_magic, character.increase_endurance, character.increase_agility, character.increase_dexterity]
+            for index, function in enumerate(increase_functions):
+                function(char_increases[index])
+            new_stats = [character.get_health(), character.get_mana(), character.get_strength(), character.get_magic(), character.get_endurance(), character.get_agility(), character.get_dexterity()]
+
+            for index in range(7):
+                if new_stats[index] - stats[index] == 0:
+                    rows.append(f'{int(stats[index])}')
+                else:
+                    rows.append(f'{int(stats[index])} → {int(new_stats[index])}')
             char_rows[character.get_id()] = rows
-            character.increase_health(char_increases[0])
-            character.increase_mana(char_increases[1])
-            character.increase_strength(char_increases[2])
-            character.increase_magic(char_increases[3])
-            character.increase_endurance(char_increases[4])
-            character.increase_agility(char_increases[5])
-            character.increase_dexterity(char_increases[6])
+
         labels = ['    ', 'HP. ', 'MP. ', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
         for index in range(8):
             display_string += f'\t{labels[index]} '
@@ -729,7 +718,22 @@ def dungeon_battle_action(console, action):
         console.set_screen('dungeon_main')
         return
     elif action == 'North' or action == 'East' or action == 'South' or action == 'West':
-        Refs.gc.get_floor_data().progress_by_direction(DIRECTIONS_FROM_STRING[action])
+        floor_data = Refs.gc.get_floor_data()
+        floor_data.progress_by_direction(DIRECTIONS_FROM_STRING[action])
+        all_asleep = True
+        for character in floor_data.get_characters():
+            all_asleep &= character.get_stamina() <= 0
+        if all_asleep:
+            console.set_screen('dungeon_battle_asleep')
+            return
+    elif action == 'roll_sleep_chance':
+        if Refs.gc.get_floor_data().is_activated_safe_zone():
+            next_screen = choices(['dungeon_battle_asleep', 'dungeon_battle_wake_up'], [0.7, 0.3], k=1)[0]
+        else:
+            next_screen = choices(['dungeon_battle_asleep', 'dungeon_result_loss', 'dungeon_battle_wake_up'], [0.4, 0.3, 0.3], k=1)[0]
+        Refs.gc.get_calendar().fast_forward(60 * 6)
+        console.set_screen(next_screen)
+        return
     elif action == 'fight_boss':
         Refs.gc.get_floor_data().generate_boss_encounter()
     elif action.startswith('encounter'):
@@ -763,12 +767,23 @@ def dungeon_battle_action(console, action):
                 battle_data.set_state('battle')
     elif action == 'create_safe_zone':
         floor_data = Refs.gc.get_floor_data()
+
+        current_harvesting_knife = Refs.gc.get_inventory().get_current_harvesting_knife()
+        if current_harvesting_knife is None:
+            console.error_time = 2.5
+            console.error_text = 'You have no harvesting knife selected!'
+            return
+
         floor_data.activate_safe_zone()
 
+        current_harvesting_knife.remove_durability(Refs.gc.get_random_wear_amount() * 7.5)
+
         # Random character takes the action
-        index = randint(0, len(floor_data.get_characters()) - 1)
-        character = floor_data.get_characters()[index]
-        character.take_action()
+
+        index = randint(0, len(floor_data.get_able_characters()) - 1)
+        character = floor_data.get_able_characters()[index]
+        character.take_action(Refs.gc.get_stamina_weight() + 1)
+        floor_data.increase_stat(character.get_id(), 2, Refs.gc.get_random_stat_increase())
     elif action == 'rest':
         floor_data = Refs.gc.get_floor_data()
         for character in floor_data.get_characters():
@@ -777,17 +792,17 @@ def dungeon_battle_action(console, action):
         floor_data.increase_rest_count()
     elif action == 'mine':
         floor_data = Refs.gc.get_floor_data()
-        index = randint(0, len(floor_data.get_characters()) - 1)
-        character = floor_data.get_characters()[index]
-        character.take_action()
+        index = randint(0, len(floor_data.get_able_characters()) - 1)
+        character = floor_data.get_able_characters()[index]
+        character.take_action(Refs.gc.get_stamina_weight() + 1)
         floor_data.increase_rest_count(2)
         console.set_screen(f'dungeon_mine_result_{character.get_id()}')
         return
     elif action == 'dig':
         floor_data = Refs.gc.get_floor_data()
-        index = randint(0, len(floor_data.get_characters()) - 1)
-        character = floor_data.get_characters()[index]
-        character.take_action()
+        index = randint(0, len(floor_data.get_able_characters()) - 1)
+        character = floor_data.get_able_characters()[index]
+        character.take_action(Refs.gc.get_stamina_weight() + 1)
         floor_data.increase_rest_count(2)
         console.set_screen(f'dungeon_dig_result_{character.get_id()}')
         return
@@ -801,6 +816,8 @@ def dungeon_mine_result(console):
     display_string, _options = '', {}
     character_id = console.get_current_screen()[len('dungeon_mine_result_'):]
     character = Refs.gc.get_char_by_id(character_id)
+
+    Refs.gc.get_floor_data().increase_stat(character.get_id(), 2, Refs.gc.get_random_stat_increase())
 
     floor = Refs.gc.get_floor_data().get_floor()
     node = None
@@ -837,6 +854,7 @@ def dungeon_dig_result(console):
     character = Refs.gc.get_char_by_id(character_id)
 
     floor_data = Refs.gc.get_floor_data()
+    floor_data.increase_stat(character.get_id(), 2, Refs.gc.get_random_stat_increase())
     floor = floor_data.get_floor()
     floor_map = floor.get_map()
     node = None

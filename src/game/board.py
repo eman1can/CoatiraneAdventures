@@ -20,8 +20,8 @@ class Board(SMEAD):
     def refresh_stats(self):
         if not self._initialized:
             return
-        super().refresh_stats()
         self.update_unlocked()
+        super().refresh_stats()
 
     def get_count(self):
         return self._strength_count + self._magic_count + self._endurance_count + self._agility_count + self._dexterity_count
@@ -54,21 +54,21 @@ class Board(SMEAD):
         self.refresh_stats()
 
     def update_strength(self):
-        sc = len([x for x in self._unlocked[:self._strength_count] if x])
+        sc = [x for x in self._unlocked[:self._strength_count]].count(True)
         self.strength = self._strength * sc
 
     def update_magic(self):
-        mc = len([x for x in self._unlocked[self._strength_count:self._magic_count] if x])
+        mc = [x for x in self._unlocked[self._strength_count:self._strength_count + self._magic_count]].count(True)
         self.magic = self._magic * mc
 
     def update_endurance(self):
-        ec = len([x for x in self._unlocked[self._strength_count+self._magic_count:self._endurance_count] if x])
+        ec = [x for x in self._unlocked[self._strength_count + self._magic_count:self._strength_count + self._magic_count + self._endurance_count]].count(True)
         self.endurance = self._endurance * ec
 
     def update_agility(self):
-        ac = len([x for x in self._unlocked[self._strength_count + self._magic_count+self._endurance_count:self._agility_count] if x])
+        ac = [x for x in self._unlocked[self._strength_count + self._magic_count + self._endurance_count:self._strength_count + self._magic_count + self._endurance_count + self._agility_count]].count(True)
         self.agility = self._agility * ac
 
     def update_dexterity(self):
-        dc = len([x for x in self._unlocked[self._strength_count + self._magic_count + self._endurance_count+self._agility_count:] if x])
+        dc = [x for x in self._unlocked[self._strength_count + self._magic_count + self._endurance_count + self._agility_count:]].count(True)
         self.dexterity = self._dexterity * dc

@@ -246,13 +246,13 @@ class Console(TextInput):
                 if '*' in self._current_screen:
                     if '#' not in self._current_screen:
                         if '#' in current_screen:
-                            print('Add', self._current_screen, 'to list')
+                            # print('Add', self._current_screen, 'to list')
                             self._back_list.append(self._current_screen)
                             return True
                         else:
                             screen_name = self._current_screen.split('*')[0]
                             if self._back_list[-1].startswith(screen_name):
-                                print('Replace', self._back_list[-1], 'with', self._current_screen, 'to list')
+                                # print('Replace', self._back_list[-1], 'with', self._current_screen, 'to list')
                                 self._back_list[-1] = self._current_screen
                                 return True
                     return False
@@ -265,7 +265,7 @@ class Console(TextInput):
         # if screen_name != 'game_loading':
             # print('Set Screen', screen_name)
         if screen_name == 'back':
-            print(self._back_list, '←', self._current_screen)
+            # print(self._back_list, '←', self._current_screen)
             screen_name = self._back_list.pop()
         else:
             self.save_screen(screen_name)
@@ -318,7 +318,7 @@ class Console(TextInput):
         return self._options
 
     def execute_action(self, action):
-        print(action)
+        # print(action)
         screens = {'start_game': 'save_select'}
         if action in screens:
             self.set_screen(screens[action])
@@ -513,18 +513,21 @@ class Console(TextInput):
             hsc, hmc, hec, hac, hdc, ftype, vcost, rank_index = info_string.split('_')
             Refs.gc.update_varenth(-int(vcost))
             if int(hsc) > 0:
-                Refs.gc.remove_from_inventory(f'{ftype}_strength_falna', int(hsc))
+                Refs.gc.get_inventory().remove_item(f'{ftype}_strength_falna', int(hsc))
             if int(hmc) > 0:
-                Refs.gc.remove_from_inventory(f'{ftype}_magic_falna', int(hmc))
+                Refs.gc.get_inventory().remove_item(f'{ftype}_magic_falna', int(hmc))
             if int(hec) > 0:
-                Refs.gc.remove_from_inventory(f'{ftype}_endurance_falna', int(hec))
+                Refs.gc.get_inventory().remove_item(f'{ftype}_endurance_falna', int(hec))
             if int(hac) > 0:
-                Refs.gc.remove_from_inventory(f'{ftype}_agility_falna', int(hac))
+                Refs.gc.get_inventory().remove_item(f'{ftype}_agility_falna', int(hac))
             if int(hdc) > 0:
-                Refs.gc.remove_from_inventory(f'{ftype}_dexterity_falna', int(hdc))
-            board = Refs.gc.get_char_by_id(character_id).get_rank(rank_index).get_baord()
+                Refs.gc.get_inventory().remove_item(f'{ftype}_dexterity_falna', int(hdc))
+            character =Refs.gc.get_char_by_id(character_id)
+            rank = character.get_rank(int(rank_index))
+            board = rank.get_board()
             for tile_index in tile_list.split('_'):
                 board.unlock_index(int(tile_index))
+            character.refresh_stats()
             self.set_screen(f'status_board_main_{character_id}_{rank_index}')
         elif action.startswith('map_options_'):
             action = action[len('map_options_'):]
