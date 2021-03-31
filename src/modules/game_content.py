@@ -4,7 +4,7 @@ __all__ = ('GameContent',)
 from game.calendar import Calendar
 from game.battle_character import create_battle_character
 from game.crafting_recipe import CRAFT_ALLOYS, EQUIPMENT, ITEM, PROCESS_MATERIALS
-from game.equipment import EQUIPMENT_TOOL, UngeneratedArmor, UngeneratedTool, UngeneratedWeapon, WeaponClass, ToolClass, ArmorClass
+from game.equipment import UnGeneratedArmor, UnGeneratedTool, UnGeneratedWeapon
 from game.floor_data import FloorData
 from game.inventory import Inventory
 from game.save_load import load_floor_data, save_game
@@ -127,6 +127,8 @@ class GameContent:
         self._save_slot = save_slot
 
     def save_game(self, callback):
+        if not self._calendar:
+            return
         self._last_save_time = self._calendar.get_int_time()
         save_game(self._save_slot, self)
         if callback is not None:
@@ -155,7 +157,7 @@ class GameContent:
         return list(self._data['housing'].values())
 
     def get_varenth(self):
-        return self._varenth
+        return int(self._varenth)
 
     def get_name(self):
         return self._name
@@ -349,12 +351,12 @@ class GameContent:
                 sub_material2 = self._data['materials'][material_ids[2]]
         for equipment_id, equipment_class in self._data['equipment'].items():
             if item_id.endswith(equipment_id):
-                if isinstance(equipment_class, WeaponClass):
-                    return UngeneratedWeapon(equipment_class, material, sub_material1, sub_material2)
-                elif isinstance(equipment_class, ArmorClass):
-                    return UngeneratedArmor(equipment_class, material, sub_material1, sub_material2)
+                if equipment_class.is_weapon():
+                    return UnGeneratedWeapon(equipment_class, material, sub_material1, sub_material2)
+                elif equipment_class.is_armor():
+                    return UnGeneratedArmor(equipment_class, material, sub_material1, sub_material2)
                 else:
-                    return UngeneratedTool(equipment_class, material)
+                    return UnGeneratedTool(equipment_class, material)
         if item_id in self._data['equipment']:
             return self._data['equipment'][item_id]
         return None
@@ -435,7 +437,7 @@ class GameContent:
         equipment_class = self._data['equipment'][item_id]
         for material_id, material in self._data['materials'].items():
             if material.is_hard() and material.is_natural():
-                items.append(UngeneratedTool(equipment_class, material))
+                items.append(UnGeneratedTool(equipment_class, material))
         return items
 
     def get_store_weapons(self, item_id):
@@ -443,7 +445,7 @@ class GameContent:
         equipment_class = self._data['equipment'][item_id]
         for material_id, material in self._data['materials'].items():
             if material.is_hard() and material.is_natural():
-                items.append(UngeneratedWeapon(equipment_class, material, None, None))
+                items.append(UnGeneratedWeapon(equipment_class, material, None, None))
         return items
 
     def get_store_armor(self, item_id):
@@ -451,7 +453,7 @@ class GameContent:
         equipment_class = self._data['equipment'][item_id]
         for material_id, material in self._data['materials'].items():
             if material.is_natural() and not material.is_gem():
-                items.append(UngeneratedArmor(equipment_class, material, None, None))
+                items.append(UnGeneratedArmor(equipment_class, material, None, None))
         return items
 
     def get_shop_item(self, item_id):
@@ -470,6 +472,9 @@ class GameContent:
         if item_id in self._data['drop_items']:
             return self._data['drop_items'][item_id]
         return None
+
+    def get_equipment(self, equipment_type):
+        return self._inventory.get_equipment(equipment_type)
 
     def get_process_recipes(self):
         viable_recipes = []
@@ -607,7 +612,7 @@ class GameContent:
                 bonus += 2 * (percentage / 100)
                 count += 1
         if count < 1:
-            return -1, -1, -1, {}
+            return 0, 0, 0, {}
         return value_total / count, value_gold / count, bonus, fam
 
     """

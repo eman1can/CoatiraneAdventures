@@ -1,8 +1,9 @@
 from game.floor import ENTRANCE, EXIT, SAFE_ZONES
 from refs import END_OPT_C, OPT_C, Refs
+from text.screens.screen_names import BACK, MAP_OPTIONS
 
 
-def map_options(console):
+def get_screen(console, screen_data):
     display_text, _options = '', {}
 
     floor_map = Refs.gc.get_floor_data().get_floor().get_map()
@@ -23,7 +24,7 @@ def map_options(console):
         if count > 0:
             layers.append(layer)
 
-    if console.get_current_screen() == 'map_options_change_destination':
+    if screen_data == 'change_destination':
         display_text += '\n\tChoose a destination to map to.\n'
         for index, layer in enumerate(['exit', 'entrance'] + list(layers)):
             name = layer.replace('_', ' ').title()
@@ -31,20 +32,20 @@ def map_options(console):
                 display_text += f'\n\t[s]{OPT_C}{index + 1}:{END_OPT_C}[/s] {name} - Current'
             else:
                 display_text += f'\n\t{OPT_C}{index + 1}:{END_OPT_C} {name}'
-                _options[str(index + 1)] = 'map_options_change_destination_' + layer
+                _options[str(index + 1)] = 'change_destination#' + layer
         display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
-        _options['0'] = 'back'
+        _options['0'] = BACK
         return display_text, _options
-    elif console.get_current_screen() == 'map_options_change_radius':
+    elif screen_data == 'change_radius':
         display_text += '\n\tChoose a radius.\n'
         for index, radius in enumerate(range(5, 9)):
             if radius == floor_map.get_radius():
                 display_text += f'\n\t[s]{OPT_C}{index + 1}:{END_OPT_C}[/s] {radius} - Current'
             else:
                 display_text += f'\n\t{OPT_C}{index + 1}:{END_OPT_C} {radius}'
-                _options[str(index + 1)] = f'map_options_change_radius_{radius}'
+                _options[str(index + 1)] = f'change_radius#{radius}'
         display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
-        _options['0'] = 'back'
+        _options['0'] = BACK
         return display_text, _options
 
     display_text += '\n\tMap Options\n'
@@ -62,13 +63,34 @@ def map_options(console):
         display_text += f'\n\t\t{OPT_C}{index + 5}:{END_OPT_C} {name}'
         active = floor_map.layer_active(layer)
         display_text += ' - ON' if active else ' - OFF'
-        _options[str(index + 4)] = f'map_options_toggle_{layer}_{not active}'
+        _options[str(index + 4)] = f'toggle#{layer}#{not active}'
 
     display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
-    _options['0'] = 'back'
-    _options['1'] = f'map_options_toggle_map_{not enabled}'
-    _options['2'] = f'map_options_change_radius'
-    _options['3'] = f'map_options_toggle_path_{not path}'
-    _options['4'] = 'map_options_change_destination'
+    _options['0'] = BACK
+    _options['1'] = f'toggle#map#{not enabled}'
+    _options['2'] = 'change_radius'
+    _options['3'] = f'toggle#path#{not path}'
+    _options['4'] = 'change_destination'
 
     return display_text, _options
+
+
+def handle_action(console, action):
+    floor_map = Refs.gc.get_floor_data().get_floor().get_map()
+
+    if action.startswith('toggle#'):
+        layer, active = action.split('#')[1:]
+        if layer == 'map':
+            floor_map.set_enabled(active)
+        else:
+            floor_map.set_layer_active(layer, active)
+    elif action.startswith('change_destination#'):
+        new_path = action.split('#')[1]
+        floor_map.set_current_path(new_path)
+    elif action.startswith('change_radius#'):
+        new_radius = action.split('#')
+        floor_map.set_radius(int(new_radius))
+    else:
+        console.set_screen(f'{MAP_OPTIONS}:{action}')
+        return
+    console.set_screen(MAP_OPTIONS)

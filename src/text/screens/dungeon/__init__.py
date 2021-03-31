@@ -1,5 +1,6 @@
 from refs import END_OPT_C, OPT_C, Refs
-from text.screens.dungeon_battle import center
+from text.screens.common_functions import center
+from text.screens.screen_names import BACK, CHARACTER_SELECTION, DUNGEON_CONFIRM, DUNGEON_MAIN, INVENTORY
 
 BOX_WIDTH = 17
 
@@ -118,7 +119,7 @@ def populate_box(box, party):
             if char:
                 box[top_index + (stat - 5) * 18] = center_stat(stat, char, party[index + 8])
             else:
-                if (index == 0 or party[index - 1]) and stat == 4:
+                if (index == 0 or party[index - 1]) and stat == 5:
                     box[top_index + (stat - 5) * 18] = '+'.center(BOX_WIDTH)
                 else:
                     box[top_index + (stat - 5) * 18] = ''.center(BOX_WIDTH)
@@ -159,7 +160,7 @@ def box_to_string(console, box):
     return f'Party {Refs.gc.get_current_party_index() + 1}'.center(console.get_width()) + ('\n' + string).replace('\n', '\n'.center(console.get_width() - box_width))
 
 
-def dungeon_main(console):
+def get_screen(console, screen_data):
     console.header_callback = None
     if Refs.gc.get_floor_data() is None:
         display_text = f'\n\tFloor - Surface'
@@ -170,127 +171,59 @@ def dungeon_main(console):
     # Display party
     party = Refs.gc.get_current_party()
 
-    if console.memory.party_box is None:
-        console.memory.party_box = create_box()
+    if console.party_box is None:
+        console.party_box = create_box()
 
-    display_text += box_to_string(console, populate_box(console.memory.party_box, party))
+    display_text += box_to_string(console, populate_box(console.party_box, party))
     display_text += '\n' + center(f'←──── {OPT_C}4{END_OPT_C} Prev Party | Next Party {OPT_C}5{END_OPT_C} ────→', 39, console.get_width())
     _options = {}
     if Refs.gc.get_floor_data() is None:
         display_text += f'\n\t{OPT_C}0:{END_OPT_C} back\n'
-        _options['0'] = 'back'
+        _options['0'] = BACK
     if Refs.gc.can_ascend():
         display_text += f'\n\t{OPT_C}1:{END_OPT_C} Ascend'
-        _options['1'] = 'dungeon_confirm_up'
+        _options['1'] = f'{DUNGEON_CONFIRM}:up'
     if Refs.gc.can_descend():
         display_text += f'\n\t{OPT_C}2:{END_OPT_C} Descend'
-        _options['2'] = 'dungeon_confirm_down'
+        _options['2'] = f'{DUNGEON_CONFIRM}:down'
     display_text += f'\n\t{OPT_C}3:{END_OPT_C} Inventory\n'
 
-    _options['3'] = 'inventory*0'
-    _options['4'] = 'dungeon_main_prev'
-    _options['5'] = 'dungeon_main_next'
+    _options['3'] = f'{INVENTORY}:0'
+    _options['4'] = f'prev'
+    _options['5'] = f'next'
 
     index = 0
     char = party[index]
     while char is not None:
-        _options[str(index + 6)] = f'dungeon_main_{index}_{char.get_id()}'
+        _options[str(index + 6)] = f'{CHARACTER_SELECTION}:{index}#{char.get_id()}'
         index += 1
         char = party[index]
-    _options[str(index + 6)] = f'dungeon_main_{index}_none'
+    _options[str(index + 6)] = f'{CHARACTER_SELECTION}:{index}#none'
     index += 1
 
     gap = 8 - index
     char = party[index + gap]
     while char is not None:
-        _options[str(index + 6)] = f'dungeon_main_{index + gap}_{char.get_id()}'
+        _options[str(index + 6)] = f'{CHARACTER_SELECTION}:{index + gap}#{char.get_id()}'
         index += 1
         char = party[index + gap]
     if party[index + gap - 8]:
-        _options[str(index + 6)] = f'dungeon_main_{index + gap}_none'
+        _options[str(index + 6)] = f'{CHARACTER_SELECTION}:{index + gap}#none'
 
     return display_text, _options
 
 
-def locked_dungeon_main(console):
-    console.header_callback = None
-    floor_data = Refs.gc.get_floor_data()
-    if floor_data.get_floor().get_id() > floor_data.get_next_floor():
-        # Ascending
-        display_text = f'\n\tFloor - {floor_data.get_floor().get_id()}'
-        display_text += f'\n\tYou have arrived at the staircase to the previous floor.\n\tWhat would you like to do?\n\n\t'
-    else:
-        # Descending
-        if floor_data.have_beaten_boss():
-            display_text = f'\n\tFloor - {floor_data.get_floor().get_id()}'
-            display_text += f'\n\tYou have arrived at the staircase to the next floor.\n\tWhat would you like to do?\n\n\t'
+def handle_action(console, action):
+    if action in ['prev', 'next']:
+        if action == 'prev':
+            index = Refs.gc.get_current_party_index() - 1
         else:
-            display_text = f'\n\tFloor - {floor_data.get_floor().get_id()} - BOSS'
-            if floor_data.get_floor().get_boss_type() <= 2:
-                display_text += f'\n\tYou have run into the boss of the floor!\n\tYou must fight to escape!\n\n\t'
-            else:
-                display_text += f'\n\tYou have run into the boss horde of the floor!\n\tYou must fight to escape!\n\n\t'
-    _options = {}
-    # Display party
-    party = Refs.gc.get_current_party()
-
-    display_text += '\t' + f'Party {Refs.gc.get_current_party_index() + 1}'.center(BOX_WIDTH * 8 + 10)
-    if console.memory.party_box is None:
-        console.memory.party_box = create_box()
-
-    display_text += box_to_string(console, populate_box(console.memory.party_box, party))
-
-    display_text += '\n\t'
-    for _ in range(BOX_WIDTH * 4 - 14):
-        display_text += ' '
-    display_text += f'←──── [s]{OPT_C}5{END_OPT_C} Prev Party[/s] | [s]Next Party {OPT_C}6{END_OPT_C}[/s] ────→'
-
-    if floor_data.get_floor().get_id() > floor_data.get_next_floor():
-        # Ascending
-        if Refs.gc.can_ascend():
-            display_text += f'\n\t{OPT_C}0:{END_OPT_C} Go to previous floor.'
-            _options['0'] = 'dungeon_battle'
-        if Refs.gc.can_descend():
-            display_text += f'\n\t{OPT_C}0:{END_OPT_C} Back to current floor.'
-            _options['0'] = 'dungeon_confirm_down'
-        display_text += f'\n\t{OPT_C}1:{END_OPT_C} Inventory\n'
-        _options['1'] = 'inventory*0'
+            index = Refs.gc.get_current_party_index() + 1
+        if index == 10:
+            index = 0
+        elif index == -1:
+            index = 9
+        Refs.gc.set_current_party_index(index)
+        console.set_screen(DUNGEON_MAIN)
     else:
-        # Descending
-        if floor_data.have_beaten_boss():
-            if Refs.gc.can_ascend():
-                display_text += f'\n\t{OPT_C}0:{END_OPT_C} Back to current floor.'
-                _options['0'] = 'dungeon_battle'
-            if Refs.gc.can_descend():
-                display_text += f'\n\t{OPT_C}0:{END_OPT_C} Descend to next floor.'
-                _options['0'] = 'dungeon_confirm_down'
-            display_text += f'\n\t{OPT_C}1:{END_OPT_C} Inventory\n'
-            _options['1'] = 'inventory*0'
-        else:
-            display_text += f'\n\t{OPT_C}0:{END_OPT_C} Inventory\n'
-            display_text += f'\n\t{OPT_C}1:{END_OPT_C} Fight\n'
-            _options['0'] = 'inventory_battle*0'
-            _options['1'] = 'dungeon_battle_fight_boss'
-    for index, char in enumerate(party):
-        if char is None:
-            continue
-        _options[str(index + 6)] = f'character_attribute_main_{char.get_id()}'
-    return display_text, _options
-
-
-def dungeon_main_confirm(console):
-    count = 0
-    for character in Refs.gc.get_current_party():
-        if character is None:
-            continue
-        count += 1
-    if count == 0:
-        console.set_screen('dungeon_main')
-        return
-
-    descend = console._current_screen.endswith('down')
-    display_text = f'\n\tThe recommended score for this floor is: {Refs.gc.get_floor_score(descend)}'
-    display_text += f'\n\tYour party score is: {Refs.gc.get_current_party_score()}'
-    display_text += f'\n\n\tWould you like to continue?\n\n\t{OPT_C}0:{END_OPT_C} No\n\t{OPT_C}1:{END_OPT_C} Yes\n'
-    _options = {'0': 'back', '1': f'dungeon_battle_start_{descend}'}
-    return display_text, _options
+        console.set_screen(action)

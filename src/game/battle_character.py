@@ -159,7 +159,6 @@ class BattleCharacter(BattleEntity):
         self.set_animation_idle(loop=True)
 
     def select_skill(self, index):
-        print('Select', index)
         self._selected_skill = self._character.get_skill(index)
 
     def get_selected_skill(self):

@@ -3,7 +3,6 @@ from refs import Refs
 
 
 def load_screen_chunk(loader, program_type, filename, callbacks):
-    Refs.gc.initialize(loader)
     Refs.gc.setup_parties()
 
     if loader.get('save') is None:
@@ -32,7 +31,6 @@ def load_screen_chunk(loader, program_type, filename, callbacks):
                 if cp[p + 1][c] is not None:
                     cp[p + 1][c] = chars[cp[p + 1][c]]
         Refs.gc.load_parties(oc, oca, ocs, cp)
-        Refs.gc.update_data(save)
         Refs.gc.set_domains(load_domains(Refs.gc.get_program_type()))
 
     if Refs.gs is not None:

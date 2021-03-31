@@ -1,3 +1,4 @@
+from game.equipment import CAN_DUAL_WIELD, OFF_HAND_WEAPON, WEAPON
 
 
 class Inventory:
@@ -94,9 +95,12 @@ class Inventory:
         else:
             self._items[item_id]['count'] -= count
 
-    def get_item(self, item_id):
+    def get_item(self, item_id, hash=None):
         if self._has_metadata:
-            return self._items[item_id]['items']
+            if hash is None:
+                return self._items[item_id]['items']
+            else:
+                return self._items[item_id]['items'][hash]
         else:
             return self._items[item_id]['class']
 
@@ -108,6 +112,21 @@ class Inventory:
                     items += list(metadata['items'].values())
                 else:
                     items.append(metadata['class'])
+        return items
+
+    def get_equipment(self, equipment_type):
+        items = []
+        for item_id, item_data in self._items.items():
+            if not self._has_metadata[item_id]:
+                continue
+            for item in item_data['items'].values():
+                print(item.get_name())
+                if equipment_type == WEAPON and item.is_weapon():
+                    items.append(item)
+                elif equipment_type == OFF_HAND_WEAPON and item.is_weapon() and CAN_DUAL_WIELD[item.get_sub_type()]:
+                    items.append(item)
+                elif item.is_armor() and equipment_type == item.get_sub_type():
+                    items.append(item)
         return items
 
     def get_metadata_items(self, item_id):

@@ -16,12 +16,12 @@ class TextCALoader(CALoader):
     def update_outer(self):
         if self.curr_values[CURRENT_INDEX] == self.max_values[CURRENT_INDEX] + 1:
             self._console.update_calendar_callback()
-        self._console.set_loading_progress('outer', 'Loading Data', self.curr_values[CURRENT_INDEX], self.max_values[CURRENT_INDEX])
+        self._console.set_loading_progress('Loading Data', self.curr_values[CURRENT_INDEX], self.max_values[CURRENT_INDEX])
         self.update_inner()
 
     def update_inner(self):
         if self.curr_values[CURRENT_INDEX] <= self.max_values[CURRENT_INDEX]:
-            self._console.set_loading_progress('inner', self.messages[self.curr_values[CURRENT_INDEX] - STARTING_TOTAL_INDEX], self.curr_values[self.curr_values[CURRENT_INDEX]], self.max_values[self.curr_values[CURRENT_INDEX]])
+            self._console.set_loading_progress(self.messages[self.curr_values[CURRENT_INDEX] - STARTING_TOTAL_INDEX], self.curr_values[self.curr_values[CURRENT_INDEX]], self.max_values[self.curr_values[CURRENT_INDEX]])
 
     def load_game(self, console, save_slot):
         self._console = console

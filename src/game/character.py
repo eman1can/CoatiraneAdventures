@@ -155,6 +155,7 @@ class Character(Entity):
     def refresh_stats(self):
         for rank in self._ranks:
             rank.refresh_stats()
+        self._outfit.refresh_stats()
         super().refresh_stats()
         self.update_score()
         self.update_worth()

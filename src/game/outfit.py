@@ -1,33 +1,20 @@
+from game.equipment import WEAPON
 from game.hmpmd import HMPMD
-# from game.smead import SMEAD
 
 
 class Outfit(HMPMD):
     def __init__(self, **kwargs):
         # Definitions
-        self.weapon = None
-        self.off_hand_weapon = None
 
-        self.necklace = None
-        self.ring = None
+        self.items = [None for _ in range(10)]
 
-        self.helmet = None
-        self.vambraces = None
-        self.gloves = None
-        self.chest = None
-        self.grieves = None
-        self.boots = None
-
-        self.items = [self.weapon, self.off_hand_weapon, self.necklace, self.ring, self.helmet, self.vambraces, self.gloves, self.chest, self.grieves, self.boots]
-
-        # SMEAD.__init__(self, 0, 0, 0, 0, 0)
         HMPMD.__init__(self, 0, 0, 0, 0, 0)
 
     def get_equipment(self, equipment_type):
-        return self.items[equipment_type]
+        return self.items[equipment_type - WEAPON]
 
     def set_equipment(self, equipment_type, item):
-        self.items[equipment_type] = item
+        self.items[equipment_type - WEAPON] = item
 
     def update_health(self):
         health = 0

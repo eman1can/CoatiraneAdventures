@@ -1,6 +1,7 @@
 from game.character import CHARACTER_ATTACK_TYPES
 from game.skill import ELEMENTS
 from refs import END_OPT_C, OPT_C, Refs
+from text.screens.screen_names import BACK, CHARACTER_ATTRIBUTE, DUNGEON_MAIN
 
 BOX_WIDTH = 13
 
@@ -109,10 +110,9 @@ def populate_box(box, single_char, party, size):
     return box
 
 
-def select_screen_char(console):
-    char_id_and_index = console._current_screen[len('select_screen_char_'):]
-    index = int(char_id_and_index[:char_id_and_index.index('_')])
-    character_id = char_id_and_index[char_id_and_index.index('_') + 1:]
+def get_screen(console, screen_data):
+    index, character_id = screen_data.split('#')
+    index = int(index)
     single_char = None
     if character_id != 'none':
         single_char = Refs.gc.get_char_by_id(character_id)
@@ -128,23 +128,47 @@ def select_screen_char(console):
 
     display_text = '\n\tChoose a character to put in this slot\n\n'
 
-    if console.memory.select_box is None:
-        console.memory.select_box_size = len(obtained_chars) if len(obtained_chars) < 9 else 8
-        console.memory.select_box = create_box(console.memory.select_box_size)
+    if console.select_box is None:
+        console.select_box_size = len(obtained_chars) if len(obtained_chars) < 9 else 8
+        console.select_box = create_box(console.select_box_size)
     else:
-        if len(obtained_chars) < console.memory.select_box_size or (console.memory.select_box_size < 8 and len(obtained_chars) > console.memory.select_box_size):
-            console.memory.select_box_size = len(obtained_chars) if len(obtained_chars) < 9 else 8
-            console.memory.select_box = create_box(console.memory.select_box_size)
+        if len(obtained_chars) < console.select_box_size or (console.select_box_size < 8 and len(obtained_chars) > console.select_box_size):
+            console.select_box_size = len(obtained_chars) if len(obtained_chars) < 9 else 8
+            console.select_box = create_box(console.select_box_size)
 
-    display_text += box_to_string(console, populate_box(console.memory.select_box, single_char, obtained_chars, console.memory.select_box_size))
-    _options = {'0': 'back'}
+    display_text += box_to_string(console, populate_box(console.select_box, single_char, obtained_chars, console.select_box_size))
+    _options = {'0': BACK}
     if single_char is not None:
         display_text += f'\n\n\t{OPT_C}1:{END_OPT_C} Remove character'
         display_text += f'\n\t{OPT_C}2:{END_OPT_C} Character Attribute Screen\n'
-        _options['1'] = f'set_char_{index}_none'
-        _options['2'] = f'character_attribute_main_{character_id}'
+        _options['1'] = f'set_char#{index}#none'
+        _options['2'] = f'{CHARACTER_ATTRIBUTE}:{character_id}'
     else:
         display_text += '\n'
     for char_index in range(len(obtained_chars)):
-        _options[str(char_index + 3)] = f'set_char_{index}_' + obtained_chars[char_index].get_id()
+        _options[str(char_index + 3)] = f'set_char#{index}#' + obtained_chars[char_index].get_id()
     return display_text, _options
+
+
+def handle_action(console, action):
+    if action.startswith('set_char'):
+        index, character_id = action.split('#')[1:]
+        index = int(index)
+        char = None
+        if character_id != 'none':
+            char = Refs.gc.get_char_by_id(character_id)
+
+        # Resolve
+        if char is not None and char in Refs.gc.get_current_party():
+            # Set the char in the party to None
+            if Refs.gc.get_current_party()[index] is None:
+                Refs.gc.get_current_party()[Refs.gc.get_current_party().index(char)] = None
+            else:
+                Refs.gc.get_current_party()[Refs.gc.get_current_party().index(char)] = Refs.gc.get_current_party()[index]
+
+        Refs.gc.get_current_party()[index] = char
+        if char is None and index < 8:
+            Refs.gc.get_current_party()[index + 8] = char
+        console.set_screen(DUNGEON_MAIN)
+    else:
+        console.set_screen(action)

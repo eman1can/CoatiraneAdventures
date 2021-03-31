@@ -1,26 +1,26 @@
 from refs import END_OPT_C, OPT_C, Refs
+from text.screens.screen_names import BACK, CHANGE_EQUIP, STATUS_BOARD
 
 
-def character_attribute_main(console):
+ABILITIES_HEADER_SIZE = 10
+RANK_CHAR_SIZE = 5
+STATS_HEADER_SIZE = ABILITIES_HEADER_SIZE + RANK_CHAR_SIZE
+NUMBER_SIZE = 6
+BOX_SIZE = ABILITIES_HEADER_SIZE + RANK_CHAR_SIZE + NUMBER_SIZE
+LARGE_EQUIPMENT_BOX = 33
+ELEMENT_COLORS = ['#FFFFFF', '#80C0FF', '#FF9090', '#E8E880', '#80C080', '#CCA078', '#FFFFFF', '#D094D0']
+TYPE_COLORS = ['#550000', '#050054', '#00460C', '#7F3300', '#7F006E']
+RANK_COLORS = {'I': '#FFFFFF', 'H': '#FFFFFF', 'G': '#FFFFFF',
+               'F': '#AF5113', 'E': '#AF5113',
+               'D': '#CCCCCC', 'C': '#CCCCCC', 'B': '#FFD400', 'A': '#FFD400',
+               'S': '#00BBFF', 'SS': '#00BBFF', 'SSS': '#00BBFF'}
+
+
+def get_screen(console, screen_data):
     display_string, _options = '', {}
-    character_id = console.get_current_screen()[len('character_attribute_main_'):]
-    character = Refs.gc.get_char_by_id(character_id)
-
-    ABILITIES_HEADER_SIZE = 10
-    RANK_CHAR_SIZE = 5
-    STATS_HEADER_SIZE = ABILITIES_HEADER_SIZE + RANK_CHAR_SIZE
-    NUMBER_SIZE = 6
-    BOX_SIZE = ABILITIES_HEADER_SIZE + RANK_CHAR_SIZE + NUMBER_SIZE
-    LARGE_EQUIPMENT_BOX = 33
-    ELEMENT_COLORS = ['#FFFFFF', '#80C0FF', '#FF9090', '#E8E880', '#80C080', '#CCA078', '#FFFFFF', '#D094D0']
-    TYPE_COLORS = ['#550000', '#050054', '#00460C', '#7F3300', '#7F006E']
-    RANK_COLORS = {'I': '#FFFFFF', 'H': '#FFFFFF', 'G': '#FFFFFF',
-                   'F': '#AF5113', 'E': '#AF5113',
-                   'D': '#CCCCCC', 'C': '#CCCCCC', 'B': '#FFD400', 'A': '#FFD400',
-                   'S': '#00BBFF', 'SS': '#00BBFF', 'SSS': '#00BBFF'}
+    character = Refs.gc.get_char_by_id(screen_data)
 
     display_string += '\n'
-
     display_string += '\t  ' + character.get_name().ljust(BOX_SIZE) + '   ' + character.get_display_name().rjust(BOX_SIZE) + '   '
 
     star_string = ''
@@ -43,7 +43,6 @@ def character_attribute_main(console):
             star_string += '★ '
     display_string += '[font=NanumGothic]' + star_string[:-1].ljust(BOX_SIZE) + '[/font]\n\t'
 
-
     # Create the first row of the box
     display_string += '┌'
     for _ in range(3):
@@ -51,8 +50,6 @@ def character_attribute_main(console):
             display_string += '─'
         display_string += '┬'
     display_string = display_string[:-1] + '┐'
-
-
 
     display_string += '\n\t│ [b]' + 'Total Stats'.center(BOX_SIZE)
     display_string += '[/b] │ [b]' + 'Total Abilities'.center(BOX_SIZE)
@@ -138,21 +135,21 @@ def character_attribute_main(console):
             durabilities.append(None)
         else:
             names.append(item.get_name())
-            durabilities.append(item.get_durability_current() / item.get_durability())
+            durabilities.append(item.get_current_durability() / item.get_durability())
 
     def get_durability_bar(durability_value, size):
         if durability_value is None:
-            return ''.center(size)
+            return ''.center(size + 2)
         else:
             string = '['
-            for _ in range(size * durability_value):
+            for _ in range(int(size * durability_value)):
                 string += '='
-            for _ in range(size * durability_value, size):
+            for _ in range(int(size * durability_value), size):
                 string += ' '
             return string + ']'
 
     display_string += '\n\t│ ' + names[0].center(LARGE_EQUIPMENT_BOX) + ' │ ' + names[1].center(LARGE_EQUIPMENT_BOX) + ' │'
-    display_string += '\n\t│ ' + get_durability_bar(durabilities[0], LARGE_EQUIPMENT_BOX) + ' │ ' + get_durability_bar(durabilities[1], LARGE_EQUIPMENT_BOX) + ' │'
+    display_string += '\n\t│ ' + get_durability_bar(durabilities[0], LARGE_EQUIPMENT_BOX - 2) + ' │ ' + get_durability_bar(durabilities[1], LARGE_EQUIPMENT_BOX - 2) + ' │'
 
     display_string += '\n\t├'
     for _ in range(2):
@@ -162,7 +159,7 @@ def character_attribute_main(console):
     display_string = display_string[:-1] + '┤'
 
     display_string += '\n\t│ ' + names[2].center(LARGE_EQUIPMENT_BOX) + ' │ ' + names[3].center(LARGE_EQUIPMENT_BOX) + ' │'
-    display_string += '\n\t│ ' + get_durability_bar(durabilities[2], LARGE_EQUIPMENT_BOX) + ' │ ' + get_durability_bar(durabilities[3], LARGE_EQUIPMENT_BOX) + ' │'
+    display_string += '\n\t│ ' + get_durability_bar(durabilities[2], LARGE_EQUIPMENT_BOX - 2) + ' │ ' + get_durability_bar(durabilities[3], LARGE_EQUIPMENT_BOX - 2) + ' │'
 
     display_string += '\n\t├'
     for _ in range(BOX_SIZE + 2):
@@ -179,7 +176,7 @@ def character_attribute_main(console):
     display_string += '┤'
 
     display_string += '\n\t│ ' + names[4].center(BOX_SIZE) + ' │ ' + names[5].center(BOX_SIZE) + ' │ ' + names[6].center(BOX_SIZE) + ' │'
-    display_string += '\n\t│ ' + get_durability_bar(durabilities[4], BOX_SIZE) + ' │ ' + get_durability_bar(durabilities[5], BOX_SIZE) + ' │ ' + get_durability_bar(durabilities[6], BOX_SIZE) + ' │'
+    display_string += '\n\t│ ' + get_durability_bar(durabilities[4], BOX_SIZE - 2) + ' │ ' + get_durability_bar(durabilities[5], BOX_SIZE - 2) + ' │ ' + get_durability_bar(durabilities[6], BOX_SIZE - 2) + ' │'
 
     display_string += '\n\t├'
     for _ in range(3):
@@ -189,7 +186,7 @@ def character_attribute_main(console):
     display_string = display_string[:-1] + '┤'
 
     display_string += '\n\t│ ' + names[7].center(BOX_SIZE) + ' │ ' + names[8].center(BOX_SIZE) + ' │ ' + names[9].center(BOX_SIZE) + ' │'
-    display_string += '\n\t│ ' + get_durability_bar(durabilities[7], BOX_SIZE) + ' │ ' + get_durability_bar(durabilities[8], BOX_SIZE) + ' │ ' + get_durability_bar(durabilities[9], BOX_SIZE) + ' │'
+    display_string += '\n\t│ ' + get_durability_bar(durabilities[7], BOX_SIZE - 2) + ' │ ' + get_durability_bar(durabilities[8], BOX_SIZE - 2) + ' │ ' + get_durability_bar(durabilities[9], BOX_SIZE - 2) + ' │'
 
     display_string += '\n\t└'
     for _ in range(3):
@@ -200,11 +197,15 @@ def character_attribute_main(console):
 
     if Refs.gc.get_floor_data() is None:
         display_string += f'\n\n\t{OPT_C}1:{END_OPT_C} Change Equip'
-        _options['1'] = f'change_equip_main_{character_id}'
+        _options['1'] = f'{CHANGE_EQUIP}:{screen_data}'
         display_string += f'\n\t{OPT_C}2:{END_OPT_C} Status Board'
-        _options['2'] = f'status_board_main_{character_id}_{character.get_current_rank()}'
+        _options['2'] = f'{STATUS_BOARD}:{character.get_current_rank()}#{screen_data}'
     display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
 
-    _options['0'] = 'back'
+    _options['0'] = BACK
 
     return display_string, _options
+
+
+def handle_action(console, action):
+    console.set_screen(action)

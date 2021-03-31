@@ -415,8 +415,6 @@ class Map:
                     route.pop()
                 else:
                     route.append(self._current_node)
-                # if layer == 'kobold':
-                #     print(route)
 
         self._calculate_path()
 
