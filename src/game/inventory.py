@@ -120,7 +120,7 @@ class Inventory:
             if not self._has_metadata[item_id]:
                 continue
             for item in item_data['items'].values():
-                print(item.get_name())
+                print(item.get_name(), item.get_sub_type(), equipment_type)
                 if equipment_type == WEAPON and item.is_weapon():
                     items.append(item)
                 elif equipment_type == OFF_HAND_WEAPON and item.is_weapon() and CAN_DUAL_WIELD[item.get_sub_type()]:

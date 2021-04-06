@@ -31,27 +31,28 @@ def get_equipment_box(name, item, index):
     physical_attack = '-'
     magical_attack = '-'
     defense = '-'
+    weight = '-'
 
     if item is not None:
         item_name = item.get_name()
         rank = str(item.get_rank())
         element = ELEMENTS[item.get_element()]
-        durability = str(int(item.get_durability())) + '/' + str(int(item.get_current_durability()))
-        score = str(int(item.get_score()))
-        value = str(int(item.get_value()))
-        health = str(int(item.get_health()))
-        mana = str(int(item.get_mana()))
-        physical_attack = str(int(item.get_physical_attack()))
-        magical_attack = str(int(item.get_magical_attack()))
-        defense = str(int(item.get_defense()))
+        durability = str(Refs.gc.format_number(int(item.get_durability()))) + '/' + str(Refs.gc.format_number(int(item.get_current_durability())))
+        score = str(Refs.gc.format_number(int(item.get_score())))
+        value = str(Refs.gc.format_number(int(item.get_value())))
+        health = str(Refs.gc.format_number(int(item.get_health())))
+        mana = str(Refs.gc.format_number(int(item.get_mana())))
+        physical_attack = str(Refs.gc.format_number(int(item.get_physical_attack())))
+        magical_attack = str(Refs.gc.format_number(int(item.get_magical_attack())))
+        defense = str(Refs.gc.format_number(int(item.get_defense())))
+        weight = str(Refs.gc.format_number(int(item.get_weight())))
 
-    string += f'│ {OPT_C}{index}{END_OPT_C} ' + name.ljust(INFO_WIDTH - len(f'{index} ')) + ' │ HP     ' + f'{health}'.rjust(6) + ' │\n'
-    string += '│ ' + item_name.ljust(INFO_WIDTH - 3) + rank.rjust(3) + ' │ MP     ' + f'{mana}'.rjust(6) + ' │\n'
-    string += '│ ' + ''.ljust(10) + ''.rjust(INFO_WIDTH - 10) + ' │ P. Atk.' + f'{physical_attack}'.rjust(6) + ' │\n'
-    string += '│ ' + 'Element'.ljust(10) + element.rjust(INFO_WIDTH - 10) + ' │ M. Atk.' + f'{magical_attack}'.rjust(6) + ' │\n'
-    string += '│ ' + 'Durability'.ljust(10) + durability.rjust(INFO_WIDTH - 10) + ' │ Def.   ' + f'{defense}'.rjust(6) + ' │\n'
-    string += '│ ' + 'Value'.ljust(10) + value.rjust(INFO_WIDTH - 10) + ' │ Score  ' + f'{score}'.rjust(6) + ' │\n'
-    # string += '│ ' + 'Value'.ljust(10) + value.rjust(INFO_WIDTH - 10) + ' │ Dex.   ' + f'{dexterity}'.rjust(6) + ' │\n'
+    string += f'│ {OPT_C}{index}{END_OPT_C} ' + name.ljust(INFO_WIDTH - len(f'{index} ')) + ' │ HP     ' + health.rjust(6) + ' │\n'
+    string += '│ ' + item_name.ljust(INFO_WIDTH - 3) + rank.rjust(3) + ' │ MP     ' + mana.rjust(6) + ' │\n'
+    string += '│ ' + 'Element'.ljust(10) + element.rjust(INFO_WIDTH - 10) + ' │ P. Atk.' + physical_attack.rjust(6) + ' │\n'
+    string += '│ ' + 'Durability'.ljust(10) + durability.rjust(INFO_WIDTH - 10) + ' │ M. Atk.' + magical_attack.rjust(6) + ' │\n'
+    string += '│ ' + 'Value'.ljust(10) + value.rjust(INFO_WIDTH - 10) + ' │ Def.   ' + defense.rjust(6) + ' │\n'
+    string += '│ ' + 'Score'.ljust(10) + score.rjust(INFO_WIDTH - 10) + ' │ Weight ' + weight.rjust(6) + ' │\n'
 
     string += '└'
     for _ in range(INFO_WIDTH + 2):
@@ -79,12 +80,18 @@ def get_screen(console, screen_data):
     column2 += ''.center(BOX_WIDTH) + '\n'
     column2 += f'Favorite Weapon: {character.get_favorite_weapon()}'.center(BOX_WIDTH) + '\n'
     column2 += f'Favorite Sub-Weapon: {character.get_favorite_sub_weapon()}'.center(BOX_WIDTH) + '\n'
-    for _ in range(BOX_HEIGHT - 6):
-        column2 += ''.center(BOX_WIDTH) + '\n'
+    column2 += ''.center(BOX_WIDTH) + '\n'
+    column2 += 'Total Values'.center(BOX_WIDTH) + '\n'
+    column2 += 'Score'.center(INFO_WIDTH + 3) + Refs.gc.format_number(int(outfit.get_score())).ljust(STATS_WIDTH + 4) + '\n'
+    column2 += 'Value'.center(INFO_WIDTH + 3) + Refs.gc.format_number(int(outfit.get_value())).ljust(STATS_WIDTH + 4) + '\n'
+    column2 += 'HP'.center(INFO_WIDTH + 3) + Refs.gc.format_number(int(outfit.get_health())).ljust(STATS_WIDTH + 4) + '\n'
+    column2 += 'MP'.center(INFO_WIDTH + 3) + Refs.gc.format_number(int(outfit.get_mana())).ljust(STATS_WIDTH + 4) + '\n'
+    column2 += 'Phy. Atk.'.center(INFO_WIDTH + 3) + Refs.gc.format_number(int(outfit.get_physical_attack())).ljust(STATS_WIDTH + 4) + '\n'
+    column2 += 'Mag. Atk.'.center(INFO_WIDTH + 3) + Refs.gc.format_number(int(outfit.get_magical_attack())).ljust(STATS_WIDTH + 4) + '\n'
+    column2 += 'Defense'.center(INFO_WIDTH + 3) + Refs.gc.format_number(int(outfit.get_defense())).ljust(STATS_WIDTH + 4) + '\n'
+    column2 += 'Weight'.center(INFO_WIDTH + 3) + Refs.gc.format_number(int(outfit.get_weight())).ljust(STATS_WIDTH + 4) + '\n'
     column3 += get_equipment_box('Ring', outfit.get_equipment(RING), 5)
     column1 += get_equipment_box('Vambraces', outfit.get_equipment(VAMBRACES), 6)
-    for _ in range(BOX_HEIGHT):
-        column2 += ''.center(BOX_WIDTH) + '\n'
     column3 += get_equipment_box('Grieves', outfit.get_equipment(GRIEVES), 7)
     column1 += get_equipment_box('Gloves', outfit.get_equipment(GLOVES), 8)
     column2 += get_equipment_box('Chest', outfit.get_equipment(CHEST), 9)

@@ -23,17 +23,26 @@ def get_fam_stat(character):
     return left + f'{int(bonus)}%'.center(BOX_WIDTH - 2 - len(left) - len(right)) + right
 
 
-def _get_stat_string(char, index):
+def _get_stat_string(char, index, char2=None):
     stat = [lambda c=char: get_fam_stat(c), char.get_name, char.get_current_rank, char.get_attack_type_string, char.get_element_string, char.get_health, char.get_mana, char.get_physical_attack, char.get_magical_attack, char.get_defense, char.get_strength, char.get_magic,
             char.get_endurance, char.get_agility, char.get_dexterity]
-    return stat[index]()
+    if index <= 4:
+        return stat[index]()
+    if char2 is None:
+        return Refs.gc.format_number(int(stat[index]()))
+    else:
+        stat2 = [lambda c=char2: get_fam_stat(c), char2.get_name, char2.get_current_rank, char2.get_attack_type_string, char2.get_element_string, char2.get_health, char2.get_mana, char2.get_physical_attack, char2.get_magical_attack, char2.get_defense,
+                char2.get_strength, char2.get_magic, char2.get_endurance, char2.get_agility, char2.get_dexterity]
+        return Refs.gc.format_number(int(stat[index]()) + int(stat2[index]()))
 
 
 def center_stat(index, char, char2=None):
     stat_labels = ['', '', 'Rank', '', '', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
-    stat_string = _get_stat_string(char, index)
+
     if char2 is not None and index >= 4:
-        stat_string += _get_stat_string(char, index)
+        stat_string = _get_stat_string(char, index, char2)
+    else:
+        stat_string = _get_stat_string(char, index)
 
     if index == 1:
         if ' ' in stat_string:
@@ -101,7 +110,7 @@ def create_box():
     return box
 
 
-def populate_box(box, party):
+def populate_box(box, party, locked=False):
     if None in party[:8]:
         adventurers = party[:8].index(None)
     else:
@@ -123,7 +132,7 @@ def populate_box(box, party):
                     box[top_index + (stat - 5) * 18] = '+'.center(BOX_WIDTH)
                 else:
                     box[top_index + (stat - 5) * 18] = ''.center(BOX_WIDTH)
-        if index == 0 or party[index - 1]:
+        if (not locked and (index == 0 or party[index - 1])) or party[index]:
             box[top_index + 10 * 18] = OPT_C + f'{6 + index}'.center(BOX_WIDTH) + END_OPT_C
         else:
             box[top_index + 10 * 18] = ''.center(BOX_WIDTH)
@@ -137,8 +146,7 @@ def populate_box(box, party):
                     box[top_index + stat * 18] = '+'.center(BOX_WIDTH)
                 else:
                     box[top_index + stat * 18] = ''.center(BOX_WIDTH)
-        # box[top_index + 2 * 18] = ''.center(BOX_WIDTH)
-        if party[0] and (index == 0 or party[index + 7]) and party[index]:
+        if (not locked and ((party[0] and index == 0) or (party[index + 7] and party[index]))) or party[index]:
             box[top_index + 3 * 18] = OPT_C + f'{6 + adventurers + index + 1}'.center(BOX_WIDTH) + END_OPT_C
         else:
             box[top_index + 3 * 18] = ''.center(BOX_WIDTH)

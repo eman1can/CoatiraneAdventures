@@ -127,7 +127,7 @@ def handle_action(console, action):
     character = Refs.gc.get_char_by_id(character_id)
     rank = character.get_rank(int(rank_index))
     board = rank.get_board()
-    for tile_index in tile_list.split('_'):
+    for tile_index in tile_list.split('#'):
         board.unlock_index(int(tile_index))
     character.refresh_stats()
     console.set_screen(f'{STATUS_BOARD}:{rank_index}#{character_id}')

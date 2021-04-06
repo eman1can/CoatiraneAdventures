@@ -165,6 +165,9 @@ class EquipmentClass:
     def get_description(self):
         return self._description
 
+    def get_weights(self):
+        return self._weights
+
     def generate_hash(self):
         return time_ns() * randint(1, 10000)
 
@@ -539,6 +542,9 @@ class Equipment(HMPMD, Item):
 
     def get_rank(self):
         return self._rank
+
+    def get_weight(self):
+        return self._weight
 
     def get_durability(self):
         return self._durability

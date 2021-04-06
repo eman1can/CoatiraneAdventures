@@ -178,7 +178,7 @@ def _get_character_display(character, character_width, battle_data, char_index, 
     return character_rows
 
 
-def get_battle_display(console, floor_data):
+def get_battle_display(console, floor_data, screen_data):
     battle_data = floor_data.get_battle_data()
 
     option_index = 1
@@ -234,7 +234,7 @@ def get_battle_display(console, floor_data):
     action_rows = []
     if battle_data.get_state().startswith('battle_select'):
         Refs.app.scroll_widget.opacity = 0
-        entity_index = int(battle_data.get_state()[len('battle_select_'):])
+        entity_index = int(battle_data.get_state().split('#')[1])
         if entity_index <= len(battle_data.get_characters()) - 1:
             entity = battle_data.get_characters()[entity_index]
             selected_skill = entity.get_selected_skill()
@@ -374,22 +374,33 @@ def get_battle_display(console, floor_data):
     # screen_string += '\n'
     # Display Battle Log - Will be on a separate scroll
     Refs.app.scroll_widget.ids.label.text = battle_data.get_battle_log()
-
+    print(_options)
     return screen_string, _options
 
 
 def get_dungeon_header(console):
     string = '\n\t'
     if Refs.gc.get_inventory().has_item('pocket_watch'):
-        string += f'{Refs.gc.get_time()} | '
-    for character in Refs.gc.get_floor_data().get_characters():
-        string += character.get_name().split(' ')[0] + character.get_stamina_message() + ' | '
+        string += f'{Refs.gc.get_time()}'
+        string += '\n\t'
+    for character in Refs.gc.get_floor_data().get_characters()[:3]:
+        string += character.get_name().split(' ')[0].ljust(9) + character.get_stamina_message().ljust(7) + f' - HP {round(character.get_battle_health()/character.get_health() * 100, 1)}%'.ljust(12) + f' - MP {round(character.get_battle_mana()/character.get_mana() * 100, 1)}%'.ljust(12) + ' | '
+    string = string[:-3] + '\n\t'
+    for character in Refs.gc.get_floor_data().get_characters()[3:6]:
+        string += character.get_name().split(' ')[0].ljust(9) + character.get_stamina_message().ljust(7) + f' - HP {round(character.get_battle_health()/character.get_health() * 100, 1)}%'.ljust(12) + f' - MP {round(character.get_battle_mana()/character.get_mana() * 100, 1)}%'.ljust(12) + ' | '
+    string = string[:-3] + '\n\t'
+    for character in Refs.gc.get_floor_data().get_characters()[8:]:
+        string += character.get_name().split(' ')[0].ljust(9) + character.get_stamina_message().ljust(7) + f' - HP {round(character.get_battle_health()/character.get_health() * 100, 1)}%'.ljust(12) + f' - MP {round(character.get_battle_mana()/character.get_mana() * 100, 1)}%'.ljust(12) + ' | '
     return string[:-3] + '\n'
 
 
 def get_screen(console, screen_data):
 
     floor_data = Refs.gc.get_floor_data()
+
+    print(screen_data, floor_data.is_in_encounter())
+    if floor_data.get_battle_data() is not None:
+        print(floor_data.get_battle_data().get_state())
 
     if screen_data == 'asleep':
         # All characters have fallen asleep.
@@ -469,7 +480,7 @@ def get_screen(console, screen_data):
             _options['0'] = 'encounter#start'
             return display_string, _options
         elif floor_data.get_encounter_state().startswith('battle'):
-            return get_battle_display(console, floor_data)
+            return get_battle_display(console, floor_data, screen_data)
         # In encounter options
     display_string += '\n'
     return display_string, _options
@@ -519,6 +530,7 @@ def handle_action(console, action):
     elif action == 'rest':
         for character in floor_data.get_characters():
             character.rest()
+        Refs.gc.get_calendar().fast_forward(30)
         floor_data.decrease_safe_zones()
         floor_data.increase_rest_count()
     elif action == 'roll_sleep_chance':
@@ -528,25 +540,22 @@ def handle_action(console, action):
             next_action = choices([f'asleep', 'loss', 'woke_up'], [0.4, 0.3, 0.3], k=1)[0]
         Refs.gc.get_calendar().fast_forward(60 * 6)
         if next_action == 'loss':
-            console.set_screen(DUNGEON_RESULT)
+            console.set_screen(f'{DUNGEON_RESULT}:loss')
             return
         else:
             screen_data = next_action
     elif action == 'ascend' or action == 'descend':
         floor_id = floor_data.get_floor().get_id()
+        floor_data.get_floor().get_map().clear_current_node()
         if action == 'ascend' and floor_id == 1:
-            floor_data.get_floor().get_map().clear_current_node()
             console.set_screen(f'{DUNGEON_RESULT}:ascend')
-            return
         else:
             if action == 'ascend':
                 floor_data.set_next_floor(floor_id - 1)
             else:
                 floor_data.set_next_floor(floor_id + 1)
-        console.set_screen(f'{DUNGEON_MAIN_LOCKED}')
+            console.set_screen(f'{DUNGEON_MAIN_LOCKED}')
         return
-    elif action == 'fight_boss':
-        Refs.gc.get_floor_data().generate_boss_encounter()
     elif action == 'North' or action == 'East' or action == 'South' or action == 'West':
         floor_data.progress_by_direction(DIRECTIONS_FROM_STRING[action])
         all_asleep = True
@@ -561,31 +570,38 @@ def handle_action(console, action):
     elif action.startswith('encounter'):
         encounter_action = action.split('#', 1)[1]
         battle_data = floor_data.get_battle_data()
-        if encounter_action == 'start' or encounter_action == 'attack':
+        if encounter_action == 'start':
             battle_data.progress_encounter()
-            if encounter_action == 'attack':
-                result = battle_data.make_turn()
-                if result is not None:
-                    battle_data.progress_encounter()
-                    if result:
-                        console.set_screen(f'{DUNGEON_RESULT}:win')
-                        Refs.app.scroll_widget.opacity = 0
-                    else:
-                        console.set_screen(f'{DUNGEON_RESULT}:loss')
-                        Refs.app.scroll_widget.ids.label.text = battle_data.get_battle_log()
-                        Refs.app.scroll_widget.opacity = 1
-                    return
-        elif encounter_action.startswith('select#'):
-            select_action = action.split('#', 2)[2]
+        elif encounter_action == 'attack':
+            result = battle_data.make_turn()
+            if result is not None:
+                battle_data.progress_encounter()
+                if result:
+                    console.set_screen(f'{DUNGEON_RESULT}:win')
+                    # Refs.app.scroll_widget.opacity = 1
+                else:
+                    console.set_screen(f'{DUNGEON_RESULT}:loss')
+                Refs.app.scroll_widget.ids.label.text = battle_data.get_battle_log()
+                # Refs.app.scroll_widget.opacity = 1
+                return
+        elif encounter_action.startswith('select'):
+            select_action = action.split('#')[2]
+            print(encounter_action, select_action)
             if select_action == 'close':
                 battle_data.set_state('battle')
+            elif select_action == 'show':
+                entity_index = action.split('#')[3]
+                battle_data.set_state(f'battle_select#{entity_index}')
             else:
-                char_index, select_index = action.split('#')[3:]
-                if action == 'show':
-                    battle_data.set_state(f'battle_select#{char_index}#{select_index}')
-                else:
-                    battle_data.get_characters()[int(char_index)].select_skill(int(select_index))
-                    battle_data.set_state('battle')
+                entity_index, select_index = action.split('#')[2:]
+                battle_data.get_characters()[int(entity_index)].select_skill(int(select_index))
+                battle_data.set_state('battle')
+                    # char_index, select_index = action.split('#')[3:]
+                    # if action == 'show':
+                    #     battle_data.set_state(f'battle_select#{char_index}#{select_index}')
+                    # else:
+                    #     battle_data.get_characters()[int(char_index)].select_skill(int(select_index))
+                    #     battle_data.set_state('battle')
     else:
         console.set_screen(action)
         return

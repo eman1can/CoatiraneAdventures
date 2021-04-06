@@ -38,16 +38,18 @@ def handle_action(console, action):
 
 
 def craft_items(recipe_count, recipe_id, recipe, page_name):
-    count = 0
     inventory = Refs.gc.get_inventory()
     ingredients = {}
+
     recipe_item = Refs.gc.find_item(recipe.get_item_id())
     have_recipe_count = inventory.get_item_count(recipe.get_item_id())
+
+    count = 0
     for ingredient, cost in recipe.get_ingredients().items():
         item = Refs.gc.find_item(ingredient)
         item_count = inventory.get_item_count(ingredient)
         ingredients[item] = item_count
-        count = max(cost, floor(item_count / cost))
+        count = max(count, floor(item_count / cost))
 
     _options = {}
     display_text = '\n\n\t'
@@ -88,4 +90,4 @@ def get_craft_item(recipe, index, current_text, page_name, page_num):
     if valid:
         return f'\n\t{OPT_C}{index}:{END_OPT_C} {item.get_name()} x{recipe.get_item_count()}\n\t\t' + require_string[:-3], f'{page_name}:{page_num}#{recipe.get_item_id()}#{max_create}'
     else:
-        return f'\n\t[s]{OPT_C}{index}:{END_OPT_C} {item.get_name()} x{recipe.get_item_count()}\n\t\t' + require_string[:-3], ''
+        return f'\n\t[s]{OPT_C}{index}:{END_OPT_C} {item.get_name()} x{recipe.get_item_count()}\n\t\t' + require_string[:-3], None

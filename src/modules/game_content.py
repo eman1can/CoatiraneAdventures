@@ -4,7 +4,7 @@ __all__ = ('GameContent',)
 from game.calendar import Calendar
 from game.battle_character import create_battle_character
 from game.crafting_recipe import CRAFT_ALLOYS, EQUIPMENT, ITEM, PROCESS_MATERIALS
-from game.equipment import UnGeneratedArmor, UnGeneratedTool, UnGeneratedWeapon
+from game.equipment import NECKLACE, RING, UnGeneratedArmor, UnGeneratedTool, UnGeneratedWeapon
 from game.floor_data import FloorData
 from game.inventory import Inventory
 from game.save_load import load_floor_data, save_game
@@ -217,7 +217,7 @@ class GameContent:
             self._parties = cp
 
     def initialize(self, loader):
-        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'items', 'drop_items', 'housing', 'perks', 'materials', 'equipment', 'recipes']
+        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'items', 'drop_items', 'housing', 'perks', 'materials', 'equipment', 'recipes', 'save']
         self._data = {}
         for key in keys:
             self._data[key] = loader.get(key)
@@ -436,7 +436,7 @@ class GameContent:
         items = []
         equipment_class = self._data['equipment'][item_id]
         for material_id, material in self._data['materials'].items():
-            if material.is_hard() and material.is_natural():
+            if material.is_hard() and material.is_natural() and not material.is_gem():
                 items.append(UnGeneratedTool(equipment_class, material))
         return items
 
@@ -444,7 +444,7 @@ class GameContent:
         items = []
         equipment_class = self._data['equipment'][item_id]
         for material_id, material in self._data['materials'].items():
-            if material.is_hard() and material.is_natural():
+            if material.is_hard() and material.is_natural() and not material.is_gem():
                 items.append(UnGeneratedWeapon(equipment_class, material, None, None))
         return items
 
@@ -452,7 +452,10 @@ class GameContent:
         items = []
         equipment_class = self._data['equipment'][item_id]
         for material_id, material in self._data['materials'].items():
-            if material.is_natural() and not material.is_gem():
+            if equipment_class.get_sub_type() in [NECKLACE, RING]:
+                if material.is_gem():
+                    items.append(UnGeneratedArmor(equipment_class, material, None, None))
+            elif material.is_natural() and not material.is_gem():
                 items.append(UnGeneratedArmor(equipment_class, material, None, None))
         return items
 
@@ -528,13 +531,16 @@ class GameContent:
             return self._data['floors'][self._current_floor - 1].get_score()
 
     def set_next_floor(self, descend=True):
-        if descend:
-            self._floor_data = FloorData(descend, self._current_floor + 1)
-            self.update_lowest_floor(self._current_floor + 1)
-            return self._current_floor + 1
-        else:
-            self._floor_data = FloorData(descend, self._current_floor - 1)
-            return self._current_floor - 1
+        print('Confirm', descend)
+        new_floor = self._current_floor + (1 if descend else -1)
+        # if descend:
+        #     new_floor = self._current_floor + 1
+            # self._floor_data = FloorData(descend, new_floor)
+        # else:
+        #     new_floor = self._current_floor - 1
+        self._floor_data = FloorData(descend, new_floor, self._floor_data)
+        self._current_floor = new_floor
+        return new_floor
 
     def reset_floor_data(self):
         self._current_floor = 0
@@ -566,21 +572,26 @@ class GameContent:
     @staticmethod
     def generate_familiarity_bonuses(party):
         visited = []
+        bonuses = {}
+        chars = []
         for char in party:
             if char is None:
                 continue
-            for partner_char in party:
-                if partner_char is None:
-                    continue
+            # if not char.is_support() and char.is_dead() or char.get_stamina() < 0:
+            #     continue
+            bonuses[char.get_id()] = {}
+            chars.append(char)
+        for char in chars:
+            for partner_char in chars:
                 if char == partner_char:
                     continue
                 if (char, partner_char) in visited or (partner_char, char) in visited:
                     continue
                 visited.append((char, partner_char))
                 bonus = round(random.uniform(0.01, 0.05), 3)
-                # print("Add between ", char.get_id(), partner_char.get_id(), bonus)
-                char.add_familiarity(partner_char.get_id(), bonus)
-                partner_char.add_familiarity(char.get_id(), bonus)
+                bonuses[char.get_id()][partner_char.get_id()] = bonus
+                bonuses[partner_char.get_id()][char.get_id()] = bonus
+        return bonuses
 
     """
     Familiarity Bonus Mechanics

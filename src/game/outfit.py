@@ -16,72 +16,95 @@ class Outfit(HMPMD):
     def set_equipment(self, equipment_type, item):
         self.items[equipment_type - WEAPON] = item
 
-    def update_health(self):
+    def refresh_stats(self, favorite_weapon=None, favorite_sub_weapon=None):
+        self.update_health(favorite_weapon, favorite_sub_weapon)
+        self.update_mana(favorite_weapon, favorite_sub_weapon)
+        self.update_physical_attack(favorite_weapon, favorite_sub_weapon)
+        self.update_magical_attack(favorite_weapon, favorite_sub_weapon)
+        self.update_defense(favorite_weapon, favorite_sub_weapon)
+        self.update_score(favorite_weapon, favorite_sub_weapon)
+        self.update_value(favorite_weapon, favorite_sub_weapon)
+        self.update_weight(favorite_weapon, favorite_sub_weapon)
+
+    def update_health(self, favorite_weapon=None, favorite_sub_weapon=None):
         health = 0
         for item in self.items:
             if item is not None:
-                health += item.get_health()
+                if item.get_type() == WEAPON and item.get_sub_type() in [favorite_weapon, favorite_sub_weapon]:
+                    health += item.get_health() * 1.25
+                else:
+                    health += item.get_health()
         self.health = health
 
-    def update_mana(self):
+    def update_mana(self, favorite_weapon=None, favorite_sub_weapon=None):
         mana = 0
         for item in self.items:
             if item is not None:
-                mana += item.get_mana()
+                if item.get_type() == WEAPON and item.get_sub_type() in [favorite_weapon, favorite_sub_weapon]:
+                    mana += item.get_mana() * 1.25
+                else:
+                    mana += item.get_mana()
         self.mana = mana
 
-    def update_physical_attack(self):
+    def update_physical_attack(self, favorite_weapon=None, favorite_sub_weapon=None):
         physical_attack = 0
         for item in self.items:
             if item is not None:
-                physical_attack += item.get_physical_attack()
+                if item.get_type() == WEAPON and item.get_sub_type() in [favorite_weapon, favorite_sub_weapon]:
+                    physical_attack += item.get_physical_attack() * 1.25
+                else:
+                    physical_attack += item.get_physical_attack()
         self.physical_attack = physical_attack
 
-    def update_magical_attack(self):
+    def update_magical_attack(self, favorite_weapon=None, favorite_sub_weapon=None):
         magical_attack = 0
         for item in self.items:
             if item is not None:
-                magical_attack += item.get_magical_attack()
+                if item.get_type() == WEAPON and item.get_sub_type() in [favorite_weapon, favorite_sub_weapon]:
+                    magical_attack += item.get_magical_attack() * 1.25
+                else:
+                    magical_attack += item.get_magical_attack()
         self.magical_attack = magical_attack
 
-    def update_defense(self):
+    def update_defense(self, favorite_weapon=None, favorite_sub_weapon=None):
         defense = 0
         for item in self.items:
             if item is not None:
-                defense += item.get_defense()
+                if item.get_type() == WEAPON and item.get_sub_type() in [favorite_weapon, favorite_sub_weapon]:
+                    defense += item.get_defense() * 1.25
+                else:
+                    defense += item.get_defense()
         self.defense = defense
-    #
-    # def update_strength(self):
-    #     strength = 0
-    #     for item in self.items:
-    #         if item is not None:
-    #             strength += item.get_strength()
-    #     self.strength = strength
-    #
-    # def update_magic(self):
-    #     magic = 0
-    #     for item in self.items:
-    #         if item is not None:
-    #             magic += item.get_magic()
-    #     self.magic = magic
-    #
-    # def update_endurance(self):
-    #     endurance = 0
-    #     for item in self.items:
-    #         if item is not None:
-    #             endurance += item.get_endurance()
-    #     self.endurance = endurance
-    #
-    # def update_agility(self):
-    #     agility = 0
-    #     for item in self.items:
-    #         if item is not None:
-    #             agility += item.get_agility()
-    #     self.agility = agility
-    #
-    # def update_dexterity(self):
-    #     dexterity = 0
-    #     for item in self.items:
-    #         if item is not None:
-    #             dexterity += item.get_dexterity()
-    #     self.dexterity = dexterity
+
+    def get_score(self):
+        return self.score
+
+    def update_score(self, favorite_weapon=None, favorite_sub_weapon=None):
+        score = 0
+        for item in self.items:
+            if item is not None:
+                score += item.get_score()
+        self.score = score
+
+    def get_value(self):
+        return self.value
+
+    def update_value(self, favorite_weapon=None, favorite_sub_weapon=None):
+        value = 0
+        for item in self.items:
+            if item is not None:
+                value += item.get_value()
+        self.value = value
+
+    def get_weight(self):
+        return self.weight
+
+    def update_weight(self, favorite_weapon=None, favorite_sub_weapon=None):
+        weight = 0
+        for item in self.items:
+            if item is not None:
+                if item.get_type() == WEAPON and item.get_sub_type() in [favorite_weapon, favorite_sub_weapon]:
+                    weight += item.get_weight() * 0.75
+                else:
+                    weight += item.get_weight()
+        self.weight = weight

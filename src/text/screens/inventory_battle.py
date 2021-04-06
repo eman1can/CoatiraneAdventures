@@ -9,7 +9,7 @@ def get_inventory_battle_item(item, index, current_text, page_name, page_num):
         count_string = ''
     else:
         name, desc, min_price, max_price = item.get_display()
-        count = Refs.gc.get_inventory().get_item_count(item.get_id())
+        count = Refs.gc.get_floor_data().get_gained_items()[item]
         count_string = f'\n\tHave: {count}'
     if item.is_potion():
         return f'\n\t{name} - Use: {OPT_C}{index}{END_OPT_C}\n\t\t- ' + desc.replace('\n', '\n\t\t- ') + count_string + f'\n', f'use#{item.get_id()}'

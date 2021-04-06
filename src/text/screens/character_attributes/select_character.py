@@ -15,12 +15,18 @@ def center_stat(char, index):
         stat = [char.get_name, char.get_current_rank, char.get_health, char.get_mana, char.get_physical_attack, char.get_magical_attack,
                 char.get_defense, char.get_strength, char.get_magic, char.get_endurance, char.get_agility, char.get_dexterity]
         stat_labels = ['', 'Rank', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
-        stat_string = stat[index]()
+        if index <= 1:
+            stat_string = stat[index]()
+        else:
+            stat_string = Refs.gc.format_number(int(stat[index]()))
     else:
         stat = [char.get_name, char.get_current_rank, char.get_element_string, char.get_attack_type_string, char.get_health, char.get_mana, char.get_physical_attack, char.get_magical_attack,
                 char.get_defense, char.get_strength, char.get_magic, char.get_endurance, char.get_agility, char.get_dexterity]
         stat_labels = ['', 'Rank', '', '', 'HP', 'MP', 'P.Atk.', 'M.Atk.', 'Def.', 'Str.', 'Mag.', 'End.', 'Agi.', 'Dex.']
-        stat_string = stat[index]()
+        if index <= 3:
+            stat_string = stat[index]()
+        else:
+            stat_string = Refs.gc.format_number(int(stat[index]()))
         if index == 0 or index == 2 or index == 3:
             if ' ' in stat_string:
                 stat_string = stat_string.split(' ')[0]

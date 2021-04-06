@@ -34,6 +34,7 @@ CRAFTING_EQUIPMENT         = 'town.crafting.equipment'
 CRAFTING_POTIONS           = 'town.crafting.potions'
 CRAFT_ITEM_MULTIPLE        = 'town.crafting.craft_item_multiple'
 CRAFT_EQUIPMENT            = 'town.crafting.craft_equipment'
+CRAFT_EQUIPMENT_MATERIAL   = 'town.crafting.craft_equipment_material'
 ALMANAC_MAIN               = 'town.almanac'
 
 CHARACTER_ATTRIBUTE     = 'character_attributes'
@@ -45,8 +46,8 @@ CHANGE_EQUIP            = 'character_attributes.change_equip'
 CHANGE_EQUIP_ITEM       = 'character_attributes.change_equip_item'
 
 INVENTORY               = 'inventory'
-INVENTORY_BATTLE        = 'inventory.battle'
-INVENTORY_BATTLE_SELECT = 'inventory.battle_select'
+INVENTORY_BATTLE        = 'inventory_battle'
+INVENTORY_BATTLE_SELECT = 'inventory_battle_select'
 
 DUNGEON_MAIN              = 'dungeon'
 DUNGEON_MAIN_LOCKED       = 'dungeon.locked'

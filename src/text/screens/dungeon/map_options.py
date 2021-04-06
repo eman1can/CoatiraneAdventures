@@ -26,7 +26,7 @@ def get_screen(console, screen_data):
 
     if screen_data == 'change_destination':
         display_text += '\n\tChoose a destination to map to.\n'
-        for index, layer in enumerate(['exit', 'entrance'] + list(layers)):
+        for index, layer in enumerate(list(layers)):
             name = layer.replace('_', ' ').title()
             if name == current_path:
                 display_text += f'\n\t[s]{OPT_C}{index + 1}:{END_OPT_C}[/s] {name} - Current'

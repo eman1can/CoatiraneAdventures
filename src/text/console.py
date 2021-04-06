@@ -39,7 +39,7 @@ class Console(TextInput):
 
     def __init__(self, **kwargs):
         self._options = {}
-        self._back_list = []
+        self._back_list = {}
         self.error_time = 0.5
 
         self._current_screen = None
@@ -220,36 +220,41 @@ class Console(TextInput):
     def do_backspace(self, from_undo=False, mode='bkspc'):
         self.current_text = self.current_text[:-1]
 
-    def save_screen(self, current_screen):
-        if self._current_screen is not None and self._current_screen != current_screen:
-            if current_screen in self._back_list:
-                while self._back_list[-1] != current_screen:
-                    self._back_list.pop(-1)
-                self._back_list.pop(-1)
-                return False
-            else:
-                if self._current_screen_data is not None:
-                    if '#' not in self._current_screen_data and self._current_screen not in [HOUSING_RENT, HOUSING_BUY] or current_screen.count('#') > self._current_screen.count('#'):
-                        self._back_list.append(self._current_screen + ':' + self._current_screen_data)
-                        return True
-                    return False
-                self._back_list.append(self._current_screen)
-                return True
-        return False
+    def save_screen(self, class_name):
+        if self._current_screen in self._back_list:
+            for key in reversed(list(self._back_list.keys())):
+                if key == self._current_screen:
+                    break
+                self._back_list.pop(key)
+            return False
+        if class_name in self._back_list:
+            for key in reversed(list(self._back_list.keys())):
+                if key == class_name:
+                    self._back_list.pop(key)
+                    break
+                self._back_list.pop(key)
+            return False
+        if self._current_screen == class_name:
+            return False
+        self._back_list[self._current_screen] = self._current_screen_data
+        return True
 
     def break_down_name(self, screen_name):
         if ':' in screen_name:
             return screen_name.split(':')
-        else:
-            return screen_name, None
+        return screen_name, None
 
     # Screen manager options
     def set_screen(self, screen_name):
         class_name, screen_data = self.break_down_name(screen_name)
         if class_name == BACK:
-            class_name, screen_data = self.break_down_name(self._back_list.pop())
+            class_name = list(self._back_list.keys())[-1]
+            screen_data = self._back_list.pop(class_name)
         else:
-            self.save_screen(screen_name)
+            if self.save_screen(class_name):
+                print('Set to', screen_name)
+                print('\t', self._back_list)
+                print()
 
         self._current_screen = class_name
         self._current_screen_data = screen_data

@@ -46,12 +46,12 @@ def get_screen(console, screen_data):
 
         if Refs.gc.get_inventory().has_harvesting_knife():
             display_text += f'\n\t{OPT_C}1:{END_OPT_C} Harvest Materials'
-            display_text += f'\n\t{OPT_C}2:{END_OPT_C} Inventory'
+            display_text += f'\n\t{OPT_C}2:{END_OPT_C} Inventory\n'
 
             _options['1'] = DUNGEON_HARVEST_RESULT
             _options['2'] = f'{INVENTORY_BATTLE}:0'
         else:
-            display_text += f'\n\t[s]{OPT_C}1:{END_OPT_C} Harvest Materials[/s]'
+            display_text += f'\n\t[s]{OPT_C}1:{END_OPT_C} Harvest Materials[/s]\n'
 
         Refs.app.scroll_widget.ids.label.text = battle_data.get_battle_log()
         Refs.app.scroll_widget.opacity = 1
@@ -68,6 +68,8 @@ def get_screen(console, screen_data):
             enemy_rows.append('None'.center(25))
         if len(items_gained) == 0:
             items_gained.append('None'.center(25))
+        items_gained.sort()
+        enemy_rows.sort()
         display_text += 'Monsters Killed'.center(25) + 'Items Gained'.center(25) + '\n'
         for x in range(max(len(enemy_rows), len(items_gained))):
             if x < len(enemy_rows):
@@ -92,10 +94,17 @@ def handle_action(console, action):
         return
     elif action == 'restore_save':
         floor_map = floor_data.get_floor().get_map()
+
         for node in floor_data.get_explored():
             floor_map.hide_node(node)
+
+        floor_id = str(floor_data.get_floor().get_id())
+        save = Refs.gc['save']
+        floor_map.load_node_exploration(save['map_node_data'][floor_id], save['map_node_counters'][floor_id])
+
         floor_map.clear_current_node()
         Refs.app.scroll_widget.opacity = 0
+        Refs.gc.reset_floor_data()
         console.set_screen(DUNGEON_MAIN)
         return
     elif action == DUNGEON_HARVEST_RESULT:

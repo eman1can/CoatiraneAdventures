@@ -1,6 +1,6 @@
 from refs import END_OPT_C, OPT_C, Refs
 from text.screens.dungeon import BOX_WIDTH, box_to_string, create_box, populate_box
-from text.screens.screen_names import DUNGEON_BATTLE, DUNGEON_CONFIRM, INVENTORY_BATTLE
+from text.screens.screen_names import CHARACTER_ATTRIBUTE, DUNGEON_BATTLE, DUNGEON_CONFIRM, INVENTORY_BATTLE
 
 
 def get_screen(console, screen_data):
@@ -29,7 +29,7 @@ def get_screen(console, screen_data):
     if console.party_box is None:
         console.party_box = create_box()
 
-    display_text += box_to_string(console, populate_box(console.party_box, party))
+    display_text += box_to_string(console, populate_box(console.party_box, party, True))
 
     display_text += '\n\t'
     for _ in range(BOX_WIDTH * 4 - 14):
@@ -38,36 +38,40 @@ def get_screen(console, screen_data):
 
     if floor_data.get_floor().get_id() > floor_data.get_next_floor():
         # Ascending
-        if Refs.gc.can_ascend():
-            display_text += f'\n\t{OPT_C}0:{END_OPT_C} Go to previous floor.'
-            _options['0'] = 'dungeon_battle'
-        if Refs.gc.can_descend():
-            display_text += f'\n\t{OPT_C}0:{END_OPT_C} Back to current floor.'
-            _options['0'] = f'{DUNGEON_CONFIRM}:down'
-        display_text += f'\n\t{OPT_C}1:{END_OPT_C} Inventory\n'
-        _options['1'] = f'{INVENTORY_BATTLE}:0'
+        display_text += f'\n\t{OPT_C}0:{END_OPT_C} Go to previous floor.'
+        _options['0'] = f'{DUNGEON_CONFIRM}:up'
+        display_text += f'\n\t{OPT_C}1:{END_OPT_C} Back to current floor.'
+        _options['1'] = DUNGEON_BATTLE
+        display_text += f'\n\t{OPT_C}2:{END_OPT_C} Inventory\n'
+        _options['2'] = f'{INVENTORY_BATTLE}:0'
     else:
         # Descending
         if floor_data.have_beaten_boss():
-            if Refs.gc.can_ascend():
-                display_text += f'\n\t{OPT_C}0:{END_OPT_C} Back to current floor.'
-                _options['0'] = DUNGEON_BATTLE
-            if Refs.gc.can_descend():
-                display_text += f'\n\t{OPT_C}0:{END_OPT_C} Descend to next floor.'
-                _options['0'] = f'{DUNGEON_CONFIRM}:up'
-            display_text += f'\n\t{OPT_C}1:{END_OPT_C} Inventory\n'
-            _options['1'] = f'{INVENTORY_BATTLE}:0'
+            display_text += f'\n\t{OPT_C}0:{END_OPT_C} Back to current floor.'
+            _options['0'] = DUNGEON_BATTLE
+            display_text += f'\n\t{OPT_C}1:{END_OPT_C} Descend to next floor.'
+            _options['1'] = f'{DUNGEON_CONFIRM}:down'
+            display_text += f'\n\t{OPT_C}2:{END_OPT_C} Inventory\n'
+            _options['2'] = f'{INVENTORY_BATTLE}:0'
         else:
             display_text += f'\n\t{OPT_C}0:{END_OPT_C} Inventory\n'
             display_text += f'\n\t{OPT_C}1:{END_OPT_C} Fight\n'
             _options['0'] = f'{INVENTORY_BATTLE}:0'
-            _options['1'] = f'{DUNGEON_BATTLE}:fight_boss'
-    for index, char in enumerate(party):
+            _options['1'] = 'fight_boss'
+    index = 6
+    for char in party:
         if char is None:
             continue
-        _options[str(index + 6)] = f'character_attribute_main#{char.get_id()}'
+        _options[str(index)] = f'{CHARACTER_ATTRIBUTE}:{char.get_id()}'
+        index += 1
+
+    print(_options)
     return display_text, _options
 
 
 def handle_action(console, action):
-    console.set_screen(action)
+    if action == 'fight_boss':
+        Refs.gc.get_floor_data().generate_boss_encounter()
+        console.set_screen(DUNGEON_BATTLE)
+    else:
+        console.set_screen(action)

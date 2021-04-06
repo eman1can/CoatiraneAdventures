@@ -27,6 +27,7 @@ MULTIPLE_BOOSTED_BOSS    = 2
 MULTIPLE_ENEMIES         = 3
 MULTIPLE_BOOSTED_ENEMIES = 4
 
+
 class Floor:
     """
     Boss Type:
@@ -97,11 +98,11 @@ class Floor:
         elif self._boss_type == MULTIPLE_BOOSTED_BOSS:
             pass
         elif self._boss_type == MULTIPLE_ENEMIES:
-            return self.generate_enemies(None, boss=self._boss_type)
+            return self.generate_enemies(None, 0, boss=self._boss_type)
         elif self._boss_type == MULTIPLE_BOOSTED_ENEMIES:
-            return self.generate_enemies(None, boss=self._boss_type)
+            return self.generate_enemies(None, 0, boss=self._boss_type)
 
-    def generate_enemies(self, node_type, boss=-1):
+    def generate_enemies(self, node_type, extra_boost, boss=-1):
         if boss == -1:
             spawn_count = randint(max(1, int(self._max_enemies * 0.25)), self._max_enemies)
         else:
@@ -123,22 +124,28 @@ class Floor:
             for (enemy, rarity) in self._enemies.values():
                 if rarity_adjustment == 0:
                     if rarity <= spawn_rarity:
+                        print('Rarity Adjustment 0', enemy.get_name(), spawn_rarity - rarity)
                         spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
                 elif rarity_adjustment == 1:
                     if enemy.get_id() == node_type:
                         if max(rarity - 1, 1) <= spawn_rarity:
-                            spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
+                            print('Rarity Adjustment 1 - node', enemy.get_name(), spawn_rarity - (rarity - 1))
+                            spawn_lists[spawn_rarity].append((enemy, spawn_rarity - (rarity - 1)))
                     else:
                         if rarity <= spawn_rarity:
+                            print('Rarity Adjustment 1', enemy.get_name(), spawn_rarity - rarity)
                             spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
                 else:
                     if enemy.get_id() == node_type:
                         if rarity <= spawn_rarity:
+                            print('Rarity Adjustment 2 - node', enemy.get_name(), spawn_rarity - rarity)
                             spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
                     elif min(rarity + 1, 5) <= spawn_rarity:
-                        spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
+                        print('Rarity Adjustment 2', enemy.get_name(), spawn_rarity - (rarity + 1))
+                        spawn_lists[spawn_rarity].append((enemy, spawn_rarity - (rarity + 1)))
         for spawn_rarity in rarities:
             enemy, boost = spawn_lists[spawn_rarity][randint(0, len(spawn_lists[spawn_rarity]) - 1)]
+            boost += extra_boost
             if boss == MULTIPLE_BOOSTED_ENEMIES:
                 enemies.append(enemy.new_instance(boost + 1))
             else:
@@ -245,10 +252,12 @@ class Map:
         return self._explored_nodes, self._explored_node_counters
 
     def decrease_node_counter(self, count):
-        self._explored_node_counters[self._current_node] -= count
-        if self._explored_node_counters[self._current_node] <= 0:
-            self._explored_node_counters.pop(self._current_node)
-            self._explored_nodes[self._current_node] = True
+        if self._current_node in self._explored_node_counters:
+            self._explored_node_counters[self._current_node] -= count
+            if self._explored_node_counters[self._current_node] <= 0:
+                self._explored_node_counters.pop(self._current_node)
+                self._explored_nodes[self._current_node] = True
+                self._check_marker_color(self._current_node)
 
     # Create the map from an explored array
     def create_current_map(self, explored):
@@ -317,7 +326,7 @@ class Map:
             found = self.set_current_node(self._path_nodes[-1])
         self._check_path()
         # Remove starting node from arrays
-        self._update_path(self._current_node)
+        # self._update_path(self._current_node)
         # Color path
         self._calculate_path()
         return found

@@ -88,3 +88,6 @@ class Material:
 
     def get_defense(self):
         return self._weights[DEF]
+
+    def get_all_weights(self):
+        return self._weights

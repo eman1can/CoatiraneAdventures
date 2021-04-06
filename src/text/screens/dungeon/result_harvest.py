@@ -11,7 +11,7 @@ def get_screen(console, screen_data):
 
     floor_data = Refs.gc.get_floor_data()
     battle_data = floor_data.get_battle_data()
-    display_string = '\n\tMaterial Harvest Result:'
+    display_text += '\n\tMaterial Harvest Result:'
 
     for enemy in battle_data.get_enemies():
         if enemy not in counts:
@@ -26,23 +26,23 @@ def get_screen(console, screen_data):
     floor_data.increase_stat(character.get_id(), 2, Refs.gc.get_random_stat_increase())
 
     for enemy, count in counts.items():
-        display_string += f'\n\t\t{enemy.get_name()} x {count}:'
+        display_text += f'\n\t\t{enemy.get_name()} x {count}:'
         for _ in range(count):
             drops = Refs.gc['enemies'][enemy.get_id()].generate_drop(enemy.get_boost(), knife.get_hardness())
             if len(drops) == 0:
-                display_string += f'\n\t\t\tNo items were dropped.'
+                display_text += f'\n\t\t\tNo items were dropped.'
             for (drop_id, drop_count) in drops:
                 item = Refs.gc.find_item(drop_id)
                 if item not in item_counts:
                     item_counts[item] = 0
                 item_counts[item] += drop_count
-                display_string += f'\n\t\t\t{item.get_name()} x {drop_count}'
+                display_text += f'\n\t\t\t{item.get_name()} x {drop_count}'
 
-    display_string += '\n\n\tAll Items Dropped:'
+    display_text += '\n\n\tAll Items Dropped:'
     for item, count in item_counts.items():
-        display_string += f'\n\t\t{item.get_name()} x {count}'
+        display_text += f'\n\t\t{item.get_name()} x {count}'
     battle_data.set_dropped_items(item_counts)
-    display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Continue\n'
+    display_text += f'\n\n\t{OPT_C}0:{END_OPT_C} Continue\n'
 
     return display_text, _options
 

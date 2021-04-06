@@ -30,28 +30,28 @@ def get_screen(console, screen_data):
 
     display_string += '\n\t│ [b]' + 'Total Stats'.center(BOX_SIZE)
     display_string += '[/b] │ [b]' + 'Total Abilities'.center(BOX_SIZE)
-    display_string += '[/b] │\n\t│ ' + 'Health'.ljust(STATS_HEADER_SIZE) + f'{character.get_health()}'.rjust(NUMBER_SIZE)
 
+    display_string += '[/b] │\n\t│ ' + 'Health'.ljust(STATS_HEADER_SIZE) + f'{Refs.gc.format_number(int(character.get_health()))}'.rjust(NUMBER_SIZE)
     display_string += ' │ ' + 'Strength'.ljust(ABILITIES_HEADER_SIZE)
     display_string += f'[color={RANK_COLORS[character.get_strength_rank()]}]' + character.get_strength_rank().center(RANK_CHAR_SIZE) + '[/color]'
     display_string += f'{character.get_strength()}'.rjust(NUMBER_SIZE)
 
-    display_string += ' │\n\t│ ' + 'Mana'.ljust(STATS_HEADER_SIZE) + f'{character.get_mana()}'.rjust(NUMBER_SIZE)
+    display_string += ' │\n\t│ ' + 'Mana'.ljust(STATS_HEADER_SIZE) + f'{Refs.gc.format_number(int(character.get_mana()))}'.rjust(NUMBER_SIZE)
     display_string += ' │ ' + 'Magic'.ljust(ABILITIES_HEADER_SIZE)
     display_string += f'[color={RANK_COLORS[character.get_magic_rank()]}]' + character.get_magic_rank().center(RANK_CHAR_SIZE) + '[/color]'
     display_string += f'{character.get_magic()}'.rjust(NUMBER_SIZE)
 
-    display_string += ' │\n\t│ ' + 'P.Attack'.ljust(STATS_HEADER_SIZE) + f'{character.get_physical_attack()}'.rjust(NUMBER_SIZE)
+    display_string += ' │\n\t│ ' + 'P.Attack'.ljust(STATS_HEADER_SIZE) + f'{Refs.gc.format_number(int(character.get_physical_attack()))}'.rjust(NUMBER_SIZE)
     display_string += ' │ ' + 'Endurance'.ljust(ABILITIES_HEADER_SIZE)
     display_string += f'[color={RANK_COLORS[character.get_endurance_rank()]}]' + character.get_endurance_rank().center(RANK_CHAR_SIZE) + '[/color]'
     display_string += f'{character.get_endurance()}'.rjust(NUMBER_SIZE)
 
-    display_string += ' │\n\t│ ' + 'M.Attack'.ljust(STATS_HEADER_SIZE) + f'{character.get_magical_attack()}'.rjust(NUMBER_SIZE)
+    display_string += ' │\n\t│ ' + 'M.Attack'.ljust(STATS_HEADER_SIZE) + f'{Refs.gc.format_number(int(character.get_magical_attack()))}'.rjust(NUMBER_SIZE)
     display_string += ' │ ' + 'Dexterity'.ljust(ABILITIES_HEADER_SIZE)
     display_string += f'[color={RANK_COLORS[character.get_dexterity_rank()]}]' + character.get_dexterity_rank().center(RANK_CHAR_SIZE) + '[/color]'
     display_string += f'{character.get_dexterity()}'.rjust(NUMBER_SIZE)
 
-    display_string += ' │\n\t│ ' + 'Defense'.ljust(STATS_HEADER_SIZE) + f'{character.get_defense()}'.rjust(NUMBER_SIZE)
+    display_string += ' │\n\t│ ' + 'Defense'.ljust(STATS_HEADER_SIZE) + f'{Refs.gc.format_number(int(character.get_defense()))}'.rjust(NUMBER_SIZE)
     display_string += ' │ ' + 'Agility'.ljust(ABILITIES_HEADER_SIZE)
     display_string += f'[color={RANK_COLORS[character.get_agility_rank()]}]' + character.get_agility_rank().center(RANK_CHAR_SIZE) + '[/color]'
     display_string += f'{character.get_agility()}'.rjust(NUMBER_SIZE)

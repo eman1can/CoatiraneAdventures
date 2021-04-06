@@ -32,6 +32,7 @@ class BattleCharacter(BattleEntity):
         self._stamina *= 5
         self._max_stamina = self._stamina
         self._rest_counter = 2
+        self._death_rest_counter = 10
 
     def take_action(self, weight=1):
         # Taking an action reduces stamina by 3 - 10
@@ -42,14 +43,20 @@ class BattleCharacter(BattleEntity):
         self.decrease_stamina(uniform(1 * weight, 3 * weight))
 
     def rest(self):
-        if self._stamina < 0:
+        if self.is_dead():
+            self._death_rest_counter -= 1
+            if self._death_rest_counter == 0:
+                self.wake_up()
+                self._bhealth = min(self.get_health() * 0.05, self.get_health() - self._bhealth)
+            return
+        elif self._stamina < 0:
             self._rest_counter -= 1
             if self._rest_counter == 0:
                 self.wake_up()
             return
         self._stamina += min(uniform(20, 30), self._max_stamina - self._stamina)
-        self._bhealth += min(self.get_health() * 0.15, self.get_health() - self._bhealth)
-        self._bmana += min(self.get_mana() * 0.15, self.get_mana() - self._bmana)
+        self._bhealth += min(self.get_health() * 0.10, self.get_health() - self._bhealth)
+        self._bmana += min(self.get_mana() * 0.10, self.get_mana() - self._bmana)
 
     def wake_up(self):
         self._stamina = self._max_stamina * 0.5
@@ -58,6 +65,11 @@ class BattleCharacter(BattleEntity):
         self._stamina -= amount
         if self._stamina < 0:
             self._rest_counter = 2
+
+    def decrease_health(self, damage):
+        super().decrease_health(damage)
+        if self._bhealth < 0:
+            self._stamina = 0
 
     def can_take_action(self):
         return self._stamina / self._max_stamina > 0.25
@@ -68,13 +80,13 @@ class BattleCharacter(BattleEntity):
     def get_stamina_message(self):
         if self._bhealth <= 0:
             return ' - Incapacitated'
-        if self._stamina / self._max_stamina > 0.95:
+        if self._stamina / self._max_stamina >= 0.95:
             return ' - Pumped'
-        elif self._stamina / self._max_stamina > 0.75:
+        elif self._stamina / self._max_stamina >= 0.75:
             return ' - Awake'
-        elif self._stamina / self._max_stamina > 0.50:
+        elif self._stamina / self._max_stamina >= 0.50:
             return ' - Sleepy'
-        elif self._stamina / self._max_stamina > 0.25:
+        elif self._stamina / self._max_stamina >= 0.25:
             return ' - Tired'
         elif self._stamina > 0:
             return ' - Exhausted'
