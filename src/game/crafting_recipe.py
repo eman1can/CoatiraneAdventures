@@ -30,6 +30,7 @@ class EquipmentRecipe(Recipe):
         super().__init__(EQUIPMENT, output_id, 1, ingredients)
 
 
+
 class ItemRecipe(Recipe):
     def __init__(self, output_id, output_count, perk_requirement, sub_type, ingredients):
         super().__init__(ITEM, output_id, output_count, ingredients)

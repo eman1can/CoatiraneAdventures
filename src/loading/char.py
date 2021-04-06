@@ -1,5 +1,6 @@
 #Char block functions
 from game.character import Character
+from game.equipment import WEAPON
 from game.rank import Rank
 from game.skill import Skill
 from kivy.resources import resource_find
@@ -103,12 +104,15 @@ def load_char_chunk(line, loader, program_type, callbacks):
     character_development = None
     if char_id in loader.get('save')['character_development']:
         character_development = loader.get('save')['character_development'][char_id]
+        ranks = character_development['ranks']
+    else:
+        ranks = None
 
     path = resource_find('data/' + program_type + '/grids/' + values[ID] + '.txt')
     if path:
-        ranks = Rank.load_ranks(path, character_development['ranks'])
+        ranks = Rank.load_ranks(path, ranks)
     else:
-        ranks = Rank.load_ranks(resource_find('data/' + program_type + '/grids/base.txt'), character_development['ranks'])
+        ranks = Rank.load_ranks(resource_find('data/' + program_type + '/grids/base.txt'), ranks)
     # TODO - Add rank loading from save/load
 
     hp, mp, s, m, e, a, d = values[HEALTH:DEXTERITY + 1]
@@ -142,10 +146,8 @@ def load_char_chunk(line, loader, program_type, callbacks):
                 rank += 1
         familiarities = character_development['familiarities']
         abilities = character_development['abilities']
-        print(abilities)
 
-    # TODO Add unlocked perks/abilities to save/load and character_development
-    # TODO Add equiped items to save/load and character_development
+    # TODO Add equipped items to save/load and character_development
 
     if character_development is not None:
         family, high_damage, floor_depth, monsters_slain, people_slain = character_development['family'], character_development['high_damage'], character_development['floor_depth'], character_development['monsters_slain'], character_development['people_slain']
@@ -167,7 +169,9 @@ def load_char_chunk(line, loader, program_type, callbacks):
             if equipment_id is None:
                 continue
             item_id, item_hash = equipment_id.split('#')
-            outfit.set_equipment(index, inventory.get_item(item_id, item_hash))
+            outfit.set_equipment(index + WEAPON, inventory.get_item(item_id, int(item_hash)))
+
+    char.refresh_stats()
 
     loader.append('chars', char_id, char)
     for callback in callbacks:

@@ -129,45 +129,20 @@ class Rank(SMEAD, HMPMD):
             line = file.readline()
             if line[0] == "#":
                 continue
-            values = line.split(' ')
+            values = list(line.split(' '))
             for index in range(len(values)):
                 values[index] = int(values[index].strip())
-            growth = RankGrowth(*character_development['growth'][level])
-            board = Board(values[9], values[8], values[7], values[6], values[5], values[4], values[3], values[2], values[1], values[0], character_development['boards'][level])
-            unlocked = character_development['unlocked'][level]
-            broken = character_development['broken'][level]
+
+            if character_development is None:
+                growth = RankGrowth()
+                board = Board(values[9], values[8], values[7], values[6], values[5], values[4], values[3], values[2], values[1], values[0])
+                unlocked = level == 0
+                broken = False
+            else:
+                growth = RankGrowth(*character_development['growth'][level])
+                board = Board(values[9], values[8], values[7], values[6], values[5], values[4], values[3], values[2], values[1], values[0], character_development['boards'][level])
+                unlocked = character_development['unlocked'][level]
+                broken = character_development['broken'][level]
             ranks.append(Rank(level, growth, board, unlocked, broken))
             level += 1
         return ranks
-
-    # @staticmethod
-    # def load_weights(filename, id, rank_nums, program_type):
-    #     file = open(filename)
-
-    #     ranks = []
-    #     count = 1
-    #     # print("Loading Weights & girds")
-    #     for level in range(0, len(rank_nums)):
-    #         unlocked = rank_nums[level] > 0
-    #         broken = rank_nums[level] == 2
-    #         ranks.append(Rank(count, grids[count - 1], unlocked, broken))
-    #         count += 1
-        # for x in file:
-        #     values = x[:-1].split(' ', -1)
-        #     print("Loaded: " + str(values))
-        #     if not count == 11:
-        #         if ranknums[count-1] == 1:
-        #             unlocked = True
-        #             broken = False
-        #         elif ranknums[count-1] == 2:
-        #             unlocked = True
-        #             broken = True
-        #         else:
-        #             unlocked = False
-        #             broken = False
-        #         rank = Rank(count, grids[count-1], unlocked, broken)
-        #         count += 1
-        #         ranks.append(rank)
-        #     else:
-        #         ranks.append(values)
-    #     return ranks

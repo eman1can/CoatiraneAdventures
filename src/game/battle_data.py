@@ -405,7 +405,8 @@ class BattleData:
             target_effective_heal = min(effective_heal * random_modifier, target.get_health() - target.get_battle_health())
             self._log += f'      {round(target_effective_heal, 1)} heal to {target.get_name()}\n'
             target.decrease_health(-target_effective_heal)
-            Refs.gc.get_floor_data().increase_stat(entity.get_id(), 3, Refs.gc.get_random_stat_increase())
+            if entity.is_character():
+                Refs.gc.get_floor_data().increase_stat(entity.get_id(), 3, Refs.gc.get_random_stat_increase())
 
             if skill.get_effects():
                 effect_name = f'{entity.get_name()}_{skill.get_name()}'
@@ -416,7 +417,8 @@ class BattleData:
 
     def _process_ailment_cure(self, entity, skill, targets):
         for target in targets:
-            Refs.gc.get_floor_data().increase_stat(entity.get_id(), 3, Refs.gc.get_random_stat_increase())
+            if entity.is_character():
+                Refs.gc.get_floor_data().increase_stat(entity.get_id(), 3, Refs.gc.get_random_stat_increase())
             target.clear_negative_effects()
             if skill.get_effects():
                 effect_name = f'{entity.get_name()}_{skill.get_name()}'

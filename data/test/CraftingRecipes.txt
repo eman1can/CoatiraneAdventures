@@ -44,10 +44,10 @@ item,trinium_ingot,master_blacksmith,crafting_alloys,2
 adamantite_ingot#2,golanthium_ingot#2
 #
 equipment,pickaxe
-hard#10,soft#3,wood#6
+hard#10,wood#6,soft#3
 #
 equipment,shovel
-hard#8,soft#3,wood#5
+hard#8,wood#5,soft#3
 #
 equipment,harvesting_knife
 hard#5,soft#2

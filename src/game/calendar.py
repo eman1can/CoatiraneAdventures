@@ -40,6 +40,12 @@ class Calendar:
         self._time += 1
         if self._callback is not None:
             self._callback()
+        if Refs.gc.get_floor_data() is not None:
+            floor_data = Refs.gc.get_floor_data()
+            if floor_data.get_node_time() == 0:
+                floor_data.set_node_time(self._time)
+            elif self._time - floor_data.get_node_time() > 20:
+                floor_data.generate_time_encounter(self._time)
         if self._time - Refs.gc.get_last_save_time() > 180:
             Refs.gc.save_game(None)
             Refs.app.log('Auto Save Game')

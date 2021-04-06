@@ -31,38 +31,82 @@ STARTING_CURRENT_INDEX = 0
 
 OPAQUE = 1
 
-LOADING_LAYERS = ['skills', 'abilities', 'enemies', 'families', 'chars', 'perks', 'floors', 'items', 'drop_items', 'equipment', 'save', 'housing', 'materials', 'recipes']
-LOADING_SECTIONS = ['Game Data', 'Skills and Abilities', 'Enemies', 'Families', 'Housing Options', 'Materials', 'Crafting Recipes', 'Skill Trees', 'Items', 'Equipment Types', 'Chars', 'Floors', 'Game Data']
-LOADING_FUNCTIONS = [load_save_chunk, load_move_chunk, load_enemy_chunk, load_family_chunk, load_housing_chunk, load_material_chunk, load_crafting_recipe_chunk, load_perk_chunk, load_shop_item_chunk, load_equipment_chunk, load_char_chunk, load_floor_chunk, load_screen_chunk]
-LOADING_FILES = [False] + [True for _ in range(len(LOADING_FUNCTIONS) - 2)] + [False]
+LOADING_LAYERS = [
+    'skills',
+    'abilities',
+    'enemies',
+    'families',
+    'chars',
+    'perks',
+    'floors',
+    'items',
+    'drop_items',
+    'equipment',
+    'save',
+    'housing',
+    'materials',
+    'recipes'
+]
+LOADING_SECTIONS = [
+    'Skills and Abilities',
+    'Materials',
+    'Crafting Recipes',
+    'Items',
+    'Equipment Types',
+    'Enemies',
+    'Floors',
+    'Housing Options',
+    'Skill Trees',
+    'Game Data',
+    'Families',
+    'Chars',
+    'Game Data'
+]
+LOADING_FUNCTIONS = [
+    load_move_chunk,
+    load_material_chunk,
+    load_crafting_recipe_chunk,
+    load_shop_item_chunk,
+    load_equipment_chunk,
+    load_enemy_chunk,
+    load_floor_chunk,
+    load_housing_chunk,
+    load_perk_chunk,
+    load_save_chunk,
+    load_family_chunk,
+    load_char_chunk,
+    load_screen_chunk
+]
+LOADING_FILES = [True for _ in range(9)] + [False] + [True for _ in range(2)] + [False]
 LOADING_FILENAMES = [
-    f'',
     f"data/{PROGRAM_TYPE}/SA.txt",
-    f"data/{PROGRAM_TYPE}/Enemies.txt",
-    f"data/{PROGRAM_TYPE}/Families.txt",
-    f"data/{PROGRAM_TYPE}/Housing.txt",
     f"data/{PROGRAM_TYPE}/Materials.txt",
     f"data/{PROGRAM_TYPE}/CraftingRecipes.txt",
-    f"data/{PROGRAM_TYPE}/Perks.txt",
     f"data/{PROGRAM_TYPE}/items.txt",
     f"data/{PROGRAM_TYPE}/Equipment.txt",
-    f"data/{PROGRAM_TYPE}/CharacterDefinitions.txt",
-    f"data/{PROGRAM_TYPE}/Floors.txt"
+    f"data/{PROGRAM_TYPE}/Enemies.txt",
+    f"data/{PROGRAM_TYPE}/Floors.txt",
+    f"data/{PROGRAM_TYPE}/Housing.txt",
+    f"data/{PROGRAM_TYPE}/Perks.txt",
+    f'',
+    f"data/{PROGRAM_TYPE}/Families.txt",
+    f"data/{PROGRAM_TYPE}/CharacterDefinitions.txt"
 ]
 
-DELIMITERS = ['\n',     # Skills/Abilities
-              '#\n',    # Enemies
-              '\n',     # Familites
-              '\n#\n',  # Housing
-              '\n#\n',  # Materials
-              '\n#\n',  # Crafting Recipes
-              '\n#\n',  # Perks
-              '\n\n',   # Shop Items
-              '\n#\n',  # Equipment
-              '\n\n',   # Chars
-              '\n#\n',  # Floors
-
-              ]
+DELIMITERS = [
+    '\n',     # Skills/Abilities
+    '\n#\n',  # Materials
+    '\n#\n',  # Crafting Recipes
+    '\n\n',   # Shop Items
+    '\n#\n',  # Equipment
+    '#\n',    # Enemies
+    '\n#\n',  # Floors
+    '\n#\n',  # Housing
+    '\n#\n',  # Perks
+    '',       # Save Data
+    '\n',     # Families
+    '\n\n',   # Chars
+]
 
 
 class CALoader(Widget):
@@ -158,14 +202,16 @@ class CALoader(Widget):
             block_loader = LOADING_FUNCTIONS[trigger_index]
 
             filename = None
-            if trigger_index == 0:
+            if trigger_index == 9:
                 filename = f'{save_slot}'
 
             if LOADING_FILES[trigger_index]:
                 filename = LOADING_FILENAMES[trigger_index]
 
+                print(filename)
+
                 with open(resource_find(filename), 'r', encoding='utf-8') as file:
-                    chunks = file.read().split(DELIMITERS[self.curr_values[CURRENT_INDEX] - 2])
+                    chunks = file.read().split(DELIMITERS[self.curr_values[CURRENT_INDEX] - 1])
                 self.max_values[self.curr_values[CURRENT_INDEX]] = len(chunks)
 
                 for chunk in chunks:

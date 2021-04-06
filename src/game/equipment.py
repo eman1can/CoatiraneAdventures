@@ -1,9 +1,9 @@
-from random import uniform
+from random import randint, uniform
 from time import time_ns
 
 from game.hmpmd import HMPMD
+from game.item import Item, MultiItem
 from game.skill import NONE
-from game.smead import SMEAD
 from refs import Refs
 
 EQUIPMENT_TOOL   = 0
@@ -67,7 +67,7 @@ WEAPON_TYPES = {
     STAFF: 'Staff',
 }
 
-CAN_DUAL_WIELD: {
+CAN_DUAL_WIELD = {
     DAGGER: True,
     KUKRI: True,
     CUTLASS: True,
@@ -97,16 +97,16 @@ CAN_DUAL_WIELD: {
 }
 
 # Armor
-WEAPON          = 0
-OFF_HAND_WEAPON = 1
-NECKLACE        = 2
-RING            = 3
-HELMET          = 4
-VAMBRACES       = 5
-GLOVES          = 6
-CHEST           = 7
-GRIEVES         = 8
-BOOTS           = 9
+WEAPON          = 26
+OFF_HAND_WEAPON = 27
+NECKLACE        = 28
+RING            = 29
+HELMET          = 30
+VAMBRACES       = 31
+GLOVES          = 32
+CHEST           = 33
+GRIEVES         = 34
+BOOTS           = 35
 
 EQUIPMENT_CATEGORIES = {
     WEAPON: 'Weapon',
@@ -123,9 +123,9 @@ EQUIPMENT_CATEGORIES = {
 
 
 # Tools
-PICKAXE                   = 0
-SHOVEL                    = 1
-HARVESTING_KNIFE          = 2
+PICKAXE          = 34
+SHOVEL           = 35
+HARVESTING_KNIFE = 36
 
 TOOL_TYPES = {
     PICKAXE: 'Pickaxe',
@@ -153,6 +153,9 @@ class EquipmentClass:
 
         self._weights = None
 
+    def get_type(self):
+        return self._type
+
     def get_id(self):
         return self._item_id
 
@@ -162,11 +165,11 @@ class EquipmentClass:
     def get_description(self):
         return self._description
 
-    def get_type(self):
-        return self._type
+    def get_weights(self):
+        return self._weights
 
     def generate_hash(self):
-        return time_ns()
+        return time_ns() * randint(1, 10000)
 
     # TODO Add success weighting to generation
     def gen_min_max(self, minimum, maximum):
@@ -203,6 +206,15 @@ class EquipmentClass:
         material_weight = material.get_weight() * self._weights[WEIGHT]
         return self.gen_min_max(material_weight * modifier * material.get_hardness(), material_weight * modifier * material.get_max_hardness())
 
+    def is_tool(self):
+        return False
+
+    def is_weapon(self):
+        return False
+
+    def is_armor(self):
+        return False
+
 
 class ToolClass(EquipmentClass):
     def __init__(self, item_id, name, tool_type, description, durability_weight):
@@ -210,7 +222,7 @@ class ToolClass(EquipmentClass):
         self._tool_type = tool_type
         self._weights = [durability_weight]
 
-    def get_tool_type(self):
+    def get_sub_type(self):
         return self._tool_type
 
     def new_instance(self, metadata):
@@ -226,40 +238,10 @@ class ToolClass(EquipmentClass):
             hardness = metadata['hardness']
             durability = metadata['durability']
             durability_current = metadata['durability_current']
-        return Tool(self, item_hash, hardness, durability, durability_current, material)
+        return Tool(self, item_hash, hardness, durability, durability_current, 0, 0, 0, 0, 0, 0, material)
 
-
-class UngeneratedTool:
-    def __init__(self, tool_class, material):
-        self._tool_class = tool_class
-        self._material = material
-
-    def get_class(self):
-        return self._tool_class
-
-    def is_equipment(self):
+    def is_tool(self):
         return True
-
-    def get_material_id(self):
-        return self._material.get_id()
-
-    def get_id(self):
-        return f'{self._material.get_id()}/{self._tool_class.get_id()}'
-
-    def get_name(self):
-        return f'{self._material.get_name()} {self._tool_class.get_name()}'
-
-    def get_display(self):
-        return self.get_name(), self._tool_class.get_description(), 500 * self._material.get_hardness(), 500 * self._material.get_max_hardness()
-
-    def is_single(self):
-        return False
-
-    def get_max_price(self):
-        return 500 * self._material.get_max_hardness()
-
-    def get_min_price(self):
-        return 500 * self._material.get_hardness()
 
 
 class WeaponClass(EquipmentClass):
@@ -268,7 +250,7 @@ class WeaponClass(EquipmentClass):
         self._weapon_type = weapon_type
         self._weights = weights
 
-    def get_weapon_type(self):
+    def get_sub_type(self):
         return self._weapon_type
 
     def new_instance(self, metadata):
@@ -343,37 +325,8 @@ class WeaponClass(EquipmentClass):
             defense = metadata['defense']
         return Weapon(self, item_hash, hardness, durability, durability_current, material, sub_material1, sub_material2, weight, health, mana, phy_atk, mag_atk, defense)
 
-
-class UngeneratedWeapon:
-    def __init__(self, weapon_class, material, sub_material1, sub_material2):
-        self._weapon_class = weapon_class
-        self._material = material
-        self._sub_material1 = sub_material1
-        self._sub_material2 = sub_material2
-
-    def get_class(self):
-        return self._tool_class
-
-    def is_equipment(self):
+    def is_weapon(self):
         return True
-
-    def get_material_id(self):
-        return self._material.get_id()
-
-    def get_id(self):
-        return f'{self._material.get_id()}/{self._weapon_class.get_id()}'
-
-    def get_name(self):
-        if self._sub_material1 is None:
-            return f'{self._material.get_name()} {self._weapon_class.get_name()}'
-        else:
-            return f'{self._material.get_name()}-{self._sub_material1.get_name()} {self._weapon_class.get_name()}'
-
-    def get_display(self):
-        return self.get_name(), self._weapon_class.get_description(), 100, 200
-
-    def is_single(self):
-        return False
 
 
 class ArmorClass(EquipmentClass):
@@ -382,7 +335,7 @@ class ArmorClass(EquipmentClass):
         self._armor_type = armor_type
         self._weights = weights
 
-    def get_armor_type(self):
+    def get_sub_type(self):
         return self._armor_type
 
     def new_instance(self, metadata):
@@ -457,99 +410,123 @@ class ArmorClass(EquipmentClass):
             defense = metadata['defense']
         return Armor(self, item_hash, hardness, durability, durability_current, material, sub_material1, sub_material2, weight, health, mana, phy_atk, mag_atk, defense)
 
+    def is_armor(self):
+        return True
 
-class UngeneratedArmor:
-    def __init__(self, armor_class, material, sub_material1, sub_material2):
-        self._armor_class = armor_class
+
+class UnGeneratedEquipment(MultiItem):
+    def __init__(self, tool_class, material):
+        self._equipment_class = tool_class
         self._material = material
-        self._sub_material1 = sub_material1
-        self._sub_material2 = sub_material2
+        item_id = self.get_id()
+        item_name = self.get_name()
+        min_price, max_price = 500 * self._material.get_hardness(), 500 * self._material.get_max_hardness()
+        super().__init__(item_id, item_name, self._equipment_class.get_description(), 'equipment', 'multi', min_price, max_price)
+
+    def get_id(self):
+        return f'{self._material.get_id()}/{self._equipment_class.get_id()}'
+
+    def get_name(self):
+        return f'{self._material.get_name()} {self._equipment_class.get_name()}'
 
     def get_class(self):
-        return self._tool_class
-
-    def is_equipment(self):
-        return True
+        return self._equipment_class
 
     def get_material_id(self):
         return self._material.get_id()
 
-    def get_id(self):
-        return f'{self._material.get_id()}/{self._armor_class.get_id()}'
+    def is_item(self):
+        return False
 
-    def get_name(self):
-        if self._sub_material1 is None:
-            return f'{self._material.get_name()} {self._armor_class.get_name()}'
-        else:
-            return f'{self._material.get_name()}-{self._sub_material1.get_name()} {self._armor_class.get_name()}'
+    def is_equipment(self):
+        return True
 
-    def get_display(self):
-        return self.get_name(), self._armor_class.get_description(), 100, 200
+    def is_tool(self):
+        return False
 
-    def is_single(self):
+    def is_weapon(self):
+        return False
+
+    def is_armor(self):
         return False
 
 
-class Equipment(HMPMD):
-    def __init__(self, equipment_class, item_hash, hardness, durability, durability_current):
-        super().__init__(0, 0, 0, 0, 0)
+class UnGeneratedMultiMaterialEquipment(UnGeneratedEquipment):
+    def __init__(self, equipment_class, material, sub_material1, sub_material2):
+        self._sub_material1 = sub_material1
+        self._sub_material2 = sub_material2
+        super().__init__(equipment_class, material)
+
+    def get_id(self):
+        if self._sub_material1:
+            if self._sub_material2:
+                return f'{self._material.get_id()}/{self._sub_material1.get_id()}/{self._sub_material2.get_id()}/{self._equipment_class.get_id()}'
+            return f'{self._material.get_id()}/{self._sub_material1.get_id()}/{self._equipment_class.get_id()}'
+        return f'{self._material.get_id()}/{self._equipment_class.get_id()}'
+
+    def get_name(self):
+        if self._sub_material1:
+            if self._sub_material2:
+                return f'{self._material.get_name()}-{self._sub_material1.get_name()}-{self._sub_material2.get_name()} {self._equipment_class.get_name()}'
+            return f'{self._material.get_name()}-{self._sub_material1.get_name()} {self._equipment_class.get_name()}'
+        return f'{self._material.get_name()} {self._equipment_class.get_name()}'
+
+
+class UnGeneratedTool(UnGeneratedEquipment):
+    def __init__(self, tool_class, material):
+        super().__init__(tool_class, material)
+        self._category = 'tools'
+
+    def is_tool(self):
+        return True
+
+
+class UnGeneratedWeapon(UnGeneratedMultiMaterialEquipment):
+    def __init__(self, weapon_class, material, sub_material1, sub_material2):
+        super().__init__(weapon_class, material, sub_material1, sub_material2)
+        self._category = 'weapons'
+
+    def is_weapon(self):
+        return True
+
+
+class UnGeneratedArmor(UnGeneratedMultiMaterialEquipment):
+    def __init__(self, weapon_class, material, sub_material1, sub_material2):
+        super().__init__(weapon_class, material, sub_material1, sub_material2)
+        self._category = 'armor'
+
+    def is_armor(self):
+        return True
+
+
+class Equipment(HMPMD, Item):
+    def __init__(self, equipment_class, item_hash, hardness, durability, durability_current, hp, mp, p, m, d, weight, material):
         self._class = equipment_class
         self._hash = item_hash
-
         self._hardness = hardness
+        self._weight = weight
         self._durability = durability
         self._durability_current = durability_current
+        self._material = material
 
         self._rank = 'I'
         self._element = NONE
         self._score = 0
-        self._worth = 0
+        self._worth = self._hardness * 500
 
-    def get_id(self):
-        return self._class.get_id()
-
-    def get_full_id(self):
-        return self._class.get_id() + '#' + str(self._hash)
+        HMPMD.__init__(self, hp, mp, p, m, d)
+        name = self.get_name()
+        description = self.get_description()
+        Item.__init__(self, self._class.get_id(), name, description, 'equipment', 'single', self._worth)
 
     def get_hash(self):
         return self._hash
 
-    def get_metadata(self):
-        return {
-            'hash': self._hash,
-            'hardness': self._hardness,
-            'durability': self._durability,
-            'durability_current': self._durability_current
-        }
-
     def get_type(self):
         return self._class.get_type()
 
-    def get_name(self):
-        return f'{self.get_durability_string()} {self._class.get_name()}'
-
-    def get_hardnesss(self):
-        return self._hardness
-
-    def get_durability_string(self):
-        lifespan = self._durability_current / self._durability
-        if lifespan > 0.9:
-            return 'Pristine'
-        elif lifespan > 0.5:
-            return 'Well-Used'
-        elif lifespan > 0.2:
-            return 'Worn'
-        else:
-            return 'Crumbling'
-
-    def get_durability(self):
-        return self._durability
-
-    def get_current_durability(self):
-        return self._durability_current
-
-    def remove_durability(self, wear_value):
-        self._durability_current -= wear_value
+    def get_sub_type(self):
+        return self._class.get_sub_type()
 
     def get_hardness(self):
         return self._hardness
@@ -566,109 +543,120 @@ class Equipment(HMPMD):
     def get_rank(self):
         return self._rank
 
-    def get_display(self):
-        return self.get_name(), self._class.get_description() + f'\n{round(self._durability_current, 1)} / {round(self._durability, 1)}', 500 * self._hardness
+    def get_weight(self):
+        return self._weight
 
-    def is_single(self):
+    def get_durability(self):
+        return self._durability
+
+    def get_current_durability(self):
+        return self._durability_current
+
+    def get_material_id(self):
+        return self._material.get_id()
+
+    def is_item(self):
+        return False
+
+    def is_equipment(self):
         return True
 
+    def is_tool(self):
+        return False
 
-class Tool(Equipment):
-    def __init__(self, tool_class, item_hash, hardness, durability, durability_current, material):
-        super().__init__(tool_class, item_hash, hardness, durability, durability_current)
+    def is_weapon(self):
+        return False
 
-        self._material = material
+    def is_armor(self):
+        return False
+
+    def get_full_id(self):
+        return self._class.get_id() + '#' + str(self._hash)
+
+    def get_metadata(self):
+        return {
+            'hash':               self._hash,
+            'hardness':           self._hardness,
+            'durability':         self._durability,
+            'durability_current': self._durability_current,
+            'material_id':        self._material.get_id(),
+            'weight':             self._weight,
+            'health':             self._health,
+            'mana':               self._mana,
+            'physical_attack':    self._physical_attack,
+            'magical_attack':     self._magical_attack,
+            'defense':            self._defense,
+        }
 
     def get_name(self):
         return f'{self.get_durability_string()} {self._material.get_name()} {self._class.get_name()}'
 
-    def get_metadata(self):
-        return {
-            'hash': self._hash,
-            'hardness': self._hardness,
-            'durability': self._durability,
-            'durability_current': self._durability_current,
-            'material_id': self._material.get_id()
-        }
+    def get_description(self):
+        return self._class.get_description() + f'\n{round(self._durability_current, 1)} / {round(self._durability, 1)}'
+
+    def get_durability_string(self):
+        lifespan = self._durability_current / self._durability
+        if lifespan > 0.9:
+            return 'Pristine'
+        elif lifespan > 0.5:
+            return 'Well-Used'
+        elif lifespan > 0.2:
+            return 'Worn'
+        else:
+            return 'Crumbling'
+
+    def remove_durability(self, wear_value):
+        self._durability_current -= wear_value
+        self._name = self.get_name()
+        self._description = self.get_description()
 
 
-class Weapon(Equipment):
+class MultiMaterialEquipment(Equipment):
     def __init__(self, weapon_class, item_hash, hardness, durability, durability_current, material, sub_material1, sub_material2, weight, hp, mp, p, m, d):
-        super().__init__(weapon_class, item_hash, hardness, durability, durability_current)
-
-        self._material = material
         self._sub_material1 = sub_material1
         self._sub_material2 = sub_material2
+        super().__init__(weapon_class, item_hash, hardness, durability, durability_current, hp, mp, p, m, d, weight, material)
 
-        # TODO Implement material effects
-
-        self._weight = weight
-
-        self._health = hp
-        self._mana = mp
-        self._physical_attack = p
-        self._magical_attack = m
-        self._defense = d
-        self.refresh_stats()
+    def get_id(self):
+        if self._sub_material1:
+            if self._sub_material2:
+                return f'{self._material.get_id()}/{self._sub_material1.get_id()}/{self._sub_material2.get_id()}/{self._class.get_id()}'
+            return f'{self._material.get_id()}/{self._sub_material1.get_id()}/{self._class.get_id()}'
+        return f'{self._material.get_id()}/{self._class.get_id()}'
 
     def get_name(self):
-        if self._sub_material1 is None:
-            return f'{self.get_durability_string()} {self._material.get_name()} {self._class.get_name()}'
-        else:
-            return f'{self.get_durability_string()} {self._material.get_name()}-{self._sub_material1.get_name()} {self._class.get_name()}'
+        if self._sub_material1:
+            if self._sub_material2:
+                return f'{self._material.get_name()}-{self._sub_material1.get_name()}-{self._sub_material2.get_name()} {self._class.get_name()}'
+            return f'{self._material.get_name()}-{self._sub_material1.get_name()} {self._class.get_name()}'
+        return f'{self._material.get_name()} {self._class.get_name()}'
 
     def get_metadata(self):
         metadata = super().get_metadata()
+        sub_material1_id = None
+        sub_material2_id = None
+        if self._sub_material1:
+            sub_material1_id = self._sub_material1.get_id()
+        if self._sub_material2:
+            sub_material2_id = self._sub_material2.get_id()
         metadata.update({
-            'weight': self._weight,
-            'health': self._health,
-            'mana': self._mana,
-            'physical_attack': self._physical_attack,
-            'magical_attack': self._magical_attack,
-            'defense': self._defense,
-            'material_id': self._material.get_id(),
-            'sub_material1_id': self._sub_material1.get_id(),
-            'sub_material2_id': self._sub_material2.get_id()
+            'sub_material1_id': sub_material1_id,
+            'sub_material2_id': sub_material2_id
         })
         return metadata
 
 
-class Armor(Equipment):
-    def __init__(self, armor_class, item_hash, hardness, durability, durability_current, material, sub_material1, sub_material2, weight, hp, mp, p, m, d):
-        super().__init__(armor_class, item_hash, hardness, durability, durability_current)
+class Tool(Equipment):
+    def is_tool(self):
+        return True
 
-        self._material = material
-        self._sub_material1 = sub_material1
-        self._sub_material2 = sub_material2
 
-        # TODO Implement material effects
+class Weapon(MultiMaterialEquipment):
+    def is_weapon(self):
+        return True
 
-        self._weight = weight
 
-        self._health = hp
-        self._mana = mp
-        self._physical_attack = p
-        self._magical_attack = m
-        self._defense = d
-        self.refresh_stats()
+class Armor(MultiMaterialEquipment):
+    def is_armor(self):
+        return True
 
-    def get_name(self):
-        if self._sub_material1 is None:
-            return f'{self.get_durability_string()} {self._material.get_name()} {self._class.get_name()}'
-        else:
-            return f'{self.get_durability_string()} {self._material.get_name()}-{self._sub_material1.get_name()} {self._class.get_name()}'
-
-    def get_metadata(self):
-        metadata = super().get_metadata()
-        metadata.update({
-            'weight': self._weight,
-            'health': self._health,
-            'mana': self._mana,
-            'physical_attack': self._physical_attack,
-            'magical_attack': self._magical_attack,
-            'defense': self._defense,
-            'material_id': self._material.get_id(),
-            'sub_material1_id': self._sub_material1.get_id(),
-            'sub_material2_id': self._sub_material2.get_id()
-        })
-        return metadata

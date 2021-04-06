@@ -1,4 +1,129 @@
 """
+Crafting Perk Tree
+Level 1 - Cost 1 Perk Point
+- Daedalus' Protégé
+  - Craft basic items
+- Basic Tailor
+  - Process Soft Materials 2.0 and below
+- Apprentice Blacksmith
+  - Process Hard Materials and craft alloys with hardness 3.0 or below
+
+Level 2 - Cost 3 Perk Points
+- The beginning of Enigma
+  - Requires Daedalus' Protégé
+  - Craft advanced items
+- Reputable Tailor
+  - Requires Basic Tailor
+  - Process Soft Materials 5.5 and below
+  - Craft Soft Material based equipment using soft materials 5.5 and below
+- Skilled Blacksmith
+  - Requires Basic Blacksmith
+  - Process Hard Materials and craft alloys with hardness 8.0 and below
+  - Craft Hard Material based equipment with access to hard materials 8.0 and below
+
+Level 3 - Cost 7 Perk Points
+- The Truth to Enigma
+  - Requires The beginning of Enigma
+  - Craft any items
+- Famous Tailor
+  - Requires Reputable Tailor
+  - Process Soft Materials 8.75 and below
+  - Craft Soft Material based equipment using soft materials 8.75 and below
+  - Sold Soft Material based equipment and processed soft materials sell for 20% more
+- Famous Blacksmith
+  - Requires Skilled Blacksmith
+  - Process Hard Materials and craft alloys with hardness 10.5 and below
+  - Craft Hard Material based equipment with access to hard materials 10.5 and below
+  - Sold Hard Material based equipment and processed hard materials sell for 20% more
+
+Level 4 - Cost 15 Perk Points
+- Master Tailor
+  - Requires Famous Tailor
+  - Process Any Soft Materials
+  - Craft Soft Material based equipment using any soft materials
+  - Sold Soft Material based equipment and processed soft materials sell for 50% more (Overwrites Famous Tailor)
+- Master Blacksmith
+  - Requires Famous Tailor
+  - Process Hard Materials and craft alloys with any hardness
+  - Craft Hard Material based equipment using any hard materials
+  - Sold Hard Material based equipment and processed hard materials sell for 50% more (Overwrites Famous Blacksmith)
+- Insider Information
+  - Requires Famous Tailor, Famous Blacksmith
+  - Decrease Price of materials by 30%
+
+Information Perk Tree
+Level 1 - Cost 1 Perk Point
+- Mapping
+  - Create basic maps in the dungeon
+
+Level 2 - Cost 3 Perk Points
+- Trial Argo
+  - Increase Recruitment amount by 30%
+  - Increase chance of successful information by 30%
+- A Miners bearings
+  - Requries Mapping
+  - Recognize resource nodes twice as fast - Implemented
+- Hunter
+  - Requires Mapping
+  -Recognize monster nodes twice as fast - Implemented
+- Extended Awareness
+  - Requires Mapping
+  - Increase mapping radius by 1
+
+Level 3 - Cost 7 Perk Points
+- Argo
+  - Requires Trial Argo
+  - Increase chance of successful perk point by 30%
+  - Decrease Recruitment Party cost by 30%
+- Increased Extended Awareness
+  - Requires Extended Awareness
+  - Increase mapping radius by 3 (Overwrites Extended Awareness)
+
+Level 4 - Cost 15 Perk Points
+- Sixth Sense
+  - Requires A Miners Bearings, Hunter, Increased Extended Awareness
+  - Increase mapping radius by 5 (Overwrites Increased Extended Awareness)
+  - Mapping Radius affects all surrounding area
+- The Rat
+  - Requires Argo
+  - Decrease Adventurer Recruitment Cost by 50%
+  - Increase chance of rare adventurer by a single bracket
+
+Alchemist Perk Tree
+Level 1 - Cost 1 Perk Point
+- Fledgling Alchemist
+  - Unlock basic potions
+  - Experiment with materials Grade G and below
+
+Level 2 - Cost 3 Perk Points
+- Reputable Alchemist
+  - Requires Fledgling Alchemist
+  - Unlock advanced potions
+  - Experiment with materials Grade D and below
+- Researcher
+  - Requires Fledgling Alchemist
+  - Increase chance to unlocking ingredient attributes by 30%
+
+Level 3 - Cost 7 Perk Points
+- True Efficiency
+  - Requires Reputable Alchemist
+  - Decrease material requirements by 30%
+  - Increase yield by 30%
+- Stanford Grad
+  - Requires Researcher
+  - Increase chance to unlocking ingredient attributes to one use
+
+Level 4 - Cost 15 Perk Points
+- The Chemist
+  - Requires Reputable Alchemist
+  - Craft all potions
+- Harvard Grad
+  - Requires Stanford Grad
+  - Increase sale price of your potions by 40%
+  - Decrease potion and ingredient prices by 40%
+"""
+
+"""
 When a monster is killed:
 - Non-havesting items dropped (Such as Egg)
 - Use harvesting knife:
