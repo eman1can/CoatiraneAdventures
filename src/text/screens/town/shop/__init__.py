@@ -71,6 +71,7 @@ def get_screen(console, screen_data):
 
     item_lists = {
         'general':             Refs.gc.get_shop_items,
+        'ingredients':         lambda category: Refs.gc.get_ingredients(),
         'magic_stones':        lambda category: Refs.gc.get_magic_stone_types(),
         'monster_drops':       lambda category: Refs.gc.get_monster_drop_types(),
         'raw_materials':       lambda category: Refs.gc.get_raw_materials(),
@@ -130,9 +131,9 @@ def get_screen(console, screen_data):
     for page_link in page_list:
         sub_text += f'\n\t{OPT_C}{option_index}:{END_OPT_C} {page_to_string[page_link]}'
         if page_link in item_lists.keys():
-            sub_options[str(option_index)] = f'{SHOP_MAIN}:{page_link}#0'
+            sub_options[str(option_index)] = (f'{SHOP_MAIN}:{page_link}#0', True)
         else:
-            sub_options[str(option_index)] = f'{SHOP_MAIN}:{page_link}'
+            sub_options[str(option_index)] = (f'{SHOP_MAIN}:{page_link}', True)
         option_index += 1
 
     bstype = None
@@ -156,7 +157,8 @@ def get_screen(console, screen_data):
         ip_text, ip_options = bspage_list(bspages[page], f'{SHOP_MAIN}:{page}', page_to_string)
 
         sub_text += ip_text
-        sub_options.update(ip_options)
+        for number, option in ip_options.items():
+            sub_options[number] = (option, True)
 
         if sub_text != '':
             sub_text += '\n'
@@ -178,7 +180,8 @@ def get_screen(console, screen_data):
 
         # Add to current page
         sub_text += ip_text
-        sub_options.update(ip_options)
+        for number, option in ip_options.items():
+            sub_options[number] = (option, len(option.split('#')) > 3)
     elif page_data != '':
         item_id, item_count = page_data.split('#')
         if bstype:
@@ -186,6 +189,9 @@ def get_screen(console, screen_data):
             sub_text, sub_options = item_transaction(item_count, item_id, f'{SHOP_MAIN}:{page}#{bstype}#{page_num}', texts[f'{bstype}_current'], texts[f'{bstype}_future'])
         else:
             sub_text, sub_options = item_transaction(item_count, item_id, f'{SHOP_MAIN}:{page}#{page_num}', texts[f'buy_current'], texts[f'buy_future'])
+        for number, option in sub_options.items():
+            if 'confirm' not in option:
+                sub_options[number] = (option, False)
 
     display_text += header
     display_text += sub_header
@@ -201,7 +207,7 @@ def get_screen(console, screen_data):
 
 
 def handle_action(console, action):
-    if action.startswith('confirm'):
+    if isinstance(action, str) and action.startswith('confirm'):
         page_category = None
         if action.count('#') == 5:  # Have a category
             page_name, page_category, page_num, item_id, item_count = action.split(':')[1].split('#')
@@ -212,11 +218,12 @@ def handle_action(console, action):
             console.error_text = 'Not Enough Money!'
             return
         if page_category:
-            console.set_screen(f'{SHOP_MAIN}:{page_name}#{page_category}#{page_num}')
+            console.set_screen(f'{SHOP_MAIN}:{page_name}#{page_category}#{page_num}', False)
         else:
-            console.set_screen(f'{SHOP_MAIN}:{page_name}#{page_num}')
+            console.set_screen(f'{SHOP_MAIN}:{page_name}#{page_num}', False)
         return
-    console.set_screen(action)
+    print(action)
+    console.set_screen(*action)
 
 
 def bspage_list(sub_categories, page_name, id_to_string):

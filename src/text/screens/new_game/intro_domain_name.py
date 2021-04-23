@@ -11,4 +11,4 @@ def get_screen(console, screen_data):
 
 def handle_action(console, action):
     console.new_game_info['name'] = action
-    console.set_screen(INTRO_DOMAIN_GENDER)
+    console.set_screen(INTRO_DOMAIN_GENDER, True)

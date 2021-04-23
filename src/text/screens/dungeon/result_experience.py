@@ -81,4 +81,4 @@ def get_screen(console, screen_data):
 
 def handle_action(console, action):
     console.text = '\n\tSaving Game...'
-    Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: console.set_screen(DUNGEON_MAIN)), 0.5)
+    Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: console.set_screen(DUNGEON_MAIN, False)), 0.5)

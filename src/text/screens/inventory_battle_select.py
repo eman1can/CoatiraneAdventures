@@ -56,9 +56,9 @@ def handle_action(console, action):
         else:
             item = inventory.set_current_harvesting_knife(item_hash)
         if item is None:
-            console.set_screen(f'{INVENTORY_BATTLE_SELECT}:{key}*{page_num}#none')
+            console.set_screen(f'{INVENTORY_BATTLE_SELECT}:{key}*{page_num}#none', False)
         else:
-            console.set_screen(f'{INVENTORY_BATTLE_SELECT}:{key}*{page_num}#{item.get_full_id()}')
+            console.set_screen(f'{INVENTORY_BATTLE_SELECT}:{key}*{page_num}#{item.get_full_id()}', False)
 
 
 def get_inventory_select_item(item, index, current_text, page_name, page_num):

@@ -130,4 +130,4 @@ def handle_action(console, action):
     for tile_index in tile_list.split('#'):
         board.unlock_index(int(tile_index))
     character.refresh_stats()
-    console.set_screen(f'{STATUS_BOARD}:{rank_index}#{character_id}')
+    console.set_screen(f'{STATUS_BOARD}:{rank_index}#{character_id}', False)

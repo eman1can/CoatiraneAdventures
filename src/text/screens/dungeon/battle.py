@@ -523,7 +523,7 @@ def handle_action(console, action):
 
         if action == 'mine' or action == 'dig':
             floor_data.increase_rest_count(2)
-            console.set_screen(f'{DUNGEON_RESOURCE_RESULT}:{action}#{character.get_id()}')
+            console.set_screen(f'{DUNGEON_RESOURCE_RESULT}:{action}#{character.get_id()}', True)
             return
         else:
             floor_data.activate_safe_zone()
@@ -540,7 +540,7 @@ def handle_action(console, action):
             next_action = choices([f'asleep', 'loss', 'woke_up'], [0.4, 0.3, 0.3], k=1)[0]
         Refs.gc.get_calendar().fast_forward(60 * 6)
         if next_action == 'loss':
-            console.set_screen(f'{DUNGEON_RESULT}:loss')
+            console.set_screen(f'{DUNGEON_RESULT}:loss', False)
             return
         else:
             screen_data = next_action
@@ -548,13 +548,13 @@ def handle_action(console, action):
         floor_id = floor_data.get_floor().get_id()
         floor_data.get_floor().get_map().clear_current_node()
         if action == 'ascend' and floor_id == 1:
-            console.set_screen(f'{DUNGEON_RESULT}:ascend')
+            console.set_screen(f'{DUNGEON_RESULT}:ascend', False)
         else:
             if action == 'ascend':
                 floor_data.set_next_floor(floor_id - 1)
             else:
                 floor_data.set_next_floor(floor_id + 1)
-            console.set_screen(f'{DUNGEON_MAIN_LOCKED}')
+            console.set_screen(f'{DUNGEON_MAIN_LOCKED}', True)
         return
     elif action == 'North' or action == 'East' or action == 'South' or action == 'West':
         floor_data.progress_by_direction(DIRECTIONS_FROM_STRING[action])
@@ -565,7 +565,7 @@ def handle_action(console, action):
             screen_data = 'asleep'
         if not floor_data.is_in_encounter() and floor_data.get_floor().get_map().is_marker(EXIT):
             if not floor_data.have_beaten_boss():
-                console.set_screen(DUNGEON_MAIN_LOCKED)
+                console.set_screen(DUNGEON_MAIN_LOCKED, True)
                 return
     elif action.startswith('encounter'):
         encounter_action = action.split('#', 1)[1]
@@ -577,16 +577,13 @@ def handle_action(console, action):
             if result is not None:
                 battle_data.progress_encounter()
                 if result:
-                    console.set_screen(f'{DUNGEON_RESULT}:win')
-                    # Refs.app.scroll_widget.opacity = 1
+                    console.set_screen(f'{DUNGEON_RESULT}:win', False)
                 else:
-                    console.set_screen(f'{DUNGEON_RESULT}:loss')
+                    console.set_screen(f'{DUNGEON_RESULT}:loss', False)
                 Refs.app.scroll_widget.ids.label.text = battle_data.get_battle_log()
-                # Refs.app.scroll_widget.opacity = 1
                 return
         elif encounter_action.startswith('select'):
             select_action = action.split('#')[2]
-            print(encounter_action, select_action)
             if select_action == 'close':
                 battle_data.set_state('battle')
             elif select_action == 'show':
@@ -596,16 +593,10 @@ def handle_action(console, action):
                 entity_index, select_index = action.split('#')[2:]
                 battle_data.get_characters()[int(entity_index)].select_skill(int(select_index))
                 battle_data.set_state('battle')
-                    # char_index, select_index = action.split('#')[3:]
-                    # if action == 'show':
-                    #     battle_data.set_state(f'battle_select#{char_index}#{select_index}')
-                    # else:
-                    #     battle_data.get_characters()[int(char_index)].select_skill(int(select_index))
-                    #     battle_data.set_state('battle')
     else:
-        console.set_screen(action)
+        console.set_screen(action, True)
         return
     if screen_data is None:
-        console.set_screen(DUNGEON_BATTLE)
+        console.set_screen(DUNGEON_BATTLE, False)
     else:
-        console.set_screen(f'{DUNGEON_BATTLE}:{screen_data}')
+        console.set_screen(f'{DUNGEON_BATTLE}:{screen_data}', False)

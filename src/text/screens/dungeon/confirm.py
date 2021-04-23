@@ -31,4 +31,4 @@ def handle_action(console, action):
     else:
         Refs.gc.set_next_floor(bool(action))
         console.text = '\n\tSaving Game...'
-        Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: console.set_screen(DUNGEON_BATTLE)), 0.5)
+        Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: console.set_screen(DUNGEON_BATTLE, False)), 0.5)

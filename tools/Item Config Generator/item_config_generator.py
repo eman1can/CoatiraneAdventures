@@ -478,6 +478,8 @@ total_elements = 0
 materials_found = {}
 monsters_found = {}
 
+monster_harvest_hardnesses = {}
+
 for monster in monster_list:
     lines = monster.split('\n')
     name = lines[0]
@@ -507,10 +509,7 @@ for monster in monster_list:
             continue
         element_counts[element] += 1
         total_elements += 1
-    hardnesses = lines[4][len('Hardness: '):]
-    hard, soft = hardnesses.split(', ')
-    hard = hard[:-len('(hard)')]
-    soft = soft[:-len('(soft)')]
+    hard, soft = None, None
     for material_type, monster_list in drop_types.items():
         if name.lower().replace(' ', '_') in monster_list:
             if material_type in ['hide']:
@@ -527,6 +526,17 @@ for monster in monster_list:
                 else:
                     hard = f'{floor_hardnesses[found_list[0]]}-{floor_hardnesses[found_list[-1]]}'
                 non_natural_hard_materials.append(f'{name} {material_type.title()} {hard}')
+            if hard is None and soft is None:
+                hardness = floor_hardnesses[found_list[0]]
+            else:
+                if hard is not None:
+                    hardness = hard
+                else:
+                    hardness = soft
+            if '-' in str(hardness):
+                hardness = hardness.split('-')[-1]
+            hardness = float(hardness)
+            monster_harvest_hardnesses[name] = hardness
     for line in lines[8:]:
         if '→' not in line:
             continue
@@ -562,18 +572,20 @@ if True:
             file.write(', ')
             file.write('0')
             file.write(', ')
+
             file.write(str(basic_move))  # Basic
             file.write(', ')
+
             file.write('1')
             file.write(', ')
+
             file.write(str(basic_move))  # Counter
             file.write(', ')
-            file.write('1')
-            file.write(', ')
             file.write('-')  # Block
-            file.write(', ')
-            file.write('-')
             file.write('\n')
+
+            file.write(str(monster_harvest_hardnesses[name] - 1.0) + ';')
+
             guaranteed_drops = []
             drops = []
             for drop, rarity in drop_list.items():
@@ -947,21 +959,6 @@ if False:
             item = drop_list[randint(0, len(drop_list) - 1)]
             if item is None:
                 return [None]
-            # item_count = int(item[:item.index(' ')])
-            # if item_count > 4:
-            #     enemy_name, item_name = item[item.index(' ') + 1:item.rindex(' ')], item[item.rindex(' ') + 1:]
-            #     enemy_id = enemy_name.replace(' ', '_').lower()
-            #     replace_count = randint(0, item_count - 4)
-            #     if replace_count > 0 and len(enemy_drops[enemy_id]) > 1:
-            #         first_item = f'{item_count - replace_count} {enemy_name} {item_name}'
-            #         new_item = None
-            #         while new_item is None:
-            #             print(enemy_drops[enemy_id])
-            #             new_item = list(enemy_drops[enemy_id].keys())[randint(0, len(enemy_drops[enemy_id].keys()))]
-            #             if new_item == item_name.lower():
-            #                 new_item = None
-            #         second_item = f'{replace_count} {enemy_name} {new_item.title()}'
-            #         return [first_item, second_item]
             return [item]
         return [None]
 
@@ -1174,7 +1171,7 @@ if False:
         floor_data[floor_name]['resource_count_total'] = resource_drop_total
         floor_data[floor_name]['resource_drops_metal_skew'] = resource_drops_metal_skew
         floor_data[floor_name]['resource_drops_gem_skew'] = resource_drops_gem_skew
-        floor_data[floor_name]['floor_movements'] = solve_path_iterative(floor_nodes[floor_num], floor_entrances[floor_num], floor_exits[floor_num])
+        floor_data[floor_name]['floor_movements'] = 0  # solve_path_iterative(floor_nodes[floor_num], floor_entrances[floor_num], floor_exits[floor_num])
 
         current_time = time()
         print(floor_id.title().replace('_', ' '), f'took {round(current_time - last_time, 2)} - currently {round(current_time - start_time, 2)}')
@@ -1222,6 +1219,14 @@ if False:
     floor_spawn_rates_data['Totals'] = []
     for floor in floor_data.values():
         floor_spawn_rates_data['Totals'].append(floor['spawn_count_total'])
+
+    # Average Encounters & item drop rates
+    item_drop_rates = {}
+    for floor_name, encounters in {'Floor 1': 26, 'Floor 2': 30, 'Floor 3': 44, 'Floor 4': 49, 'Floor 5': 49, 'Floor 6': 54, 'Floor 7': 54, 'Floor 8': 60, 'Floor 9': 67, 'Floor 10': 66, 'Floor 11': 73, 'Floor 12': 73, 'Floor 13': 80, 'Floor 14': 87, 'Floor 15': 86, 'Floor 16': 94, 'Floor 17': 102, 'Floor 18': 102, 'Floor 19': 110, 'Floor 20': 110, 'Floor 21': 118, 'Floor 22': 127, 'Floor 23': 126, 'Floor 24': 117, 'Floor 25': 135, 'Floor 26': 144, 'Floor 27': 154, 'Floor 28': 154, 'Floor 29': 164, 'Floor 30': 174, 'Floor 31': 166, 'Floor 32': 142, 'Floor 33': 194, 'Floor 34': 194, 'Floor 35': 205, 'Floor 36': 205, 'Floor 37': 217, 'Floor 38': 216, 'Floor 39': 229, 'Floor 40': 241, 'Floor 41': 121, 'Floor 42': 128, 'Floor 43': 304, 'Floor 44': 331, 'Floor 45': 359, 'Floor 46': 367, 'Floor 47': 419, 'Floor 48': 454, 'Floor 49': 488, 'Floor 50': 487, 'Floor 51': 523, 'Floor 52': 559, 'Floor 53': 615, 'Floor 54': 654, 'Floor 55': 694, 'Floor 56': 757, 'Floor 57': 801, 'Floor 58': 847, 'Floor 59': 912, 'Floor 60': 959}.items():
+        item_drop_rates['average_encounters'] = encounters
+        for name, spawn_count in floor_data[floor_name]['spawn_count_totals'].items():
+            item_drop_rates[name] = []
+
 
     # Metal Skewed data frame
     metal_skewed_resource_drop = {}

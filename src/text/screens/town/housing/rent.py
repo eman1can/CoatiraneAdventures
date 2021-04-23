@@ -28,7 +28,7 @@ def get_screen(console, screen_data):
 def handle_action(console, action):
     housing = Refs.gc['housing'][action]
     if Housing.rent_housing(Refs.gc.get_housing(), housing):
-        console.set_screen(HOUSING_MAIN)
+        console.set_screen(HOUSING_MAIN, False)
     else:
         console.error_time = 2.5
         console.error_text = 'You don\'t have enough money to cover the first payment!'

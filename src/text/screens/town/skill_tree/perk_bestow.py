@@ -48,4 +48,4 @@ def handle_action(console, action):
     character.bestow_perk(perk)
     Refs.gc.unlock_perk(perk)
 
-    console.set_screen(f'{PERK_INFO}:{perk_id}')
+    console.set_screen(f'{PERK_INFO}:{perk_id}', True)

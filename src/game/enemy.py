@@ -6,7 +6,7 @@ from game.battle_enemy import BattleEnemy
 from refs import Refs
 
 LEVEL_MULTIPLIER = [1, 1.5, 2, 2.75, 3.5, 4.75, 6, 8, 10]
-NICKNAMES = ['', 'Uncommon ', 'Abnormal ', 'Scary ', 'Freaky ', 'Menacing ', 'Nightmarish ', 'Titan ', 'World Devourer ']
+NICKNAMES = ['', 'Uncommon ', 'Abnormal ', 'Scary ', 'Freaky ', 'Beastly ', 'Menacing ', 'Nightmarish ', 'World Devouring ']
 
 STAT_INDEX = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 6, 8, 12]
 HEALTH, STR, MAG, END, AGI, DEX = 0, 1, 2, 3, 4, 5

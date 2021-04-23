@@ -9,7 +9,10 @@ def load_material_chunk(chunk, loader, program_type, callbacks):
     for x in range(len(material_values)):
         material_values[x] = int(material_values[x])
 
-    material = Material(int(material_type), identifier, name, min_hardness, max_hardness, raw_form, processed_form, defining_effect, sub_effect, material_values)
+    defining_effects = defining_effect.split(',')
+    sub_effects = sub_effect.split(',')
+
+    material = Material(int(material_type), identifier, name, min_hardness, max_hardness, raw_form, processed_form, defining_effects, sub_effects, material_values)
     loader.append('materials', identifier, material)
 
     for callback in callbacks:

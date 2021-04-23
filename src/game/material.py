@@ -4,6 +4,7 @@ ALLOY_HARD   = 2
 MONSTER_HARD = 3
 MONSTER_SOFT = 4
 GEM          = 5
+WOOD         = 6
 
 # Material values
 DURABILITY = 0
@@ -50,6 +51,18 @@ class Material:
     def get_processed_id(self):
         return self._processed_id
 
+    def get_defining_effect(self, is_weapon):
+        if is_weapon:
+            return self._effect[0]
+        else:
+            return self._effect[1]
+
+    def get_sub_effect(self, is_weapon):
+        if is_weapon:
+            return self._sub_effect[0]
+        else:
+            return self._effect[1]
+
     def is_hard(self):
         return self._type in [NATURAL_HARD, ALLOY_HARD, MONSTER_HARD]
 
@@ -57,10 +70,13 @@ class Material:
         return self._type in [NATURAL_SOFT, MONSTER_SOFT]
 
     def is_natural(self):
-        return self._type in [NATURAL_HARD, NATURAL_SOFT, GEM]
+        return self._type in [NATURAL_HARD, NATURAL_SOFT, GEM, WOOD]
 
     def is_non_natural(self):
         return self._type in [MONSTER_SOFT, MONSTER_HARD, ALLOY_HARD]
+
+    def is_wood(self):
+        return self._type == WOOD
 
     def is_alloy(self):
         return self._type == ALLOY_HARD

@@ -421,7 +421,7 @@ class UnGeneratedEquipment(MultiItem):
         item_id = self.get_id()
         item_name = self.get_name()
         min_price, max_price = 500 * self._material.get_hardness(), 500 * self._material.get_max_hardness()
-        super().__init__(item_id, item_name, self._equipment_class.get_description(), 'equipment', 'multi', min_price, max_price)
+        super().__init__(item_id, item_name, self._equipment_class.get_description(), None, 'equipment', 'multi', min_price, max_price)
 
     def get_id(self):
         return f'{self._material.get_id()}/{self._equipment_class.get_id()}'
@@ -517,7 +517,7 @@ class Equipment(HMPMD, Item):
         HMPMD.__init__(self, hp, mp, p, m, d)
         name = self.get_name()
         description = self.get_description()
-        Item.__init__(self, self._class.get_id(), name, description, 'equipment', 'single', self._worth)
+        Item.__init__(self, self._class.get_id(), name, description, None, 'equipment', 'single', self._worth)
 
     def get_hash(self):
         return self._hash

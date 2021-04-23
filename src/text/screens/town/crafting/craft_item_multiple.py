@@ -32,9 +32,9 @@ def handle_action(console, action):
         for ingredient, count in recipe.get_ingredients().items():
             inventory.remove_item(ingredient, count * recipe_count)
         inventory.add_item(recipe.get_item_id(), recipe_count)
-        console.set_screen(BACK)
+        console.set_screen(BACK, False)
     else:
-        console.set_screen(action)
+        console.set_screen(action, True)
 
 
 def craft_items(recipe_count, recipe_id, recipe, page_name):

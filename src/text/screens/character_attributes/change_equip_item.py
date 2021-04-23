@@ -53,9 +53,9 @@ def handle_action(console, action):
         outfit = character.get_outfit()
         outfit.set_equipment(int(equipment_id), item)
         character.refresh_stats()
-        console.set_screen(f'{CHANGE_EQUIP}:{character_id}')
+        console.set_screen(f'{CHANGE_EQUIP}:{character_id}', False)
     else:
-        console.set_screen(action)
+        console.set_screen(action, False)
 
 
 def get_equipment_item(equipment, index, current_text, page_name, page_num):

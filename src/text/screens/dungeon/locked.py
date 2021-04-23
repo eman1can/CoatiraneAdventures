@@ -1,6 +1,6 @@
 from refs import END_OPT_C, OPT_C, Refs
 from text.screens.dungeon import BOX_WIDTH, box_to_string, create_box, populate_box
-from text.screens.screen_names import CHARACTER_ATTRIBUTE, DUNGEON_BATTLE, DUNGEON_CONFIRM, INVENTORY_BATTLE
+from text.screens.screen_names import BACK, CHARACTER_ATTRIBUTE, DUNGEON_BATTLE, DUNGEON_CONFIRM, INVENTORY_BATTLE
 
 
 def get_screen(console, screen_data):
@@ -41,14 +41,14 @@ def get_screen(console, screen_data):
         display_text += f'\n\t{OPT_C}0:{END_OPT_C} Go to previous floor.'
         _options['0'] = f'{DUNGEON_CONFIRM}:up'
         display_text += f'\n\t{OPT_C}1:{END_OPT_C} Back to current floor.'
-        _options['1'] = DUNGEON_BATTLE
+        _options['1'] = BACK
         display_text += f'\n\t{OPT_C}2:{END_OPT_C} Inventory\n'
         _options['2'] = f'{INVENTORY_BATTLE}:0'
     else:
         # Descending
         if floor_data.have_beaten_boss():
             display_text += f'\n\t{OPT_C}0:{END_OPT_C} Back to current floor.'
-            _options['0'] = DUNGEON_BATTLE
+            _options['0'] = BACK
             display_text += f'\n\t{OPT_C}1:{END_OPT_C} Descend to next floor.'
             _options['1'] = f'{DUNGEON_CONFIRM}:down'
             display_text += f'\n\t{OPT_C}2:{END_OPT_C} Inventory\n'
@@ -72,6 +72,6 @@ def get_screen(console, screen_data):
 def handle_action(console, action):
     if action == 'fight_boss':
         Refs.gc.get_floor_data().generate_boss_encounter()
-        console.set_screen(DUNGEON_BATTLE)
+        console.set_screen(DUNGEON_BATTLE, False)
     else:
-        console.set_screen(action)
+        console.set_screen(action, True)
