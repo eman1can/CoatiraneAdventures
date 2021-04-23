@@ -124,24 +124,24 @@ class Floor:
             for (enemy, rarity) in self._enemies.values():
                 if rarity_adjustment == 0:
                     if rarity <= spawn_rarity:
-                        print('Rarity Adjustment 0', enemy.get_name(), spawn_rarity - rarity)
+                        # print('Rarity Adjustment 0', enemy.get_name(), spawn_rarity - rarity)
                         spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
                 elif rarity_adjustment == 1:
                     if enemy.get_id() == node_type:
                         if max(rarity - 1, 1) <= spawn_rarity:
-                            print('Rarity Adjustment 1 - node', enemy.get_name(), spawn_rarity - (rarity - 1))
+                            # print('Rarity Adjustment 1 - node', enemy.get_name(), spawn_rarity - (rarity - 1))
                             spawn_lists[spawn_rarity].append((enemy, spawn_rarity - (rarity - 1)))
                     else:
                         if rarity <= spawn_rarity:
-                            print('Rarity Adjustment 1', enemy.get_name(), spawn_rarity - rarity)
+                            # print('Rarity Adjustment 1', enemy.get_name(), spawn_rarity - rarity)
                             spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
                 else:
                     if enemy.get_id() == node_type:
                         if rarity <= spawn_rarity:
-                            print('Rarity Adjustment 2 - node', enemy.get_name(), spawn_rarity - rarity)
+                            # print('Rarity Adjustment 2 - node', enemy.get_name(), spawn_rarity - rarity)
                             spawn_lists[spawn_rarity].append((enemy, spawn_rarity - rarity))
                     elif min(rarity + 1, 5) <= spawn_rarity:
-                        print('Rarity Adjustment 2', enemy.get_name(), spawn_rarity - (rarity + 1))
+                        # print('Rarity Adjustment 2', enemy.get_name(), spawn_rarity - (rarity + 1))
                         spawn_lists[spawn_rarity].append((enemy, spawn_rarity - (rarity + 1)))
         for spawn_rarity in rarities:
             enemy, boost = spawn_lists[spawn_rarity][randint(0, len(spawn_lists[spawn_rarity]) - 1)]
@@ -237,6 +237,9 @@ class Map:
 
     def set_enabled(self, enabled):
         self._enabled = enabled
+
+    def get_node_values(self):
+        return self._nodes, self._path_nodes[0], self._path_nodes[-1]
 
     # Explored nodes
     def load_node_exploration(self, explored_nodes, explored_node_counters):

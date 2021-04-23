@@ -65,12 +65,12 @@ def get_screen(console, screen_data):
 def handle_action(console, action):
     if action == 0:
         console.text = '\n\tSaving Game...'
-        Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: console.set_screen(TOWN_MAIN)), 0.5)
+        Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: console.set_screen(TOWN_MAIN, False)), 0.5)
     elif action == 1:
         console.text = '\n\tSaving Game...'
         console.loading_progress = {}
         Refs.app.reset_loader()
-        Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: console.set_screen(NEW_GAME)), 0.5)
+        Clock.schedule_once(lambda dt: Refs.gc.save_game(lambda: console.set_screen(NEW_GAME, False)), 0.5)
     else:
         # Check Tavern and Crafting Locks
         if action == CRAFTING_MAIN:
@@ -83,4 +83,4 @@ def handle_action(console, action):
                 console.error_time = 2.5
                 console.error_text = 'You need at least 20k Varenth and Renown of H to visit the tavern.'
                 return
-        console.set_screen(action)
+        console.set_screen(action, True)

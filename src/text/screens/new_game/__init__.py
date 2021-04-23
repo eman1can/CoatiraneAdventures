@@ -13,7 +13,7 @@ def get_screen(console, screen_data):
 
 def handle_action(console, action):
     if action == 0:
-        console.set_screen(SAVE_SELECT)
+        console.set_screen(SAVE_SELECT, True)
     else:
         Refs.gc.save_game(None)
         Refs.app.stop()

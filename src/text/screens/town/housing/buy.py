@@ -82,9 +82,9 @@ def handle_action(console, action):
         housing_name, down_payment = action.split('#')[1:]
         housing = Refs.gc['housing'][housing_name]
         if Housing.buy_housing(Refs.gc.get_housing(), housing, int(down_payment)):
-            console.set_screen(HOUSING_MAIN)
+            console.set_screen(HOUSING_MAIN, False)
         else:
             console.error_time = 2.5
             console.error_text = 'You don\'t have that much money!'
     else:
-        console.set_screen(action)
+        console.set_screen(action, True)

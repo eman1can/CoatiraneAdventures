@@ -28,7 +28,7 @@ def get_screen(console, screen_data):
 
 def handle_action(console, action):
     if action.startswith(INTRO_DOMAIN):
-        console.set_screen(action)
+        console.set_screen(action, False)
     else:
         console.new_game_info['domain'] = action
-        console.set_screen(INTRO_SELECT)
+        console.set_screen(INTRO_SELECT, True)

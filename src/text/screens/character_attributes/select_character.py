@@ -175,6 +175,6 @@ def handle_action(console, action):
         Refs.gc.get_current_party()[index] = char
         if char is None and index < 8:
             Refs.gc.get_current_party()[index + 8] = char
-        console.set_screen(DUNGEON_MAIN)
+        console.set_screen(DUNGEON_MAIN, False)
     else:
-        console.set_screen(action)
+        console.set_screen(action, True)

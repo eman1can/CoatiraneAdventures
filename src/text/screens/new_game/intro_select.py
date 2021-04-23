@@ -71,5 +71,5 @@ def get_screen(console, screen_data):
 
 def handle_action(console, action):
     create_new_save(console.new_game_info['save_slot'], console.new_game_info['name'], console.new_game_info['gender'], 'symbol_1', console.new_game_info['domain'], action)
-    console.set_screen(GAME_LOADING)
+    console.set_screen(GAME_LOADING, False)
     Refs.app.start_loading(console, console.new_game_info['save_slot'], INTRO_NEWS)

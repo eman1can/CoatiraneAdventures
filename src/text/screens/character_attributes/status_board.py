@@ -100,7 +100,7 @@ def get_screen(console, screen_data):
             else:
                 tiles[tile_index] = f'{OPT_C}{option_index + tile_index}{END_OPT_C} {tiles[tile_index]}'
                 tile_sizes.append(len(f'{OPT_C}{END_OPT_C}'))
-                _options[str(option_index + tile_index)] = f'{STATUS_BOARD_UNLOCK}:{rank}#{character_id}#{tile_index}'
+                _options[str(option_index + tile_index)] = (f'{STATUS_BOARD_UNLOCK}:{rank}#{character_id}#{tile_index}', True)
 
     # Make top line
     display_string += '\n\t┌'
@@ -137,12 +137,12 @@ def get_screen(console, screen_data):
     right_string = f'Next Status Board {OPT_C}2{END_OPT_C}'
 
     if left:
-        _options['1'] = f'{STATUS_BOARD}:{int(rank) - 1}#{character_id}'
+        _options['1'] = (f'{STATUS_BOARD}:{int(rank) - 1}#{character_id}', False)
     else:
         left_string = f'[s]{left_string}[/s]'
 
     if right:
-        _options['2'] = f'{STATUS_BOARD}:{int(rank) + 1}#{character_id}'
+        _options['2'] = (f'{STATUS_BOARD}:{int(rank) + 1}#{character_id}', False)
     else:
         right_string = f'[s]{right_string}[/s]'
 
@@ -153,13 +153,13 @@ def get_screen(console, screen_data):
 
     display_string += f'\n\n\t{OPT_C}0:{END_OPT_C} Back\n'
 
-    _options['3'] = f'{STATUS_BOARD_UNLOCK}:{rank}#{character_id}#all'
-    _options['4'] = STATUS_BOARD_VIEW_FALNA
+    _options['3'] = (f'{STATUS_BOARD_UNLOCK}:{rank}#{character_id}#all', True)
+    _options['4'] = (STATUS_BOARD_VIEW_FALNA, True)
     _options['0'] = BACK
     return display_string, _options
 
 
 def handle_action(console, action):
-    console.set_screen(action)
+    console.set_screen(*action)
 
 

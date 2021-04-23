@@ -90,7 +90,7 @@ def handle_action(console, action):
     if action == 'end_encounter':
         floor_data.end_encounter()
         Refs.app.scroll_widget.opacity = 0
-        console.set_screen(DUNGEON_BATTLE)
+        console.set_screen(DUNGEON_BATTLE, False)
         return
     elif action == 'restore_save':
         floor_map = floor_data.get_floor().get_map()
@@ -105,7 +105,7 @@ def handle_action(console, action):
         floor_map.clear_current_node()
         Refs.app.scroll_widget.opacity = 0
         Refs.gc.reset_floor_data()
-        console.set_screen(DUNGEON_MAIN)
+        console.set_screen(DUNGEON_MAIN, False)
         return
     elif action == DUNGEON_HARVEST_RESULT:
         current_harvesting_knife = Refs.gc.get_inventory().get_current_harvesting_knife()
@@ -113,4 +113,6 @@ def handle_action(console, action):
             console.error_time = 2.5
             console.error_text = 'You have no harvesting knife selected!'
             return
-    console.set_screen(action)
+        console.set_screen(DUNGEON_HARVEST_RESULT, False)
+        return
+    console.set_screen(action, False)

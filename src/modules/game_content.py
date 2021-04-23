@@ -58,11 +58,16 @@ class GameContent:
     @staticmethod
     def format_number(number):
         string = ''
-        for index, char in enumerate(reversed(str(number))):
+        number = str(number)
+        end = ''
+        if '.' in number:
+            end = number[number.index('.'):]
+            number = number[:number.index('.')]
+        for index, char in enumerate(reversed(number)):
             if index % 3 == 0 and index != 0:
                 string = ',' + string
             string = char + string
-        return string
+        return string + end
 
     def get_item_data(self, item_id):
         if item_id in self._data['items']:
@@ -179,6 +184,9 @@ class GameContent:
 
     def get_skill_level(self):
         return list(self._unlocked_perks.values()).count(True)
+
+    def add_skill_point(self):
+        self._perk_points += 1
 
     def get_domain(self):
         return self._domain
@@ -382,7 +390,7 @@ class GameContent:
     def get_magic_stone_types(self):
         items = []
         for drop_item_id, drop_item in self._data['drop_items'].items():
-            if drop_item_id.endswith('magic_stone'):
+            if drop_item_id.endswith('magic_stone') and Refs.gc.get_lowest_floor() >= drop_item.get_visible_floor():
                 items.append(drop_item)
         return items
     
@@ -390,14 +398,15 @@ class GameContent:
         items = []
         for drop_item_id, drop_item in self._data['drop_items'].items():
             if drop_item_id.endswith('wing') or drop_item_id.endswith('venom') or drop_item_id.endswith('blood') or drop_item_id.startswith('egg') or drop_item_id.endswith('tongue') or drop_item_id.endswith('meat'):
-                items.append(drop_item)
+                if Refs.gc.get_lowest_floor() >= drop_item.get_visible_floor():
+                    items.append(drop_item)
         return items
 
     def get_raw_materials(self):
         items = self.get_ore_types()
         for drop_item_id, drop_item in self._data['drop_items'].items():
             if drop_item_id.endswith('scale') or drop_item_id.endswith('hide') or drop_item_id.endswith('claw') or drop_item_id.endswith('fang') or drop_item_id.endswith('horn'):
-                if drop_item_id.startswith('raw'):
+                if drop_item_id.startswith('raw') and Refs.gc.get_lowest_floor() >= drop_item.get_visible_floor():
                     items.append(drop_item)
         return items
 
@@ -405,23 +414,28 @@ class GameContent:
         items = self.get_ingot_types()
         for drop_item_id, drop_item in self._data['drop_items'].items():
             if drop_item_id.endswith('processed') or drop_item_id.endswith('ingot'):
-                items.append(drop_item)
+                if Refs.gc.get_lowest_floor() >= drop_item.get_visible_floor():
+                    items.append(drop_item)
         return items
 
-    def get_ingredient_types(self):
-        return list(self._data['ingredients'].values())
+    def get_ingredients(self):
+        items = []
+        for item_id, item in self._data['items'].items():
+            if item.is_ingredient() and Refs.gc.get_lowest_floor() >= item.get_visible_floor():
+                items.append(item)
+        return items
 
     def get_ore_types(self):
         items = []
         for item_id, item in self._data['items'].items():
-            if item_id.endswith('ore'):
+            if item_id.endswith('ore') and Refs.gc.get_lowest_floor() >= item.get_visible_floor():
                 items.append(item)
         return items
 
     def get_ingot_types(self):
         items = []
         for item_id, item in self._data['items'].items():
-            if item_id.endswith('ingot'):
+            if item_id.endswith('ingot') and Refs.gc.get_lowest_floor() >= item.get_visible_floor():
                 items.append(item)
         return items
 

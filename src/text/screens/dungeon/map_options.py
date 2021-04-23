@@ -91,6 +91,6 @@ def handle_action(console, action):
         new_radius = action.split('#')
         floor_map.set_radius(int(new_radius))
     else:
-        console.set_screen(f'{MAP_OPTIONS}:{action}')
+        console.set_screen(f'{MAP_OPTIONS}:{action}', True)
         return
-    console.set_screen(MAP_OPTIONS)
+    console.set_screen(MAP_OPTIONS, False)

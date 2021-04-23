@@ -50,5 +50,5 @@ def get_screen(console, screen_data):
 def handle_action(console, action):
     Refs.gc.get_floor_data().end_encounter()
     Refs.app.scroll_widget.opacity = 0
-    console.set_screen(DUNGEON_BATTLE)
+    console.set_screen(DUNGEON_BATTLE, False)
 

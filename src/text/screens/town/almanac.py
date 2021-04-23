@@ -13,4 +13,4 @@ def get_screen(console, screen_data):
 
 
 def handle_action(console, action):
-    console.set_screen(action)
+    console.set_screen(action, True)

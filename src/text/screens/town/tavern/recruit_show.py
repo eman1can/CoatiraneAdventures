@@ -104,7 +104,7 @@ def get_screen(console, screen_data):
 
 def handle_action(console, action):
     if '#' in action:
-        console.set_screen(action)
+        console.set_screen(action, True)
     else:
         character = Refs.gc.get_char_by_id(action)
         for item_id, count in character.get_recruitment_items().items():
@@ -124,4 +124,4 @@ def handle_action(console, action):
                 console.error_text = 'You don\'t have the required items!'
             else:
                 Refs.gc.obtain_character(character.get_index(), character.is_support())
-                console.set_screen(TAVERN_RECRUIT)
+                console.set_screen(TAVERN_RECRUIT, False)

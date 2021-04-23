@@ -24,8 +24,8 @@ def handle_action(console, action):
     else:
         Refs.gc.update_varenth(-cost)
         success = randint(1, 99) < 33
-        if success:
-            chars = Refs.gc.get_non_obtained_characters()
+        chars = Refs.gc.get_non_obtained_characters()
+        if success and len(chars) > 0:
             count = choices([x + 1 for x in range(len(chars))], [len(chars) - x for x in range(len(chars))])[0]
             # Change to choose characters based on a recruitment weight
             recruited = choices(chars, k=count)
@@ -34,4 +34,4 @@ def handle_action(console, action):
                 string += char.get_id() + '#'
         else:
             string = 'failure#'
-        console.set_screen(f'{TAVERN_RECRUIT_SHOW}:#{string[:-1]}')
+        console.set_screen(f'{TAVERN_RECRUIT_SHOW}:#{string[:-1]}', False)

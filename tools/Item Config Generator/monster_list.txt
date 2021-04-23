@@ -467,7 +467,7 @@ Metal Rabbit
 Found on Floors 14, 15, 24, 25, 28, 29, 37, and 39
 A large rabbit that has metal skin.
 Type: Wind, Thunder
-Hardness: None(hard), (soft)
+Hardness: None(hard), 7.5(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide
@@ -609,7 +609,7 @@ Kelpie
 Found on Floors 43, 44, 45, and 46
 A horse monster with blue hair and a blue mane. Its fins allow it to run through water as if it were on land.
 Type: Water, Wind
-Hardness: None(hard), (soft)
+Hardness: None(hard), 8.5(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide and Wing
@@ -673,7 +673,7 @@ Power Bull
 Found on Floors 52, 53, and 54
 A large bull monster with long horns and a deadly speed.
 Type: Earth
-Hardness: (hard), (soft)
+Hardness: (hard), 9.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide and Horn
@@ -684,7 +684,7 @@ Grand Treant
 Found on Floors 49, 50, 55, and 56
 An extremely large tree monster with a face, similar to Titan Alms. It is a trap monster unable to move.
 Type: Water, Earth
-Hardness: None(hard), (soft)
+Hardness: None(hard), 9.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide
@@ -714,7 +714,7 @@ Barbarian
 Found on Floors 52, 53, 54, 55, 56, and 57
 A two meter tall monster similar to the Minotaur with two large and curved horns, black skin, red hair, and yellow eyes.
 Type: Dark
-Hardness: None(hard), (soft)
+Hardness: None(hard), 9.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide and Meat
@@ -745,7 +745,7 @@ Skull Sheep
 Found on Floors 51, 52, and 53
 A sheep monster made entirely of bones. It has a large dark colored piece of skin that covers its body starting from the back of its head which makes it hard to predict its attacks, makes it appear as if it's a skull floating in empty space, and allows it to camouflage within the natural duskiness of the lower floors.  It can also fire piles at its opponents.
 Type: Dark
-Hardness: (hard), (soft)
+Hardness: (hard), 9.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide and Horn
@@ -756,7 +756,7 @@ Loup Garou
 Found on Floors 49, 50, and 51
 A muscular humanoid monster with a wolf head. They use white stone knife or cudgel weapons and their agility to fight. Among the monsters that made it to the surface, groups of them were known to destroy villages on moonlit nights more than any other monster.
 Type: Dark, Earth
-Hardness: (hard), (soft)
+Hardness: (hard), 9.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Fang and Hide
@@ -787,7 +787,7 @@ Fomoire
 Found on Floors 54, 55, 56, 57, 58, and 59
 A goat monster that can form huge groups.
 Type: Dark, Earth
-Hardness: (hard), (soft)
+Hardness: (hard), 9.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide and Horn
@@ -798,7 +798,7 @@ Black Rhino
 Found on Floors 49, 50, 51, and 52
 A rhinoceros monster that walks on two legs.
 Type: Dark
-Hardness: (hard), (soft)
+Hardness: (hard), 9.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide and Horn
@@ -809,7 +809,7 @@ Deformis Spider
 Found on Floors 55, 56, and 57
 A large spider monster that is red and purple. It has eight legs and multiple eyes.
 Type: Dark
-Hardness: (hard), (soft)
+Hardness: (hard), 10.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Claw, Hide, and Blood
@@ -883,7 +883,7 @@ Titan Alm
 Found on Floors 49, 50, 51, and 52
 A large plant monster that will eat allies and foes alike.
 Type: Earth, Water
-Hardness: None(hard), (soft)
+Hardness: None(hard), 8.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide and Meat
@@ -893,7 +893,7 @@ Unicorn
 Found on Floors 32, 33, 34, 35, 37, and 39
 An extremely rare monster that is very rarely encountered and has a heautiful horn.
 Type: Light
-Hardness: (hard), (soft)
+Hardness: (hard), 7.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide, Blood, and Horn
@@ -913,7 +913,7 @@ Ogre
 Found on Floors 35, 36, and 38
 A large demon monster.
 Type: Dark, Earth
-Hardness: None(hard), (soft)
+Hardness: None(hard), 7.5(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide and Meat
@@ -933,7 +933,7 @@ Gryphon
 Found on Floors 32, 33, 34, 55, and 56
 A monster with the body, tail and back legs of a lion, and the head, wings, and front legs of an eagle.
 Type: Earth
-Hardness: None(hard), (soft)
+Hardness: None(hard), 7.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide
@@ -943,7 +943,7 @@ Arachne
 Found on Floors 27, 28, 29, 30, and 31
 A female monster that has the upper body of a woman and the lower half of a spider. It has fangs and compound eyes. It can spit a highly acidic liquid that can liquefy its targets.
 Type: Dark
-Hardness: None(hard), (soft)
+Hardness: None(hard), 7.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide and Venom
@@ -953,7 +953,7 @@ Hippogriff
 Found on Floors 57, 58, 59, and 60
 A flying monster which has the front half of an eagle and the hind half of a horse.
 Type: Wind
-Hardness: None(hard), (soft)
+Hardness: None(hard), 8.0(soft)
 Defining Effect:
 Sub Effect:
 Drops: Hide

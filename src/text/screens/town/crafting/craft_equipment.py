@@ -8,7 +8,7 @@ NAMES = ['Durability', 'Health', 'Mana', 'Physical Attack', 'Magical Attack', 'D
 def get_screen(console, screen_data):
     console.header_callback = get_town_header
     _options = {'0': BACK}
-
+    print(screen_data)
     recipe_id, material_ids = screen_data.split('#', 1)
     recipe = Refs.gc['recipes'][recipe_id]
 
@@ -23,8 +23,11 @@ def get_screen(console, screen_data):
             materials.append(None)
 
     material_names = []
-    equipment_name = f'{materials[0].get_name()} {equipment.get_name()}'
     can_craft = materials[0] is not None
+    if materials[0] is not None:
+        equipment_name = f'{materials[0].get_name()} {equipment.get_name()}'
+    else:
+        equipment_name = equipment.get_name()
     if not equipment.is_tool():
         material_names += ['Defining', 'First Sub Material', 'Second Sub Material']
         if materials[1] is not None:
@@ -36,7 +39,7 @@ def get_screen(console, screen_data):
     else:
         material_names += ['Defining']
 
-    for material_type in recipe.get_ingredients()[1:]:
+    for material_type in list(recipe.get_ingredients().keys())[1:]:
         material_names.append(material_type.title())
 
     display_text += '\n'
@@ -61,7 +64,7 @@ def get_screen(console, screen_data):
 
     defining_material_count = list(recipe.get_ingredients().values())[0]
 
-    material_counts = list(recipe.get_ingredients().keys())
+    material_counts = list(recipe.get_ingredients().values())
     minimum_hardness = 0
     maximum_hardness = 0
     if not equipment.is_tool():
@@ -89,19 +92,18 @@ def get_screen(console, screen_data):
     maximum_hardness /= defining_material_count
     maximum_hardness *= 1.5
 
-    if minimum_hardness != 0:
-        names.append('Hardness')
-        max_name_length = len(names[-1])
-        minimums.append(Refs.gc.format_number(round(minimum_hardness, 1)))
-        max_minimum_length = len(minimums[-1])
-        maximums.append(Refs.gc.format_number(round(maximum_hardness, 1)))
-        max_maximum_length = len(maximums[-1])
+    names.append('Hardness')
+    max_name_length = len(names[-1])
+    minimums.append(Refs.gc.format_number(round(minimum_hardness, 1)))
+    max_minimum_length = len(minimums[-1])
+    maximums.append(Refs.gc.format_number(round(maximum_hardness, 1)))
+    max_maximum_length = len(maximums[-1])
 
     divider = 0
     for material_count in recipe.get_ingredients().values():
         divider += material_count
 
-    for index, weight in enumerate(weights[1:]):
+    for index, weight in enumerate(weights):
         if weight == 0:
             continue
         names.append(NAMES[index])
@@ -111,6 +113,8 @@ def get_screen(console, screen_data):
         minimum = 0
         maximum = 0
         for material in materials:
+            if material is None:
+                continue
             minimum += material.get_all_weights()[index] * weight * minimum_hardness
             maximum += material.get_all_weights()[index] * weight * maximum_hardness
         minimum /= divider
@@ -169,16 +173,16 @@ def get_screen(console, screen_data):
         display_text += '\n\t' + item_name.ljust(max_material_item_name) + material_item_numbers[index].ljust(max_material_item_number) + ' → ' + material_item_cost_numbers[index].ljust(max_material_item_cost)
 
     display_text += '\n'
-    for index, material in materials:
+    for index, material in enumerate(materials):
         if index == 2 and not equipment.is_tool():
             if materials[1] is None:
                 continue
-        if material is None:
+        if material is not None:
             display_text += f'\n\t{OPT_C}{index + 1}:{END_OPT_C} Change {material_names[index]}'
-            _options[str(index + 1)] = f'{CRAFT_EQUIPMENT_MATERIAL}:{screen_data}#{index}'
         else:
             display_text += f'\n\t{OPT_C}{index + 1}:{END_OPT_C} Add {material_names[index]}'
-            _options[str(index + 1)] = f'{CRAFT_EQUIPMENT_MATERIAL}:{screen_data}#{index}'
+        _options[str(index + 1)] = f'{CRAFT_EQUIPMENT_MATERIAL}:{screen_data}#{index}'
+    print(_options)
     display_text += '\n'
 
     if can_craft:
@@ -208,12 +212,12 @@ def handle_action(console, action):
                 materials.append(None)
 
         # Craft the item and add it to the inventory
-        metadata = {'material_id': material_ids[0]}
+        metadata = {'hash': None, 'material_id': materials[0].get_id()}
         if not equipment.is_tool():
-            if material_ids[1] != 'none':
-                metadata['sub_material1_id'] = material_ids[1]
-                if material_ids[2] != 'none':
-                    metadata['sub_material2_id'] = material_ids[2]
+            if materials[1] is not None:
+                metadata['sub_material1_id'] = materials[1].get_id()
+                if materials[2] is not None:
+                    metadata['sub_material2_id'] = materials[2].get_id()
                 else:
                     metadata['sub_material2_id'] = None
             else:
@@ -224,7 +228,7 @@ def handle_action(console, action):
         Refs.gc.get_inventory().add_item(equipment_item.get_id(), 1, equipment_item.get_metadata())
 
         # Remove Material costs from the inventory
-        material_counts = list(recipe.get_ingredients().keys())
+        material_counts = list(recipe.get_ingredients().values())
         if not equipment.is_tool():
             if materials[0] is not None:
                 if materials[1] is not None:
@@ -239,7 +243,7 @@ def handle_action(console, action):
             print(material_items[index].get_name(), material_count)
             Refs.gc.get_inventory().remove_item(material_items[index].get_id(), material_count)
     else:
-        console.set_screen(action)
+        console.set_screen(action, True)
 
 
 def get_craft_equipment_item(recipe, index, current_text, page_name, page_num):

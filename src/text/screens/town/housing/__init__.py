@@ -46,6 +46,6 @@ def handle_action(console, action):
         if not Refs.gc.get_housing().pay_bill():
             console.error_time = 2.5
             console.error_text = 'You don\'t have enough money to cover the payment!'
-        console.set_screen(HOUSING_MAIN)
+        console.set_screen(HOUSING_MAIN, False)
     else:
-        console.set_screen(action)
+        console.set_screen(action, True)

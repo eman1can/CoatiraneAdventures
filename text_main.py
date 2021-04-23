@@ -92,7 +92,7 @@ ClickableScrollView:
 
     def finished_loading(self):
         self.log('Finished Loading')
-        self._console.set_screen(self._end_screen)
+        self._console.set_screen(self._end_screen, False)
 
     def close_window(self, *args):
         self.log('Save Game')

@@ -58,7 +58,7 @@ class Console(TextInput):
 
         super().__init__(**kwargs)
 
-        self.set_screen(NEW_GAME)
+        self.set_screen(NEW_GAME, False)
 
     def on_global_font_size(self, *args):
         self._refresh()
@@ -184,7 +184,7 @@ class Console(TextInput):
         if option in self.get_options():
             action = self.get_options()[option]
             if action == BACK:
-                self.set_screen(BACK)
+                self.set_screen(BACK, False)
             else:
                 getattr(self._current_module, 'handle_action')(self, action)
         elif self._current_screen == INTRO_DOMAIN_NAME:
@@ -220,41 +220,23 @@ class Console(TextInput):
     def do_backspace(self, from_undo=False, mode='bkspc'):
         self.current_text = self.current_text[:-1]
 
-    def save_screen(self, class_name):
-        if self._current_screen in self._back_list:
-            for key in reversed(list(self._back_list.keys())):
-                if key == self._current_screen:
-                    break
-                self._back_list.pop(key)
-            return False
-        if class_name in self._back_list:
-            for key in reversed(list(self._back_list.keys())):
-                if key == class_name:
-                    self._back_list.pop(key)
-                    break
-                self._back_list.pop(key)
-            return False
-        if self._current_screen == class_name:
-            return False
-        self._back_list[self._current_screen] = self._current_screen_data
-        return True
-
     def break_down_name(self, screen_name):
         if ':' in screen_name:
             return screen_name.split(':')
         return screen_name, None
 
     # Screen manager options
-    def set_screen(self, screen_name):
+    def set_screen(self, screen_name, save_last):
         class_name, screen_data = self.break_down_name(screen_name)
+        if class_name in self._back_list.keys():
+            print(class_name, self._back_list)
+            while class_name in self._back_list.keys():
+                self._back_list.pop(list(self._back_list)[-1])
         if class_name == BACK:
             class_name = list(self._back_list.keys())[-1]
             screen_data = self._back_list.pop(class_name)
-        else:
-            if self.save_screen(class_name):
-                print('Set to', screen_name)
-                print('\t', self._back_list)
-                print()
+        elif save_last:
+            self._back_list[self._current_screen] = self._current_screen_data
 
         self._current_screen = class_name
         self._current_screen_data = screen_data
@@ -266,7 +248,7 @@ class Console(TextInput):
 
     def set_loading_progress(self, label, value, max):
         self.loading_progress[label] = (value, max)
-        self.set_screen(GAME_LOADING)
+        self.set_screen(GAME_LOADING, False)
 
     def update_calendar_callback(self):
         Refs.gc.set_calendar_callback(self._refresh_header)
@@ -286,9 +268,9 @@ class Console(TextInput):
         if self._current_screen is None:
             return
         if self._current_screen_data:
-            self.set_screen(self._current_screen + ':' + self._current_screen_data)
+            self.set_screen(self._current_screen + ':' + self._current_screen_data, False)
         else:
-            self.set_screen(self._current_screen)
+            self.set_screen(self._current_screen, False)
 
     def _refresh_header(self):
         if self._current_screen is None:

@@ -31,7 +31,7 @@ def handle_action(console, action):
     save_slot = int(action[-1])
     if action.startswith('new'):
         console.new_game_info['save_slot'] = save_slot
-        console.set_screen(INTRO_DOMAIN_NAME)
+        console.set_screen(INTRO_DOMAIN_NAME, True)
     else:
-        console.set_screen(GAME_LOADING)
+        console.set_screen(GAME_LOADING, False)
         Refs.app.start_loading(console, save_slot, TOWN_MAIN)

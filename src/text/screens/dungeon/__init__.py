@@ -1,3 +1,6 @@
+from random import randint
+
+from game.enemy import NICKNAMES
 from refs import END_OPT_C, OPT_C, Refs
 from text.screens.common_functions import center
 from text.screens.screen_names import BACK, CHARACTER_SELECTION, DUNGEON_CONFIRM, DUNGEON_MAIN, INVENTORY
@@ -217,7 +220,7 @@ def get_screen(console, screen_data):
         char = party[index + gap]
     if party[index + gap - 8]:
         _options[str(index + 6)] = f'{CHARACTER_SELECTION}:{index + gap}#none'
-
+    _options['5683'] = 'run_simulation'
     return display_text, _options
 
 
@@ -232,6 +235,123 @@ def handle_action(console, action):
         elif index == -1:
             index = 9
         Refs.gc.set_current_party_index(index)
-        console.set_screen(DUNGEON_MAIN)
+        console.set_screen(DUNGEON_MAIN, False)
+    elif action == 'run_simulation':
+        run_simulation(1000)
     else:
-        console.set_screen(action)
+        console.set_screen(action, True)
+
+
+def run_simulation(count):
+    N, S, E, W = 1, 2, 4, 8  # 0001 0010 0100 1000
+
+    counters = {}
+
+    for floor_index in range(60):
+        print(floor_index)
+        floor = Refs.gc['floors'][floor_index + 1]
+        counters[floor_index] = {}
+
+        for (enemy, rarity) in floor.get_enemies().values():
+            counters[floor_index][enemy.get_name()] = {
+                'Minimum Spawns': 0,
+                'Maximum Spawns': 0,
+                'Average Spawns': 0
+            }
+
+        counters[floor_index]['Minimum Movements'] = 0
+        counters[floor_index]['Maximum Movements'] = 0
+        counters[floor_index]['Average Movements'] = 0
+        counters[floor_index]['Minimum Encounters'] = 0
+        counters[floor_index]['Maximum Encounters'] = 0
+        counters[floor_index]['Average Encounters'] = 0
+        for (enemy, rarity) in floor.get_enemies().values():
+            counters[floor_index][enemy.get_name()]['Minimum Spawns'] = 0
+            counters[floor_index][enemy.get_name()]['Maximum Spawns'] = 0
+            counters[floor_index][enemy.get_name()]['Average Spawns'] = 0
+        run_drop_items = []
+        for run in range(count):
+            # Solve the path to the end
+            nodes, start, end = floor.get_map().get_node_values()
+            visited = {}
+
+            for node in nodes.keys():
+                visited[node] = False
+
+            x, y = start
+            visited[start] = True
+            travelled = [(0, 0)]
+            distance = 0
+            encounters = 0
+            spawns = {}
+            drop_items = {}
+            for (enemy, rarity) in floor.get_enemies().values():
+                spawns[enemy.get_name()] = 0
+
+            while (x, y) != end:
+                options = []
+                if (nodes[(x, y)] & N) == N and travelled[-1] != S and not visited[(x, y - 1)]:
+                    options.append((0, -1))
+                if (nodes[(x, y)] & E) == E and travelled[-1] != W and not visited[(x + 1, y)]:
+                    options.append((1, 0))
+                if (nodes[(x, y)] & S) == S and travelled[-1] != N and not visited[(x, y + 1)]:
+                    options.append((0, 1))
+                if (nodes[(x, y)] & W) == W and travelled[-1] != E and not visited[(x - 1, y)]:
+                    options.append((-1, 0))
+
+                # Simulate encounter
+                if randint(1, 100) <= 15:
+                    encounters += 1
+                    enemies = floor.generate_enemies('none', 0)
+                    for enemy in enemies:
+                        name = enemy.get_name()
+                        for nickname in NICKNAMES[1:]:
+                            if name.startswith(nickname):
+                                name = name[len(nickname):]
+                                break
+                        spawns[name] += 1
+                        drops = Refs.gc['enemies'][enemy.get_id()].generate_drop(enemy.get_boost(), 17)
+                        for (drop, drop_count) in drops:
+                            if drop not in drop_items:
+                                drop_items[drop] = 0
+                            drop_items[drop] += drop_count
+
+                if len(options) == 0:
+                    dx, dy = travelled.pop()
+                    x, y = x - dx, y - dy
+                    distance += 1
+                else:
+                    dx, dy = options[randint(0, len(options) - 1)]
+                    travelled.append((dx, dy))
+                    x, y = x + dx, y + dy
+                    visited[(x, y)] = True
+                    distance += 1
+            if counters[floor_index]['Minimum Movements'] == 0:
+                counters[floor_index]['Minimum Movements'] = distance
+            else:
+                counters[floor_index]['Minimum Movements'] = min(distance, counters[floor_index]['Minimum Movements'])
+            counters[floor_index]['Maximum Movements'] = max(distance, counters[floor_index]['Maximum Movements'])
+            counters[floor_index]['Average Movements'] += distance
+            if counters[floor_index]['Minimum Encounters'] == 0:
+                counters[floor_index]['Minimum Encounters'] = encounters
+            else:
+                counters[floor_index]['Minimum Encounters'] = min(encounters, counters[floor_index]['Minimum Encounters'])
+            counters[floor_index]['Maximum Encounters'] = max(encounters, counters[floor_index]['Maximum Encounters'])
+            counters[floor_index]['Average Encounters'] += encounters
+            for enemy, spawns in spawns.items():
+                if counters[floor_index][enemy]['Minimum Spawns'] == 0:
+                    counters[floor_index][enemy]['Minimum Spawns'] = spawns
+                else:
+                    counters[floor_index][enemy]['Minimum Spawns'] = min(spawns, counters[floor_index][enemy]['Minimum Spawns'])
+                counters[floor_index][enemy]['Maximum Spawns'] = max(spawns, counters[floor_index][enemy]['Maximum Spawns'])
+                counters[floor_index][enemy]['Average Spawns'] += spawns
+            run_drop_items.append(drop_items)
+
+        counters[floor_index]['Average Movements'] /= count
+        counters[floor_index]['Average Encounters'] /= count
+        for (enemy, rarity) in floor.get_enemies().values():
+            counters[floor_index][enemy.get_name()]['Average Spawns'] /= count
+        counters[floor_index]['Drop Items'] = run_drop_items
+    file = open('Counters.txt', 'w', encoding='utf-8')
+    file.write(str(counters))
+    file.close()

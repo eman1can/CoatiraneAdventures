@@ -68,4 +68,4 @@ def handle_action(console, action):
     if action.startswith('use'):
         pass
     else:
-        console.set_screen(action)
+        console.set_screen(action, True)
