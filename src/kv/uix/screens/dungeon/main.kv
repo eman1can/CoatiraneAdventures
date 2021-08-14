@@ -77,10 +77,7 @@
         on_release: root.on_descend()
     SnapCarousel:
         id: portfolio
-        loop: True
-        on_change:
-            root.on_widget_move(self.index)
-            indexer.update_sources(root.content.get_current_party_index())
+#        on_index: indexer.update_sources(root.content.get_current_party_index())
         size_hint: app.get_dkey('dm.cp s_h')
         pos_hint: app.get_dkey('dm.cp p_h')
     PartyIndexer:
@@ -97,8 +94,8 @@
         arrow_second_ph: app.get_dkey('dm.ra p_h')
         on_first: portfolio.load_previous()
         on_second: portfolio.load_next()
-    Button:
-        text: 'Test add bonus'
-        size_hint: 0.1, 0.1
-        pos_hint: {'right': 1, 'top': 1}
-        on_release: root.add_bonus()
+#    Button:
+#        text: 'Test add bonus'
+#        size_hint: 0.1, 0.1
+#        pos_hint: {'right': 1, 'top': 1}
+#        on_release: root.add_bonus()

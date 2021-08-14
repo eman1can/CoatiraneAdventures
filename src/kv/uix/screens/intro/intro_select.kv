@@ -1,0 +1,190 @@
+#:import PPCHoverPathButton kivy.uix.buttonversions.PPCHoverPathButton
+#:import TypeFlag uix.screens.character_display.attributes.flags.TypeFlag
+#:import ElementFlag uix.screens.character_display.attributes.flags.ElementFlag
+
+<IntroSelect>:
+    name: 'intro_select'
+    PPCHoverPathButton:
+        id: back_button
+        path: 'buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    Label:
+        id: instructions
+        size_hint: 0.75, 0.2
+        text_size: self.size
+        pos_hint: {'top': 1, 'center_x': 0.5}
+        text: 'Oh almighty ' + root.god_name + ', you have two adventurers interested in joining your fledgling family.\nYou only have the finances to support yourself and one adventurer.\nWhich do you choose?'
+        halign: 'left'
+        font_name: 'Gabriola'
+        font_size: '30pt'
+        color: 0, 0, 0, 1
+    HoverPathButton:
+        size_hint: 0.5, 0.725
+        path: 'buttons/character_selection'
+        on_release: root.choose_character(0)
+    HoverPathButton:
+        size_hint: 0.5, 0.725
+        pos_hint: {'x': 0.5}
+        path: 'buttons/character_selection'
+        on_release: root.choose_character(1)
+    Label:
+        id: ais_label
+        size_hint: 0.3, 0.1
+        pos_hint: {'right': 0.5, 'y': 0.625}
+        text: 'Ais Wallenstein'
+        font_name: 'Precious'
+        size: self.texture_size
+        color: app.get_dkey('ss.ngal c')
+        font_size: '50pt'
+    Image:
+        size_hint: 0.1875, 0.25
+        pos_hint: {'x': 0.0625, 'top': 0.525 + 0.1}
+        source: 'res/characters/a_whisper_of_wind_ais/a_whisper_of_wind_ais_full.png'
+    ElementFlag:
+        type: 'wind'
+        size_hint: 0.03125, 0.1758
+        pos_hint: {'x': 0.03125, 'top': 0.537 + 0.1}
+    TypeFlag:
+        type: 'physical'
+        size_hint: 0.141, 0.0652
+        pos_hint: {'x': 0.03125, 'y': 0.525 + 0.1}
+    Label:
+        id: ais_description
+        size_hint: 0.25, 0.25
+        pos_hint: {'right': 0.5, 'top': 0.625}
+        text_size: self.size
+        text: 'Race: Human\nGender: Female\nAge: 20\n\nA young adventurer who loves slicing things and doesn\'t show much emotion.'
+        color: 0, 0, 0, 1
+        font_name: 'Gabriola'
+        font_size: '24pt'
+    Label:
+        text: 'Total Stats'
+        font_name: 'Precious'
+        height: self.texture_size[1]
+        color: 0, 0, 0, 1
+        font_size: '30pt'
+        size_hint: 0.25, 0.075
+        pos_hint: {'top': 0.375}
+    StatBox:
+        font: 'Gabriola'
+        color: 1, 1, 1, 1
+        number_color: 0, 0, 0, 1
+        size_hint: 0.2, 0.25
+        pos_hint: {'x': 0.025, 'top': 0.3}
+        health: 175
+        mana: 60
+        phy_attack: 15
+        mag_attack: 10
+        defense: 15
+    Label:
+        text: 'Total Abilities'
+        font_name: 'Precious'
+        height: self.texture_size[1]
+        color: 0, 0, 0, 1
+        font_size: '30pt'
+        size_hint: 0.25, 0.075
+        pos_hint: {'x': 0.25, 'top': 0.375}
+    AbilityStatBox:
+        font: 'Gabriola'
+        color: 1, 1, 1, 1
+        size_hint: 0.2, 0.25
+        pos_hint: {'x': 0.275, 'top': 0.3}
+        strength: 15
+        strength_path: 'icons/I.png'
+        magic: 10
+        magic_path: 'icons/I.png'
+        endurance: 15
+        endurance_path: 'icons/I.png'
+        agility: 10
+        agility_path: 'icons/I.png'
+        dexterity: 12
+        dexterity_path: 'icons/I.png'
+    Label:
+        id: bell_label
+        size_hint: 0.3, 0.1
+        pos_hint: {'right': 1, 'y': 0.625}
+        text: 'Bell Cranel'
+        font_name: 'Precious'
+        size: self.texture_size
+        color: app.get_dkey('ss.ngal c')
+        font_size: '50pt'
+    Image:
+        size_hint: 0.1875, 0.25
+        pos_hint: {'x': 0.5625, 'top': 0.525 + 0.1}
+        source: 'res/characters/hero_bell/hero_bell_full.png'
+    ElementFlag:
+        type: 'fire'
+        size_hint: 0.03125, 0.1758
+        pos_hint: {'x': 0.53125, 'top': 0.537 + 0.1}
+    TypeFlag:
+        type: 'physical'
+        size_hint: 0.141, 0.0652
+        pos_hint: {'x': 0.53125, 'y': 0.525 + 0.1}
+    Label:
+        id: bell_description
+        size_hint: 0.25, 0.25
+        pos_hint: {'right': 1, 'top': 0.625}
+        text_size: self.size
+        text: 'Race: Human\nGender: Male\nAge: 18\n\nAn upcoming adventurer that slays his enemies with emotion and pure unbridled power.'
+        color: 0, 0, 0, 1
+        font_name: 'Gabriola'
+        font_size: '24pt'
+    Label:
+        text: 'Total Stats'
+        font_name: 'Precious'
+        height: self.texture_size[1]
+        color: 0, 0, 0, 1
+        font_size: '30pt'
+        size_hint: 0.25, 0.075
+        pos_hint: {'x': 0.5, 'top': 0.375}
+    StatBox:
+        font: 'Gabriola'
+        color: 1, 1, 1, 1
+        number_color: 0, 0, 0, 1
+        size_hint: 0.2, 0.25
+        pos_hint: {'x': 0.525, 'top': 0.3}
+        health: 200
+        mana: 40
+        phy_attack: 25
+        mag_attack: 10
+        defense: 15
+    Label:
+        text: 'Total Abilities'
+        font_name: 'Precious'
+        height: self.texture_size[1]
+        color: 0, 0, 0, 1
+        font_size: '30pt'
+        size_hint: 0.25, 0.075
+        pos_hint: {'x': 0.75, 'top': 0.375}
+    AbilityStatBox:
+        font: 'Gabriola'
+        color: 1, 1, 1, 1
+        size_hint: 0.2, 0.25
+        pos_hint: {'x': 0.775, 'top': 0.3}
+        strength: 25
+        strength_path: 'icons/I.png'
+        magic: 10
+        magic_path: 'icons/I.png'
+        endurance: 15
+        endurance_path: 'icons/I.png'
+        agility: 8
+        agility_path: 'icons/I.png'
+        dexterity: 7
+        dexterity_path: 'icons/I.png'
+
+#    Button:
+#        id: back
+#        size_hint: 0.2, 0.1
+#        pos_hint: {'x': 0.278, 'y': 0.05}
+#        text: 'Back'
+#        font_name: 'Gabriola'
+#        on_release: root.on_back_press()
+#    Button:
+#        id: next
+#        size_hint: 0.2, 0.1
+#        pos_hint: {'right': 0.722, 'y': 0.05}
+#        text: 'Finish'
+#        font_name: 'Gabriola'
+#        on_release: root.goto_next()

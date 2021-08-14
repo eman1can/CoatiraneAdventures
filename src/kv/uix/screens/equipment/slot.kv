@@ -34,8 +34,8 @@
         size_hint: app.get_dkey('deqs.imge s_h')
         pos_hint: app.get_dkey('deqs.imge p_h')
     DurabilityBar:
-        max: 100 if root.item is None else root.item.get_durability()
-        value: 0 if root.item is None else root.item.get_durability_current()
+        #max: 100 if root.item is None else root.item.get_durability()
+        #value: 0 if root.item is None else root.item.get_durability_current()
         opacity: 0 if root.item is None else 1
         size_hint: app.get_dkey('deqs.dbb s_h')
         pos_hint: app.get_dkey('deqs.dbb p_h')

@@ -1,0 +1,367 @@
+#:import IconTray uix.screens.dungeon.icon_tray.IconTray
+
+<BattleHud>:
+    RelativeLayout:
+        id: info
+        opacity: 0
+        Label:
+            id: encounter_label
+#            opacity: 0
+            font_size: self.height * 0.35
+            outline_color: 0, 0, 0, 1
+            outline_width: self.height * 0.02
+            font_name: 'Gabriola'
+            text: 'Encounter X\nTurn X'
+            size_hint: 0.1, 0.2
+            pos_hint: {'x': 0.05, 'top': 0.995}
+        ToggleButton:
+            id: auto_battle
+            size_hint: 0.15, 0.05
+            pos_hint: {'x': 0.025, 'top': 0.975}
+            text: 'Auto Battle'
+            font: 'Gabriola'
+            font_size: self.height * 0.75
+            on_release: root.toggle_auto_battle()
+            opacity: 0
+        ToggleButton:
+            id: toggle_icons
+            size_hint: 0.1, 0.05
+            pos_hint: {'x': 0.2, 'top': 0.975}
+            text: 'Icons'
+            font: 'Gabriola'
+            font_size: self.height * 0.75
+            on_release: root.toggle_icons()
+#            opacity: 0
+        ToggleButton:
+            id: toggle_time_scale
+            size_hint: 0.05, 0.05
+            pos_hint: {'x': 0.325, 'top': 0.975}
+            text: '>>'
+            font: 'Gabriola'
+            font_size: self.height * 0.75
+            on_release: root.toggle_time_scale()
+#            opacity: 0
+    RelativeLayout:
+        id: active
+        MoveHud:
+            id: move_hud
+            size_hint: 1, 0.129
+            pos_hint: {'y': 0.175}
+            opacity: 0
+        Button:
+            id: turn_button
+            opacity: 0
+            size_hint: 0.2, 0.177
+            pos_hint: {'right': 0.95, 'y': 0.005}
+            text: 'GO'
+            on_release: root.take_turn()
+        Image:
+            id: targeting_circle
+            size_hint: 0.075, None
+            height: self.width
+            source: 'icons/targeting_circle.png'
+            opacity: 0
+
+
+<CharacterHud>:
+    # Special Background
+    # Character Image
+    # Special Bar
+    # Special Covers
+
+
+    # 0.02 border
+    # 0.06 bar
+    # 0.01 border
+    # 0.06 bar
+    # 0.02 border
+    # image
+    # 0.02 border
+    # 0.06 bar
+    # 0.01 border
+    # 0.06 bar
+    # 0.01 border
+    # 0.06 bar
+    # 0.02 border
+
+    Image:
+        source: root.character_img_src
+        allow_stretch: True
+        keep_ratio: False
+        canvas:
+            # Gray Background Bottom
+            Color:
+                rgba: 0.156, 0.156, 0.156, 1
+            Rectangle:
+                size: root.width, root.height * 0.24 if root.in_battle else root.height * 0.16
+            # Gray Background Top
+            Rectangle:
+                size: root.width, root.height * (0.17 if root.is_disabled else 0.1) if not root.in_battle else 0
+                pos: 0, root.height * (0.83 if root.is_disabled else 0.9)
+            Color:
+                rgba: 1, 1, 1, 1
+            # Health Bar
+            Rectangle:
+                size: max(root.width * 0.855 * root.health / root.health_max, 0), root.height * 0.06
+                pos: root.width * 0.125, root.height * 0.02
+                texture: root.generate_texture('health', root.width * 0.855 * root.health / root.health_max, root.width * 0.855, root.height * 0.06)
+            # Mana Bar
+            Rectangle:
+                size: max(root.width * 0.855 * root.mana / root.mana_max, 0), root.height * 0.06
+                pos: root.width * 0.125, root.height * 0.09
+                texture: root.generate_texture('mana', root.width * 0.855 * root.mana / root.mana_max, root.width * 0.855, root.height * 0.06)
+            # Special points bar
+            Rectangle:
+                size: max(root.width * 0.855 * root.special_amount / 10, 0), root.height * 0.06 if root.in_battle else 0
+                pos: root.width * 0.125, root.height * 0.16
+                texture: root.generate_texture('special', root.width * 0.855 * root.special_amount / 1000, root.width * 0.855, root.height * 0.06)
+            # Stamina Points Bar
+            Rectangle:
+                size: max(root.width * 0.855 * root.stamina / root.stamina_max, 0), 0 if root.in_battle else root.height * 0.06
+                pos: root.width * 0.125, root.height * 0.92
+                texture: root.generate_texture('stamina', root.width * 0.855 * root.stamina / root.stamina_max, root.width * 0.855, root.height * 0.06)
+            # Revive Status
+            Rectangle:
+                size: max(root.width * 0.855 * root.stamina / root.stamina_max, 0), root.height * 0.06 if root.is_disabled and not root.in_battle else 0
+                pos: root.width * 0.125, root.height * 0.84
+                texture: root.generate_texture('revive', root.width * 0.855 * root.revive / root.revive_max, root.width * 0.855, root.height * 0.06)
+        canvas.after:
+            Color:
+                rgba: 0, 0, 0, 1
+            # Bottom Border
+            Rectangle:
+                size: root.width, root.height * 0.02
+                pos: 0, 0
+            # Top Border
+            Rectangle:
+                size: root.width, root.height * 0.02
+                pos: 0, root.height * 0.98
+            # Left Border
+            Rectangle:
+                size: root.width * 0.02, root.height
+                pos: 0, 0
+            # Right Border
+            Rectangle:
+                size: root.width * 0.02, root.height
+                pos: root.width * 0.98, 0
+            # Middle Bottom - HP / Mana
+            Rectangle:
+                size: root.width, root.height * 0.01
+                pos: 0, root.height * 0.08
+            # Middle Middle Mana / Special
+            Rectangle:
+                size: root.width, root.height * 0.01 if root.in_battle else root.height * 0.02
+                pos: 0, root.height * 0.15
+            # Middle Top Special / Image
+            Rectangle:
+                size: root.width, root.height * 0.02 if root.in_battle else 0
+                pos: 0, root.height * 0.22
+            # Middle Left Labels / Bars
+            Rectangle:
+                size: root.width * 0.02, root.height * 0.24 if root.in_battle else root.height * 0.17
+                pos: root.width * 0.125, 0
+            # Middle Top-Top Stamina / Revive / Image
+            Rectangle:
+                size: root.width, root.height * (0.01 if root.is_disabled else 0.02) if not root.in_battle else 0
+                pos: 0, root.height * (0.91 if root.is_disabled else 0.9)
+            # Middle Top-Top Revive / Image
+            Rectangle:
+                size: root.width, root.height * 0.02 if root.is_disabled and not root.in_battle else 0
+                pos: 0, root.height * 0.82
+            # Middle Left Labels / Bars
+            Rectangle:
+                size: root.width * 0.02, root.height * (0.16 if root.is_disabled else 0.09) if not root.in_battle else 0
+                pos: root.width * 0.125, root.height * (0.84 if root.is_disabled else 0.91)
+            # Death Overlay
+            Color:
+                rgba: 0, 0, 0, 0 if root.health > 0 else 0.3
+            Rectangle:
+                size: self.size
+                pos: self.pos
+            Color:
+                rgba: 1, 1, 1, 1
+    Label:
+        font_name: 'Gabriola'
+        font_size: self.height
+        size_hint: None, None
+        size: root.width * 0.105, root.height * 0.08
+        pos: root.width * 0.02, 0
+        text: 'HP'
+        markup: True
+        color: 1, 1, 1, 1
+        disabled_color: 1, 1, 1, 1
+    Label:
+        font_name: 'Gabriola'
+        font_size: self.height
+        size_hint: None, None
+        size: root.width * 0.105, root.height * 0.08
+        pos: root.width * 0.02, root.height * 0.08
+        text: 'MP'
+        markup: True
+        color: 1, 1, 1, 1
+        disabled_color: 1, 1, 1, 1
+    Label:
+        font_name: 'Gabriola'
+        font_size: self.height
+        size_hint: None, None
+        size: root.width * 0.105, root.height * 0.08
+        pos: root.width * 0.02, root.height * 0.16
+        text: 'SP'
+        markup: True
+        color: 1, 1, 1, 1
+        disabled_color: 1, 1, 1, 1
+        opacity: 1 if root.in_battle else 0
+    Label:
+        font_name: 'Gabriola'
+        font_size: self.height
+        size_hint: None, None
+        size: root.width * 0.105, root.height * 0.08
+        pos: root.width * 0.02, root.height * 0.9
+        text: 'ST'
+        markup: True
+        color: 1, 1, 1, 1
+        disabled_color: 1, 1, 1, 1
+        opacity: 1 if not root.in_battle else 0
+    Label:
+        font_name: 'Gabriola'
+        font_size: self.height
+        size_hint: None, None
+        size: root.width * 0.105, root.height * 0.08
+        pos: root.width * 0.02, root.height * 0.84
+        text: 'RS'
+        markup: True
+        color: 1, 1, 1, 1
+        disabled_color: 1, 1, 1, 1
+        opacity: 1 if root.is_disabled and not root.in_battle else 0
+    Button:
+        id: button
+        opacity: 0
+        on_release: root.toggle()
+    IconTray:
+        id: icon_tray
+        opacity: 0
+        size_hint: 1, 0.76
+        pos_hint: {'top': 1}
+
+
+<MoveName@Image>:
+    source: 'dungeon/move_bubble_background.png'
+    Label:
+        id: label
+        font_name: 'Gabriola'
+        font_size: root.height * 0.7
+        text: 'Tres Piercer'
+        size_hint: None, None
+        size: root.width, root.height * 0.8
+        pos: root.x, root.y + root.height * 0.2
+
+
+<MoveHud>:
+    RelativeLayout:
+        id: move_bar_full
+        opacity: 0
+        size_hint: 1, 0.74
+        Image:
+            source: 'dungeon/move_bubble_full_background.png'
+            allow_stretch: True
+            keep_ratio: False
+        Image:
+            id: move_arrow
+            source: 'dungeon/move_bubble_arrow.png'
+            size_hint: 0.1, 1
+            pos_hint: {'center_x': 0.051}
+        MoveButton:
+            id: move_button_0
+            group: 'move_button'
+            allow_no_selection: False
+            state: 'down'
+            path: 'buttons/move_button'
+            on_release: root.select_move(0)
+            on_description: root.show_description(0)
+            on_hide_description: root.hide_description()
+            size_hint: 0.2, 0.48
+            pos_hint: {'y': 0.24}
+            disabled: True
+        MoveButton:
+            id: move_button_1
+            group: 'move_button'
+            allow_no_selection: False
+            path: 'buttons/move_button'
+            on_release: root.select_move(1)
+            on_description: root.show_description(1)
+            on_hide_description: root.hide_description()
+            size_hint: 0.2, 0.48
+            pos_hint: {'x': 0.2, 'y': 0.24}
+            disabled: True
+        MoveButton:
+            id: move_button_2
+            group: 'move_button'
+            allow_no_selection: False
+            path: 'buttons/move_button'
+            on_release: root.select_move(2)
+            on_description: root.show_description(2)
+            on_hide_description: root.hide_description()
+            size_hint: 0.2, 0.48
+            pos_hint: {'x': 0.4, 'y': 0.24}
+            disabled: True
+        MoveButton:
+            id: move_button_3
+            group: 'move_button'
+            allow_no_selection: False
+            path: 'buttons/move_button'
+            on_release: root.select_move(3)
+            on_description: root.show_description(3)
+            on_hide_description: root.hide_description()
+            size_hint: 0.2, 0.48
+            pos_hint: {'x': 0.6, 'y': 0.24}
+            disabled: True
+        MoveButton:
+            id: move_button_4
+            group: 'move_button'
+            allow_no_selection: False
+            path: 'buttons/move_button'
+            on_release: root.select_move(4)
+            on_description: root.show_description(4)
+            on_hide_description: root.hide_description()
+            size_hint: 0.2, 0.48
+            pos_hint: {'x': 0.8, 'y': 0.24}
+            disabled: True
+    Image:
+        id: move_bar_hover
+        source: 'dungeon/move_bubble_hover_bar.png'
+        size_hint: 1, 0.26
+        keep_ratio: False
+        allow_stretch: True
+        pos_hint: {'top': 1}
+        opacity: 0
+        Label:
+            id: label
+            font_name: 'Gabriola'
+            font_size: root.height * 0.2
+            size_hint: None, None
+            size: move_bar_hover.size
+            pos: move_bar_hover.pos
+    MoveName:
+        id: move_label_0
+        opacity: 0
+        size_hint: 0.1, 0.36
+        pos_hint: {'center_x': 0.051}
+    MoveName:
+        id: move_label_1
+        opacity: 0
+        size_hint: 0.1, 0.36
+        pos_hint: {'center_x': 0.153}
+    MoveName:
+        id: move_label_2
+        opacity: 0
+        size_hint: 0.1, 0.36
+        pos_hint: {'center_x': 0.255}
+    MoveName:
+        id: move_label_3
+        opacity: 0
+        size_hint: 0.1, 0.36
+        pos_hint: {'center_x': 0.357}
+    Widget:
+        id: move_label_4
+        size_hint: 0, 0
+        opacity: 0

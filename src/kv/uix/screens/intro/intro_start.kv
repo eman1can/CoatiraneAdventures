@@ -1,0 +1,84 @@
+<FamilySymbol>:
+    canvas.after:
+        Color:
+            rgba: (0.1, 0.1, 0.3, .15) if self.selected else (0, 0, 0, 0)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<GenderButton>:
+
+
+<IntroStart>:
+    name: 'intro_start'
+    Label:
+        id: title
+        text: 'Who Are You?'
+        font_name: 'Precious'
+        font_size: '60pt'
+        size_hint: 0.75, 0.1
+        pos_hint: {'center_x': 0.5, 'top': 0.95}
+        color: 0, 0, 0, 1
+    TextInput:
+        id: name_input
+        size_hint: 0.75, 0.1
+        pos_hint: {'center_x': 0.5, 'top': 0.8}
+        font_name: 'Gabriola'
+        font_size: '45pt'
+        hint_text: 'Name'
+        multiline: False
+        text: 'Artemis'
+        background_normal: 'text_input_background.png'
+        on_text: root.check_valid()
+    RecycleView:
+        id: symbol_list
+        size_hint: 0.45, 0.45
+        pos_hint: {'x': 0.125, 'y': 0.2}
+        viewclass: 'FamilySymbol'
+        SelectableRecycleGridLayout:
+            id: symbol_grid
+            cols: 5
+            orientation: 'lr-tb'
+            default_size: None, self.width / self.cols
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+    GenderButton:
+        id: male
+        group: 'gender'
+        size_hint: 0.244, 0.117
+        pos_hint: {'right': 0.875, 'top': 0.65}
+        text: 'God'
+        font_name: 'Gabriola'
+        state: 'down'
+    GenderButton:
+        id: female
+        group: 'gender'
+        size_hint: 0.244, 0.117
+        pos_hint: {'right': 0.875, 'center_y': 0.425}
+        text: 'Goddess'
+        font_name: 'Gabriola'
+    GenderButton:
+        id: neither
+        group: 'gender'
+        size_hint: 0.244, 0.117
+        pos_hint: {'right': 0.875, 'y': 0.2}
+        text: 'Goddex'
+        font_name: 'Gabriola'
+    Button:
+        id: cancel
+        size_hint: 0.2, 0.1
+        pos_hint: {'right': 0.45, 'y': 0.05}
+        text: 'Cancel'
+        font_name: 'Gabriola'
+        on_release: root.on_back_press()
+    Button:
+        id: next
+        size_hint: 0.2, 0.1
+        pos_hint: {'x': 0.55, 'y': 0.05}
+        text: 'Next'
+        font_name: 'Gabriola'
+        # TODO: Fix changes
+#        disabled: True
+        on_release: root.goto_next()
+

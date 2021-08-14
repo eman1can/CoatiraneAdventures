@@ -1,0 +1,103 @@
+#:import PPCHoverPathButton kivy.uix.buttonversions.PPCHoverPathButton
+#:import Gradient src.modules.gradient.Gradient
+#:import time_header src.uix.modules.headers.time_header
+#:import profile_header src.uix.modules.headers.profile_header
+
+
+<InventoryItem>:
+    canvas.after:
+        Color:
+            rgba: 1, 1, 1, root.tint
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        Color:
+            rgba: 1, 1, 1, 1
+    Image:
+        id: item_portrait
+        size_hint: None, 0.9
+        width: self.height
+        source: root.background_source
+        pos_hint: {'center_y': 0.5}
+    Image:
+        id: item_portrait
+        size_hint: None, 0.9
+        width: self.height
+        source: root.portrait_source
+        pos_hint: {'center_y': 0.5}
+    Label:
+        size_hint: None, 0.4
+        width: self.texture_size[0]
+        x: item_portrait.width + root.width * 0.05
+        text: root.name if root.is_single else root.name + ' x' + str(root.count)
+        font_name: 'Gabriola'
+        color: 0, 0, 0, 1
+        font_size: self.height
+        pos_hint: {'center_y': 0.733}
+    Label:
+        size_hint: None, 0.4
+        width: self.texture_size[0]
+        x: item_portrait.width + root.width * 0.05
+        text: root.description
+        font_name: 'Gabriola'
+        color: 0, 0, 0, 1
+        font_size: self.height * 0.7
+        pos_hint: {'center_y': 0.266}
+    Button:
+        background_normal: 'buttons/invisible.normal.png'
+        background_down: 'buttons/invisible.down.png'
+        background_disabled: 'buttons/invisible.normal.png'
+        disabled: root.button_disabled
+        opacity: 0 if self.disabled else 1
+        on_release: root.callback()
+
+<InventoryItemList>:
+    id: item_list
+    viewclass: 'InventoryItem'
+    RecycleBoxLayout:
+        default_size: None, dp(75)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+
+<InventoryMain>:
+    name: 'inventory_main'
+    InventoryItemList:
+        id: inventory_items
+        size_hint: 0.8, 0.8
+        pos_hint: {'x': 0.1, 'y': 0.1}
+    Label:
+        id: profile_header
+        canvas.before:
+            Rectangle:
+                size: self.size
+                pos: self.pos
+                texture: Gradient.vertical_center(int(self.width), int(self.height), int(self.height), (255, 255, 255, 255), (255, 255, 255, 0), 0.2)
+        size_hint: None, 0.05
+        width: self.texture_size[0] * 1.125
+        pos_hint: {'x': 0.125, 'top': 0.975}
+        font_size: '20pt'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: profile_header()
+    Label:
+        id: time_header
+        canvas.before:
+            Rectangle:
+                size: self.size
+                pos: self.pos
+                texture: Gradient.vertical_center(int(self.width), int(self.height), int(self.height), (255, 255, 255, 255), (255, 255, 255, 0), 0.2)
+        size_hint: None, 0.05
+        width: self.texture_size[0] * 1.125
+        pos_hint: {'right': 0.875, 'top': 0.975}
+        font_size: '20pt'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: time_header()
+    PPCHoverPathButton:
+        id: back_button
+        path: 'buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()

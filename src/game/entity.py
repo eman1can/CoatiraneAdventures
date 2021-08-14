@@ -3,10 +3,11 @@ from game.smead import SMEAD
 
 
 class Entity(SMEAD, HMPMD):
-    def __init__(self, name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, agility, dexterity, element, moves):
+    def __init__(self, identifier, name, skeleton_path, health, mana, physical_attack, magical_attack, defense, strength, magic, endurance, agility, dexterity, element, moves):
         self._initialized = False
         SMEAD.__init__(self, strength, magic, endurance, agility, dexterity)
         HMPMD.__init__(self, health, mana, physical_attack, magical_attack, defense)
+        self._id = identifier
         self._name = name
         self._skeleton_path = skeleton_path
 
@@ -17,6 +18,9 @@ class Entity(SMEAD, HMPMD):
 
     def get_skeleton_path(self):
         return self._skeleton_path
+
+    def get_id(self):
+        return self._id
 
     def get_name(self):
         return self._name

@@ -2,26 +2,27 @@
     #Outline in BG
     Image:
         id: outline
-        source: 'screens/stats/heart_empty.png'
+        source: 'icons/heart_empty.png'
     StencilView:
         opacity: 1 if root.familiarity < 1 else 0
         size_hint: 1, root.familiarity
         Image:
             id: red
-            source: 'screens/stats/heart_red.png'
+            source: 'icons/heart_red.png'
             size: outline.size
             pos: outline.pos
     StencilView:
         size_hint: 1, root.familiarity_gold
         Image:
             id: gold
-            source: 'screens/stats/heart_gold.png'
+            source: 'icons/heart_gold.png'
             size: outline.size
             pos: outline.pos
     PPCHoverPathButton:
         id: button
         opacity: 0
-        collision_spource: 'screens/stats/heart_empty.png'
+        layer: 1
+        collision_source: 'icons/heart_empty.png'
         on_release: root.toggle_hint()
-#        on_hover_enter: root.show_hint()
-#        on_hover_exit: root.hide_hint()
+        on_enter: root.show_hint()
+        on_exit: root.hide_hint()

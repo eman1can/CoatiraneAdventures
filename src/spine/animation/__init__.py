@@ -404,7 +404,6 @@ class EventTimeline(Timeline):
                 frameIndex -= 1
         while frameIndex < frameCount and time >= self.frames[frameIndex]:
             firedEvents.add(self.events[frameIndex])
-            print("Event: ", self.events[frameIndex])
             frameIndex += 1
 
 

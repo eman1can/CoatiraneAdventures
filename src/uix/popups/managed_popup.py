@@ -21,6 +21,7 @@ class ManagedPopup(ModalView):
 
     def __init__(self, **kwargs):
         self._content = None
+        self._opened = False
         super().__init__(background='background/background.jpg', **kwargs)
 
     def refresh(self, *args):
@@ -34,10 +35,15 @@ class ManagedPopup(ModalView):
         self._content = new_content
 
     def on_pre_open(self, *args):
+        self._opened = True
         self.content.dispatch('on_pre_open')
 
     def on_pre_dismiss(self):
+        self._opened = False
         self.content.dispatch('on_pre_dismiss')
+
+    def is_open(self):
+        return self._opened
 
     def get_root(self):
         previous = self.previous
@@ -71,12 +77,13 @@ class ManagedPopup(ModalView):
             next_popup.next_callback(*args)
             next_popup = None
 
-        self.dismiss()
+        self.dismiss(force=True)
         if next_popup is not None:
             next_popup.open()
 
     def goto_previous(self):
-        self.dismiss()
+        self.dismiss(force=True)
+        print('The popup is Closed!')
         if isinstance(self.previous, ManagedPopup):
             self.previous.open()
 

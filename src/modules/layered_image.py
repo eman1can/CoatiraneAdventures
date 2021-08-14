@@ -71,29 +71,27 @@ class LayeredImage(Widget):
             x, y = 0, 0
             for key, value in p_h.items():
                 if key == 'x':
-                    x = value * self.width + self.image_gaps[image_id][0]
+                    x = self.x + value * self.width + self.image_gaps[image_id][0]
                 elif key == 'right':
-                    x = value * self.width - self.image_sizes[image_id][0] - self.image_gaps[image_id][0]
+                    x = self.x + value * self.width - self.image_sizes[image_id][0] - self.image_gaps[image_id][0]
                 elif key == 'center_x':
-                    x = value * self.width - self.image_sizes[image_id][0] / 2 + self.image_gaps[image_id][0]
+                    x = self.x + value * self.width - self.image_sizes[image_id][0] / 2 + self.image_gaps[image_id][0]
                 elif key == 'y':
-                    y = value * self.height + self.image_gaps[image_id][1]
+                    y = self.y + value * self.height + self.image_gaps[image_id][1]
                 elif key == 'top':
-                    y = value * self.height - self.image_sizes[image_id][1] - self.image_gaps[image_id][1]
+                    y = self.y + value * self.height - self.image_sizes[image_id][1] - self.image_gaps[image_id][1]
                 elif key == 'center_y':
-                    y = value * self.height - self.image_sizes[image_id][1] / 2 + self.image_gaps[image_id][1]
+                    y = self.y + value * self.height - self.image_sizes[image_id][1] / 2 + self.image_gaps[image_id][1]
             image_poses[image_id] = [x, y]
         return image_poses
 
     image_poses = AliasProperty(get_image_poses, bind=('pos', 'pos_hint'))
 
     def make_rectangles(self):
-        # TODO: Update rectangles on change
         self.canvas.clear()
         for image_id, texture in self.textures.items():
             size = self.image_sizes[image_id]
             pos = self.image_poses[image_id]
-            # print(texture, size, pos)
             self.canvas.add(Rectangle(texture=texture, size=size, pos=pos))
         return None
 

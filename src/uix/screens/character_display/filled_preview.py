@@ -15,21 +15,45 @@ load_kv(__name__)
 
 
 class FilledCharacterPreviewScreen(Screen):
-    preview = ObjectProperty(None)
-    character = ObjectProperty(None)
-    support = ObjectProperty(None)
-
     is_support = BooleanProperty(False)
+    locked = BooleanProperty(False)
+    current = BooleanProperty(True)
 
-    def on_character(self, *args):
-        self.name = self.character.get_id()
+    character = NumericProperty(-1)
+    support = NumericProperty(-1)
 
-    def on_support(self, *args):
-        if self.support is not None:
-            self.name += "_" + self.support.get_id()
+    def __init__(self, **kwargs):
+        # self._post_kv = False
+        super().__init__(**kwargs)
+    #
+    # def on_kv_post(self, base_widget):
+    #     self._post_kv = True
+    #     self.ids.filled_preview.character = self.character
+    #     self.ids.filled_preview.support = self.support
 
-    def update_lock(self, locked):
-        self.ids.filled_preview.update_lock(locked)
+    def get_root(self):
+        return self.ids.filled_preview
+
+    def on_character(self, instance, character):
+        self.update_name()
+
+    def on_support(self, instance, support):
+        self.update_name()
+
+    def update_name(self):
+        if self.character == -1:
+            return
+        char = Refs.gc.get_char_by_index(self.character)
+        supt = Refs.gc.get_char_by_index(self.support)
+        self.name = char.get_id()
+        if supt is not None:
+            self.name += '_' + supt.get_id()
+
+    def on_locked(self, instance, locked):
+        self.ids.filled_preview.locked = locked
+
+    def on_current(self, instance, current):
+        self.ids.filled_preview.current = current
 
     def close_hints(self):
         self.ids.filled_preview.close_hints()
@@ -39,29 +63,29 @@ class FilledCharacterPreviewScreen(Screen):
 
 
 class FilledCharacterPreview(RelativeLayout):
+    is_select = BooleanProperty(False)
+    is_support = BooleanProperty(False)
+    locked = BooleanProperty(False)
+    current = BooleanProperty(True)
+    do_hover = BooleanProperty(True)
+
+    character = NumericProperty(-1)
+    support = NumericProperty(-1)
+
+    attack_type = StringProperty('')
+    element_type = StringProperty('')
 
     text_color = ListProperty([0.796, 0.773, 0.678, 1])
     font_name = StringProperty('Gabriola')
 
-    preview = ObjectProperty(None, allownone=True)
-
     new_image_instance = BooleanProperty(False)
     has_screen = BooleanProperty(False)
-    # event = ObjectProperty(None, allownone=True)
     has_tag = BooleanProperty(False)
     has_stat = BooleanProperty(False)
 
     preview_wgap = NumericProperty(0)
     preview_hgap = NumericProperty(0)
     image_width = NumericProperty(0)
-
-    is_select = BooleanProperty(False)
-    is_support = BooleanProperty(False)
-    character = ObjectProperty(None, allownone=True)
-    support = ObjectProperty(None, allownone=True)
-
-    locked = BooleanProperty(False)
-    do_hover = BooleanProperty(True)
 
     char_hint_showing = BooleanProperty(False)
     support_hint_showing = BooleanProperty(False)
@@ -74,149 +98,143 @@ class FilledCharacterPreview(RelativeLayout):
     char_button_collide_image = StringProperty('')
     support_button_collide_image = StringProperty('')
 
-    background_source = StringProperty('screens/stats/preview_background.png')
-    support_background_source = StringProperty('screens/stats/preview_support_background.png')
+    background_source = StringProperty('preview_background.png')
+    support_background_source = StringProperty('preview_support_background.png')
     char_image_source = StringProperty('')
     support_image_source = StringProperty('')
     overlay_source = StringProperty('')
-    support_overlay_source = StringProperty('screens/stats/preview_support_background_overlay.png')
+    support_overlay_source = StringProperty('preview_support_background_overlay.png')
 
-    phy_atk_text = StringProperty('0.0')
-    mag_atk_text = StringProperty('0.0')
-    health_text = StringProperty('0.0')
-    mana_text = StringProperty('0.0')
-    defense_text = StringProperty('0.0')
-    strength_text = StringProperty('0.0')
-    magic_text = StringProperty('0.0')
-    endurance_text = StringProperty('0.0')
-    dexterity_text = StringProperty('0.0')
-    agility_text = StringProperty('0.0')
+    number_text = StringProperty('0\n0\n0\n0\n0\n0\n0\n0\n0\n0')
 
-    # star_data = DictProperty({})
     star_list_data = ListProperty([])
-
     stat_list_data = ListProperty([])
 
     def __init__(self, **kwargs):
+        self.register_event_type('on_select')
+        self.register_event_type('on_return')
+        self.register_event_type('on_attr')
+        self.register_event_type('on_empty')
+        self.stat_list_data = [
+            {'id': 'phy_atk_image',
+             'source': 'icons/PAtk.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint': Refs.app.get_dkey('fcp.img.phy_atk p_h')},
+            {'id':        'mag_atk_image',
+             'source':    'icons/MAtk.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint':  Refs.app.get_dkey('fcp.img.mag_atk p_h')},
+            {'id':        'health_image',
+             'source':    'icons/Hea.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint':  Refs.app.get_dkey('fcp.img.health p_h')},
+            {'id':        'mana_image',
+             'source':    'icons/Mna.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint':  Refs.app.get_dkey('fcp.img.mana p_h')},
+            {'id':        'defense_image',
+             'source':    'icons/Def.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint':  Refs.app.get_dkey('fcp.img.defense p_h')},
+            {'id':        'strength_image',
+             'source':    'icons/Str.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint':  Refs.app.get_dkey('fcp.img.strength p_h')},
+            {'id':        'magic_image',
+             'source':    'icons/Mag.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint':  Refs.app.get_dkey('fcp.img.magic p_h')},
+            {'id':        'endurance_image',
+             'source':    'icons/End.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint':  Refs.app.get_dkey('fcp.img.endurance p_h')},
+            {'id':        'dexterity_image',
+             'source':    'icons/Agi.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint':  Refs.app.get_dkey('fcp.img.dexterity p_h')},
+            {'id':        'agility_image',
+             'source':    'icons/Dex.png',
+             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
+             'pos_hint':  Refs.app.get_dkey('fcp.img.agility p_h')},
+        ]
         self.update_overlay()
         self.update_buttons()
         self.update_labels()
         super().__init__(**kwargs)
 
-        self.stat_list_data = [
-            {'id': 'phy_atk_image',
-             'source': 'screens/stats/PhysicalAttack.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint': Refs.app.get_dkey('fcp.img.phy_atk p_h')},
-            {'id':        'mag_atk_image',
-             'source':    'screens/stats/MagicalAttack.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint':  Refs.app.get_dkey('fcp.img.mag_atk p_h')},
-            {'id':        'health_image',
-             'source':    'screens/stats/Health.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint':  Refs.app.get_dkey('fcp.img.health p_h')},
-            {'id':        'mana_image',
-             'source':    'screens/stats/Mana.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint':  Refs.app.get_dkey('fcp.img.mana p_h')},
-            {'id':        'defense_image',
-             'source':    'screens/stats/Defense.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint':  Refs.app.get_dkey('fcp.img.defense p_h')},
-            {'id':        'strength_image',
-             'source':    'screens/stats/Str.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint':  Refs.app.get_dkey('fcp.img.strength p_h')},
-            {'id':        'magic_image',
-             'source':    'screens/stats/Mag.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint':  Refs.app.get_dkey('fcp.img.magic p_h')},
-            {'id':        'endurance_image',
-             'source':    'screens/stats/End.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint':  Refs.app.get_dkey('fcp.img.endurance p_h')},
-            {'id':        'dexterity_image',
-             'source':    'screens/stats/Dex.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint':  Refs.app.get_dkey('fcp.img.dexterity p_h')},
-            {'id':        'agility_image',
-             'source':    'screens/stats/Agi.png',
-             'size_hint': Refs.app.get_dkey('fcp.img s_h'),
-             'pos_hint':  Refs.app.get_dkey('fcp.img.agility p_h')},
-        ]
-        # self.update_stars()
+    def on_kv_post(self, base_widget):
+        if not self.is_select:
+            self.update_familiarity()
+        self.update_stars()
+        self.ids.stars.force_reload()
 
-    def on_is_select(self, *args):
+    def reload(self):
         self.update_overlay()
         self.update_buttons()
         self.update_labels()
+        if not self.is_select:
+            self.update_familiarity()
+        self.update_stars()
+        self.ids.stars.force_reload()
 
-    def on_character(self, *args):
-        self.char_image_source = self.character.get_image('slide')
-        self.update_overlay()
-        self.update_buttons()
-        self.reload()
+    # Update functions for reloading the data based on updates
 
-    def on_support(self, *args):
-        self.support_image_source = self.support.get_image('slide_support')
-        self.update_overlay()
-        self.update_buttons()
-        self.reload()
+    def update_familiarity(self):
+        total, gold, bonus, hint_text = Refs.gc.calculate_familiarity_bonus(self.character)
+        self.ids.character_heart.is_visible = total != -1
+        self.ids.support_heart.is_visible = False
+        if total != -1:
+            self.ids.character_heart.familiarity = total
+            self.ids.character_heart.familiarity_gold = gold
+            self.char_hint_text = hint_text
+            if self.char_hint_showing:
+                self.hint_text = self.char_hint_text
+            if self.support != -1:
+                total, gold, bonus, hint_text = Refs.gc.calculate_familiarity_bonus(self.support)
+                # support calculation will never return false. Base char will always be there
+                self.ids.support_heart.is_visible = True
+                self.ids.support_heart.familiarity = total
+                self.ids.support_heart.familiarity_gold = gold
+                self.support_hint_text = hint_text
+                if self.support_hint_showing:
+                    self.hint_text = self.support_hint_text
 
     def update_overlay(self):
-        if self.support is not None:
-            self.overlay_source = "screens/stats/preview_overlay_full.png"
+        if self.support != -1:
+            self.overlay_source = "preview_overlay_full.png"
         elif not self.is_select and not self.locked:
-            self.overlay_source = "screens/stats/preview_overlay_empty_add.png"
+            self.overlay_source = "preview_overlay_empty_add.png"
         else:
-            self.overlay_source = "screens/stats/preview_overlay_empty.png"
+            self.overlay_source = "preview_overlay_empty.png"
 
-    def close_hints(self):
-        self.on_char_hint_close()
-        self.on_support_hint_close()
-        self.ids.character_heart.reset_open()
-        self.ids.support_heart.reset_open()
+    def get_label_values(self, character, values):
+        values[0] += character.get_physical_attack()
+        values[1] += character.get_magical_attack()
+        values[2] += character.get_health()
+        values[3] += character.get_mana()
+        values[4] += character.get_defense()
+        values[5] += character.get_strength()
+        values[6] += character.get_magic()
+        values[7] += character.get_endurance()
+        values[8] += character.get_agility()
+        values[9] += character.get_dexterity()
+        return values
 
     def update_labels(self):
         values = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        if self.character is not None:
-            if self.support is None:
-                values = [
-                    round(self.character.get_physical_attack(), 2),
-                    round(self.character.get_magical_attack(), 2),
-                    round(self.character.get_health(), 2),
-                    round(self.character.get_mana(), 2),
-                    round(self.character.get_defense(), 2),
-                    round(self.character.get_strength(), 2),
-                    round(self.character.get_magic(), 2),
-                    round(self.character.get_endurance(), 2),
-                    round(self.character.get_agility(), 2),
-                    round(self.character.get_dexterity(), 2)
-                ]
-            else:
-                values = [
-                    round(self.character.get_physical_attack() + self.support.get_physical_attack(), 2),
-                    round(self.character.get_magical_attack() + self.support.get_magical_attack(), 2),
-                    round(self.character.get_health() + self.support.get_health(), 2),
-                    round(self.character.get_mana() + self.support.get_mana(), 2),
-                    round(self.character.get_defense() + self.support.get_defense(), 2),
-                    round(self.character.get_strength() + self.support.get_strength(), 2),
-                    round(self.character.get_magic() + self.support.get_magic(), 2),
-                    round(self.character.get_endurance() + self.support.get_endurance(), 2),
-                    round(self.character.get_agility() + self.support.get_agility(), 2),
-                    round(self.character.get_dexterity() + self.support.get_dexterity(), 2)
-                ]
-        self.phy_atk_text = str(values[0])
-        self.mag_atk_text = str(values[1])
-        self.health_text = str(values[2])
-        self.mana_text = str(values[3])
-        self.defense_text = str(values[4])
-        self.strength_text = str(values[5])
-        self.magic_text = str(values[6])
-        self.endurance_text = str(values[7])
-        self.agility_text = str(values[8])
-        self.dexterity_text = str(values[9])
+        if self.character != -1:
+            character = Refs.gc.get_char_by_index(self.character)
+            self.get_label_values(character, values)
+
+        if self.support != -1:
+            support = Refs.gc.get_char_by_index(self.support)
+            self.get_label_values(support, values)
+
+        for index in range(len(values)):
+            values[index] = round(values[index], 2)
+        self.number_text = str(values[0])
+        for x in range(1, 10):
+            self.number_text += f'\n{values[x]}'
 
     def update_stars(self):
         character_size = (0.228, 0.061)
@@ -252,51 +270,17 @@ class FilledCharacterPreview(RelativeLayout):
                          {"center_x": 0.2290800, "center_y": 0.370670},
                          {"center_x": 0.1755400, "center_y": 0.384660},
                          {"center_x": 0.1220000, "center_y": 0.398637}]
-        star_list_data = Star.update_stars_from_character(self.character, character_size, character_poses)
-        star_list_data = star_list_data + Star.update_stars_from_character(self.support, support_size, support_poses)
-        # self.star_data = {}
-        # if self.character is not None:
-        #     for index in range(1, 11):
-        #         if not self.make_star(self.character, index, index):
-        #             break
-        # if self.support is not None:
-        #     for index in range(1, 11):
-        #         if not self.make_star(self.support, index, index + 10):
-        #             break
+        character = Refs.gc.get_char_by_index(self.character)
+        support = Refs.gc.get_char_by_index(self.support)
+        star_list_data = Star.update_stars_from_character(character, character_size, character_poses)
+        star_list_data = star_list_data + Star.update_stars_from_character(support, support_size, support_poses)
         self.star_list_data = star_list_data
 
-    # def make_star(self, character, rank, index):
-        # if f'star_{index}' in self.star_data:
-        #     if self.star_data[f'star_{index}']['broken']:
-        #         return True
-        #     if character.get_rank(rank).broken:
-        #         self.star_data[f'star_{index}']['broken'] = True
-        #         self.star_data[f'star_{index}']['source'] = 'screens/stats/rankbrk.png'
-        #         return True
-        # if character.get_rank(rank).is_unlocked():
-        #     sub = ""
-        #     if 1 < index < 11:
-        #         sub = ".one"
-        #         if self.ids.character_heart.is_visible:
-        #             sub = ".two"
-        #     star = {'id': f'star_{index}',
-        #             'source': 'screens/stats/star.png',
-        #             'size_hint': Refs.app.get_dkey(f'fcp.star_{index} s_h'),
-        #             'pos_hint': Refs.app.get_dkey(f'fcp.star_{index}{sub} p_h')}
-        #     if character.get_rank(rank).is_broken():
-        #         star['source'] = 'screens/stats/rankbrk.png'
-        #         star['broken'] = True
-        #     else:
-        #         star['broken'] = False
-        #     self.star_data[f'star_{index}'] = star
-        #     return True
-        # else:
-        #     return False
-
     def update_buttons(self):
-        if self.support is not None:
+        if self.support != -1:
             self.char_button_source = 'buttons/char_button_full'
             self.support_button_source = 'buttons/support_button_full'
+            self.support_button_collide_image = 'buttons/support_button_full.collision.png'
             self.char_button_collide_image = 'buttons/char_button_full.collision.png'
         else:
             self.char_button_source = 'buttons/char_button'
@@ -308,32 +292,27 @@ class FilledCharacterPreview(RelativeLayout):
                 self.support_button_collide_image = 'buttons/support_button.collision.png'
                 self.char_button_collide_image = 'buttons/char_button.collision.png'
 
-    def reload(self):
-        total, gold, bonus, hint_text = Refs.gc.calculate_familiarity_bonus(self.character)
-        self.ids.character_heart.is_visible = total != -1
-        if total != -1:
-            self.ids.character_heart.familiarity = total
-            self.ids.character_heart.familiarity_gold = gold
-            self.char_hint_text = hint_text
-            if self.char_hint_showing:
-                self.hint_text = self.char_hint_text
-            self.character.familiarity_bonus = 1 + bonus / 100
-        else:
-            self.character.familiarity_bonus = 1
-        if self.support is not None:
-            total, gold, bonus, hint_text = Refs.gc.calculate_familiarity_bonus(self.support)
-            # support calculation will never return false. Base char will always be there
-            self.ids.support_heart.familiarity = total
-            self.ids.support_heart.familiarity_gold = gold
-            self.support_hint_text = hint_text
-            if self.support_hint_showing:
-                self.hint_text = self.support_hint_text
-            self.support.familiarity_bonus = 1 + bonus / 100
-        self.update_labels()
-        self.update_stars()
-        self.ids.stars.force_reload()
+    # Update functions based on callbacks
 
-    def on_locked(self, *args):
+    def on_is_select(self, instance, select):
+        self.update_overlay()
+        self.update_buttons()
+        self.update_labels()
+
+    def on_character(self, instance, char_index):
+        character = Refs.gc.get_char_by_index(char_index)
+        self.char_image_source = character.get_image('slide')
+        if not self.is_support:
+            self.attack_type = character.get_attack_type_string()
+            self.element_type = character.get_element_string()
+        self.reload()
+
+    def on_support(self, instance, support_index):
+        support = Refs.gc.get_char_by_index(support_index)
+        self.support_image_source = support.get_image('slide_support')
+        self.reload()
+
+    def on_locked(self, instance, locked):
         self.update_overlay()
         self.update_buttons()
 
@@ -367,25 +346,50 @@ class FilledCharacterPreview(RelativeLayout):
         self.ids.hint.disabled = True
         self.support_hint_showing = False
 
-    def update_lock(self, locked):
-        self.locked = locked
+    # Handling methods
 
-    # def is_valid_touch(self, *args):
-    #     if not self.has_screen:
-    #         return True
-    #     else:
-    #         current = self.preview.portfolio.parent.parent.current_slide
-    #         if current == self.preview.portfolio:
-    #             return True
-    #     return False
+    def close_hints(self):
+        self.on_char_hint_close()
+        self.on_support_hint_close()
+        self.ids.character_heart.reset_open()
+        self.ids.support_heart.reset_open()
 
-    def handle_preview_click(self):
-        if not self.is_select:
-            self.preview.show_select_screen(self, False)
+    def is_click_valid(self):
+        valid = True
+        valid &= not self.locked
+        valid &= not self.disabled
+        valid &= self.current
+        return valid
+
+    def handle_left_click(self, is_support):
+        if not self.is_click_valid():
             return
-        if self.is_support:
-            self.preview.set_char_screen(True, self.preview.char, self.character)
-        else:
-            self.preview.set_char_screen(True, self.character, self.preview.support)
-        Refs.gs.get_screen('dungeon_main').update_party_score()
-        Refs.gs.display_screen(None, False, False)
+        if not self.is_select:
+            self.dispatch('on_select', is_support)
+            return
+        if is_support:
+            return
+        self.dispatch('on_return', self.character)
+
+    def handle_right_click(self, is_support):
+        if not self.is_click_valid() or self.is_select:
+            return
+        # self.dispatch('on_attr', is_support)
+
+    def handle_long_click(self, is_support):
+        if self.is_select:
+            return
+        self.dispatch('on_empty', is_support)
+
+    # Empty callback methods
+    def on_select(self, is_support):
+        pass
+
+    def on_return(self, character):
+        pass
+
+    def on_attr(self, is_support):
+        pass
+
+    def on_empty(self, is_support):
+        pass

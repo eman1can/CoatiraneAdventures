@@ -29,12 +29,12 @@ class StatBox(RelativeLayout):
     defense_source = StringProperty('')
 
     def __init__(self, **kwargs):
-        self.stat_bar_source = 'screens/attributes/stat_bar.png'
-        self.health_source = 'screens/stats/Health.png'
-        self.mana_source = 'screens/stats/Mana.png'
-        self.phy_attack_source = 'screens/stats/PhysicalAttack.png'
-        self.mag_attack_source = 'screens/stats/MagicalAttack.png'
-        self.defense_source = 'screens/stats/Defense.png'
+        self.stat_bar_source = 'stat_bar.png'
+        self.health_source = 'icons/Hea.png'
+        self.mana_source = 'icons/Mna.png'
+        self.phy_attack_source = 'icons/PAtk.png'
+        self.mag_attack_source = 'icons/MAtk.png'
+        self.defense_source = 'icons/Def.png'
         super().__init__(**kwargs)
 
     def on_char(self, *args):

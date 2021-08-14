@@ -1,0 +1,53 @@
+<CharFlag>:
+    Image:
+        id: flag
+        source: 'flags/char_type_flag.png'
+        allow_stretch: True
+    Label:
+        id: flag_label
+        text: root.type.title()
+        font_name: 'Gabriola.ttf'
+        height: self.texture_size[1]
+        color: 1, 1, 1, 1
+        font_size: root.height * 0.65
+        size_hint: 0.835, 0.793
+        pos_hint: {'center_x': 0.5775, 'top': 0.98}
+
+<TypeFlag>:
+    Image:
+        id: flag
+        source: 'flags/' + root.type + '_flag.png'
+    Label:
+        id: flag_label
+        text: root.type.title() + ' Type'
+        font_name: 'Gabriola'
+        font_size: root.height * 0.65
+        size_hint: 0.835, 0.793
+        pos_hint: {'center_x': 0.5774, 'top': 0.98}
+
+<ElementFlag>:
+    Image:
+        id: flag
+        source: 'flags/' + root.type + '_flag.png'
+        allow_stretch: True
+    Label:
+        id: flag_label
+        text: root.type.title()
+        font_name: 'Gabriola'
+        size: self.texture_size
+        color: 0, 0, 0, 1
+        font_size: root.width * 0.625
+        pos_hint: {'center_x': 0.5, 'center_y': 0.6628}
+        canvas.before:
+            PushMatrix
+            Rotate:
+                angle: -90
+                origin: self.center
+        canvas.after:
+            PopMatrix
+    Image:
+        id: element
+        source: 'icons/' + root.type + '.png'
+        allow_stretch: True
+        size_hint: 0.375, 0.375
+        pos_hint: {'center_x': 0.5, 'center_y': 0.2565}

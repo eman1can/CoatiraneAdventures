@@ -16,8 +16,8 @@ class Root(ScreenManager):
         self.whitelist = []
         self.list = []
 
-        self._create_screen('new_game')
-        self.current = 'new_game'
+        self._create_screen('start_game')
+        self.current = 'start_game'
         self._initialized = True
 
     def make_screens(self):
@@ -82,51 +82,12 @@ class Root(ScreenManager):
                 self.list.append(old_screen)
 
     def _create_screen(self, screen_name, *args, **kwargs):
-        # for screen_current in self.screens:
-        #     if screen_current.name == screen_name:
-        #         return screen_current, False
         found = False
         for screen_option, screen_class in SCREEN_LIST.items():
             if screen_name.startswith(screen_option):
                 screen = screen_class(*args, **kwargs)
                 found = True
                 break
-        # if screen_name == 'select_screen':
-        #     screen = SelectScreen()
-        # elif screen_name == 'new_game':
-        #     screen = NewGameScreen()
-        # elif screen_name == 'town_screen':
-        #     screen = TownScreen()
-        # elif screen_name == 'dungeon_main':
-        #     screen = DungeonMain()
-        # elif screen_name == 'tavern_main':
-        #     screen = tavern()
-        # elif screen_name == 'select_char':
-        #     screen = CharacterSelector(self)
-        # elif screen_name == 'recruit':
-        #     screen = recruit_preview(character=args[0], viewed_characters=args[1])
-        # elif screen_name.startswith('char_attr'):
-        #     self.whitelist.append(screen_name)
-        #     preview = None
-        #     if len(args) > 1:
-        #         preview = args[1]
-        #     screen = CharacterAttributeScreen(char=args[0], preview=preview)
-        # elif screen_name.startswith('status_board'):
-        #     self.whitelist.append(screen_name)
-        #     screen = StatusBoardManager(char=args[0])
-        # elif screen_name.startswith('image_preview'):
-        #     self.whitelist.append(screen_name)
-        #     screen = ImagePreview(char=args[0])
-        # elif screen_name.startswith('equipment_change.kv'):
-        #     self.whitelist.append(screen_name)
-        #     screen = EquipmentChange(char=args[0])
-        # elif screen_name == 'gear_change':
-        #     screen = GearChange()
-        # elif screen_name == 'dungeon_battle':
-        #     screen = DungeonBattle(level_num=args[0], is_boss=args[1])
-        # elif screen_name == 'dungeon_result':
-        #     screen = DungeonResult(args[0], args[1])
-        # else:
         if not found:
             raise Exception("Unsupported Screen type", screen_name)
         screen.size = self.size

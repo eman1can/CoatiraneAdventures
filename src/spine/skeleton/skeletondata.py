@@ -84,9 +84,9 @@ class SkeletonData:
         if eventName is None:
             raise Exception("Event name cannot be null")
 
-        for eventData in self.events:
-            if eventData.name == eventName:
-                return eventData
+        for event in self.events:
+            if event.name == eventName:
+                return event
         return None
 
     def getEvents(self):
@@ -94,6 +94,12 @@ class SkeletonData:
 
     def getAnimations(self):
         return self.animations
+
+    def getAnimationNames(self):
+        names = []
+        for animation in self.animations:
+            names.append(animation.name)
+        return names
 
     def findAnimation(self, animationName):
         if animationName is None:

@@ -1,18 +1,10 @@
 <Confirm>:
     auto_dismiss: False
-    background: 'screens/stats/sort_background.png'
+    background: 'sort_background.png'
     size_hint: 0.45, 0.8
     pos_hint: {'center_x': 0.5, 'center_y': 0.5}
     border: [0, 0, 0, 0]
     RelativeLayout:
-        Label:
-            id: title
-            font_size: root.height * 0.15
-            color: 0, 0, 0, 1
-            size_hint: 1, 0.2
-            pos_hint: {'center_x': 0.5, 'top': 1}
-            font_name: 'Gabriola.ttf'
-            text: 'Descending' if root.descending else 'Ascending'
         Label:
             id: floor_info
             font_size: root.height * 0.1
@@ -20,15 +12,15 @@
             size_hint: 1, 0.15
             pos_hint: {'center_x': 0.5, 'top': 0.8}
             font_name: 'Gabriola.ttf'
-            text: 'Floor ' + root.current_floor + ' -> Floor ' + root.next_floor
+            text: '' if root.current_floor is None else 'Floor ' + root.current_floor + ' -> Floor ' + root.next_floor
         Label:
-            id: recc_score_info
+            id: rec_score_info
             font_size: root.height * 0.1
             color: 0, 0, 0, 1
             size_hint: 1, 0.15
             pos_hint: {'center_x': 0.5, 'top': 0.65}
             font_name: 'Gabriola.ttf'
-            text: 'Recommended Score: ' + str(root.recc_score)
+            text: 'Recommended Score: ' + str(root.rec_score)
         Label:
             id: act_score_info
             font_size: root.height * 0.1
@@ -46,6 +38,7 @@
             font_size: root.height * 0.075
             size_hint: 0.40, 0.15
             pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+            color: 0, 0, 0, 1
         PPCHoverPathButton:
             id: confirm
             font_name: 'Gabriola.ttf'
@@ -55,3 +48,4 @@
             font_size: root.height * 0.075
             size_hint: 0.40, 0.15
             pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+            color: 0, 0, 0, 1

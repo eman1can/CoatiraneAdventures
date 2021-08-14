@@ -1,0 +1,39 @@
+#:import CarouselWheel uix.screens.intro.carousel_wheel.CarouselWheel
+#:import LargeDomainDisplay uix.screens.intro.domain_display.LargeDomainDisplay
+
+<IntroDomain>:
+    name: 'intro_domain'
+    Label:
+        id: title
+        text: 'What is your domain?'
+        font_name: 'Precious'
+        font_size: '60pt'
+        size_hint: None, 0.1
+        width: self.texture_size[0]
+        pos_hint: {'x': 0.028, 'top': 0.95}
+        color: 0, 0, 0, 1
+    LargeDomainDisplay:
+        id: large_display
+        size_hint: 0.45, 0.6
+        pos_hint: {'top': 0.8, 'x': 0.028}
+    CarouselWheel:
+        id: domain_wheel
+        size_hint: 0.475, 1
+        pos_hint: {'right': 1}
+#        padding: self.height * 0.1
+        view_class: 'SmallDomainDisplay'
+        on_widget: large_display.domain = args[1].domain
+    Button:
+        id: back
+        size_hint: 0.2, 0.1
+        pos_hint: {'x': 0.028, 'y': 0.05}
+        text: 'Back'
+        font_name: 'Gabriola'
+        on_release: root.on_back_press()
+    Button:
+        id: next
+        size_hint: 0.2, 0.1
+        pos_hint: {'right': 0.478, 'y': 0.05}
+        text: 'Next'
+        font_name: 'Gabriola'
+        on_release: root.goto_next()

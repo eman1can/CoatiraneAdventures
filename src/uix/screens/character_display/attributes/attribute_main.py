@@ -3,6 +3,7 @@
 from kivy.properties import DictProperty, ListProperty, ObjectProperty, StringProperty
 
 # KV Import
+from game.equipment import BOOTS, CHEST, GLOVES, GRIEVES, HELMET, NECKLACE, RING, VAMBRACES, WEAPON
 from loading.kv_loader import load_kv
 from refs import Refs
 # UIX Imports
@@ -15,11 +16,11 @@ class CharacterAttributeScreen(Screen):
     preview = ObjectProperty(None, allownone=True)
     char = ObjectProperty(None, allownone=True)
 
-    overlay_background_source = StringProperty('screens/attributes/stat_background.png')
-    overlay_source = StringProperty('screens/attributse/stat_background_overlay.png')
-    flag_source = StringProperty('screens/attributes/char_type_flag.png')
-    overlay_bar_source = StringProperty('screens/stats/overlay_bar.png')
-    neat_stat_overlay_source = StringProperty('screens/attributes/stat_overlay.png')
+    overlay_background_source = StringProperty('stat_background.png')
+    overlay_source = StringProperty('stat_background_overlay.png')
+    flag_source = StringProperty('flags/char_type_flag.png')
+    overlay_bar_source = StringProperty('overlay_bar.png')
+    neat_stat_overlay_source = StringProperty('stat_overlay.png')
     skills_switch_text = StringProperty('Skills')
 
     star_data = DictProperty({})
@@ -93,15 +94,15 @@ class CharacterAttributeScreen(Screen):
                 return True
             if character.get_rank(rank).is_broken():
                 self.star_data[f'star_{index}']['broken'] = True
-                self.star_data[f'star_{index}']['source'] = 'screens/stats/rankbrk.png'
+                self.star_data[f'star_{index}']['source'] = 'icons/rankbrk.png'
                 return True
         if character.get_rank(rank).is_unlocked():
             star = {'id': f'star_{index}',
-                    'source': 'screens/stats/star.png',
+                    'source': 'icons/star.png',
                     'size_hint': Refs.app.get_dkey(f'cas.star_{index} s_h'),
                     'pos_hint': Refs.app.get_dkey(f'cas.star_{index} p_h')}
             if character.get_rank(rank).is_broken():
-                star['source'] = 'screens/stats/rankbrk.png'
+                star['source'] = 'icons/rankbrk.png'
                 star['broken'] = True
             else:
                 star['broken'] = False
@@ -126,16 +127,16 @@ class CharacterAttributeScreen(Screen):
     def update_items(self):
         if self.char is None:
             return
-        equipment = self.char.get_equipment()
-        self.ids.weapon.item = equipment.weapon
-        self.ids.necklace = equipment.necklace
-        self.ids.ring = equipment.ring
-        self.ids.helmet = equipment.helmet
-        self.ids.vambraces = equipment.vambraces
-        self.ids.gloves = equipment.gloves
-        self.ids.chest = equipment.chest
-        self.ids.grieves = equipment.grieves
-        self.ids.boots = equipment.boots
+        outfit = self.char.get_equipment()
+        self.ids.weapon.item = outfit.get_equipment(WEAPON)
+        self.ids.necklace = outfit.get_equipment(NECKLACE)
+        self.ids.ring = outfit.get_equipment(RING)
+        self.ids.helmet = outfit.get_equipment(HELMET)
+        self.ids.vambraces = outfit.get_equipment(VAMBRACES)
+        self.ids.gloves = outfit.get_equipment(GLOVES)
+        self.ids.chest = outfit.get_equipment(CHEST)
+        self.ids.grieves = outfit.get_equipment(GRIEVES)
+        self.ids.boots = outfit.get_equipment(BOOTS)
 
     def reload(self, *args):
         #TODO: Reload stars

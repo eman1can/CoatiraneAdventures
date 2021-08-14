@@ -1,5 +1,5 @@
 # UIX Imports
-from kivy.properties import ListProperty, ObjectProperty, StringProperty
+from kivy.properties import BooleanProperty, ListProperty, ObjectProperty, StringProperty
 
 # Kivy Imports
 from kivy.clock import Clock
@@ -7,6 +7,7 @@ from kivy.uix.recyclegridlayout import RecycleGridLayout
 from kivy.uix.recycleview import RecycleView
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
 from uix.modules.filterable import Filterable
 from uix.modules.sortable import Sortable
 
@@ -15,7 +16,7 @@ load_kv(__name__)
 
 class RecyclePreview(RecycleView, Filterable, Sortable):
     characters = ListProperty([])
-    #is_support = BooleanProperty(False)
+    is_support = BooleanProperty(False)
 
     mode = StringProperty('scroll')
     scroll = ObjectProperty(None)
@@ -31,17 +32,11 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
         self.viewclass = 'FilledCharacterPreview'
         self.child = self.scroll
 
-        #party = self.selector.content.get_current_party()
-        #for char in self.characters:
-        #    self.data.append({'id': char.get_id(), 'character': char, 'support': None, 'is_select': True, 'has_tag': char in party, 'has_stat': True, 'stat_type': self.sort_type})
-        #self.previews_filter = self.data
-        #self.force_update_values()
-
-    def hover_subscribe(self, widget=None, layer=0, adjust=None):
+    def hover_subscribe(self, widget=None, layer=0, adjust=None, blocking=False):
         if adjust is None:
-            super().hover_subscribe(widget, layer, adjust=self.to_local)
+            super().hover_subscribe(widget, layer, adjust=self.to_local, blocking=blocking)
         else:
-            super().hover_subscribe(widget, layer, adjust=lambda x, y: self.to_local(*adjust(x, y)))
+            super().hover_subscribe(widget, layer, adjust=lambda x, y: self.to_local(*adjust(x, y)), blocking=blocking)
 
     def on_touch_hover(self, touch):
         if self.disabled:
@@ -50,20 +45,27 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
             return False
         return self.dispatch_to_relative_children(touch)
 
-    def update(self, preview, single_char, characters, party):
-        #self.preview = preview
-        #self.is_support = is_support
-        #self.characters = characters
+    def update(self, preview, char, is_support):
+        self.is_support = is_support
 
         self.data.clear()
-        for char in characters:
-            if single_char is not None and single_char == char:
+        party = Refs.gc.get_current_party()
+        for char_index in Refs.gc.get_obtained_character_indexes(is_support):
+            if char_index == char:
                 continue
-            self.data.append({'id': char.get_id(), 'character': char, 'support': None, 'is_select': True, 'preview': preview, 'is_support': char.is_support(), 'has_tag': char in party, 'has_stat': True, 'stat_type': self.sort_type})
+            self.data.append({'character': char_index, 'support': -1, 'is_select': True, 'has_tag': char_index in party, 'has_stat': True, 'stat_type': self.sort_type, 'on_return': lambda character: self.update_preview(character, preview)})
         self.previews_filter = self.data
         self.refresh_from_data()
         self.filter()
+
         # self.force_update_values()
+
+    def update_preview(self, character, preview):
+        if self.is_support:
+            preview.set_char_screen(preview.character, character, True)
+        else:
+            preview.set_char_screen(character, preview.support, True)
+        Refs.gs.display_screen(None, False, False)
 
     def change_hover(self, new_hover):
         self.child.change_hover(new_hover)

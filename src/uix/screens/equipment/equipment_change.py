@@ -1,7 +1,8 @@
 # UIX Imports
-from kivy.properties import NumericProperty, ObjectProperty
+from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 
 # Kivy Imports
+from game.equipment import BOOTS, CHEST, GLOVES, GRIEVES, HELMET, NECKLACE, RING, VAMBRACES, WEAPON
 from kivy.animation import Animation
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.relativelayout import RelativeLayout
@@ -14,7 +15,9 @@ load_kv(__name__)
 
 
 class EquipmentChange(Screen):
-    char = ObjectProperty()
+    char = NumericProperty(-1)
+
+    portrait_source = StringProperty('')
 
     weapon = ObjectProperty(None, allownone=True)
     helmet = ObjectProperty(None, allownone=True)
@@ -29,21 +32,73 @@ class EquipmentChange(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    def on_char(self, instance, value):
+        if self.char == -1:
+            self.name = 'equipment_change_unassigned'
+            self.weapon = self.helmet = self.chest = self.grieves = self.boots = self.vambraces = self.gloves = self.necklace = self.ring = None
+        else:
+            char = Refs.gc.get_char_by_index(self.char)
+            self.name = f'equipment_change_{char.get_id()}'
+            self.portrait_source = char.get_image('portrait')
+            outfit = char.get_equipment()
+            self.weapon = outfit.get_equipment('weapon')
+            self.helmet = outfit.get_equipment('helmet')
+            self.chest = outfit.get_equipment('chest')
+            self.grieves = outfit.get_equipment('grieves')
+            self.boots = outfit.get_equipment('boots')
+            self.vambraces = outfit.get_equipment('vambraces')
+            self.gloves = outfit.get_equipment('gloves')
+            self.necklace = outfit.get_equipment('necklace')
+            self.ring = outfit.get_equipment('ring')
+
     def goto_equipment_change(self, direction):
         next_char = Refs.gc.get_next_char(self.char, direction)
-        Refs.gs.display_screen('equipment_change_' + next_char.get_id(), True, False, next_char)
+        char = Refs.gc.get_char_by_index(next_char)
+        Refs.gs.display_screen('equipment_change_' + char.get_id(), True, False, char)
 
 
 class MultiEquipmentChange(GridLayout):
-    char = ObjectProperty(None, allownone=True)
+    char = NumericProperty(-1)
 
+    weapon = ObjectProperty(None, allownone=True)
+    helmet = ObjectProperty(None, allownone=True)
+    chest = ObjectProperty(None, allownone=True)
+    grieves = ObjectProperty(None, allownone=True)
+    boots = ObjectProperty(None, allownone=True)
+    vambraces = ObjectProperty(None, allownone=True)
+    gloves = ObjectProperty(None, allownone=True)
+    necklace = ObjectProperty(None, allownone=True)
+    ring = ObjectProperty(None, allownone=True)
+
+    def on_char(self, instance, value):
+        if self.char == -1:
+            self.weapon = self.helmet = self.chest = self.grieves = self.boots = self.vambraces = self.gloves = self.necklace = self.ring = None
+        else:
+            char = Refs.gc.get_char_by_index(self.char)
+            outfit = char.get_equipment()
+            self.weapon = outfit.get_equipment(WEAPON)
+            self.helmet = outfit.get_equipment(HELMET)
+            self.chest = outfit.get_equipment(CHEST)
+            self.grieves = outfit.get_equipment(GRIEVES)
+            self.boots = outfit.get_equipment(BOOTS)
+            self.vambraces = outfit.get_equipment(VAMBRACES)
+            self.gloves = outfit.get_equipment(GLOVES)
+            self.necklace = outfit.get_equipment(NECKLACE)
+            self.ring = outfit.get_equipment(RING)
 
 class CharEquipButton(RelativeLayout):
-    char = ObjectProperty(None, allownone=True)
+    char = NumericProperty(-1)
+    image_source = StringProperty('')
+
+    def on_char(self, instance, value):
+        if self.char != -1:
+            char = Refs.gc.get_char_by_index(self.char)
+            self.image_source = char.get_image('preview')
 
     def on_char_equip(self, *args):
-        if self.char is not None:
-            Refs.gs.display_screen('equipment_change_' + self.char.get_id(), True, True, self.char)
+        if self.char != -1:
+            char = Refs.gc.get_char_by_index(self.char)
+            Refs.gs.display_screen('equipment_change_' + char.get_id(), True, True, self.char)
 
 
 class MissingEquip(RelativeLayout):
@@ -56,6 +111,32 @@ class GearChange(Screen):
     animation_start_up = NumericProperty(0.0)
     animation_down = ObjectProperty(None, allownone=True)
     animation_up = ObjectProperty(None, allownone=True)
+
+    def on_kv_post(self, base_widget):
+        self.reload()
+
+    def reload(self, *args):
+        self.ids.char_overview.clear_widgets()
+        self.ids.char_multi.clear_widgets()
+        self.ids.char_missing.clear_widgets()
+        self.ids.support_overview.clear_widgets()
+        self.ids.support_multi.clear_widgets()
+        self.ids.support_missing.clear_widgets()
+        for index, character in enumerate(Refs.gc.get_current_party()):
+            if index < 8:
+                self.ids.char_overview.add_widget(CharEquipButton(char=character))
+                self.ids.char_multi.add_widget(MultiEquipmentChange(char=character))
+                if character != -1:
+                    self.ids.char_missing.add_widget(MissingEquip())
+                else:
+                    self.ids.char_missing.add_widget(MissingEquip(opacity=0))
+            else:
+                self.ids.support_overview.add_widget(CharEquipButton(char=character))
+                self.ids.support_multi.add_widget(MultiEquipmentChange(char=character))
+                if character != -1:
+                    self.ids.char_missing.add_widget(MissingEquip())
+                else:
+                    self.ids.support_missing.add_widget(MissingEquip(opacity=0))
 
     def on_enter(self, *args):
         self.animate_arrows()

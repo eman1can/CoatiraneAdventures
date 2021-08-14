@@ -87,7 +87,7 @@ def load_enemy_chunk(chunk, loader, program_type, callbacks):
         else:
             max_hsmead.append(int(values[index]))
 
-    elements = [values[ELEMENT], values[SUB_ELEMENT]]
+    elements = [int(values[ELEMENT]), int(values[SUB_ELEMENT])]
     enemy = Enemy(values[ID], values[NAME], values[SKEL_ID], program_type, values[ATTACK_TYPE], min_hsmead, max_hsmead, elements, harvest_hardness, skills, skill_chances, drops)
 
     loader.append('enemies', values[ID], enemy)

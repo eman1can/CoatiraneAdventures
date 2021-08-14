@@ -1,61 +1,16 @@
 <StatInfoBox>:
-    Image:
-        id: flag
-        source: root.flag_source
-        allow_stretch: True
-        size_hint: app.get_dkey("cas.flg s_h")
-        pos_hint: app.get_dkey("cas.flg p_h")
-    Label:
-        id: flag_label
-        text: root.char_type
-        font_name: 'Gabriola.ttf'
-        height: self.texture_size[1]
-        color: app.get_dkey("cas.flgl c")
-        font_size: app.get_dkey("cas.flgl fs", flag.height)
-        size_hint: app.get_dkey("cas.flgl s_h")
-        pos_hint: app.get_dkey("cas.flgl p_h")
-    Image:
-        id: type_flag
-        source: root.type_flag_source
-        allow_stretch: True
-        size_hint: app.get_dkey("cas.tflg s_h")
-        pos_hint: app.get_dkey("cas.tflg p_h")
-    Label:
-        id: type_label
-        text: root.char_stype
-        font_name: 'Gabriola'
-        height: self.texture_size[1]
-        color: app.get_dkey("cas.tflgl c")
-        font_size: app.get_dkey("cas.tflgl fs", type_flag.height)
-        size_hint: app.get_dkey("cas.tflgl s_h")
-        pos_hint: app.get_dkey("cas.tflgl p_h")
-    Image:
-        id: element_flag
-        source: root.element_flag_source
-        allow_stretch: True
-        size_hint: app.get_dkey("cas.eflg s_h")
-        pos_hint: app.get_dkey("cas.eflg p_h")
-    Label:
-        id: element_flag_label
-        text: root.char_element
-        font_name: 'Gabriola'
-        size: self.texture_size
-        color: app.get_dkey("cas.eflgl c")
-        font_size: app.get_dkey("cas.eflgl fs", element_flag.width)
-        pos_hint: app.get_dkey("cas.eflgl p_h")
-        canvas.before:
-            PushMatrix
-            Rotate:
-                angle: app.get_dkey("cas.eflgl ang")
-                origin: self.center
-        canvas.after:
-            PopMatrix
-    Image:
-        id: element_flag_image
-        source: root.element_flag_image_source
-        allow_stretch: True
-        size_hint: app.get_dkey("cas.eflgi s_h")
-        pos_hint: app.get_dkey("cas.eflgi p_h")
+    CharFlag:
+        type: root.char_flag
+        size_hint: 0.25, 0.0606
+        pos_hint: {'top': 1}
+    TypeFlag:
+        type: root.type_flag
+        size_hint: 0.25, 0.0652
+        pos_hint: {'right': 1, 'top': 1}
+    ElementFlag:
+        type: root.element_flag
+        size_hint: 0.0544, 0.1723
+        pos_hint: {'top': 0.9456, 'right': 1}
     PPCHoverPathButton:
         id: skills_switch
         path: 'buttons/skills_button'

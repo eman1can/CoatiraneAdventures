@@ -4,6 +4,7 @@ from game.outfit import Outfit
 from game.rank import MAX_RANK
 from game.scale import Scale
 from game.skill import ELEMENTS
+from refs import Refs
 
 ADVENTURER = 0
 SUPPORTER  = 1
@@ -92,7 +93,7 @@ DEXTERITY = 6
 
 
 class Character(Entity):
-    def __init__(self, name, skel_path, hp, mp, s, m, e, a, d, element, skills, **kwargs):
+    def __init__(self, identifier, name, skel_path, res_path, hp, mp, s, m, e, a, d, element, skills, **kwargs):
         # Values set by kwargs
         self._display_name = ''
         self._family = ''
@@ -105,15 +106,18 @@ class Character(Entity):
         self._lowest_floor = 0  # Not yet implemented
         self._monsters_slain = 0  # Not yet implemented
         self._people_slain = 0  # Not yet implemented
-        self._character_id = ''
+
         self._is_support = False
         self._index = -1
 
-        self._slide = None
-        self._slide_support = None
-        self._preview = None
-        self._full = None
-        self._bust_up = None
+        self._full = f'{res_path}_full.png'
+        self._inspect = f'{res_path}_inspect.png'
+        self._slide = f'{res_path}_slide.png'
+        self._preview = f'{res_path}_preview.png'
+        self._slide_support = f'{res_path}_slide_support.png'
+        self._bustup = f'{res_path}_bustup.png'
+        self._portrait = f'{res_path}_portrait.png'
+        self._symbol = Refs.gc.get_symbol()
 
         self._rank = -1
         self._ranks = None
@@ -146,7 +150,7 @@ class Character(Entity):
         if not self._is_support:
             skills[7].set_special()
 
-        super().__init__(name, skel_path, hp, mp, s, m, e, s, m, e, a, d, element, skills)
+        super().__init__(identifier, name, skel_path, hp, mp, s, m, e, s, m, e, a, d, element, skills)
 
         self.refresh_stats()
 
@@ -201,13 +205,22 @@ class Character(Entity):
 
     # Basic info functions
 
+    def get_id(self):
+        return self._id
+
+    def get_display_name(self):
+        return self._display_name
+
+    def get_full_name(self):
+        return f'{self._display_name.title()} {self.get_name().title()}'
+
     def get_skills(self):
         # 0 Basic 1 Move1 2 Move1 Mana 3 Move2 4 Move2 Mana 5 Move3 6 Move3 Mana 7 Special
         return self._moves[:2] + self._moves[3:4] + self._moves[5:6] + self._moves[7:8]
 
     def get_mana_cost(self, skill):
         index = self._moves.index(skill)
-        if index == 0 or index == 7:
+        if index in (0, 7, 8, 9):
             return 0
         return self._moves[index + 1]
 
@@ -236,10 +249,14 @@ class Character(Entity):
             return self._slide_support
         elif image_type == 'preview':
             return self._preview
-        elif image_type == 'bust_up':
-            return self._bust_up
-        else:
+        elif image_type == 'bustup':
+            return self._bustup
+        elif image_type == 'full':
             return self._full
+        elif image_type == 'portrait':
+            return self._portrait
+        else:
+            return self._inspect
 
     def is_support(self):
         return self._is_support
@@ -248,6 +265,8 @@ class Character(Entity):
         return self._attack_type
 
     def get_attack_type_string(self):
+        if self._attack_type not in CHARACTER_ATTACK_TYPES:
+            return ''
         return CHARACTER_ATTACK_TYPES[self._attack_type]
 
     def get_index(self):
@@ -298,13 +317,13 @@ class Character(Entity):
         return self._outfit
 
     def get_element_string(self):
+        if self._element not in ELEMENTS:
+            return ''
         return ELEMENTS[self._element]
 
-    def get_display_name(self):
-        return self._display_name
 
-    def get_id(self):
-        return self._character_id
+
+
 
     # Rank and ability management functions
 
@@ -562,8 +581,10 @@ class Character(Entity):
             return Scale.get_scale_as_character(self.get_agility(rank), 100)
         return Scale.get_scale_as_character(self.get_agility(), 1000)
 
-
     # Equipment functions
+    def get_equipment(self):
+        return self._outfit
+
     def equip_equipment(self, slot, equipment):
         if self._outfit.get_type(slot) is not None:
             print("Item already equipped")

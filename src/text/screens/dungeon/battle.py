@@ -411,7 +411,7 @@ def get_screen(console, screen_data):
     elif screen_data == 'woke_up':
         character = floor_data.get_alive_characters()[randint(0, len(floor_data.get_alive_characters()) - 1)]
         character.wake_up()
-        floor_data.increase_stat(character.get_id(), 0, Refs.gc.get_random_stat_increase())
+        floor_data.increase_stat(character.get_index(), 0, Refs.gc.get_random_stat_increase())
         display_string = f'\n\t{character.get_name()} woke up! Try to get to a safe zone to rest your other adventurers!\n'
         display_string += f'\n\t{OPT_C}0:{END_OPT_C} Continue\n'
         _options = {'0': None}
@@ -470,6 +470,7 @@ def get_screen(console, screen_data):
             _options[str(map_index)] = MAP_OPTIONS
         else:
             display_string += tool_string
+        print(display_string)
         return display_string, _options
     else:
         display_string = '\n\t' + floor_data.get_descriptions()
@@ -510,7 +511,7 @@ def handle_action(console, action):
             return
         elif tool.get_hardness() < floor_data.get_floor().get_hardness():
             console.error_time = 2.5
-            console.error_text = f'Your {tool_name} is nto hard enough to affect this level!'
+            console.error_text = f'Your {tool_name} is not hard enough to affect this level!'
             return
 
         tool.remove_durability(Refs.gc.get_random_wear_amount() * 7.5)
@@ -519,10 +520,10 @@ def handle_action(console, action):
         character = floor_data.get_able_characters()[index]
         character.take_action(Refs.gc.get_stamina_weight() + 1)
 
-        floor_data.increase_stat(character.get_id(), 2, Refs.gc.get_random_stat_increase())
+        floor_data.increase_stat(character.get_index(), 2, Refs.gc.get_random_stat_increase())
 
         if action == 'mine' or action == 'dig':
-            floor_data.increase_rest_count(2)
+            floor_data.increase_rest_count(-2)
             console.set_screen(f'{DUNGEON_RESOURCE_RESULT}:{action}#{character.get_id()}', True)
             return
         else:
@@ -573,7 +574,7 @@ def handle_action(console, action):
         if encounter_action == 'start':
             battle_data.progress_encounter()
         elif encounter_action == 'attack':
-            result = battle_data.make_turn()
+            result, queue = battle_data.make_turn()
             if result is not None:
                 battle_data.progress_encounter()
                 if result:

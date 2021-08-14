@@ -376,6 +376,9 @@ class Skeleton:
     def getWidth(self):
         return self.width
 
+    def getSize(self):
+        return self.width, self.height
+
     def setHeight(self, height):
         self.height = height
 

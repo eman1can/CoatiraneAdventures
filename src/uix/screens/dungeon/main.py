@@ -15,19 +15,27 @@ class DungeonMain(Screen):
     party_score = NumericProperty(0)
     level = NumericProperty(0)
     boss = BooleanProperty(False)
+    locked = BooleanProperty(False)
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def initialize_data(self, dt):
-        current_party_index = 0
+    def on_kv_post(self, base_widget):
+        self.ids.portfolio.bind(on_index_update=self.on_snap_carousel_index)
+        self.ids.indexer.bind(on_button=self.on_indexer_index)
+        current_party_index = self.content.get_current_party_index()
         for index in range(0, 10):
-            self.ids.portfolio.add_widget(CharacterPortfolio(self.manager.app, self, current_party_index, party=self.content.get_party(index), party_index=index))
-        #self.ids.indexer.update_sources(self.content.get_current_party_index())
-        self.ids.indexer.bind(on_click=self.on_click)
+            self.ids.portfolio.add_widget(CharacterPortfolio(party_index=index, locked=self.locked, current=(current_party_index == index)))
+        self.ids.indexer.select_index(current_party_index)
 
-    def on_click(self, instance, index):
-        self.ids.portfolio.load_slide(self.ids.portfolio.slides[index])
+    def on_indexer_index(self, instance, index):
+        # print(instance, index)
+        self.ids.portfolio.load_index(index)
+
+    def on_snap_carousel_index(self, instance, index):
+        # print('Current party is ', index)
+        self.content.set_current_party_index(index)
+        if self.ids.indexer.index != index:
+            self.ids.indexer.select_index(index)
+        self.ids.portfolio.reload()
+        self.update_party_score()
 
     # def on_touch_hover(self, touch):
     #     if self.confirm_open:
@@ -44,17 +52,15 @@ class DungeonMain(Screen):
         self.ids.arrows.un_animate_arrows()
         super().on_leave()
 
-    def reload(self):
+    def reload(self, **kwargs):
+        for kw, arg in kwargs.items():
+            if hasattr(self, kw):
+                setattr(self, kw, arg)
         self.ids.portfolio.reload()
         self.update_party_score()
 
     def update_party_score(self):
         self.party_score = self.content.get_current_party_score()
-
-    def on_widget_move(self, index):
-        self.content.set_current_party_index(0 if index is None else index)
-        self.ids.portfolio.reload()
-        self.update_party_score()
 
     def update_buttons(self):
         if self.level == 0:
@@ -80,13 +86,10 @@ class DungeonMain(Screen):
             self.manager.display_screen('gear_change', True, True)
 
     def on_inventory(self):
-        pass
-
-    def add_bonus(self):
-        current_party = self.content.get_current_party()
-        for x in range(200):
-            self.content.generate_familiarity_bonuses(current_party)
-        self.manager.clean_whitelist()
+        if Refs.gp.is_popup_open('inventory'):
+            Refs.gp.close_popup('inventory')
+        else:
+            Refs.gp.display_popup(self, 'inventory')
 
     def on_back_press(self):
         if super().on_back_press():
@@ -103,9 +106,8 @@ class DungeonMain(Screen):
                     count += 1
             if count == 0:
                 return
-        current_floor = str(self.level)
-        next_floor = str(self.level + 1)
-        Refs.gp.display_popup(self, 'dm_confirm', True, current_floor, next_floor, self.party_score, on_confirm=lambda *args: self.do_confirm(True))
+        floor_score, party_score = Refs.gc.get_floor_score(True), Refs.gc.get_current_party_score()
+        Refs.gp.display_popup(self, 'dm_confirm', current_floor=str(self.level), next_floor=str(self.level + 1), rec_score=floor_score, act_score=party_score, on_confirm=lambda *args: self.do_confirm(True))
 
     def do_confirm(self, descending):
         if descending:
@@ -125,6 +127,8 @@ class DungeonMain(Screen):
             if not x == None:
                 descend = True
         if descend:
+            Refs.gc.set_next_floor(True)
+            Refs.gc.save_game(None)
             print("Delving into the dungeon")
             self.manager.display_screen('dungeon_battle', True, False, self.level, self.boss, {})
         else:
@@ -143,6 +147,7 @@ class DungeonMain(Screen):
         self.close_hints()
         self.level -= 1
         self.update_buttons()
+        Refs.gc.set_next_floor(False)
         # # print("Ascend")
         # if len(shownparty) > 0:
         #     print("Ascending from dungeon")

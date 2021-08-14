@@ -34,6 +34,7 @@ class DetailEquipmentSlot(EquipmentSlot):
         super().__init__(**kwargs)
 
 
+# TODO: Make Gradient
 class DurabilityBar(RelativeLayout):
     max = NumericProperty(100.0)
     value = NumericProperty(0.0)

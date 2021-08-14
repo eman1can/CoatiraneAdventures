@@ -1,36 +1,48 @@
 # Project Imports
+from game.skill import ALLIES, ATTACK, CAUSE_EFFECT, FOE, FOES, SELF
+from kivy.graphics import Color, Line
+from kivy.lang import Builder
+from refs import Refs
+from game.floor import ENTRANCE, EXIT, SAFE_ZONES
+
 # Standard Library Imports
-import random
+from random import randint, uniform
 
-from kivy.graphics.instructions import InstructionGroup
-from kivy.properties import BooleanProperty, BoundedNumericProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
-
-from game import skill
 # Kivy Imports
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.uix.button import Button
+from kivy.properties import BooleanProperty, ListProperty, NumericProperty, StringProperty
 from kivy.uix.image import Image
-from kivy.uix.label import Label
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.widget import Widget
+
 # KV Import
 from loading.kv_loader import load_kv
-from refs import Refs
-from spine.animation.animationstate import AnimationState, AnimationStateAdapter
-from spine.animation.animationstatedata import AnimationStateData
-from spine.skeleton.skeletonrenderer import SkeletonRenderer
+
 # UIX Imports
+from spine.skeleton.skeletonloader import SkeletonLoader
+from spine.skeleton.skeletonrenderer import SkeletonRenderer
+from uix.modules.headers import dungeon_header, time_header_simple
 from uix.modules.screen import Screen
+from uix.screens.dungeon.lwf_renderer import LWFRenderer, load_texture
+from uix.screens.dungeon.marker import Marker
+from uix.screens.dungeon.parallax_background import ParallaxBackground
 
 load_kv(__name__)
 
 
-class ParallaxBackground(RelativeLayout):
-    def __init__(self, **kwargs):
-        self.source = 'screens/dungeon_battle/background.png'
-        super().__init__(**kwargs)
+move_name_source = """
+Image:
+    source: 'dungeon/move_bubble_background.png'
+    Label:
+        id: label
+        font_name: 'Gabriola'
+        font_size: root.height * 0.7
+        text: 'Tres Piercer'
+        size_hint: None, None
+        size: root.width, root.height * 0.8
+        pos: root.x, root.y + root.height * 0.2
+"""
 
 
 class Encounter:
@@ -44,129 +56,10 @@ class Encounter:
         return self.encounter_x
 
 
-class CharacterHud(RelativeLayout):
-    special_amount = BoundedNumericProperty(0, min=0, max=1000)  # 0 → 1000
-
-    index = NumericProperty(0)
-
-    health = NumericProperty(0)
-    health_max = NumericProperty(1000)
-    mana = NumericProperty(0)
-    mana_max = NumericProperty(1000)
-    character_img_src = StringProperty('')
-
-    moves = ListProperty([])
-
-    def __init__(self, **kwargs):
-        self.register_event_type('on_open_mhud')
-        super().__init__(**kwargs)
-
-    def set_character(self, character):
-        self.character_img_src = character.get_image('preview')
-        self.health = character.get_health()
-        self.health_max = character.get_health()
-        self.mana = character.get_mana()
-        self.mana_max = character.get_mana()
-
-    def on_open_mhud(self):
-        pass
-
-    def on_touch_hover(self, touch):
-        return False
-
-
-class MoveHud(RelativeLayout):
-    selected_move = ObjectProperty(None, allownone=True)
-    move_hud_open = BooleanProperty(False)
-
-    hint_x = NumericProperty(0)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def set_moves(self, move_list):
-        self.ids.move_select.clear_widgets()
-        for move in move_list:
-            button = MoveButton(font_name='Gabriola', move=move, font_size=self.height * 0.35, hud_instance=self)
-            self.ids.move_select.add_widget(button)
-        self.ids.label.text = move_list[0].name
-        self.selected_move = move_list[0]
-
-    def open_move_hud(self, instance):
-        if self.move_hud_open:
-            return
-        print("Open the move hud")
-        self.move_hud_open = True
-        self.ids.current_move.opacity = 0
-        self.ids.move_select.opacity = 1
-
-    def close_move_hud(self, selected_move):
-        print("Close the move hud")
-        self.move_hud_open = False
-        self.ids.current_move.opacity = 1
-        self.ids.move_select.opacity = 0
-        self.selected_move = selected_move
-        self.ids.label.text = selected_move.name
-
-
-class BattleHud(RelativeLayout):
-
-    def __init__(self, **kwargs):
-        self.register_event_type('on_turn')
-        super().__init__(**kwargs)
-
-        self.get_a_hud = {}
-        for index, character in enumerate(Refs.gc.get_current_party()):
-            if character is None or index >= 8:
-                continue
-            #id=f'hud_{index}',
-            chud = CharacterHud(size_hint=(0.113, 0.221), pos_hint={'x': 0.05 * (index + 1) + index * 0.221, 'y': 0.025})
-            mhud = MoveHud(size_hint=(1, 0.05), pos_hint={'y': 0.025 + 0.221 * 0.96}, hint_x=0.05 * (index + 1) + index * 0.221)
-            # id=f'mhud_{index}',
-            moves = [character.get_skill(0), character.get_skill(3), character.get_skill(4), character.get_skill(5), character.get_skill(6)]
-
-            chud.set_character(character)
-            chud.bind(on_open_mhud=mhud.open_move_hud)
-
-            mhud.set_moves(moves)
-
-            # TODO Make it so that only one mhud can be only at one time
-            #   IDEA: Mhud manager as the layer widget
-
-            self.get_a_hud[character] = (chud, mhud)
-            self.add_widget(chud)
-            self.add_widget(mhud)
-
-    def take_turn(self):
-        self.dispatch('on_turn')
-
-    def on_turn(self):
-        pass
-
-    def get_hud(self, character):
-        return self.get_a_hud[character]
-
-
 class EnemyHealth(RelativeLayout):
     max = NumericProperty(100)
-    value = NumericProperty(0)
-
-
-class MoveButton(Button):
-    move = ObjectProperty(None, allownone=True)
-    hud_instance = ObjectProperty(None, allownone=True)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # self.path = 'buttons/'
-
-    def on_move(self, instance, new_move):
-        self.text = new_move.name
-
-    def on_release(self):
-        if self.opacity == 0:
-            return
-        self.hud_instance.close_move_hud(self.move)
+    health = NumericProperty(0)
+    mana = NumericProperty(0)  # This is only for hud updates not crashing
 
 
 class FloorAnnouncement(Image):
@@ -178,111 +71,6 @@ class FloorAnnouncement(Image):
 
     def start_fading(self, anim):
         anim.start(self)
-
-
-class HitListener(AnimationStateAdapter):
-    def __init__(self):
-        self.callback = None
-
-    def set_callback(self, callback_function):
-        self.callback = callback_function
-
-    def event(self, trackIndex, event):
-        print("event:", event.getData().getName().strip())
-        if event.getData().getName().strip() == 'hit':
-            if self.callback is not None:
-                self.callback()
-
-
-class BattleAnimation(Label):
-    def on_touch_hover(self, touch):
-        return False
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.opacity = 0
-
-    def appear(self):
-        self.opacity = 1
-
-    def fade_out(self, duration):
-        anim = Animation(opacity=0, duration=duration * 0.5)
-        Clock.schedule_once(lambda dt: self.start_fading(anim, duration), duration * 0.5)
-
-    def start_fading(self, anim, duration):
-        anim.start(self)
-        Clock.schedule_once(lambda dt: self.remove(), duration * 0.5)
-
-    def remove(self):
-        if self.parent is None:
-            print("ERROR")
-            return
-        self.parent.remove_widget(self)
-
-
-class NumberAnimation(BattleAnimation):
-    def __init__(self, number, **kwargs):
-        super().__init__(**kwargs)
-        self.text = str(number)
-        self.color = 1, 1, 1, 1
-        self.outline_color = 0, 0, 0, 1
-        self.outline_width = 2
-        self.font_name = 'Gabriola'
-
-
-class BlockAnimation(BattleAnimation):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.text = 'Block'
-        self.color = 0.22, 0.22, 0.61, 1
-        self.outline_color = 0, 0, 0, 1
-        self.outline_width = 2
-        self.font_name = 'Gabriola'
-
-
-class EvadeAnimation(BattleAnimation):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.text = 'Evade'
-        self.color = 0.45, 0.68, 0.68, 1
-        self.outline_color = 0, 0, 0, 1
-        self.outline_width = 2
-        self.font_name = 'Gabriola'
-
-
-class CriticalAnimation(BattleAnimation):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.text = 'Critical'
-        self.color = 0.6, 0.22, 0.22, 1
-        self.outline_color = 0, 0, 0, 1
-        self.outline_width = 2
-        self.font_name = 'Gabriola'
-
-
-class PenetrationAnimation(BattleAnimation):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.text = 'Penetration'
-        self.color = 0.56, 0.56, 0.56, 1
-        self.outline_color = 0, 0, 0, 1
-        self.outline_width = 2
-        self.font_name = 'Gabriola'
-
-
-class CounterAnimation(BattleAnimation):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.text = 'Counter'
-        self.color = 0.76, 0.43, 0.18, 1
-        self.outline_color = 0, 0, 0, 1
-        self.outline_width = 2
-        self.font_name = 'Gabriola'
-
-
-class SkeletonPosition(Widget):
-    x = NumericProperty(0)
-    y = NumericProperty(0)
 
 
 class TargetInfo:
@@ -316,110 +104,141 @@ class EnemyNamePreview(RelativeLayout):
         super().__init__(**kwargs)
 
 
+class ActionFlag(RelativeLayout):
+    text = StringProperty('')
+    background_color = ListProperty([1, 1, 1, 1])
+    left = BooleanProperty(True)
+
+    def __init__(self, **kwargs):
+        self.register_event_type('on_action')
+        super().__init__(**kwargs)
+
+    def on_action(self):
+        pass
+
+
 class DungeonBattle(Screen):
     level_num = NumericProperty(1)
     is_boss = BooleanProperty(False)
 
-    screen_width = NumericProperty(0)
-    screen_height = NumericProperty(0)
-
-    # position = BoundedNumericProperty(0, min=0, max=MAXIMUM_SCREEN_WIDTH)
-
-    moving = BooleanProperty(False)
-    in_encounter = BooleanProperty(False)
-    direction = NumericProperty(-1)
+    battle_flash_alpha = NumericProperty(0)
 
     auto_move_enabled = BooleanProperty(False)
     auto_battle_enabled = BooleanProperty(False)
 
-    # move_velocity = NumericProperty(0)
-
-    # actual_x = NumericProperty(0)
-
     def __init__(self, level, boss, config, **kwargs):
+        self.enemy_huds = {}
         self.dungeon_config = config
         self.level_num = level
         self.is_boss = boss
+
+        # Base Variables
+        self._keys = []
+
+        # Non-Battle Variables
+        self.speed = 1
+        self._direction = -1
+        self.showing_announcement = True
+
+        # Setup floor map
+        self.floor_data = Refs.gc.get_floor_data()
+        self.floor_map = self.floor_data.get_floor_map()
+        self.battle_data = self.floor_data.get_battle_data()
+
+        # Setup background
+        self.background = ParallaxBackground(self.floor_data)
+        self.background.bind(on_move=self.on_node_update)
+
+        self.lwf_renderer = None
+
+        # Setup characters
+        self._skeleton_loader = SkeletonLoader()
+        self._skeleton_renderer = SkeletonRenderer()
+        self._last_animation = None
+        self._result = None
+
+        width, height = Refs.app.width, Refs.app.height
+        self.character_positions = [
+            (0.5 * width, 0.333 * height),
+            (0.5 * width, 0.333 * height),
+            (0.5 * width, 0.333 * height),
+            (0.5 * width, 0.333 * height),
+            (0.5 * width, 0.333 * height),
+            (0.5 * width, 0.333 * height),
+            (0.5 * width, 0.333 * height),
+            (0.5 * width, 0.333 * height),
+        ]
+
+        self.character_battle_positions = [
+            (0.615 * width, 0.515 * height),
+            (0.685 * width, 0.480 * height),
+            (0.760 * width, 0.445 * height),
+            (0.840 * width, 0.410 * height)
+        ]
+        self.enemy_positions = [
+            (0.250 * width, 0.500 * height),
+            (0.150 * width, 0.475 * height),
+            (0.200 * width, 0.400 * height),
+            (0.300 * width, 0.325 * height),
+        ]
+
+        self.enemy_party = 0.175 * width, 0.425 * height
+        self.char_party = 0.7275 * width, 0.410 * height
+        self.action_flags = {}
+
         super().__init__(**kwargs)
 
-        # Declare variables
-        self._keyboard = None
-        self.speed = 1
-        self.in_encounter = False
-        self.showing_announcement = True
-        self.moving = False
+    def on_kv_post(self, base_widget):
+        self.ids.parallax_layer.add_widget(self.background)
+        self.ids.battle_background.opacity = 0
+        self.ids.twirl_widget.effects[0].bind(on_update=self.twirl_update)
+        self.ids.twirl_widget.effects[0].bind(on_end=self.twirl_end)
+        self.ids.animation_layer.opacity = 0
+        self.ids.battle_hud.bind(on_toggle_icons=self.toggle_icons)
 
-        self.skeleton_renderer = SkeletonRenderer()
+        self.lwf_renderer = LWFRenderer(self.ids.animation_layer)
 
-        self.floor = Refs.gc['floors'][self.level_num - 1]
-        self.max_screen_width = Refs.app.width * 8
+        characters = self.floor_data.get_characters()
+        for index, character in enumerate(characters):
+            character.load_skeleton(self._skeleton_loader)
+            character.set_position(*self.character_positions[index])
+            self.ids.battle_hud.huds[character].set_character(character, self.lwf_renderer)
 
-        # Establish parts
-        self.parallax = ParallaxBackground()
-        self.ids.parallax_layer.add_widget(self.parallax)
+    def on_enter(self, *args):
+        Refs.app.bind_keyboard(on_key_down=self.on_keyboard_down, on_key_up=self.on_keyboard_up)
 
-        self.encounter_num = self.floor.generateEncounterNumber()
-        self.distance = self.max_screen_width * 0.9 / self.encounter_num
+        self.ids.floor_announcement.fade_out(1.5)
+        Clock.schedule_once(self.setup_after_fade, 1.5)
+        Clock.schedule_interval(self.update, 1 / 30)
+        Clock.schedule_interval(self.update_time_header, 5)
 
-        self.entities = {}
+    def update_time_header(self, dt):
+        self.ids.time_header.text = time_header_simple()
 
-        self.enemy_type_skeletons = []
+    def update_dungeon_header(self):
+        self.ids.dungeon_header.text = dungeon_header(self._direction)
 
-        self.characters = {}
-        self.enemies = {}
+    def setup_after_fade(self, dt):
+        self.showing_announcement = False
+        # update the map
+        self.refresh_map()
+        self.process_action_flags(True)
+        self.ids.battle_hud.opacity = 1
+        self.ids.map_overlay.opacity = 1
+        self.ids.info_hud.opacity = 1
+        self.ids.inventory.opacity = 1
 
-        self.encounters = []
-        self.encounter = None
-        self.enemy_types = []
-        self.encounter_identifier = 0
+    def refresh_map(self):
+        if self.floor_map.get_enabled():
+            self.ids.map_overlay.opacity = 1
+            self.ids.map_overlay.text = self.floor_map.get_text(False)
+            self.ids.map_scatter.set_text(self.floor_map.get_text(False, 200))
+        else:
+            self.ids.map_overlay.opacity = 0
 
-        for i in range(self.encounter_num):
-            types, enemies = self.floor.generateEnemies()
-            for type in types:
-                if type not in self.enemy_types:
-                    self.enemy_types.append(type)
-            self.encounters.append(enemies)
-
-        self.skel_poses = []
-        self.skel_run_poses = []
-        self.skeletonX, self.skeletonY = Refs.app.width / 2, Refs.app.height / 3
-        self.screen_width, self.screen_height = Refs.app.width, Refs.app.height
-
-        self.skel_poses.append(SkeletonPosition(x=self.skeletonX, y=self.skeletonY))
-        self.skel_poses.append(SkeletonPosition(x=self.skeletonX + 75, y=self.skeletonY - 150))
-        self.skel_poses.append(SkeletonPosition(x=self.skeletonX + 175, y=self.skeletonY - 75))
-        self.skel_poses.append(SkeletonPosition(x=self.skeletonX + 300, y=self.skeletonY))
-        self.skel_poses.append(SkeletonPosition(x=self.skeletonX + 375, y=self.skeletonY - 150))
-        self.skel_poses.append(SkeletonPosition(x=self.skeletonX + 475, y=self.skeletonY - 75))
-        self.skel_poses.append(SkeletonPosition(x=self.skeletonX + 600, y=self.skeletonY))
-        self.skel_poses.append(SkeletonPosition(x=self.skeletonX + 675, y=self.skeletonY - 150))
-
-        self.gaps = [75, 175, 300, 375, 475, 600, 675]
-        self.enemy_positions = [[self.skeletonX - 100, self.skeletonY - 150],
-                                [self.skeletonX - 200, self.skeletonY],
-                                [self.skeletonX - 300, self.skeletonY + 150],
-                                [self.skeletonX - 250, self.skeletonY - 150],
-                                [self.skeletonX - 350, self.skeletonY],
-                                [self.skeletonX - 450, self.skeletonY + 150],
-                                [self.skeletonX - 400, self.skeletonY - 150],
-                                [self.skeletonX - 500, self.skeletonY],
-                                [self.skeletonX - 600, self.skeletonY + 150],
-                                [self.skeletonX - 550, self.skeletonY - 150],
-                                [self.skeletonX - 650, self.skeletonY],
-                                [self.skeletonX - 750, self.skeletonY + 150]]
-        self.direction = -1
-        self.directions = [self.direction,
-                           self.direction,
-                           self.direction,
-                           self.direction,
-                           self.direction,
-                           self.direction,
-                           self.direction]
-        self.move_with = [True, True, True, True, True, True, True]
-        self.canvases = []
-        self.canvases_enemy = []
-
-        self.actual_x = 0
+    def on_leave(self, *args):
+        Refs.app.unbind_keyboard(on_key_down=self.on_keyboard_down, on_key_up=self.on_keyboard_up)
+        Clock.unschedule(self.update_time_header)
 
     def set_config(self, config):
         if 'auto_move_enabled' in config:
@@ -427,960 +246,1122 @@ class DungeonBattle(Screen):
         if 'auto_battle_enabled' in config:
             self.auto_move_enabled = config['auto_battle_enabled']
 
-    def on_auto_move(self):
-        self.auto_move_enabled = True
-        self.moving = True
-        Clock.unschedule(self.idle_animation)
-        Clock.schedule_interval(self.move_left, 1 / 60)
+    # def on_auto_move(self):
+    #     self.auto_move_enabled = True
+    #     self.moving = True
+    #     Clock.unschedule(self.characters.idle_animation)
+    #     Clock.schedule_interval(self.move_left, 1 / 30)
+    #
+    # def on_auto_move_cancel(self):
+    #     self.auto_move_enabled = False
+    #     self.moving = False
+    #     Clock.unschedule(self.move_left)
+    #     self.setup_moving(0)
+    #
+    # def on_auto_battle(self):
+    #     pass
+    #
+    # def on_auto_battle_cancel(self):
+    #     pass
 
-    def on_auto_move_cancel(self):
-        self.auto_move_enabled = False
-        self.moving = False
-        Clock.unschedule(self.move_left)
-        self.setup_moving(0)
-
-    def on_auto_battle(self):
-        pass
-
-    def on_auto_battle_cancel(self):
-        pass
-
-    def on_pre_enter(self, *args):
-        self.characters = Refs.gc.load_party_skeletons()
-        self.load_encounter_states()
-
-        # TODO: Make canvases be added in order of back to front.
-        #   Find proper alignment first
-
-        for i in range(len(self.characters)):
-            canvas = InstructionGroup()
-            self.canvases.append(canvas)
-            self.ids.skeleton_layer.canvas.add(canvas)
-
-        # for i in range(len(self.enemies)):
-        #     canvas = InstructionGroup()
-        #     self.canvases_enemy.append(canvas)
-        #     self.ids.skeleton_layer.canvas.add(canvas)
-
-        # for skeleton in self.skeletons:
-        #     self.current_animations.append('idle_side')
-
-    def load_encounter_states(self, pop=False):
-
-        self.encounter = Encounter(self.encounter, self.distance)
-
-        if pop:
-            self.encounters.pop(0)
-        print("You will encounter ", len(self.encounters[0]), "enemies")
-        return
-        for enemy in self.encounters[0]:
-            for i, etype in enumerate(self.enemy_types):
-                if enemy.get_name() == etype.name:
-                    skeleton = etype.load_skeleton()
-                    data = AnimationStateData(skeleton.getData())
-                    data.setDefaultMix(0.25)
-                    state = AnimationState(data)
-                    state.setAnimation(0, "idle", True)
-                    skeleton.setSkin(skeleton.getData().getSkins()[0].getName())
-                    self.enemies[enemy] = (state, skeleton)
-                    break
-
-    def on_enter(self, *args):
-
-        self._keyboard = Window.request_keyboard(self.on_keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self.on_keyboard_down)
-        self._keyboard.bind(on_key_up=self.on_keyboard_up)
-
-        # TODO Play Floor animation
-        duration = 1.5
-        self.ids.floor_announcement.fade_out(duration)
-        Clock.schedule_once(self.setup_moving, duration)
-        Clock.schedule_interval(self.render, 1 / 60)
-
-    def setup_moving(self, dt):
-        self.showing_announcement = False
-        Clock.schedule_once(self.idle_animation, random.randint(25, 40))
-
-    def on_leave(self, *args):
-        Clock.unschedule(self.render)
-        self.on_keyboard_closed()
-
-    def on_keyboard_closed(self):
-        print('My keyboard have been closed!')
-        if self._keyboard is None:
+    # Keyboard functions
+    def on_keyboard_down(self, keyboard, key_name, text, modifiers):
+        if self.floor_data.is_in_encounter() or self.showing_announcement or self.auto_move_enabled:
             return
-        self._keyboard.unbind(on_key_down=self.on_keyboard_down)
-        self._keyboard.unbind(on_key_up=self.on_keyboard_up)
-        self._keyboard = None
-
-    def on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        # print('The key', keycode, 'have been pressed')
-        if self.in_encounter or self.showing_announcement or self.auto_move_enabled:
-            return
-        if keycode[1] == 'a':
-            if not self.moving or self.moving and self.direction != -1:
-                if self.moving:
-                    if self.direction == 1:
-                        Clock.unschedule(self.move_right)
-                if self.actual_x < self.max_screen_width:
-                    self.moving = True
-                    self.direction = -1
-                    Clock.schedule_interval(self.move_left, 1 / 60)
-        elif keycode[1] == 'd':
-            if not self.moving or self.moving and self.direction != 1:
-                if self.moving:
-                    if self.direction == -1:
-                        Clock.unschedule(self.move_left)
-                # print("Check:", self.actual_x)
-                if self.actual_x > 0:
-                    self.moving = True
-                    self.direction = 1
-                    Clock.schedule_interval(self.move_right, 1 / 60)
-        return True
-
-    def on_keyboard_up(self, keyboard, keycode):
-        if self.in_encounter or self.showing_announcement or self.auto_move_enabled:
-            return
-        # print('The key', keycode, 'have been released')
-        if keycode[1] == 'a':
-            if self.moving and self.direction == -1:
-                Clock.unschedule(self.move_left)
-                self.moving = False
-        elif keycode[1] == 'd':
-            if self.moving and self.direction == 1:
-                Clock.unschedule(self.move_right)
-                self.moving = False
-
-    def move_right(self, dt):
-        # print(self.actual_x)
-
-        if self.actual_x >= 10:
-            self.actual_x -= 10
-            # Update other skeleton positions and directions
-            index = 0
-            for character, (state, skeleton) in self.characters.items():
-                if index == 0:
-                    index += 1
-                    continue
-                direction = self.directions[index - 1]
-                dif = self.skeletonX - self.skel_poses[index].x
-                if self.gaps[index - 1] > dif:
-                    if self.move_with[index - 1]:
-                        state.setAnimation(0, 'idle_side', True)
-                    self.move_with[index - 1] = False
-                    # The skeleton is too far to the right
-                    self.skel_poses[index].x -= 10
-                    dif -= 10
-                    if self.gaps[index - 1] < dif:
-                        # The skeleton is now too far left, correct it
-                        self.skel_poses[index].x = self.skeletonX - self.gaps[index - 1]
-                if self.gaps[index - 1] == dif:
-                    # Skeleton is in correct position
-                    if direction != 1:
-                        self.directions[index - 1] = 1
-                        skeleton.setFlipX(True)
-                    if not self.move_with[index - 1]:
-                        self.move_with[index - 1] = True
-                        state.setAnimation(0, 'run_side', True)
-                index += 1
-
-        # else:
-        #     Clock.unschedule(self.move_right)
-        #     self.moving = False
-        #     for character, (state, skeleton) in self.characters.items():
-        #         state.setAnimation(0, 'idle_side', True)
-        # Clock.schedule_once(self.idle_animation, random.randint(10, 25))
-
-    def move_left(self, dt):
-        if self.showing_announcement:
-            return
-
-        if self.actual_x <= self.max_screen_width - 10:
-            self.actual_x += 10
-            # Update other skeleton positions and directions
-            index = 0
-            for character, (state, skeleton) in self.characters.items():
-                if index == 0:
-                    index += 1
-                    continue
-                direction = self.directions[index - 1]
-                dif = self.skel_poses[index].x - self.skeletonX
-                if self.gaps[index - 1] > dif:
-                    if self.move_with[index - 1]:
-                        state.setAnimation(0, 'idle_side', True)
-                    self.move_with[index - 1] = False
-                    # The skeleton is too far to the left
-                    self.skel_poses[index].x += 10
-                    dif += 10
-                    if self.gaps[index - 1] < dif:
-                        # The skeleton is now too far right, correct it
-                        self.skel_poses[index].x = self.skeletonX + self.gaps[index - 1]
-                if self.gaps[index - 1] == dif:
-                    # Skeleton is in correct position
-                    if direction != -1:
-                        self.directions[index - 1] = -1
-                        skeleton.setFlipX(False)
-                    if not self.move_with[index - 1]:
-                        self.move_with[index - 1] = True
-                        state.setAnimation(0, 'run_side', True)
-                index += 1
-
-        # else:
-        #     Clock.unschedule(self.move_left)
-        #     self.moving = False
-        #     for character, (state, skeleton) in self.characters.items():
-        #         state.setAnimation(0, 'idle_side', True)
-        # Clock.schedule_once(self.idle_animation, random.randint(10, 25))
-
-    def on_direction(self, *args):
-        [*self.characters.values()][0][1].setFlipX(self.direction == 1)
-
-    def on_moving(self, *args):
-        if self.moving:
-            index = 0
-            for character, (state, skeleton) in self.characters.items():
-                if index != 0:
-                    if self.move_with[index - 1]:
-                        state.setAnimation(0, 'run_side', True)
+        if key_name.startswith('move'):
+            if key_name not in self._keys:
+                if len(self._keys) == 0:
+                    Clock.schedule_interval(self.move_update, 1 / 30)
+                self._keys.append(key_name)
+            return True
+        if key_name == 'map':
+            self.on_fullscreen_map()
+            return True
+        if key_name == 'options':
+            self.on_map_options()
+            return True
+        if key_name == 'inventory':
+            self.on_inventory()
+            return True
+        if key_name == 'primary_action':
+            if self.floor_map.is_marker(ENTRANCE):
+                self.on_ascend(None)
+            elif self.floor_map.is_marker(EXIT):
+                self.on_descend(None)
+            elif self.floor_map.is_marker(SAFE_ZONES):
+                if self.floor_data.is_activated_safe_zone():
+                    self.on_rest(None)
                 else:
-                    state.setAnimation(0, 'run_side', True)
-                index += 1
-            Clock.unschedule(self.idle_animation)
-        else:
-            if not self.in_encounter:
-                for character, (state, skeleton) in self.characters.items():
-                    state.setAnimation(0, 'idle_side', True)
-                Clock.schedule_once(self.idle_animation, random.randint(10, 25))
+                    self.on_create_safe_zone(None)
+            return True
 
-    def on_move_velocity(self, *args):
+    def on_keyboard_up(self, keyboard, key_name):
+        if self.floor_data.is_in_encounter():
+            self._keys.clear()
+            return
+        if key_name.startswith('move'):
+            if key_name in self._keys:
+                self._keys.remove(key_name)
+                self.update_key(key_name)
+                if len(self._keys) == 0:
+                    Clock.unschedule(self.move_update)
+                    self.stop_animation()
+            return True
+
+    def update_key(self, key_name):
+        if key_name == 'move_up':
+            if self.background.update(0, 1):
+                self.movement_update()
+                return 2
+            else:
+                self.stop_animation()
+                return -1
+        elif key_name == 'move_left':
+            if self.background.update(-1, 0):
+                self.movement_update()
+                return 0
+            else:
+                self.stop_animation()
+                return -1
+        elif key_name == 'move_down':
+            if self.background.update(0, -1):
+                self.movement_update()
+                return 1
+            else:
+                self.stop_animation()
+                return -1
+        elif key_name == 'move_right':
+            if self.background.update(1, 0):
+                self.movement_update()
+                return 3
+            else:
+                self.stop_animation()
+                return -1
+        return -1
+
+    # Update functions
+    def toggle_icons(self, instance):
+        for hud in self.enemy_huds.values():
+            hud.ids.icon_tray.opacity = 1 - hud.ids.icon_tray.opacity
+
+    def update(self, dt):
+        dt *= self.ids.battle_hud.time_scale
+        canvas = self.ids.skeleton_layer.canvas
+        canvas.clear()
+        characters = self.floor_data.get_characters()
+        canvas.add(Color(1, 0, 0, 1))
+        for character in characters:
+            if character.visible():
+                character.update(dt)
+                if character.opacity > 0:
+                    # x, y = character.get_position()
+                    # width, height = character.get_skeleton().getSize()
+                    # canvas.add(Line(points=(x - width / 2, y, x + width / 2, y, x + width / 2, y + height, x - width / 2, y + height, x - width / 2, y), width=3))
+                    self._skeleton_renderer.draw(canvas, character.get_skeleton())
+        if self.battle_data is not None:
+            entities = self.battle_data.get_enemies()
+            for entity in entities:
+                if entity.visible():
+                    entity.update(dt)
+                    if entity.opacity > 0:
+                        # x, y = entity.get_position()
+                        # width, height = entity.get_skeleton().getSize()
+                        # canvas.add(Line(points=(x - width / 2, y, x + width / 2, y, x + width / 2, y + height, x - width / 2, y + height, x - width / 2, y), width=3))
+                        self._skeleton_renderer.draw(canvas, entity.get_skeleton())
+        if self.floor_data.is_in_encounter():
+            self.lwf_renderer.update(dt)
+        # Decrease safe zone timers
+        #
+
+    def move_update(self, dt):
+        directions = []
+        for key_name in self._keys:
+            if key_name == 'move_down' and 'move_up' in self._keys:
+                continue
+            if key_name == 'move_up' and 'move_down' in self._keys:
+                continue
+            if key_name == 'move_left' and 'move_right' in self._keys:
+                continue
+            if key_name == 'move_right' and 'move_left' in self._keys:
+                continue
+            directions.append(self.update_key(key_name))
+        if len(directions) == 1:
+            direction = directions[0]
+        elif 0 in directions:
+            direction = 0
+        else:
+            direction = 3
+        if direction != self._direction:
+            self.animate(direction)
+            self._direction = direction
+            self.ids.dungeon_header.text = dungeon_header(direction)
+
+    # We have moved across a node
+    def on_node_update(self, background, direction):
+        self.floor_data.progress_by_direction(direction)
+        self.ids.map_overlay.text = self.floor_map.get_text(False)
+        self.ids.map_scatter.set_text(self.floor_map.get_text(False, 200))
+        self.process_action_flags()
+
+    def process_action_flags(self, create=False):
+        is_entrance = self.floor_map.is_marker(ENTRANCE)
+        is_exit = self.floor_map.is_marker(EXIT)
+        is_safe_zone = self.floor_map.is_marker(SAFE_ZONES)
+        activated_safe_zone = self.floor_data.is_activated_safe_zone()
+
+        adventurers_able = len(self.floor_data.get_able_characters()) > 0
+
+        if create:
+            self.action_flags[ENTRANCE] = None
+            self.action_flags[EXIT] = None
+            self.action_flags[SAFE_ZONES] = None
+            self.action_flags['rest'] = None
+            self.action_flags['dig'] = None
+            self.action_flags['mine'] = None
+
+        if adventurers_able:
+            if self.action_flags['dig'] is None and Refs.gc.get_inventory().has_shovel():
+                self.ids.action_flags.add_widget(self.action_flags['dig'])
+                self.action_flags['dig'] = ActionFlag(text='[Q] Dig')
+                self.action_flags['dig'].bind(on_action=self.on_dig)
+            if self.action_flags['mine'] is None and Refs.gc.get_inventory().has_pickaxe():
+                self.action_flags['mine'] = ActionFlag(text='[E] Mine')
+                self.action_flags['mine'].bind(on_action=self.on_mine)
+                self.ids.action_flags.add_widget(self.action_flags['mine'])
+        else:
+            if self.action_flags['dig'] is not None:
+                self.ids.action_flags.remove_widget(self.action_flags['dig'])
+                self.action_flags['dig'] = None
+            if self.action_flags['mine'] is not None:
+                self.ids.action_flags.remove_widget(self.action_flags['mine'])
+                self.action_flags['mine'] = None
+
+        if is_entrance:
+            self.action_flags[ENTRANCE] = ActionFlag(text='[F] Ascend')
+            self.action_flags[ENTRANCE].bind(on_action=self.on_ascend)
+            self.ids.action_flags.add_widget(self.action_flags[ENTRANCE])
+        elif self.action_flags[ENTRANCE] is not None:
+            self.ids.action_flags.remove_widget(self.action_flags[ENTRANCE])
+            self.action_flags[ENTRANCE] = None
+
+        if is_exit:
+            self.action_flags[EXIT] = ActionFlag(text='[F] Descend')
+            self.action_flags[EXIT].bind(on_action=self.on_descend)
+            self.ids.action_flags.add_widget(self.action_flags[EXIT])
+        elif self.action_flags[EXIT] is not None:
+            self.ids.action_flags.remove_widget(self.action_flags[EXIT])
+            self.action_flags[EXIT] = None
+
+        if is_safe_zone:
+            if activated_safe_zone:
+                self.action_flags['rest'] = ActionFlag(text='[F] Rest')
+                self.action_flags['rest'].bind(on_action=self.on_rest)
+                self.ids.action_flags.add_widget(self.action_flags['rest'])
+            else:
+                self.action_flags[SAFE_ZONES] = ActionFlag(text='[F] Create Safe Zone')
+                self.action_flags[SAFE_ZONES].bind(on_action=self.on_create_safe_zone)
+                self.ids.action_flags.add_widget(self.action_flags[SAFE_ZONES])
+        elif self.action_flags[SAFE_ZONES] is not None:
+            self.ids.action_flags.remove_widget(self.action_flags[SAFE_ZONES])
+            self.action_flags[SAFE_ZONES] = None
+        elif self.action_flags['rest'] is not None:
+            self.ids.action_flags.remove_widget(self.action_flags['rest'])
+            self.action_flags['rest'] = None
+
+        for index, flag in enumerate(self.action_flags.values()):
+            if flag is None:
+                continue
+            flag.size_hint = 0.175, 0.05
+            flag.pos_hint = {'center_y': 0.9 - 0.075 * index}
+
+    def on_inventory(self):
+        if Refs.gp.is_popup_open('inventory'):
+            Refs.gp.close_popup('inventory')
+        else:
+            Refs.gp.display_popup(self, 'inventory')
+
+    def on_map_options(self):
+        if Refs.gp.is_popup_open('map_options'):
+            Refs.gp.close_popup('map_options')
+        else:
+            Refs.gp.display_popup(self, 'map_options')
+
+    def on_fullscreen_map(self):
+        new_opacity = 1 - self.ids.map.opacity
+        self.ids.map.opacity = new_opacity
+        self.ids.map_action_flags = new_opacity
+        self.ids.action_flags.opacity = 1 - new_opacity
+
+    def on_dig(self, instance):
+        inventory = Refs.gc.get_inventory()
+        tool = inventory.get_current_shovel()
+        self.tool_action(tool, 'shovel', 'dig')
+
+    def on_mine(self, instance):
+        inventory = Refs.gc.get_inventory()
+        tool = inventory.get_current_pickaxe()
+        self.tool_action(tool, 'pickaxe', 'mine')
+
+    def on_ascend(self, instance):
+        Refs.gp.display_popup(self, 'dm_confirm', on_confirm=lambda *args: self.do_ascend())
+
+    def do_ascend(self):
+        # What do I need to unload?
+        Refs.gs.display_screen('dungeon_result', True, False)
+
+    def on_descend(self, instance):
+        Refs.gp.display_popup(self, 'dm_confirm', on_confirm=lambda *args: self.do_descend())
+
+    def do_descend(self):
         pass
 
-    def idle_animation(self, *args):
-        index = random.randint(0, len(self.characters) - 1)
-        state = [*self.characters.values()][index][0]
-        state.setAnimation(0, 'idle_action', False)
-        state.addAnimation(0, 'idle_front', True, 0)
-        Clock.schedule_once(self.idle_animation, random.randint(5, 15))
+    def on_create_safe_zone(self, instance):
+        pos = self.action_flags[SAFE_ZONES].pos_hint
+        self.ids.action_flags.remove_widget(self.action_flags[SAFE_ZONES])
+        self.action_flags[SAFE_ZONES] = None
+        self.action_flags['rest'] = ActionFlag(text='[F] Rest', size_hint=(0.175, 0.05), pos_hint=pos)
+        self.action_flags['rest'].bind(on_action=self.on_rest)
+        self.ids.action_flags.add_widget(self.action_flags['rest'])
 
-    def render(self, delta):
-        delta = min(delta, 0.032) * self.speed
+        inventory = Refs.gc.get_inventory()
+        tool = inventory.get_current_harvesting_knife()
+        self.tool_action(tool, 'knife', 'create_safe_zone')
 
-        index = 0
-        for character, (state, skeleton) in self.characters.items():
-            skeleton.update(delta)
-            state.update(delta)
-            state.apply(skeleton)
-            skeleton.setPosition(self.skel_poses[index].x, self.skel_poses[index].y)
-            skeleton.updateWorldTransform()
-            self.skeleton_renderer.draw(self.canvases[index], skeleton)
-            index += 1
+    def tool_action(self, tool, tool_name, action):
+        if tool is None:
+            error_text = f'You have no {tool_name} selected!'
+            Refs.gp.display_popup(self, 'error', error_text)
+            return
+        elif tool.get_hardness() < self.floor_data.get_floor().get_hardness():
+            error_text = f'Your {tool_name} is not hard enough to affect this level!'
+            Refs.gp.display_popup(self, 'error', error_text)
+            return
 
-        # for skeleton in self.skeletons:
-        #     skeleton.update(delta)
-        #
-        # for i, state in enumerate(self.states):
-        #     state.update(delta)
-        #     state.apply(self.skeletons[i])
-        #
-        # for i, skeleton in enumerate(self.skeletons):
-        #     skeleton.setPosition(self.skel_poses[i].x, self.skel_poses[i].y)
+        tool.remove_durability(Refs.gc.get_random_wear_amount() * 7.5)
 
-        # for i, skeleton in enumerate(self.skeletons):
-        #     skeleton.updateWorldTransform()
-        #     self.skeleton_renderer.draw(self.canvases[i], skeleton)
+        index = randint(0, len(self.floor_data.get_able_characters()) - 1)
+        character = self.floor_data.get_able_characters()[index]
+        character.take_action(Refs.gc.get_stamina_weight() + 1)
 
-        difference = self.encounter.encounter_x - self.actual_x
-        if difference <= self.screen_width + 100:
-            if difference < 200 and not self.in_encounter:
-                if self.direction == -1:
-                    self.moving = False
-                    self.in_encounter = True
-                    Clock.unschedule(self.move_left)
-                    Clock.unschedule(self.move_right)
-                    Clock.unschedule(self.idle_animation)
-                    self.run_encounter()
+        self.floor_data.increase_stat(character.get_index(), 2, Refs.gc.get_random_stat_increase())
 
-            # for enemy in self.enemy_skeletons:
-            #     enemy.update(delta)
-            #
-            # for i, state in enumerate(self.enemy_states):
-            #     state.update(delta)
-            #     state.apply(self.enemy_skeletons[i])
-            #
-            # for i, enemy in enumerate(self.enemy_skeletons):
-            #     # print(f"Show enemy at ({self.enemy_positions[i][0] - difference}, {self.enemy_positions[i][1]})")
-            #     enemy.setPosition(self.enemy_positions[i][0] - difference, self.enemy_positions[i][1])
-            #
-            # for i, enemy in enumerate(self.enemy_skeletons):
-            #     enemy.updateWorldTransform()
-            #     self.skeleton_renderer.draw(self.canvases_enemy[i], enemy)
+        if action == 'mine' or action == 'dig':
+            self.floor_data.increase_rest_count(-2)
+            # Refs.gp.display_popup(self, 'dungeon_resource_result', action, character.get_id())
+        else:
+            self.floor_data.activate_safe_zone()
 
-            index = 0
-            for enemy, (state, skeleton) in self.enemies.items():
-                skeleton.update(delta)
-                state.update(delta)
-                state.apply(skeleton)
-                skeleton.setPosition(self.enemy_positions[index][0] - difference, self.enemy_positions[index][1])
-                skeleton.updateWorldTransform()
-                self.skeleton_renderer.draw(self.canvases_enemy[index], skeleton)
-                index += 1
+    def on_rest(self, instance):
+        for character in self.floor_data.get_characters():
+            character.rest()
+            self.ids.battle_hud.huds[character].stamina = character.get_stamina()
+        Refs.gc.get_calendar().fast_forward(30)
+        self.update_time_header(0)
+        self.floor_data.decrease_safe_zones()
+        self.floor_data.increase_rest_count()
+        if not self.floor_data.is_activated_safe_zone():
+            pos = self.action_flags['rest'].pos_hint
+            self.ids.action_flags.remove_widget(self.action_flags['rest'])
+            self.action_flags['rest'] = None
+            self.action_flags[SAFE_ZONES] = ActionFlag(text='[F] Create Safe Zone', size_hint=(0.175, 0.05), pos_hint=pos)
+            self.action_flags[SAFE_ZONES].bind(on_action=self.on_create_safe_zone)
+            self.ids.action_flags.add_widget(self.action_flags[SAFE_ZONES])
 
-    def run_encounter(self):
-        self.skel_run_poses = []
-        for pos in self.skel_poses:
-            self.skel_run_poses.append((pos.x, pos.y))
+    # Small movement update
+    def movement_update(self):
+        # Decrease stamina and increase agility
+        # Check for asleep adventurers
+        all_asleep = True
+        for character in self.floor_data.get_characters():
+            if character.is_dead():
+                continue
+            # Node walk is 1-5. Movement walk is node walk /83.3 or *0.012
+            if not character.is_asleep():
+                self.floor_data.increase_stat(character.get_index(), 5, Refs.gc.get_random_stat_increase() * 0.012)
+                character.walk((Refs.gc.get_stamina_weight() + 1) * 0.012)
+                self.ids.battle_hud.huds[character].stamina = character.get_stamina()
+            all_asleep &= character.is_asleep()
 
-        battle_positions = [(self.screen_width * 0.6, self.screen_height * 0.6), (self.screen_width * 0.68, self.screen_height * 0.53), (self.screen_width * 0.76, self.screen_height * 0.46), (self.screen_width * 0.84, self.screen_height * 0.39), (0, 0), (0, 0), (0, 0), (0, 0)]
-        anims = []
+        # Encounter chance should be ~0.15 per node / 0.0018 per movement
+        x, y = self.floor_map.get_current_node()
+        if not all_asleep:
+            if (x, y) not in self.floor_data.get_activated_safe_zones() and not self.floor_map.is_marker(EXIT):
+                chance = 0.18
+                node = None
+                for enemy_id in self.floor_data.get_floor().get_enemies().keys():
+                    if self.floor_map.is_marker(enemy_id):
+                        node = enemy_id
+                        chance += 0.6
+                        break
+                chance += 0.24 * self.floor_data.get_rest_count()
+                if uniform(0, 99) <= min(99, chance):
+                    self.floor_data.generate_encounter(node, int(max(0, 100 - chance) / 50))
+                    if node is not None:
+                        # If we are standing on a node, and we get that enemy generated, reduce positions counter
+                        for enemy in self.floor_data.get_battle_data().get_enemies():
+                            if enemy.get_id() == node:
+                                if self.floor_data.party_has_perk('hunter'):
+                                    self.floor_map.decrease_node_counter(2)
+                                else:
+                                    self.floor_map.decrease_node_counter(1)
+                                break
+                    self.start_encounter()
+
+    # Animation Functions
+    def animate(self, direction):
+        flip_x = False
+        if direction == 0:
+            animation = 'run_side'
+        elif direction == 3:
+            animation = 'run_side'
+            flip_x = True
+        elif direction == 1:
+            animation = 'run_front'
+        elif direction == 2:
+            animation = 'run_back'
+        else:
+            self.stop_animation()
+            return
+
+        self._last_animation = animation
+        for character in self.floor_data.get_able_characters():
+            character.set_flip_x(flip_x)
+            character.set_animation(animation, loop=True)
+
+    def set_animation_idle(self):
+        if self._last_animation is not None and 'idle' in self._last_animation:
+            return
+
+        if self._last_animation is None:
+            animation_name = 'idle_side'
+        elif self._last_animation.startswith('walk_'):
+            animation_name = 'idle_' + self._last_animation[5:]
+        elif self._last_animation.startswith('run_'):
+            animation_name = 'idle_' + self._last_animation[4:]
+        else:
+            animation_name = 'idle_side'
+
+        self._last_animation = animation_name
+        for character in self.floor_data.get_able_characters():
+            character.set_animation(animation_name, loop=True)
+
+    def play_encount_animations(self, to_battle=True):
         time = 0
-        index = 0
-        for character, (state, skeleton) in self.characters.items():
-            entry = state.setAnimation(0, 'encount', False)
-            state.addAnimation(0, 'idleBattle', True, 0)
-            time = entry.endTime
-            anim = Animation(x=battle_positions[index][0], duration=time) & (Animation(y=battle_positions[index][1] * 1.25, duration=time / 2) + Animation(y=battle_positions[index][1], duration=time / 2))
-            anims.append((anim, self.skel_poses[index]))
-            index += 1
-
-        for anim, skelPos in anims:
-            anim.start(skelPos)
-
-        self.get_health = {}
-        index = 0
-        for enemy, (state, skeleton) in self.enemies.items():
-            health = EnemyHealth(size_hint=(0.05, 0.00625), pos_hint={'center_x': skeleton.getX() / self.screen_width, 'top': skeleton.getY() / self.screen_height}, value=enemy.get_health(), max=enemy.get_health())
-            self.get_health[enemy] = health
-            self.ids.battle_hud.add_widget(health)
-            index += 1
-        Clock.schedule_once(lambda dt: self.play_intro_animations(), time)
-
-    def play_bustup_animation(self, character, callback):
-        skills = character.get_skills()
-        bustup = BustupPreview(size_hint=(0.221, 0.2), name=skills[0].name, name2=skills[1].name if skills[1] is not None else '', name3=skills[2].name if skills[2] is not None else '', character_source=character.bustup_image_source)
-        bustup.pos = self.screen_width, self.screen_height * 0.76
-        self.ids.animation_layer.add_widget(bustup)
-        animation = Animation(x=self.screen_width * 0.779, duration=2.5, t='out_expo') + Animation(opacity=0, duration=0.375)
-        animation.start(bustup)
-        Clock.schedule_once(lambda dt: self.ids.animation_layer.remove_widget(bustup), 3)
-        Clock.schedule_once(callback, 3)
-
-    def play_intro_animations(self):
-        # Play support intro animation
-        support_characters = Refs.gc.get_current_party()[8:]
-        bustup_queue = []
-        for character in support_characters:
+        for index, character in enumerate(self.battle_data.get_characters()):
             if character is None:
                 continue
-            skills = character.get_skills()
-            bustup = BustupPreview(size_hint=(0.221, 0.2), name=skills[0].name, name2=skills[1].name if skills[1] is not None else '', name3=skills[2].name if skills[2] is not None else '', character_source=character.bustup_image_source)
-            bustup.opacity = 0
-            bustup.pos = self.screen_width, self.screen_height * 0.76
-            self.ids.animation_layer.add_widget(bustup)
-            bustup_queue.append(bustup)
-        animation = Animation(x=self.screen_width * 0.779, duration=2.5, t='out_expo') + Animation(opacity=0, duration=0.375)
-        self.start_intro_animations(bustup_queue, animation)
+            # Refs.log(f'{character.get_full_name()} enters the battle!')
 
-    def start_intro_animations(self, queue, animation):
-        if len(queue) > 0:
-            bustup = queue.pop(0)
-            bustup.opacity = 1
-            animation.start(bustup)
-            Clock.schedule_once(lambda dt: self.ids.animation_layer.remove_widget(bustup), 3)
-        else:
-            Clock.schedule_once(lambda dt: self.play_intro_animations2(), 0)
-            return
-        count = 0
-        while len(queue) > 0 and count < 3:
-            bustup = queue.pop(0)
-            bustup.opacity = 1
-            bustup.y -= self.screen_height * (0.24 * (count + 1))
-            animation.start(bustup)
-            Clock.schedule_once(lambda dt: self.ids.animation_layer.remove_widget(bustup), 3)
-            count += 1
-        if len(queue) > 0:
-            Clock.schedule_once(lambda dt: self.start_intro_animations(queue, animation), 3)
-        else:
-            Clock.schedule_once(lambda dt: self.play_intro_animations2(), 3)
+            encount = character.set_animation('encount', False)
+            encount_time = encount.endTime / self.ids.battle_hud.time_scale
+            time = max(encount_time, time)
 
-    def play_intro_animations2(self):
-        # Play enemy intro animations
-        previews = []
-        for enemy, (state, skeleton) in self.enemies.items(): # 0.05, 0.0296 - pos_hint={'center_x': skeleton.getX() / self.screen_width, 'top': skeleton.getY() / self.screen_height}
-            preview = EnemyNamePreview(size_hint=(0.1, 0.089), pos_hint={'center_x': skeleton.getX() / self.screen_width, 'center_y': skeleton.getY() / self.screen_height}, name=enemy.get_name(), rank=enemy.get_rank())
-            self.ids.animation_layer.add_widget(preview)
-            previews.append(preview)
-        Clock.schedule_once(lambda dt: self.hide_previews(previews), 2)
-
-    def hide_previews(self, previews):
-        animation = Animation(opacity=0, duration=0.5)
-        for preview in previews:
-            animation.start(preview)
-        Clock.schedule_once(lambda dr: self.remove_previews(previews), 0.5)
-
-    def remove_previews(self, previews):
-        for preview in previews:
-            self.ids.animation_layer.remove_widget(preview)
-        self.show_hud()
-
-    def on_turn(self):
-
-        get_move = {}
-
-        selected_moves = []
-        for child in self.ids.battle_hud.children:
-            if isinstance(child, MoveHud):
-                selected_moves.append(child.selected_move)
-
-        turn_order = []
-
-        index = 0
-        # TODO Fix special order jumping
-        for character in self.characters.keys():
-            get_move[character] = selected_moves[index]
-            if selected_moves[index].type == skill.SPECIAL:
-                insert = 0
-                for entity in turn_order:
-                    if character.get_agility(in_battle=True) > entity.get_agility(in_battle=True):
-                        break
-                    insert += 1
-                turn_order.insert(insert, character)
-            index += 1
-
-        # calculate enemy moves
-        index = 0
-        for enemy in self.enemies.keys():
-            get_move[enemy] = enemy.moves[0]
-            # enemy special at front
-            index += 1
-
-        # Calculate the turn order
-        for enemy in self.enemies.keys():
-            insert = 0
-            for entity in turn_order:
-                if enemy.get_agility(in_battle=True) > entity.get_agility(in_battle=True):
-                    break
-                insert += 1
-            turn_order.insert(insert, enemy)
-
-        for character in self.characters.keys():
-            insert = 0
-            for entity in turn_order:
-                if character.get_agility(in_battle=True) > entity.get_agility(in_battle=True):
-                    break
-                insert += 1
-            turn_order.insert(insert, character)
-
-        # TODO - Shuffle when same AGI
-
-        # Go through each entity and execute turn
-        entity = turn_order.pop(0)
-        self.turn_stage_1(entity, turn_order, get_move)
-
-    def handle_move(self, entity, move, counter_target=None):
-        # TODO handle applying effects
-        entity.update_mana_battle(move.mana_cost)
-        move.uses += 1
-
-        if move.has_effect:
-            for effect in move.get_effects():
-                if effect.target_type == skill.SELF:
-                    entity.apply_effect(effect)
-                elif effect.target_type == skill.ALL_ALLIES:
-                    if entity in self.characters:
-                        for sentity in self.characters.keys():
-                            if sentity.is_dead() or entity == sentity:
-                                continue
-                            sentity.apply_effect(effect)
-                    else:
-                        for sentity in self.enemies.keys():
-                            if sentity.is_dead() or entity == sentity:
-                                continue
-                            sentity.apply_effect(effect)
-
-        targets = None
-        if move.target == skill.ALL_ALLIES:
-            # Buff Move
-            # TODO All Allies
-            print("Target all allies")
-            pass
-        elif move.target == skill.SELF:
-            # Buff move
-            # TODO Self
-            print("Target self")
-            pass
-        elif move.target == skill.ALL_FOES:
-            # Attack All Foes
-            # TODO ALL Foes
-            targets = self.get_targets(entity)
-        elif move.target == skill.ONE_FOE:
-            # Attack a random Foe
-            if counter_target is None:
-                targets = [self.get_targets(entity, True)]
+            if to_battle:
+                self.character_positions[index] = character.get_position()
+                x_anim = Animation(x=self.character_battle_positions[index][0], duration=encount_time)
+                y_up_anim = Animation(y=self.character_battle_positions[index][1] * 1.25, duration=encount_time * 0.5)
+                y_down_anim = Animation(y=self.character_battle_positions[index][1], duration=encount_time * 0.5)
             else:
-                targets = [counter_target]
+                x_anim = Animation(x=self.character_positions[index][0], duration=encount_time)
+                y_up_anim = Animation(y=self.character_positions[index][1] * 1.25, duration=encount_time * 0.5)
+                y_down_anim = Animation(y=self.character_positions[index][1], duration=encount_time * 0.5)
+            anim = x_anim & (y_up_anim + y_down_anim)
+            anim.start(character)
+        return time
 
-        info = {}
-        for target in targets:
-            info[target] = TargetInfo()
+    def show_enemies(self):
+        entity_duration = 0.5 / self.ids.battle_hud.time_scale
+        label_duration = 0.2 / self.ids.battle_hud.time_scale
+        delay_duration = 1 / self.ids.battle_hud.time_scale
+        fade_out_duration = 0.02 / self.ids.battle_hud.time_scale
 
-            self.calculate_attack(entity, target, info, move)
+        show_enemy = Animation(opacity=1, duration=entity_duration)
+        enemies = self.battle_data.get_enemies()
+        for entity in enemies:
+            show_enemy.start(entity)
 
-            if info[target].death and info[target].counter:
-                info[target].counter = False
-        return True, targets, info
+            move_name = Builder.load_string(move_name_source)
+            move_name.size_hint = (0.1, 0.36 * 0.129)
+            move_name.pos_hint = {'center_x': entity.x / Refs.app.width, 'y': (entity.y + entity.height * 0.8) / Refs.app.height}
+            move_name.opacity = 0
+            self.ids[entity.get_id()] = move_name
+            self.ids.hud_layer.add_widget(move_name)
+        fade_in_labels = Animation(duration=entity_duration) + Animation(opacity=1, duration=label_duration) + Animation(duration=delay_duration)
+        fade_in_labels.start(self.ids.enemy_health)
+        fade_in_labels += Animation(opacity=0, duration=fade_out_duration)
+        fade_in_labels.start(self.ids.enemy_names)
+        for character in self.floor_data.get_characters():
+            character.set_animation('idleBattle', add=True, loop=True)
 
-    def play_move_animation(self, entity, move):
-        # TODO Play Animation
-        if entity in self.characters:
-            state = self.characters[entity][0]
+            move_name = Builder.load_string(move_name_source)
+            move_name.size_hint = (0.1, 0.36 * 0.129)
+            move_name.pos_hint = {'center_x': character.x / Refs.app.width, 'y': (character.y + character.height * 0.8) / Refs.app.height}
+            move_name.opacity = 0
+            self.ids[character.get_id()] = move_name
+            self.ids.hud_layer.add_widget(move_name)
+        return True
+
+    def show_assist_animations(self):
+        supports = [s for s in self.battle_data.get_supporters() if s is not None]
+        assist_lwf = self._play_assist_lwf(supports)
+        # Show the hud
+        if assist_lwf is None:
+            self.show_hud()
         else:
-            state = self.enemies[entity][0]
+            assist_lwf.add_event_handler('end', lambda movie, button: self.show_hud())
+            assist_lwf.add_event_handler('end', lambda movie, button: self.lwf_renderer.destroy_lwf('Assist Cutin'))
 
-        entry = state.setAnimation(0, move.anim_id, False)
-        # TODO handle moving skeleton pos on special
-        state.addAnimation(0, entity.get_idle_animation(), True, entry.endTime)
-        return entry, entry.endTime
+    def _play_assist_lwf(self, supports):
+        assist_lwf = None
+        assist_name = [None, '810000006', '810000007', '810000008', '810000009'][len(supports)]
+        if assist_name is not None:
+            def load_assist_texture(filename, path):
+                if filename.startswith('lwf_img_replace_character_'):
+                    index = int(filename[27])
+                    filename = supports[index - 1].get_image('bustup')
+                    path = ''
+                elif filename.startswith('lwf_img_replace_skill_name_'):
+                    index = int(filename[28])
+                    skill_name = supports[index - 1].get_support_skill().get_name()
+                    filename = f'res/assist_labels/{skill_name}.png'
+                    path = ''
+                return load_texture(filename, path)
 
-    def create_markers(self, targets, info):
-        for target in targets:
-            if target in self.characters:
-                tstate, tskeleton = self.characters[target]
+            assist_lwf = self.lwf_renderer.register_lwf(f'{assist_name}/{assist_name}.lwf', 'Assist Cutin', load_assist_texture)
+            assist_lwf.scale_for_width(Refs.app.width, Refs.app.height)
+            assist_lwf.property.move(0, Refs.app.height)
+            # lwf.add_event_handler('assist_skill_voice_1', )  # Add handler for assist voice. Maybe.
+        # Show Assist Debuff and Buff Animations
+        animation_queue, effect_queue, icon_queue = self.calculate_assist_effects(supports)
+        for entity, icons in icon_queue.items():
+            if entity.is_character():
+                icon_tray = self.ids.battle_hud.huds[entity].ids.icon_tray
             else:
-                tstate, tskeleton = self.enemies[target]
-
-            x_pos = random.randrange(25, 75) / 100 * tskeleton.getWidth() + tskeleton.getX() - tskeleton.getWidth() / 2
-            y_pos = random.randrange(25, 75) / 100 * tskeleton.getHeight() + tskeleton.getY()
-            # TODO Fix maker positioning and make focal around random point
-            target.addMarker('damage', NumberAnimation(round(info[target].damage), font_size=self.screen_height * 0.05, size_hint=(0.1, 0.05), pos_hint={'center_x': x_pos / self.screen_width, 'y': y_pos / self.screen_height}))
-            if info[target].penetration:
-                target.addMarker('penetration', PenetrationAnimation(font_size=self.screen_height * 0.05, size_hint=(0.075, 0.0375), pos_hint={'right': x_pos / self.screen_width, 'top': y_pos / self.screen_height}))
-            if info[target].critical:
-                target.addMarker('critical', CriticalAnimation(font_size=self.screen_height * 0.05, size_hint=(0.075, 0.0375), pos_hint={'x': x_pos / self.screen_width - 0.0125, 'top': y_pos / self.screen_height - 0.0375}))
-            if info[target].block:
-                target.addMarker('block', BlockAnimation(font_size=self.screen_height * 0.05, size_hint=(0.075, 0.0375), pos_hint={'right': x_pos / self.screen_width, 'top': y_pos / self.screen_height - 0.0375 * 2}))
-            if info[target].evade:
-                target.addMarker('evade', EvadeAnimation(font_size=self.screen_height * 0.05, size_hint=(0.075, 0.0375), pos_hint={'x': x_pos / self.screen_width, 'top': y_pos / self.screen_height - 0.0375 * 2}))
-            if info[target].counter:
-                target.addMarker('counter', CounterAnimation(font_size=self.screen_height * 0.05, size_hint=(0.075, 0.0375), pos_hint={'center_x': x_pos / self.screen_width, 'top': y_pos / self.screen_height - 0.0375 * 2.75}))
-
-            target.addMarkersToWindow(self.ids.animation_layer)
-            info[target].tstate = tstate
-
-    def add_death_animation(self, death, target, tstate, time):
-        if not death:
-            tstate.addAnimation(0, target.get_idle_animation(), True, time)
-            return 0
-        if target in self.characters:
-            tentry = tstate.addAnimation(0, 'death', False, time)
-            return tentry.endTime
-        else:
-            tstate.clearTrack(0)
-            # Fade time is 1.5 * timeScale
-            anim = Animation(opacity=0, duration=1)
-            anim2 = Animation(a=0, duration=1)
-            anim2.start(self.enemies[target][1].clear_color)  # Fade out enemy canvas
-            anim.start(self.get_health[target])
-            return 1
-
-    def play_damage_animation(self, block, evade, tstate):
-        if block or evade:
-            return 0
-
-        entry = tstate.setAnimation(0, 'damage', False)
-        return entry.endTime
-
-    def handle_hit(self, entity, targets, move, info, next_stage):
-        ttime = 0
-        for target in targets:
-            if target.is_dead():
-                continue
-            target.showMarkers()
-
-            if self.handle_damage(target, entity, move, info):
-                next_stage = lambda dt: self.turn_stage_4(target not in self.characters)
-
-            time = self.play_damage_animation(info[target].block, info[target].evade, info[target].tstate)
-            time += self.add_death_animation(info[target].death, target, info[target].tstate, time)
-            target.fadeOutMarkers(max(time, 0.75))
-            ttime = max(ttime, max(time, 0.75))
-
-        Clock.schedule_once(next_stage, max(ttime, 0.75))
-
-    def get_next_stage(self, turn_order, get_move, counter_check=False, entity=None, targets=None, info=None):
-        if counter_check:
-            counters = []
-            for target in targets:
-                if not info[target].counter:
-                    continue
-                counters.append(target)
-            return lambda dt: self.turn_stage_2(entity, counters, turn_order, get_move)
-        if len(turn_order) > 0:
-            entity = turn_order.pop(0)
-            return lambda dt: self.turn_stage_1(entity, turn_order, get_move)
-        return lambda dt: self.turn_stage_3(turn_order, get_move)
-
-    def turn_stage_1(self, entity, turn_order, get_move):
-        if entity.is_dead():
-            Clock.schedule_once(self.get_next_stage(turn_order, get_move), 0)
-            return
-
-        move = get_move[entity]
-
-        print("Processing move", move.name, "for entity", entity.name)
-
-        # TODO Handle multiple targets
-        attacking, targets, info = self.handle_move(entity, move)
-
-        entry, time = self.play_move_animation(entity, move)
-
-        if attacking:
-            adapter = HitListener()
-
-            self.create_markers(targets, info)
-
-            next_stage = self.get_next_stage(turn_order, get_move, True, entity, targets, info)
-            adapter.set_callback(lambda: self.handle_hit(entity, targets, move, info, next_stage))
-            entry.setListener(adapter)
-        # TODO handle non-attacking move
-
-    def turn_stage_2(self, target, entities, turn_order, get_move):
-
-        if len(entities) <= 0:
-            Clock.schedule_once(self.get_next_stage(turn_order, get_move), 0)
-            return
-
-        entity = entities.pop(0)
-        if entity.is_dead():
-            self.turn_stage_2(target, entities, turn_order, get_move)
-            return
-
-        move = entity.get_skill(1)
-        if move is None:
-            move = entity.get_skill(0)
-
-        print("Processing counter move", move.name, "for entity", entity.name)
-        attacking, targets, info = self.handle_move(entity, move, target)
-        for target in targets:
-            info[target].counter = False
-
-        entry, time = self.play_move_animation(entity, move)
-
-        if attacking:
-            adapter = HitListener()
-
-            self.create_markers(targets, info)
-
-            if len(entities) <= 0:
-                next_stage = self.get_next_stage(turn_order, get_move)
-            else:
-                def next_stage(dt): self.turn_stage_2(target, entities, turn_order, get_move)
-            adapter.set_callback(lambda: self.handle_hit(entity, targets, move, info, next_stage))
-            entry.setListener(adapter)
-        # TODO handle non-attacking move
-
-    def turn_stage_3(self, turn_order, get_move):
-        # End of turn effect stage
-        print("Starting EOT Stage")
-        # Apply EOT effects
-        # Reduce all effect duration by 1 turn
-        # Change moves avaliable based on mana
-        for character in self.characters:
-            character.update_effects()
-        for enemy in self.enemies:
-            enemy.update_effects()
-        return
-
-        # Go to the next entity in the turn order
-
-    def turn_stage_4(self, win):
-        if win:
-            for character, (state, skeleton) in self.characters.items():
-                if character.is_dead():
-                    continue
-                entry = state.setAnimation(0, 'victory', False)
-                state.addAnimation(0, 'victory_loop', True, entry.endTime)
-                self.ids.status_button.disabled = False
-        else:
-            pass
-        # End encounter
-        #   Play win animations----
-        #   Show exp and item gain from encounter
-        #       TODO There are no exp levels, so this would only show items gained and used.
-        #       This should wait until items are implemented
-        #   wait for screen click to move back to battle
-        #   TODO Add button on win. On Failure, show fial animation and go back to main dungeon screen on floor 1. Items and weapons need to be reset. Handle later.
-        #   TODO load next encounter states & go back to battle run
-
-    def return_to_run(self):
-        self.ids.status_button.disabled = True
-
-        if len(self.encounters) == 1:
-            # TODO Won the whole fight
-            screen, made = self.root.create_screen('dungeon_result', list(self.characters.keys()), self.level_num)
-            screen.dungeon_config['auto_move_enabled'] = self.auto_move_enabled
-            screen.dungeon_config['auto_battle_enabled'] = self.auto_battle_enabled
-            self.root.display_screen(screen, True, False)
-        else:
-            self.hide_hud()
-
-            anims = []
-            time = 0
-            index = 0
-            for character, (state, skeleton) in self.characters.items():
-                if character.is_dead() and skeleton.clear_color.a != 0:
-                    anim2 = Animation(a=0, duration=max(0.75, time))
-                    anim2.start(skeleton.clear_color)
-                    index += 1
-                    continue
-                entry = state.setAnimation(0, 'encount', False)
-                character.set_animation_idle(add=True, delay=entry.endTime, loop=True)
-                time = entry.endTime
-                anim = Animation(x=self.skel_run_poses[index][0], duration=time) & (Animation(y=self.skel_run_poses[index][1] * 1.25, duration=time / 2) + Animation(y=self.skel_run_poses[index][1], duration=time / 2))
-                anims.append((anim, self.skel_poses[index]))
-                index += 1
-
-            for anim, skelPos in anims:
-                anim.start(skelPos)
-
-            for enemy, health in self.get_health.items():
-                health.parent.remove_widget(health)
-            self.get_health = {}
-
-            count = len(self.enemies)
-            self.enemies = {}
-            self.load_encounter_states(True)
-            for i in range(max(len(self.enemies) - count, 0)):
-                canvas = InstructionGroup()
-                self.canvases_enemy.append(canvas)
-                self.ids.skeleton_layer.canvas.add(canvas)
-            self.in_encounter = False
-            if self.auto_move_enabled:
-                Clock.schedule_interval(self.move_left, 1 / 60)
-
-    def calculate_attack(self, entity, target, info, move):
-        attack = entity.get_attack(move.affect) * move.power
-        print("\nAttack:", attack)
-        defense = target.get_defense()
-        print("Defense:", defense)
-        entity_effects = entity.get_status_effects()
-        target_effects = target.get_status_effects()
-
-        # TODO calculate applied boosts & detrements
-
-        # TODO target damage modifiersk
-        if skill.PHYSICAL_RESIST in target_effects and (move.affect == skill.PHYSICAL or move.affect == skill.HYBRID):
-            for effect in target_effects[skill.PHYSICAL_RESIST]:
-                defense *= 1 + effect.st[0]
-                print("Defense *=", effect.st[0])
-        if skill.MAGICAL_RESIST in target_effects and (move.affect == skill.MAGICAL or move.affect == skill.HYBRID):
-            for effect in target_effects[skill.MAGICAL_RESIST]:
-                defense *= 1 + effect.st[0]
-                print("Defense *=", effect.st[0])
-
-        # If penetration, defense → 0
-        t_chance = (max(min(entity.get_strength(in_battle=True) / target.get_strength(in_battle=True), 1), 0) + max(min(entity.get_agility(in_battle=True) / target.get_agility(in_battle=True), 1), 0)) / 4
-        if skill.PENETRATION in entity_effects:
-            for effect in entity_effects[skill.PENETRATION]:
-                t_chance *= 1 + effect.st[0]
-                print("Penetration t_chance *=", effect.st[0])
-        t_chance = min(t_chance, 1)
-        f_chance = 1 - t_chance
-
-        penetration = random.choices([True, False], weights=[t_chance, f_chance])[0]
-
-        if penetration:
-            defense = 0
-            print("Defense: → 0")
-
-        if attack > defense:
-            multiplier = 0.999463 * pow(1.00054, attack - defense)
-            print("Multiplier: ", multiplier)
-            attack = attack * multiplier
-            print("Attack:", attack)
-            damage = random.normalvariate(attack, attack * 0.1)
-            print("Damage:", damage)
-        else:
-            divider = 0.999463 * pow(1.00054, defense - attack)
-            print("Divider: ", divider)
-            attack = attack / divider
-            print("Attack:", attack)
-            damage = random.normalvariate(attack, attack * 0.1)
-            print("Damage:", damage)
-
-        # If critical, gen crit on normal dist and multiply
-        t_chance = max(min(entity.get_strength(in_battle=True) / target.get_strength(in_battle=True), 1), 0) / 2
-        if skill.CRITICAL in entity_effects:
-            for effect in entity_effects:
-                t_chance *= 1 + effect.st[0]
-        t_chance = min(t_chance, 1)
-        if penetration:
-            t_chance = min(t_chance * 1.20, 1)
-        f_chance = 1 - t_chance
-
-        critical = random.choices([True, False], weights=[t_chance, f_chance])[0]
-        if critical:
-            damage *= random.normalvariate(2.5, 0.375)
-            print("Damage:", damage)
-
-        # calculate elemental boost
-        if skill.boost(move.type, target.type):
-            damage *= random.normalvariate(2, 0.25)
-        if skill.fboost(move.type, target.type):
-            damage /= random.normalvariate(2, 0.25)
-
-        if skill.DAMAGE in entity_effects:
-            for effect in entity_effects:
-                damage *= 1 + effect.st[0]
-
-        # TODO calculate target damage up
-
-        # If block, half damage
-        t_chance = (max(min(entity.get_endurance(in_battle=True) / target.get_endurance(in_battle=True), 1), 0) + max(min(entity.get_agility(in_battle=True) / target.get_agility(in_battle=True), 1), 0)) / 4
-        if skill.BLOCK_CHANCE in target_effects:
-            for effect in target_effects:
-                t_chance *= 1 + effect.st[0]
-        t_chance = min(t_chance, 1)
-        f_chance = 1 - t_chance
-
-        block = random.choices([True, False], weights=[t_chance, f_chance])[0]
-        if block:
-            damage /= 2
-
-        # If evade, damage * 0.25
-        if not block:
-            t_chance = max(min(entity.get_dexterity(in_battle=True) / target.get_dexterity(in_battle=True), 1), 0) / 2
-            if skill.EVADE_CHANCE in target_effects:
-                for effect in entity_effects[skill.EVADE_CHANCE]:
-                    t_chance *= 1 + effect.st[0]
-            t_chance = min(t_chance, 1)
-        else:
-            t_chance = 0
-        f_chance = 1 - t_chance
-        evade = random.choices([True, False], weights=[t_chance, f_chance])[0]
-        if evade:
-            damage *= 0.25
-
-        if skill.PHYSICAL_NULL in target_effects and (move.affect == skill.PHYSICAL or move.affect == skill.HYBRID):
-            target_effects[skill.PHYSICAL_NULL].pop(0)
-            if len(target_effects[skill.PHYSICAL_NULL]) == 0:
-                del target_effects[skill.PHYSICAL_NULL]
-            damage = 0
-        elif skill.MAGICAL_NULL in target_effects and (move.affect == skill.MAGICAL or move.affect == skill.HYBRID):
-            target_effects[skill.MAGICAL_NULL].pop(0)
-            if len(target_effects[skill.MAGICAL_NULL]) == 0:
-                del target_effects[skill.MAGICAL_NULL]
-            damage = 0
-
-        # calculate counter
-        t_chance = (max(min(entity.get_dexterity(in_battle=True) / target.get_dexterity(in_battle=True), 1), 0) + max(min(entity.get_agility(in_battle=True) / target.get_agility(in_battle=True), 1), 0)) / 4
-        if evade:
-            t_chance = min(t_chance * 1.20, 1)
-        if skill.EVADE_CHANCE in target_effects:
-            for effect in target_effects[skill.EVADE_CHANCE]:
-                t_chance *= 1 + effect.st[0]
-        t_chance = min(t_chance, 1)
-        f_chance = 1 - t_chance
-
-        counter = random.choices([True, False], weights=[t_chance, f_chance])[0]
-
-        info[target].damage = damage
-        info[target].penetration = penetration
-        info[target].critical = critical
-        info[target].block = block
-        info[target].evade = evade
-        info[target].counter = counter
-
-    def handle_damage(self, entity, target, move, info):
-        print("Damage: ", info[entity].damage)
-
-        entity.update_health_battle(info[entity].damage)
-        # Apply Foes and Foe one effects
-        if move.has_effect:
-            for effect in move.get_effects():
-
-                # handle cause effect
-                if effect.type == skill.CAUSE_EFFECT:
-                    # Check if type is already applied. Cannot have multiple types
-                    valid = True
-                    if skill.STATUS_EFFECT in entity.get_status_effects():
-                        for status_effect in entity.get_status_effects()[skill.STATUS_EFFECT]:
-                            if status_effect.type == effect.st[0]:
-                                valid = False
-                                break
-                    if not valid:
-                        continue
-
-                    t_chance = effect.st[2]
-                    f_chance = 1 - t_chance
-                    if random.choices([True, False], weights=[t_chance, f_chance])[0]:
-                        # Do avoid stuff
-                        affect = skill.create_status_effect(effect.st[0], effect.st[1], target)
-                    continue
-
-                if effect.target_type == skill.ONE_FOE:
-                    entity.apply_effect(effect)
-                elif effect.target_type == skill.ALL_FOES:
-                    if entity in self.characters:
-                        for entity in self.characters.keys():
-                            if entity.is_dead():
-                                continue
-                            entity.apply_effect(effect)
-                    else:
-                        for entity in self.enemies.keys():
-                            if entity.is_dead():
-                                continue
-                            entity.apply_effect(effect)
-        # Handle skill increases & special gain
-
-        if entity in self.characters:
-            chud = self.ids.battle_hud.get_hud(entity)[0]
-            chud.health -= info[entity].damage
-            if chud.health <= 0:
-                info[entity].death = True
-                print("This entity has died")
-                count = 0
-                for character in self.characters:
-                    if not character.is_dead():
-                        break
-                    count += 1
-                if count == len(self.characters):
-                    return True
-        else:
-            ehud = self.get_health[entity]
-            ehud.value -= info[entity].damage
-            if ehud.value <= 0:
-                info[entity].death = True
-                print("This entity has died")
-                count = 0
-                for enemy in self.enemies:
-                    if not enemy.is_dead():
-                        break
-                    count += 1
-                if count == len(self.enemies):
-                    return True
-
-    def get_targets(self, entity, single=False):
-        if entity in self.characters:
-            size = len(self.enemies)
-            targets = [*self.enemies]
-        else:
-            size = len(self.characters)
-            targets = [*self.characters]
-        for target in targets:
-            if target.is_dead():
-                targets.remove(target)
-                size -= 1
-        if single:
-            target_index = random.randint(0, size - 1)
-            return targets[target_index]
-        return targets
+                icon_tray = self.enemy_huds[entity].ids.icon_tray
+            icon_tray.apply_icons(icons)
+        return assist_lwf
 
     def show_hud(self):
         self.ids.battle_hud.opacity = 1
+        self.ids.battle_hud.enter_battle()
+        self.ids.enemy_health.opacity = 1
+        for character in self.battle_data.get_characters():
+            character.set_in_battle(True)
+            self.ids.battle_hud.huds[character].in_battle = True
 
-    def hide_hud(self):
+    def stop_animation(self):
+        self._direction = -1
+        self._last_animation = None
+        self.set_animation_idle()
+
+    # Working Functions
+    def start_encounter(self):
+        if self.ids.battle_hud.ids.toggle_time_scale.state == 'down':
+            self.ids.battle_hud.time_scale = 1.5
+        # Stop Movement
+        self.stop_animation()
+        Clock.unschedule(self.move_update)
+        # Add enemies to skeleton layer
+        self.battle_data = self.floor_data.get_battle_data()
+        self.ids.hud_layer.opacity = 1
+        self.ids.enemy_health.opacity = 0
+        self.ids.enemy_names.opacity = 0
+        self.ids.icons.opacity = 0
+
+        for character in self.floor_data.get_able_characters()[4:]:
+            character.set_invisible()
+
+        enemies = self.battle_data.get_enemies()
+        self.enemy_huds = {}
+        for index, entity in enumerate(enemies):
+            entity.load_skeleton(self._skeleton_loader)
+            entity.opacity = 0
+            x, y = self.enemy_positions[index]
+            entity.set_position(x, y)
+            width, height = Refs.app.width, Refs.app.height
+            health = EnemyHealth(size_hint=(0.1, 0.1), pos_hint={'center_x': x / width, 'y': y / height}, health=entity.get_health(), max=entity.get_health())
+            name = EnemyNamePreview(size_hint=(0.1, 0.089), pos_hint={'center_x': x / width, 'y': y / height + 0.0125}, name=entity.get_name())
+            self.enemy_huds[entity] = health
+            self.ids.enemy_health.add_widget(health)
+            self.ids.enemy_names.add_widget(name)
+
+        # Reset the targeting of enemies
+        self.ids.battle_hud.target_specified = False
+        self.ids.battle_hud.set_targeting(len(self.battle_data.get_characters()), enemies[0])
+
+        # Start Intro animations
+        self.ids.twirl_widget.effects[0].tintr = True
+        self.ids.twirl_widget.effects[0].play(self.ids.battle_hud.time_scale)
+
+    def twirl_update(self, instance):
+        disabled = self.floor_data.is_in_encounter()
+        opacity = int(disabled)
+
+        self.ids.map_overlay.opacity = 1 - opacity
+        self.ids.info_hud.opacity = 1 - opacity
+        self.ids.info_hud.disabled = disabled
+        self.ids.inventory.opacity = 1 - opacity
+        self.ids.inventory.disabled = disabled
+        self.ids.parallax_layer.opacity = 1 - opacity
+        self.ids.battle_background.opacity = opacity
+        self.ids.animation_layer.opacity = opacity
+
+        self.ids.battle_hud.opacity = 1 - opacity
+        self.ids.battle_hud.disabled = not disabled
+        if not disabled:
+            self.ids.battle_hud.leave_battle()
+        for hud in self.ids.battle_hud.huds.values():
+            hud.hide_overlays()
+        self.ids.result_hud.opacity = 0
+        self.ids.result_hud.disabled = True
+
+        self._last_animation = 'idle_side'
+        for character in self.floor_data.get_able_characters()[:4]:
+            character.set_flip_x(False)
+            character.set_animation('idle_side', loop=True)
+
+    def twirl_end(self, instance):
+        if self.floor_data.is_in_encounter():
+            time = self.play_encount_animations()
+            self.floor_data.get_characters()[0].add_event_handler('jumpEnd', 'show_enemies', lambda track, event: self.show_enemies())
+            Clock.schedule_once(lambda dt: self.show_assist_animations(), time)
+
+    def calculate_assist_effects(self, supports):
+        animation_queue = []
+        effect_queue = []
+        icon_queue = {}
+        for support in supports:
+            if support is None:
+                continue
+            skill = support.get_support_skill()
+            animations, effects, icons = self.battle_data.use_support_ability(support, skill)
+            animation_queue += animations
+            effect_queue += effects
+            for entity in icons.keys():
+                if entity not in icon_queue:
+                    icon_queue[entity] = []
+                icon_queue[entity] += icons[entity]
+        return animation_queue, effect_queue, icon_queue
+
+    def on_turn(self):
+        self.ids.battle_hud.ids.active.disabled = True
+        self.ids.battle_hud.ids.move_hud.hide_move_labels()
+        for enemy in self.battle_data.get_enemies():
+            if enemy.is_dead():
+                continue
+            enemy.select_skill()
+        targeted = {}
+        characters = self.battle_data.get_characters()
+        for index, enemy in enumerate(self.ids.battle_hud.characters_targeting):
+            targeted[characters[index]] = enemy
+        self._result, animation_queue = self.battle_data.make_turn(targeted)
+        self.play_animation(animation_queue, 0)
+
+    def end_turn(self):
+        self.ids.battle_hud.ids.active.disabled = False
+        self.ids.battle_hud.ids.move_hud.show_move_labels()
+        for character, hud in self.ids.battle_hud.huds.items():
+            if character.is_dead():
+                continue
+            hud.ids.icon_tray.update_icons(character)
+            hud.show_overlays()
+
+        for enemy, hud in self.enemy_huds.items():
+            if enemy.is_dead():
+                continue
+            hud.ids.icon_tray.update_icons(enemy)
+
+        if self._result is not None:
+            if self._result:
+                self.show_results()
+            else:
+                self.show_failure()
+
+    def harvest(self, instance):
+        knife = Refs.gc.get_inventory().get_current_harvesting_knife()
+        knife.remove_durability(Refs.gc.get_random_wear_amount())
+
+        character = self.floor_data.get_able_characters()[randint(0, len(self.floor_data.get_able_characters()) - 1)]
+        character.take_action(Refs.gc.get_stamina_weight() + 1)
+        self.floor_data.increase_stat(character.get_index(), 2, Refs.gc.get_random_stat_increase())
+
+        item_counts = {}
+        for enemy in self.battle_data.get_enemies():
+            drops = Refs.gc['enemies'][enemy.get_base_id()].generate_drop(enemy.get_boost(), knife.get_hardness())
+            for (drop_id, drop_count) in drops:
+                item = Refs.gc.find_item(drop_id)
+                if item not in item_counts:
+                    item_counts[item] = 0
+                item_counts[item] += drop_count
+        self.battle_data.set_dropped_items(item_counts)
+        self.ids.result_hud.set_items_obtained(item_counts)
+
+    def show_results(self):
+        # Play Victory Animations for characters
+        for character in self.floor_data.get_characters():
+            if character.is_dead() or character.is_asleep():
+                character.set_invisible()
+                continue
+            character.set_animation('victory')
+            character.set_animation('victory_loop', add=True, loop=True)
+            self.lwf_renderer.get_lwf(f'{character.get_id()}_active').set_invisible()
+            effect_type = character.get_status_effect()
+            if effect_type is not None:
+                self.lwf_renderer.get_lwf(f'{character.get_id()}_status_effect_{effect_type}').set_invisible()
+                self.lwf_renderer.destroy_lwf(f'{character.get_id()}_status_effect_{effect_type}')
+            # Remove any status effect lwfs
+        # Hide Battle Hud
         self.ids.battle_hud.opacity = 0
+        self.ids.battle_hud.disabled = True
+        for hud in self.ids.battle_hud.huds.values():
+            hud.hide_overlays()
+        # Hide Enemy Healths
+        self.ids.enemy_health.opacity = 0
+        # Show Inventory
+        self.ids.inventory.opacity = 1
+        self.ids.inventory.disabled = False
+        # Show Enemies Defeated and bind harvest
+        self.ids.result_hud.opacity = 1
+        self.ids.result_hud.disabled = False
+        enemies = {}
+        for enemy in self.battle_data.get_enemies():
+            enemies[enemy.get_name()] = 1
+        self.ids.result_hud.set_enemies_defeated(enemies)
+        inventory = Refs.gc.get_inventory()
+        if inventory.has_harvesting_knife() is None:
+            self.ids.result_hud.disable_harvest()
+        else:
+            self.ids.result_hud.enable_harvest()
+        self.ids.result_hud.bind(on_harvest=self.harvest)
+        self.ids.result_hud.bind(on_continue=self.end_encounter)
 
-    def show_assist_anims(self, anims):
-        for anim, wid in anims:
-            anim.start(wid)
+    def show_failure(self):
+        # Hide Battle Hud
+        self.ids.battle_hud.opacity = 0
+        self.ids.battle_hud.disabled = True
+        for hud in self.ids.battle_hud.huds.values():
+            hud.hide_overlays()
+        # Hide Enemy Healths
+        self.ids.enemy_health.opacity = 0
+        self.ids.lose_screen.opacity = 1
+        self.ids.lose_button.disabled = False
+        background_fade_in = Animation(opacity=0.5, duration=1, t='in_expo') + Animation(opacity=1, duration=2, t='out_expo')
+        label_fade_in = Animation(opacity=1, duration=3, t='out_expo')
+        button_fade_in = Animation(duration=1) + Animation(opacity=1, duration=2, t='in_expo')
+        background_fade_in.start(self.ids.lose_background)
+        label_fade_in.start(self.ids.lose_label)
+        button_fade_in.start(self.ids.lose_button)
+
+    def load_save(self):
+        for node in self.floor_data.get_explored():
+            self.floor_map.hide_node(node)
+        self.floor_map.clear_current_node()
+
+        floor_id = str(self.floor_data.get_floor().get_id())
+        save = Refs.gc['save']
+        self.floor_map.load_node_exploration(save['map_node_data'][floor_id], save['map_node_counters'][floor_id])
+
+        Refs.gc.reset_floor_data()
+
+        Refs.gs.display_screen('dungeon_main', True, False, level=0)
+
+    def refresh_harvest(self):
+        inventory = Refs.gc.get_inventory()
+        if inventory.has_harvesting_knife() is None:
+            self.ids.result_hud.disable_harvest()
+        else:
+            self.ids.result_hud.enable_harvest()
+
+    def end_encounter(self, instance):
+        self.enemy_huds = {}
+        self.ids.enemy_health.clear_widgets()
+        self.ids.enemy_names.clear_widgets()
+
+        duration = 0.2 / self.ids.battle_hud.time_scale
+        anim = Animation(opacity=0, duration=duration)
+        anim.start(self.ids.result_hud)
+        Clock.schedule_once(lambda dt: self.ids.result_hud.reset(),duration)
+        self.floor_data.end_encounter()
+        self.ids.battle_hud.characters_targeting = []
+
+        # Play Encounter Animation and animate characters back into floor positions
+        time = self.play_encount_animations(False)
+        def play_twirl(time_scale):
+            self.ids.twirl_widget.effects[0].tintr = False
+            self.ids.twirl_widget.effects[0].play(time_scale)
+        Clock.schedule_once(lambda dt, s=self.ids.battle_hud.time_scale: play_twirl(s), time)
+        self.ids.battle_hud.time_scale = 1
+        # clear icon tray
+        for hud in self.ids.battle_hud.huds.values():
+            hud.ids.icon_tray.clear_icons()
+
+    def update_hud(self, animation):
+        # Update Mana
+        skill = None
+        if 'skill' in animation:
+            skill = animation['skill']
+        entity = animation['entity']
+        type = animation['type']
+
+        if entity.is_character():
+            hud = self.ids.battle_hud.huds[entity]
+            hud.special_amount = entity.get_special_amount()
+            if type not in ('health_rot', 'health_dot'):
+                hud.mana -= entity.get_mana_cost(skill)
+
+        # Update health for targets
+        for target in animation['targets']:
+            # Get huds
+            if target.is_character():
+                hud = self.ids.battle_hud.huds[target]
+            else:
+                hud = self.enemy_huds[target]
+
+            # if animation['type'] == 'ailment_cure':
+            #     # Clear status effects
+            #     effect_lwf, type = hud.get_status_effect_lwf()
+            #     target.set_status_effect(None)
+            #     if effect_lwf is not None:
+            #         effect_lwf.set_invisible()
+            #         hud.set_status_effect_lwf(None, -1)
+            #         self.lwf_renderer.destroy_lwf(f'{target.get_id()}_status_effect')
+                # Clear status effects from tray
+
+            # Update icons
+            if 'icons' in animation:
+                icons = animation['icons']
+                icon_tray = hud.ids.icon_tray
+                icon_tray.apply_icons(icons)
+
+            # Health and Mana Updates
+            target_marker = animation['markers'][target][0]
+            if target_marker is None:
+                continue
+            damage_type, damage = target_marker
+            if damage_type in ('damage', 'crit_damage', 'dot'):
+                hud.health -= damage
+            elif damage_type in ('health',):
+                hud.health += damage
+            elif damage_type in ('mana',):
+                hud.mana -= damage
+            else:
+                print('Unimplemented HUD update')
+
+    def replace_hud(self, dead_index, dead_character, replacement_character):
+        hud = self.ids.battle_hud.huds[replacement_character]
+        replacement_index = hud.index
+        hud.in_battle = True
+        hud.index = dead_index
+        hud.pos_hint = {'x': 0.002 + 0.102 * dead_index, 'y': 0.005}
+
+        other_hud = self.ids.battle_hud.huds[dead_character]
+        other_hud.pos_hint = {'x': 0.002 + 0.102 * replacement_index, 'y': 0.005}
+        other_hud.index = replacement_index
+
+        self.floor_data.swap_character_order(dead_character, replacement_character)
+        self.ids.battle_hud.ids.move_hud.replace_character(dead_index, replacement_character)
+        dead_character.set_invisible()
+
+    def show_markers(self, animation):
+        for target in animation['targets']:
+            markers = animation['markers'][target]
+            if markers[0] is not None:
+                damage_type, damage = markers[0]
+                self.ids.marker_layer.add_widget(Marker(75, self.ids.battle_hud.time_scale, type=damage_type, value=int(damage), height=40, size_hint=(None, None), pos_hint={'center_x': (target.x) / Refs.app.width, 'y': (target.y + 200) / Refs.app.height}))
+                if damage_type in ('damage', 'crit_damage') and damage > 0:
+                    target.set_animation('damage')
+            death = False
+            for index, marker in enumerate(markers[1:]):
+                if marker == 'counter' and animation['is_counter']:
+                    continue
+                if marker.startswith('death'):
+                    if target.is_character():
+                        hud_index = int(marker.split('_')[1])
+                        target.set_animation('death', add=True)
+                        self.ids.battle_hud.huds[target].handle_death()
+                        self.ids.battle_hud.huds[target].in_battle = False
+                        target.set_in_battle(False)
+                        self.ids.battle_hud.handle_death(hud_index)
+                        if target.has_status_effect():
+                            self.lwf_renderer.destroy_lwf(f'{target.get_id()}_status_effect')
+                    else:
+                        self.enemy_huds[target].opacity = 0
+                        anim = Animation(opacity=0, duration=0.2 / self.ids.battle_hud.time_scale)
+                        anim.start(target)
+                        anim.start(self.enemy_huds[target])
+
+                        death_lwf = self.lwf_renderer.register_lwf('812109104/812109104.lwf', f'{target.get_id()}_death', load_texture)
+                        scale = Refs.app.width / 1920 * 10
+                        death_lwf.scale_for_width(scale, scale)
+                        death_lwf.property.move_to(*target.get_position())
+                        death_lwf.add_event_handler('end', lambda movie, button, t=target: self.lwf_renderer.destroy_lwf(f'{t.get_id()}_death'))
+                        self.ids.battle_hud.handle_enemy_death(self.battle_data.get_enemies(), target)
+
+                    death = True
+                else:
+                    self.ids.marker_layer.add_widget(Marker(75, self.ids.battle_hud.time_scale, type=marker, height=40, size_hint=(None, None), pos_hint={'center_x': (target.x) / Refs.app.width, 'y': (target.y + 160 - 40 * index) / Refs.app.height}))
+            if not death:
+                # effect, idle =
+                # effect = target.get_status_effect_type()
+                # if effect:
+                #     Refs.log(f'Show effect after damage')
+                    # self.show_status_effect(target, effect, 0)
+                    # idle = 'status_ailment'
+                    # Clock.schedule_once(lambda dt, t=target: status_lwf.set_visible(), 0.1 / self.ids.battle_hud.time_scale)
+                target.set_animation(target.get_idle_animation(), add=True, loop=True)
+
+    def create_status_effect_lwf(self, entity, effect_type):
+        types = {27: '810000021', 28: '810000033', 29: '810000034', 30: '810000022', 31: '810000023', 32: '810000024', 33: '810000026', 34: '810000031', 35: '810000024'}
+        specific_name = f'{entity.get_id()}_status_effect_{effect_type}'
+
+        effect_lwf = self.lwf_renderer.register_lwf(f'{types[effect_type]}/{types[effect_type]}.lwf', specific_name, load_texture)
+        scale = Refs.app.width / 1920 * 10
+        effect_lwf.scale_for_width(scale, scale)
+        x, y = entity.get_position()
+        w, h = entity.get_skeleton().getSize()
+        effect_lwf.property.move_to(x, y + h / 3)
+        effect_lwf.add_event_handler('end', lambda movie, button: self.lwf_renderer.destroy_lwf(specific_name))
+        return effect_lwf
+
+    # def show_status_effect(self, entity, effect_type, time):
+    #     hud = self.ids.battle_hud.huds[entity]
+    #     status_lwf, etype = hud.get_status_effect_lwf()
+    #     # effect_type = entity.get_status_effect()
+    #     if status_lwf and etype != effect_type:
+    #         self.lwf_renderer.destroy_lwf(f'{entity.get_id()}_status_effect')
+    #         status_lwf = None
+    #     if not status_lwf:
+    #         self.create_status_effect_lwf(entity)
+    #     status_lwf, type = hud.get_status_effect_lwf()
+    #     status_lwf.set_visible()
+    #     Clock.schedule_once(lambda dt, s=status_lwf: s.set_visible(), time)
+
+    def play_animation(self, queue, index, debug=False):
+        if debug:
+            Refs.log(f'Play animation {index}')
+        animation = queue[index]
+        entity = animation['entity']
+
+        fade_in_duration = 0.1 / self.ids.battle_hud.time_scale
+        show_duration = 0.5 / self.ids.battle_hud.time_scale
+        fade_out_duration = 0.1 / self.ids.battle_hud.time_scale
+
+        if animation['type'] in ('attack', 'cause_effect', 'heal', 'ailment_cure'):
+            # Hide status LWF
+            effect_type = entity.get_status_effect()
+            effect_lwf = None
+            if effect_type is not None:
+                effect_lwf = self.lwf_renderer.get_lwf(f'{entity.get_id()}_status_effect_{effect_type}')
+                effect_lwf.set_invisible()
+            # Attack Animation
+            entity.set_animation(animation['skill'].get_animation_name())
+            entity.set_animation(entity.get_idle_animation(), loop=True, add=True)
+
+            # Move Name Animation
+            attack_name = animation['skill'].get_animation_path()
+            self.ids[entity.get_id()].ids.label.text = animation['skill'].get_name()
+            anim = Animation(opacity=1, duration=fade_in_duration) + Animation(duration=show_duration) + Animation(opacity=0, duration=fade_out_duration)
+            anim.start(self.ids[entity.get_id()])
+
+            # Create LWF
+            name = f'{entity.get_id()}_attack_{randint(1, 1000000)}'
+            attack_lwf = self.lwf_renderer.register_lwf(f'{attack_name}/{attack_name}.lwf', name, load_texture)
+            def set_lwf_visible(track, event):
+                attack_lwf.set_visible()
+                return True
+            entity.add_event_handler('hit', 'attack_hit', set_lwf_visible)
+            scale = Refs.app.width / 1920 * 10
+            attack_lwf.scale_for_width(scale, scale)
+
+            stype = animation['skill'].get_type()
+            starget = animation['skill'].get_target()
+            target = animation['targets'][0]
+
+            # if effect and debug:
+            #     Refs.log(f'Show effect after taking attack')
+
+            # The party animations need to be moved to the center of the screen!
+            if attack_name.startswith('8121045') or attack_name.startswith('8121043'):
+                width, height = Refs.app.width, Refs.app.height
+                attack_lwf.property.move_to(width * 0.5, height * 0.5)
+            elif starget == FOE:
+                attack_lwf.property.move_to(*target.get_position())
+            elif starget == SELF:
+                attack_lwf.property.move_to(*entity.get_position())
+            elif starget == FOES:
+                if entity.is_character():
+                    attack_lwf.property.move_to(*self.enemy_party)
+                else:
+                    attack_lwf.property.move_to(*self.char_party)
+            else:
+                if entity.is_character():
+                    attack_lwf.property.move_to(*self.char_party)
+                else:
+                    attack_lwf.property.move_to(*self.enemy_party)
+
+            # Do we need to target the right side of the screen
+            if entity.is_enemy() and starget in (FOE, FOES) or (entity.is_character() and starget in (SELF, ALLIES)):  #
+                attack_lwf.property.scale(-1, 1)
+            attack_lwf.set_invisible()
+
+            attack_lwf.add_event_handler('common_hit', lambda movie, button: self.update_hud(animation))
+            attack_lwf.add_event_handler('common_hit', lambda movie, button: self.show_markers(animation))
+            if len(queue) > index + 1:
+                attack_lwf.add_event_handler('end', lambda movie, button: self.play_animation(queue, index + 1))
+            else:
+                attack_lwf.add_event_handler('end', lambda movie, button: self.end_turn())
+            if effect_lwf is not None and not entity.is_dead():
+                attack_lwf.add_event_handler('end', lambda movie, button, el=effect_lwf: el.set_visible())
+            attack_lwf.add_event_handler('end', lambda movie, button: self.lwf_renderer.destroy_lwf(name))
+        elif animation['type'] == 'health_rog':  # 810000027
+            heal_lwf = self.lwf_renderer.register_lwf(f'810000027/810000027.lwf', f'{entity.get_id()}_heal_rog', load_texture)
+            scale = Refs.app.width / 1920 * 10
+            heal_lwf.scale_for_width(scale, scale)
+            heal_lwf.property.move_to(*entity.get_position())
+            if entity.is_enemy():
+                heal_lwf.property.scale(-1, 1)
+
+            heal_lwf.add_event_handler('hit', lambda movie, button: self.update_hud(animation))
+            heal_lwf.add_event_handler('hit', lambda movie, button: self.show_markers(animation))
+
+            if len(queue) > index + 1:
+                if queue[index + 1]['type'] == 'health_rog':
+                    self.play_animation(queue, index + 1)
+                else:
+                    heal_lwf.add_event_handler('end', lambda movie, button: self.play_animation(queue, index + 1))
+                heal_lwf.add_event_handler('end', lambda movie, button: self.lwf_renderer.destroy_lwf(f'{entity.get_id()}_heal_rog'))
+            else:
+                heal_lwf.add_event_handler('end', lambda movie, button: self.end_turn())
+                heal_lwf.add_event_handler('end', lambda movie, button: self.lwf_renderer.destroy_lwf(f'{entity.get_id()}_heal_rog'))
+        elif animation['type'] == 'mana_rog':
+            mana_lwf = self.lwf_renderer.register_lwf(f'810000027/810000027.lwf', f'{entity.get_id()}_mana_rog', load_texture)
+            scale = Refs.app.width / 1920 * 10
+            mana_lwf.scale_for_width(scale, scale)
+            mana_lwf.property.move_to(*entity.get_position())
+            if entity.is_enemy():
+                mana_lwf.property.scale(-1, 1)
+
+            mana_lwf.add_event_handler('hit', lambda movie, button: self.update_hud(animation))
+            mana_lwf.add_event_handler('hit', lambda movie, button: self.show_markers(animation))
+
+            if len(queue) > index + 1:
+                if queue[index + 1]['type'] == 'mana_rog':
+                    self.play_animation(queue, index + 1)
+                else:
+                    mana_lwf.add_event_handler('end', lambda movie, button: self.play_animation(queue, index + 1))
+                mana_lwf.add_event_handler('end', lambda movie, button: self.lwf_renderer.destroy_lwf(f'{entity.get_id()}_mana_rog'))
+            else:
+                mana_lwf.add_event_handler('end', lambda movie, button: self.end_turn())
+                mana_lwf.add_event_handler('end', lambda movie, button: self.lwf_renderer.destroy_lwf(f'{entity.get_id()}_mana_rog'))
+        elif animation['type'] == 'health_dot':
+            self.update_hud(animation)
+            self.show_markers(animation)
+
+            duration = 0.3 / self.ids.battle_hud.time_scale
+
+            if len(queue) > index + 1:
+                if queue[index + 1]['type'] == 'health_dot':
+                    self.play_animation(queue, index + 1)
+                else:
+                    Clock.schedule_once(lambda dt: self.play_animation(queue, index + 1), duration)
+            else:
+                Clock.schedule_once(lambda dt: self.end_turn(), duration)
+        elif animation['type'] == 'enter_battle':
+            load_duration = 0.05
+            enter_duration = 1.25 / self.ids.battle_hud.time_scale
+            leave_duration = 0.3 / self.ids.battle_hud.time_scale
+            total_duration = load_duration + enter_duration + leave_duration
+            hud_indicies = animation['hud_index'].split('_')
+            for entity_index, entity in enumerate(animation['entities']):
+                replacement = animation['targets'][entity_index]
+                hud_index = int(hud_indicies[entity_index])
+
+                x, y = entity.get_position()
+                enter_duration = x / Refs.app.width / 0.548 / self.ids.battle_hud.time_scale
+                x1 = Refs.app.width * 1.25
+                replacement.set_position(x1, y)
+                replacement.set_animation('run_side', loop=True)
+                replacement.set_flip_x(False)
+                replacement.set_visible()
+                replacement.set_in_battle(True)
+
+                enter_animation = Animation(duration=load_duration) + Animation(x=x, duration=enter_duration)
+                leave_animation = Animation(duration=enter_duration) + Animation(opacity=0, duration=leave_duration)
+
+                enter_animation.start(replacement)
+                leave_animation.start(entity)
+                # Move huds around
+                # replacement.set_animation(replacement.get_idle_animation(), loop=True)
+                Clock.schedule_once(lambda dt, r=replacement: r.set_animation(r.get_idle_animation(), loop=True), enter_duration)
+                # if effect:
+                #     Refs.log(f'Show effect after enter battle')
+
+                Clock.schedule_once(lambda dt, h=hud_index, e=entity, r=replacement: self.replace_hud(h, e, r), enter_duration)
+
+                first_enemy = None
+                enemies = self.battle_data.get_alive_enemies()
+                if len(enemies) > 0:
+                    first_enemy = enemies[0]
+                self.ids.battle_hud.update_targeting_from_replacement(hud_index, first_enemy)
+
+            supports = []
+            for replacement in animation['targets']:
+                if replacement.get_support() is not None:
+                    supports.append(replacement.get_support())
+
+            # Play assist animations and apply effects
+            if len(supports) == 0:
+                if len(queue) > index + 1:
+                    Clock.schedule_once(lambda dt: self.play_animation(queue, index + 1), total_duration)
+                else:
+                    Clock.schedule_once(lambda dt: self.end_turn(), total_duration)
+            else:
+                def play_support_animation(dt):
+                    assist_lwf = self._play_assist_lwf(supports)
+                    if len(queue) > index + 1:
+                        assist_lwf.add_event_handler('end', lambda movie, button: self.play_animation(queue, index + 1))
+                    else:
+                        assist_lwf.add_event_handler('end', lambda movie, button: self.end_turn())
+                    assist_lwf.add_event_handler('end', lambda movie, button: self.lwf_renderer.destroy_lwf('Assist Cutin'))
+                Clock.schedule_once(play_support_animation, enter_duration)
+        elif animation['type'] == 'set_status_effect':
+            Refs.log(f'Show Status Effect applied to {entity.get_name()}')
+
+            hud = self.ids.battle_hud.huds[entity]
+            effect_lwf, effect_type = hud.get_status_effect_lwf()
+
+            if effect_lwf is not None and effect_type != animation['effect']:
+                effect_lwf.set_invisible()
+                self.lwf_renderer.destroy_lwf(f'{entity.get_id()}_status_effect_{effect_type}')
+                effect_lwf = None
+            if effect_lwf is None:
+                effect_lwf = self.create_status_effect_lwf(entity, animation['effect'])
+            effect_lwf.set_visible()
+            hud.set_status_effect_lwf(effect_lwf, animation['effect'])
+            hud.ids.icon_tray.apply_icons([str(animation['effect'])])
+            entity.set_status_effect(animation['effect'])
+            entity.set_animation(entity.get_idle_animation(), loop=True)
+
+            if len(queue) > index + 1:
+                self.play_animation(queue, index + 1)
+            else:
+                self.end_turn()
+        elif animation['type'] == 'end_status_effect':
+            Refs.log(f'Remove Status Effect from {entity.get_name()}')
+            # We just want to hide the status effect; Destroy happens on battle end
+            hud = self.ids.battle_hud.huds[entity]
+            effect_lwf, effect_type = hud.get_status_effect_lwf()
+            if effect_lwf is not None:
+                effect_lwf.set_invisible()
+                entity.set_status_effect(None)
+                entity.set_animation(entity.get_idle_animation(), loop=True)
+                hud.ids.icon_tray.remove_icons([str(effect_type)])
+
+            if len(queue) > index + 1:
+                self.play_animation(queue, index + 1)
+            else:
+                self.end_turn()
+        else:
+            Refs.log(f'{queue[index:]}', 'error', 'Battle')
+            Refs.log(f'Unimplemented animation type {animation["type"]}', 'error', 'Battle')
+

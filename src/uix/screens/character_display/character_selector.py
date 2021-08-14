@@ -12,20 +12,14 @@ load_kv(__name__)
 
 
 class CharacterSelector(Screen):
-    #initialized = BooleanProperty(False)
-    #preview = ObjectProperty(None)
-
     has_left = BooleanProperty(False)
     toggle = BooleanProperty(False)  # When False, Is Slots
 
-    #overlay_texture = ObjectProperty(None)
-    #number_icon_texture = ObjectProperty(None)
     character_num = NumericProperty(0.0)
 
     def __init__(self, preview, is_support, **kwargs):
+        self._return = preview
         self.is_support = is_support
-        #self.overlay_texture = Image('backgrounds/select_char_overlay.png').texture
-        #self.number_icon_texture = Image('screens/stats/icon.png').texture
         self._size = 0, 0
         super().__init__(**kwargs)
 
@@ -85,7 +79,6 @@ class CharacterSelector(Screen):
         #if self.has_left:
         #    self.ids.single.update(preview, char)
 
-        Clock.schedule_once(lambda dt: self.update_screen(preview, is_support), 0)
         #self.single = None
         #if self.has_left:
         #    self.single = SinglePreview(preview=preview, character=char, is_support=is_support, size_hint=(None, None))
@@ -99,21 +92,25 @@ class CharacterSelector(Screen):
         #self.add_widget(self.multi)
 
     def reload(self, preview, is_support, **kwargs):
-        self.update_screen(preview, is_support)
-
-    def update_screen(self, preview, is_support):
+        self._return = preview
         self.is_support = is_support
+        self.update_screen()
 
-        char = preview.char
-        if is_support:
-            char = preview.support
+    def on_kv_post(self, base_widget):
+        self.update_screen()
 
-        self.has_left = preview is not None and char is not None
+    def update_screen(self):
+        if self.is_support:
+            char = self._return.support
+        else:
+            char = self._return.character
+
+        self.has_left = char != -1
 
         if self.has_left:
-            self.ids.single.update(preview, char)
+            self.ids.single.update(self._return, char, self.is_support)
 
-        self.ids.multi.update(preview, char, self.content.get_obtained_characters(is_support), self.content.get_current_party())
+        self.ids.multi.update(self._return, char, self.is_support)
 
     def on_pre_enter(self, *args):
         pass

@@ -45,9 +45,6 @@ Shows the most common resource locations on the third floor from the past week.
 I, oak_wood_planks, 1, Oak Wood Planks, multi, 500, 750
 Planks harvested in the forests surrounding Coatirane.
 
-D, small_strength_falna, 1, Strength Falna, multi, 0, 0
-A gem found in monsters that can be used to grow strength in an adventurer.
-
 D, raw_goblin_claw, 1, Raw Goblin Claw, multi, 30, 60
 A raw Goblin Claw.
 
@@ -1536,58 +1533,58 @@ A Raw Padparadscha Gem.
 I, processed_padparadscha, 28, Processed Padparadscha, multi, 100, 250
 A Processed Padparadscha Gem.
 
-D, tiny_tiny_magic_stone, 1, Tiny Magic Stone sliver, multi, 100, 200
+D, tiny_tiny_magic_stone, 1, Tiny Magic Stone Sliver, multi, 100, 200
 A tiny sliver of a magic stone.
 
-D, tiny_small_magic_stone, 1, Small Magic Stone sliver, multi, 100, 200
+D, tiny_small_magic_stone, 1, Small Magic Stone Sliver, multi, 100, 200
 A small sliver of a magic stone.
 
-D, tiny_medium_magic_stone, 1, Medium Magic Stone sliver, multi, 100, 200
+D, tiny_medium_magic_stone, 1, Medium Magic Stone Sliver, multi, 100, 200
 A medium sliver of a magic stone.
 
-D, tiny_regular_magic_stone, 1, Regular Magic Stone sliver, multi, 100, 200
+D, tiny_regular_magic_stone, 1, Magic Stone Sliver, multi, 100, 200
 A regular sliver of a magic stone.
 
-D, tiny_large_magic_stone, 1, Large Magic Stone sliver, multi, 100, 200
+D, tiny_large_magic_stone, 1, Large Magic Stone Sliver, multi, 100, 200
 A large sliver of a magic stone.
 
-D, tiny_huge_magic_stone, 1, Huge Magic Stone sliver, multi, 100, 200
+D, tiny_huge_magic_stone, 1, Huge Magic Stone Sliver, multi, 100, 200
 A huge sliver of a magic stone.
 
-D, small_tiny_magic_stone, 3, Tiny Magic Stone fragment, multi, 100, 200
+D, small_tiny_magic_stone, 3, Tiny Magic Stone Fragment, multi, 100, 200
 A tiny fragment of a magic stone.
 
-D, small_small_magic_stone, 3, Small Magic Stone fragment, multi, 100, 200
+D, small_small_magic_stone, 3, Small Magic Stone Fragment, multi, 100, 200
 A small fragment of a magic stone.
 
-D, small_medium_magic_stone, 3, Medium Magic Stone fragment, multi, 100, 200
+D, small_medium_magic_stone, 3, Medium Magic Stone Fragment, multi, 100, 200
 A medium fragment of a magic stone.
 
-D, small_regular_magic_stone, 3, Regular Magic Stone fragment, multi, 100, 200
+D, small_regular_magic_stone, 3, Magic Stone Fragment, multi, 100, 200
 A regular fragment of a magic stone.
 
-D, small_large_magic_stone, 3, Large Magic Stone fragment, multi, 100, 200
+D, small_large_magic_stone, 3, Large Magic Stone Fragment, multi, 100, 200
 A large fragment of a magic stone.
 
-D, small_huge_magic_stone, 3, Huge Magic Stone fragment, multi, 100, 200
+D, small_huge_magic_stone, 3, Huge Magic Stone Fragment, multi, 100, 200
 A huge fragment of a magic stone.
 
-D, medium_tiny_magic_stone, 5, Tiny Magic Stone chunk, multi, 100, 200
+D, medium_tiny_magic_stone, 5, Tiny Magic Stone Chunk, multi, 100, 200
 A tiny chunk of a magic stone.
 
-D, medium_small_magic_stone, 5, Small Magic Stone chunk, multi, 100, 200
+D, medium_small_magic_stone, 5, Small Magic Stone Chunk, multi, 100, 200
 A small chunk of a magic stone.
 
-D, medium_medium_magic_stone, 5, Medium Magic Stone chunk, multi, 100, 200
+D, medium_medium_magic_stone, 5, Medium Magic Stone Chunk, multi, 100, 200
 A medium chunk of a magic stone.
 
-D, medium_regular_magic_stone, 5, Regular Magic Stone chunk, multi, 100, 200
+D, medium_regular_magic_stone, 5, Magic Stone Chunk, multi, 100, 200
 A regular chunk of a magic stone.
 
-D, medium_large_magic_stone, 5, Large Magic Stone chunk, multi, 100, 200
+D, medium_large_magic_stone, 5, Large Magic Stone Chunk, multi, 100, 200
 A large chunk of a magic stone.
 
-D, medium_huge_magic_stone, 5, Huge Magic Stone chunk, multi, 100, 200
+D, medium_huge_magic_stone, 5, Huge Magic Stone Chunk, multi, 100, 200
 A huge chunk of a magic stone.
 
 D, regular_tiny_magic_stone, 5, Tiny Magic Stone , multi, 100, 200
@@ -1599,7 +1596,7 @@ A small magic stone.
 D, regular_medium_magic_stone, 5, Medium Magic Stone , multi, 100, 200
 A medium magic stone.
 
-D, regular_regular_magic_stone, 5, Regular Magic Stone , multi, 100, 200
+D, regular_regular_magic_stone, 5, Magic Stone , multi, 100, 200
 A regular magic stone.
 
 D, regular_large_magic_stone, 5, Large Magic Stone , multi, 100, 200
@@ -1608,40 +1605,40 @@ A large magic stone.
 D, regular_huge_magic_stone, 5, Huge Magic Stone , multi, 100, 200
 A huge magic stone.
 
-D, large_tiny_magic_stone, 5, Tiny Magic Stone crystal, multi, 100, 200
+D, large_tiny_magic_stone, 5, Tiny Magic Stone Crystal, multi, 100, 200
 A tiny magic stone crystal.
 
-D, large_small_magic_stone, 5, Small Magic Stone crystal, multi, 100, 200
+D, large_small_magic_stone, 5, Small Magic Stone Crystal, multi, 100, 200
 A small magic stone crystal.
 
-D, large_medium_magic_stone, 5, Medium Magic Stone crystal, multi, 100, 200
+D, large_medium_magic_stone, 5, Medium Magic Stone Crystal, multi, 100, 200
 A medium magic stone crystal.
 
-D, large_regular_magic_stone, 5, Regular Magic Stone crystal, multi, 100, 200
+D, large_regular_magic_stone, 5, Magic Stone Crystal, multi, 100, 200
 A regular magic stone crystal.
 
-D, large_large_magic_stone, 5, Large Magic Stone crystal, multi, 100, 200
+D, large_large_magic_stone, 5, Large Magic Stone Crystal, multi, 100, 200
 A large magic stone crystal.
 
-D, large_huge_magic_stone, 5, Huge Magic Stone crystal, multi, 100, 200
+D, large_huge_magic_stone, 5, Huge Magic Stone Crystal, multi, 100, 200
 A huge magic stone crystal.
 
-D, huge_tiny_magic_stone, 5, Tiny Magic Stone cluster, multi, 100, 200
+D, huge_tiny_magic_stone, 5, Tiny Magic Stone Cluster, multi, 100, 200
 A tiny cluster of magic stones.
 
-D, huge_small_magic_stone, 5, Small Magic Stone cluster, multi, 100, 200
+D, huge_small_magic_stone, 5, Small Magic Stone Cluster, multi, 100, 200
 A small cluster of magic stones.
 
-D, huge_medium_magic_stone, 5, Medium Magic Stone cluster, multi, 100, 200
+D, huge_medium_magic_stone, 5, Medium Magic Stone Cluster, multi, 100, 200
 A medium cluster of magic stones.
 
-D, huge_regular_magic_stone, 5, Regular Magic Stone cluster, multi, 100, 200
+D, huge_regular_magic_stone, 5, Magic Stone Cluster, multi, 100, 200
 A regular cluster of magic stones.
 
-D, huge_large_magic_stone, 5, Large Magic Stone cluster, multi, 100, 200
+D, huge_large_magic_stone, 5, Large Magic Stone Cluster, multi, 100, 200
 A large cluster of magic stones.
 
-D, huge_huge_magic_stone, 5, Huge Magic Stone cluster, multi, 100, 200
+D, huge_huge_magic_stone, 5, Huge Magic Stone Cluster, multi, 100, 200
 A huge cluster of magic stones.
 
 D, tiny_strength_falna, 5, Tiny Strength Falna, multi, 0, 0

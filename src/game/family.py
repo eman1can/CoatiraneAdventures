@@ -28,7 +28,7 @@ class Family:
             return 'S'
 
     def get_rank_as_image_path(self):
-        return "screens/stats/" + self.get_rank() + ".png"
+        return "icons/" + self.get_rank() + ".png"
 
     def get_name(self):
         return self.name

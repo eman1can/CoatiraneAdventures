@@ -5,25 +5,23 @@ ID          = 0
 NAME        = 1
 DESCRIPTION = 2
 ANIM_ID     = 3
-TYPE        = 4
-TARGET      = 5
+ANIM_NAME   = 4
+TYPE        = 5
+TARGET      = 6
 
-ATTACK_SPEED = 6
-ATTACK_POWER = 7
-ATTACK_TYPE  = 8
-ELEMENT      = 9
-
-BOOST_TYPE = 0
-BOOST_STAT_TYPE = 1
+ATTACK_SPEED = 7
+ATTACK_POWER = 8
+ATTACK_TYPE  = 9
+ELEMENT      = 10
 
 
 def load_move_chunk(line, loader, program_type, callbacks):
-    debug = False
     values = [x.strip() for x in line.split('*')]
     skill_id = int(values[ID])
     name = values[NAME]
     description = values[DESCRIPTION]
     anim_id = values[ANIM_ID]
+    anim_name = values[ANIM_NAME]
     skill_type = int(values[TYPE])
     target = int(values[TARGET])
 
@@ -68,13 +66,13 @@ def load_move_chunk(line, loader, program_type, callbacks):
         if effect_type == STAT:
             effect_sub_type = int(values[effect_index + 1])
             effect_target = int(values[effect_index + 2])
-            effect_amount = int(values[effect_index + 3]) / 100
+            effect_amount = float(values[effect_index + 3]) / 100
             effect_duration = int(values[effect_index + 4])
             effect_index += 5
         elif effect_type == COUNTER:
             effect_sub_type = int(values[effect_index + 1])
             effect_target = int(values[effect_index + 2])
-            effect_amount = int(values[effect_index + 3])
+            effect_amount = float(values[effect_index + 3])
             effect_index += 4
         elif effect_type == DURATION:
             effect_sub_type = int(values[effect_index + 1])
@@ -84,11 +82,12 @@ def load_move_chunk(line, loader, program_type, callbacks):
         elif effect_type == SPECIFIC_TARGET:
             pass
         elif effect_type == STATUS_EFFECT:
-            effect_sub_type = int(values[effect_index + 1])
-            effect_amount = int(values[effect_index + 2])
+            effect_sub_type = int(values[effect_index + 1])  # Type of effect
+            effect_amount = float(values[effect_index + 2])  # Level of effect
+            effect_duration = int(values[effect_index + 3])  # Chance to inflict
             effect_index += 3
         effects.append(Effect(effect_type, effect_sub_type, effect_target, effect_amount, effect_duration))
-    skill = Skill(skill_id, name, description, anim_id, skill_type, target, attack_speed, attack_power, attack_type, element, boosts, effects)
+    skill = Skill(skill_id, name, description, anim_id, anim_name, skill_type, target, attack_speed, attack_power, attack_type, element, boosts, effects)
     loader.append('skills', skill_id, skill)
     for callback in callbacks:
         if callback is not None:

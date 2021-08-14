@@ -11,9 +11,14 @@ load_kv(__name__)
 class SinglePreview(RelativeLayout):
     is_support = BooleanProperty(False)
 
-    def update(self, preview, char):
-        self.ids.preview.preview = preview
+    def __init__(self, **kwargs):
+        self._preview = None
+        super().__init__(**kwargs)
+
+    def update(self, preview, char, is_support):
+        self._preview = preview
         self.ids.preview.character = char
+        self.is_support = is_support
 
     def reload(self):
-        self.root.reload()
+        self.ids.preview.reload()

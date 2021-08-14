@@ -89,6 +89,11 @@ WIND = 4
 EARTH = 5
 LIGHT = 6
 DARK = 7
+
+WEAK = 0.5
+NORMAL = 1.0
+STRONG = 2.0
+
 ELEMENTS = {NONE: '', WATER: 'Water', FIRE: 'Fire', THUNDER: 'Thunder', WIND: 'Wind', EARTH: 'Earth', LIGHT: 'Light', DARK: 'Dark'}
 
 # Temporary Boost
@@ -114,11 +119,12 @@ TEMP_BOOST_BY_TARGET = {
 
 
 class Skill:
-    def __init__(self, skill_id, name, description, animation_id, skill_type, target, speed, power, attack_type, element, boosts, effect_list):
+    def __init__(self, skill_id, name, description, animation_id, animation_name, skill_type, target, speed, power, attack_type, element, boosts, effect_list):
         self._id = skill_id
         self._name = name
         self._description = description
         self._animation_id = animation_id
+        self._animation_name = animation_name
 
         self._type = skill_type
         self._target = target
@@ -143,6 +149,12 @@ class Skill:
         if self._special:
             return f'Special: {self._name}'
         return self._name
+
+    def get_animation_path(self):
+        return self._animation_id
+
+    def get_animation_name(self):
+        return self._animation_name
 
     def get_description(self):
         return self._description
@@ -185,3 +197,38 @@ class Boost:
 
     def get_stat_type(self):
         return self._stat_type
+
+
+def element_modifier(base_element, element):
+    circle = {
+        WATER: {
+            FIRE: STRONG,
+            THUNDER: WEAK
+        },
+        FIRE: {
+            WIND: STRONG,
+            WATER: WEAK
+        },
+        THUNDER: {
+            WATER: STRONG,
+            EARTH: WEAK
+        },
+        WIND: {
+            EARTH: STRONG,
+            FIRE: WEAK
+        },
+        EARTH: {
+            THUNDER: STRONG,
+            WIND: WEAK
+        },
+        LIGHT: {
+            DARK: STRONG
+        },
+        DARK: {
+            LIGHT: STRONG
+        }
+    }
+    if element in circle:
+        if base_element in circle[element]:
+            return circle[element][base_element]
+    return NORMAL

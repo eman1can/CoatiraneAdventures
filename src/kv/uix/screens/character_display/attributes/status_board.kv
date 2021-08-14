@@ -161,76 +161,9 @@
             height_unit: skill_layout.height
             size_hint: app.get_dkey('sbm.scrl s_h')
             pos_hint: app.get_dkey('sbm.scrl p_h')
-    Image:
-        id: star_1
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(1).broken else 'screens/stats/star.png' if root.char.get_rank(1).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(1).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_1 s_h')
-        pos_hint: app.get_dkey('sbm.star_1 p_h')
-    Image:
-        id: star_2
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(2).broken else 'screens/stats/star.png' if root.char.get_rank(2).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(2).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_2 s_h')
-        pos_hint: app.get_dkey('sbm.star_2 p_h')
-    Image:
-        id: star_3
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(3).broken else 'screens/stats/star.png' if root.char.get_rank(3).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(3).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_3 s_h')
-        pos_hint: app.get_dkey('sbm.star_3 p_h')
-    Image:
-        id: star_4
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(4).broken else 'screens/stats/star.png' if root.char.get_rank(4).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(4).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_4 s_h')
-        pos_hint: app.get_dkey('sbm.star_4 p_h')
-    Image:
-        id: star_5
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(5).broken else 'screens/stats/star.png' if root.char.get_rank(5).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(5).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_5 s_h')
-        pos_hint: app.get_dkey('sbm.star_5 p_h')
-    Image:
-        id: star_6
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(6).broken else 'screens/stats/star.png' if root.char.get_rank(6).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(6).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_6 s_h')
-        pos_hint: app.get_dkey('sbm.star_6 p_h')
-    Image:
-        id: star_7
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(7).broken else 'screens/stats/star.png' if root.char.get_rank(7).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(7).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_7 s_h')
-        pos_hint: app.get_dkey('sbm.star_7 p_h')
-    Image:
-        id: star_8
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(8).broken else 'screens/stats/star.png' if root.char.get_rank(8).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(8).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_8 s_h')
-        pos_hint: app.get_dkey('sbm.star_8 p_h')
-    Image:
-        id: star_9
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(9).broken else 'screens/stats/star.png' if root.char.get_rank(9).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(9).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_9 s_h')
-        pos_hint: app.get_dkey('sbm.star_9 p_h')
-    Image:
-        id: star_10
-        source: '' if root.char is None else 'screens/stats/rankbrk.png' if root.char.get_rank(10).broken else 'screens/stats/star.png' if root.char.get_rank(10).unlocked else ''
-        allow_stretch: True
-        opacity: 0 if root.char is None else 1 if root.char.get_rank(10).unlocked else 0
-        size_hint: app.get_dkey('sbm.star_10 s_h')
-        pos_hint: app.get_dkey('sbm.star_10 p_h')
+    LayeredImage:
+        id: stars
+        data: root.star_list_data
     LeftRightNavigationArrows:
         id: arrows
         animate_distance: app.get_dkey('sbm.a ad', self.width)

@@ -1,5 +1,5 @@
 # UIX Imports
-from kivy.properties import BooleanProperty, ListProperty, ObjectProperty, StringProperty
+from kivy.properties import BooleanProperty, DictProperty, ListProperty, ObjectProperty, StringProperty
 
 # Kivy Imports
 from kivy.uix.widget import Widget
@@ -26,6 +26,9 @@ class StatusBoardManager(Screen):
 
     slot_nums = ListProperty([])
 
+    star_data = DictProperty({})
+    star_list_data = ListProperty([])
+
     def __init__(self, **kwargs):
         self.rank_loaded_max = 0
         self.rank_loaded_min = 0
@@ -34,6 +37,7 @@ class StatusBoardManager(Screen):
         self.slot_confirm = SlotConfirm()
         self.unlock_all = SBUnlockAll()
         super().__init__(**kwargs)
+        self.update_stars()
         self.unlock_all.bind(on_dismiss=self.modal_dismiss)
         self.slot_confirm.bind(on_dismiss=self.modal_dismiss)
         self.unlock_all.bind(on_confirm=self.unlock_all_slots)
@@ -120,6 +124,36 @@ class StatusBoardManager(Screen):
 
     def modal_dismiss(self, instance):
         self.modal_open = False
+
+    def update_stars(self):
+        if self.char is not None:
+            for index in range(1, 11):
+                if not self.make_star(self.char, index, index):
+                    break
+        self.star_list_data = self.star_data.values()
+
+    def make_star(self, character, rank, index):
+        if f'star_{index}' in self.star_data:
+            if self.star_data[f'star_{index}']['broken']:
+                return True
+            if character.get_rank(rank).is_broken():
+                self.star_data[f'star_{index}']['broken'] = True
+                self.star_data[f'star_{index}']['source'] = 'icons/rankbrk.png'
+                return True
+        if character.get_rank(rank).is_unlocked():
+            star = {'id': f'star_{index}',
+                    'source': 'icons/star.png',
+                    'size_hint': Refs.app.get_dkey(f'sbs.star_{index} s_h'),
+                    'pos_hint': Refs.app.get_dkey(f'sbs.star_{index} p_h')}
+            if character.get_rank(rank).is_broken():
+                star['source'] = 'icons/rankbrk.png'
+                star['broken'] = True
+            else:
+                star['broken'] = False
+            self.star_data[f'star_{index}'] = star
+            return True
+        else:
+            return False
 
     def on_release(self, slot_obj, type, slot_num):
         rank = self.char.get_rank(slot_num)

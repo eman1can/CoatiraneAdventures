@@ -47,6 +47,8 @@ EFFECT_2 = 16
 EFFECT_3 = 17
 EFFECT_4 = 18
 EFFECT_5 = 19
+EFFECT_6 = 20
+EFFECT_7 = 21
 
 RECRUITMENT_ITEM = -2
 RECRUITMENT_ITEM_COUNT = -1
@@ -81,6 +83,8 @@ def get_skills(loader, values):
         skills.append(int(values[EFFECT_3]))
         skills.append(int(values[EFFECT_4]))
         skills.append(int(values[EFFECT_5]))
+        skills.append(int(values[EFFECT_6]))
+        skills.append(int(values[EFFECT_7]))
         for x, skill in enumerate(skills):
             skills[x] = loader.get('skills')[skill]
     return skills
@@ -99,7 +103,9 @@ def load_char_chunk(line, loader, program_type, callbacks):
     char_id, name, display_name, skel_id = values[ID:SKEL_ID + 1]
     race = int(values[RACE])
     gender = int(values[GENDER])
-    age = int(values[AGE])  # TODO: Adjust age based on played game time
+    age = values[AGE]  # TODO: Adjust age based on played game time
+    if age != 'Unknown':
+        age = int(age)
 
     character_development = None
     if char_id in loader.get('save')['character_development']:
@@ -135,7 +141,6 @@ def load_char_chunk(line, loader, program_type, callbacks):
         recruitment_items[item_id] = int(count)
 
     is_support = values[TYPE] == 'S'
-    full, slide, preview, slide_support, bustup = f'{res_path}_full.png', f'{res_path}_slide.png', f'{res_path}_preview.png', f'{res_path}_slide_support.png', f'{res_path}_bustup.png'
 
     rank = 1
     familiarities = {}
@@ -154,11 +159,10 @@ def load_char_chunk(line, loader, program_type, callbacks):
     else:
         family, high_damage, floor_depth, monsters_slain, people_slain = '', 0, 0, 0, 0
 
-    char = Character(name, skel_path, int(hp), int(mp), int(s), int(m), int(e), int(a), int(d), element, skills,
+    char = Character(char_id, name, skel_path, res_path, int(hp), int(mp), int(s), int(m), int(e), int(a), int(d), element, skills,
                      _race=race, _gender=gender, _age=age, _description=description,
                      _familiarities=familiarities, _abilities=abilities,
-                     _character_id=char_id, _display_name=display_name, _index=len(loader.get('chars')), _is_support=is_support, _ranks=ranks, _rank=rank, _attack_type=attack_type,
-                     _slide=slide, _slide_support=slide_support, _preview=preview, _full=full, _bust_up=bustup,
+                     _display_name=display_name, _index=len(loader.get('chars')), _is_support=is_support, _ranks=ranks, _rank=rank, _attack_type=attack_type,
                      _family=family, _high_damage=high_damage, _lowest_floor=floor_depth, _monsters_slain=monsters_slain, _people_slain=people_slain,
                      _recruitment_items=recruitment_items, _favorite_weapon=favorite_weapon, _favorite_sub_weapon=favorite_sub_weapon)
 

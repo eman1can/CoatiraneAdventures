@@ -1,13 +1,10 @@
 class Event:
-
-    def __init__(self, data):
-
-        self.data = None
+    def __init__(self, name):
+        assert(name is not None, "Name cannot be None")
+        self.name = name
         self.intValue = 0
         self.floatValue = 0.0
         self.stringValue = None
-
-        self.data = data
 
     def getInt(self):
         return self.intValue
@@ -21,14 +18,14 @@ class Event:
     def setFloat(self, floatValue):
         self.floatValue = floatValue
 
-    def getString(self, stringValue):
+    def getString(self):
         return self.stringValue
 
     def setString(self, stringValue):
         self.stringValue = stringValue
 
-    def getData(self):
-        return self.data
+    def getName(self):
+        return self.name
 
     def __str__(self):
-        return self.data.name
+        return self.name

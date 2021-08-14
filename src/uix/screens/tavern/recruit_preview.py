@@ -20,7 +20,7 @@ class RecruitPreview(Screen):
     character = ObjectProperty(None)
 
     def __init__(self, character, viewed_characters, **kwargs):
-        self.sound = SoundLoader.load('snd/recruit.wav')
+        self.sound = SoundLoader.load('res/snd/recruit.wav')
         self.sound.seek(0)
         self.viewed_characters = viewed_characters
         self.character = character

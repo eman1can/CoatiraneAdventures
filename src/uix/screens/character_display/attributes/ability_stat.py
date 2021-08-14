@@ -30,7 +30,7 @@ class AbilityStatBox(RelativeLayout):
     background_source = StringProperty('')
 
     def __init__(self, **kwargs):
-        self.background_source = 'screens/attributes/ability_overlay.png'
+        self.background_source = 'ability_overlay.png'
         super().__init__(**kwargs)
 
     def on_char(self, *args):

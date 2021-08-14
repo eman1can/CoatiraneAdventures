@@ -1,1 +1,1 @@
-pyinstaller "C:\Users\Zoe\Code Projects\PycharmProjects\CoatiraneAdventures\releases\coatirane_adventures_alphav1\text_main.spec" --distpath "C:\Users\Zoe\Code Projects\PycharmProjects\CoatiraneAdventures\releases\coatirane_adventures_alphav1"
+pyinstaller "C:\Users\Zoe\Code Projects\PycharmProjects\CoatiraneAdventures Development\releases\coatirane_adventures_alphav1\main.spec" --distpath "C:\Users\Zoe\Code Projects\PycharmProjects\CoatiraneAdventures Development\releases\coatirane_adventures_alphav1"

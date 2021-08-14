@@ -79,15 +79,16 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_file['housing']['bill_due'] = 824370914
     save_file['housing']['bill_count'] = 1
     save_file['lowest_floor'] = starting_floor
-    save_file['obtained_characters'] = [choice]
-    save_file['obtained_characters_a'] = [choice]
-    save_file['obtained_characters_s'] = []
+    save_file['obtained_characters'] = [x for x in range(8)]
+    save_file['obtained_characters_a'] = [x for x in range(6)]
+    save_file['obtained_characters_s'] = [6, 7]
     if choice == 0:
         char_id = 'a_whisper_of_wind_ais'
     else:
         char_id = 'hero_bell'
-    save_file['character_development'] = {
-        f'{char_id}': {
+    char_develop = {}
+    for char_id in ['a_whisper_of_wind_ais', 'hero_bell', 'clumsy_cassandra', 'electroshock_valeria', 'motherly_alicia', 'commander_daphne', 'divine_protection_hestia', 'town_gossip_misha']:
+        char_develop[char_id] = {
             'ranks': {
                 'unlocked': [True, False, False, False, False, False, False, False, False, False],
                 'broken': [False, False, False, False, False, False, False, False, False, False],
@@ -114,7 +115,7 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
             'abilities': [],
             'familiarities': {}
         }
-    }
+    save_file['character_development'] = char_develop
     save_file['inventory'] = {
         'current_pickaxe_hash': None,
         'current_shovel_hash': None,
@@ -122,7 +123,7 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     }
     save_file['map_data'] = {}
     save_file['varenth'] = starting_varenth
-    save_file['parties'] = [0] + [[None for _ in range(16)] for _ in range(10)]
+    save_file['parties'] = [0] + [[-1 for _ in range(16)] for _ in range(10)]
     save_file['map_data'] = {}
     save_file['map_node_data'] = {}
     save_file['map_node_counters'] = {}
@@ -260,12 +261,7 @@ def save_game(save_slot, game_content):
     save_file['varenth'] = varenth
     parties = [game_content.get_current_party_index()]
     for index in range(10):
-        parties.append([])
-        for char in game_content.get_party(index):
-            if char is None:
-                parties[-1].append(None)
-            else:
-                parties[-1].append(char.get_index())
+        parties.append(game_content.get_party(index))
     save_file['parties'] = parties
     # Save the info to the disk
     # Save the actual game info to the disk

@@ -10,15 +10,22 @@ class TrackEntry(Poolable):
         self.previous = None
         self.animation = None
         self.loop = False
+
         self.delay = 0.0
         self.time = 0.0
         self.lastTime = -1
         self.endTime = 0.0
-        self.timeScale = 1
+        self.time_scale = 1
         self.mixTime = 0.0
         self.mixDuration = 0.0
-        self.listener = None
         self.mix = 1
+
+        self.handlers = {
+            'end': {},
+            'complete': {},
+            'start': {},
+            'event': {}
+        }
 
         super().__init__()
 
@@ -26,10 +33,17 @@ class TrackEntry(Poolable):
         self.next = None
         self.previous = None
         self.animation = None
-        self.listener = None
-        self.timeScale = 1
+
+        self.time_scale = 1
         self.lastTime = -1
         self.time = 0
+
+        self.handlers = {
+            'end':      {},
+            'complete': {},
+            'start':    {},
+            'event':    {}
+        }
 
     def getAnimation(self):
         return self.animation
@@ -61,11 +75,19 @@ class TrackEntry(Poolable):
     def setEndTime(self, endTime):
         self.endTime = endTime
 
-    def getListener(self):
-        return self.listener
+    def add_handler(self, type, key, handler):
+        self.handlers[type][key] = handler
 
-    def setListener(self, listener):
-        self.listener = listener
+    def add_event_handler(self, event, key, handler):
+        if event not in self.handlers['event']:
+            self.handlers['event'][event] = {}
+        self.handlers['event'][event][key] = handler
+
+    def remove_handler(self, type, key):
+        self.handlers[type].pop(key)
+
+    def remove_event_handler(self, event, key):
+        self.handlers['event'][event].pop(key)
 
     def getLastTime(self):
         return self.lastTime
@@ -79,11 +101,11 @@ class TrackEntry(Poolable):
     def setMix(self, mix):
         self.mix = mix
 
-    def getTimeScale(self):
-        return self.timeScale
+    def get_time_scale(self):
+        return self.time_scale
 
-    def setTimeScale(self, timeScale):
-        self.timeScale = timeScale
+    def set_time_scale(self, new_time_scale):
+        self.time_scale = new_time_scale
 
     def getNext(self):
         return self.next
@@ -98,36 +120,8 @@ class TrackEntry(Poolable):
         return "<none>" if self.animation is None else self.animation.name
 
 
-class AnimationStateListener:
-    def event(self, trackIndex, event):
-        pass
-
-    def complete(self, trackIndex, loopCount):
-        pass
-
-    def start(self, trackIndex):
-        pass
-
-    def end(self, trackIndex):
-        pass
-
-
-class AnimationStateAdapter(AnimationStateListener):
-    def event(self, trackIndex, event):
-        pass
-
-    def complete(self, trackIndex, loopCount):
-        pass
-
-    def start(self, trackIndex):
-        pass
-
-    def end(self, trackIndex):
-        pass
-
-
 class TrackEntryPool(Pool):
-    def newObject(self):
+    def new_object(self):
         return TrackEntry()
 
 
@@ -138,8 +132,15 @@ class AnimationState:
         self.data = None
         self.tracks = Array()
         self.events = Array()
-        self.listeners = Array()
-        self.timeScale = 1
+
+        self.handlers = {
+            'start': {},
+            'end': {},
+            'complete': {},
+            'event': {}
+        }
+
+        self.time_scale = 1
 
         self.trackEntryPool = TrackEntryPool()
 
@@ -148,15 +149,15 @@ class AnimationState:
         self.data = data
 
     def update(self, delta):
-        delta *= self.timeScale
+        delta *= self.time_scale
         for i in range(len(self.tracks)):
             current = self.tracks.get(i)
             if current is None:
                 continue
 
-            current.time += delta * current.timeScale
+            current.time += delta * current.time_scale
             if current.previous is not None:
-                previousDelta = delta * current.previous.timeScale
+                previousDelta = delta * current.previous.time_scale
                 current.previous.time += previousDelta
                 current.mixTime += previousDelta
 
@@ -170,8 +171,6 @@ class AnimationState:
                     self.clearTrack(i)
 
     def apply(self, skeleton):
-        listenerCount = len(self.listeners)
-
         for i in range(len(self.tracks)):
             current = self.tracks.get(i)
             if current is None:
@@ -200,20 +199,34 @@ class AnimationState:
                     self.trackEntryPool.free(previous)
                     current.previous = None
                 current.animation.mix(skeleton, lastTime, time, loop, self.events, alpha)
-
+            # print(self.events)
             for ii in range(len(self.events)):
                 event = self.events.get(ii)
-                if current.listener is not None:
-                    current.listener.event(i, event)
-                for iii in range(listenerCount):
-                    self.listeners.get(iii).event(i, event)
+                # print('Event: ', event.getName())
+                if event.getName() in self.handlers['event']:
+                    dead_handlers = []
+                    for handler_key, handler in self.handlers['event'][event.getName()].items():
+                        if handler(i, event):
+                            dead_handlers.append(handler_key)
+                    for handler_key in dead_handlers:
+                        self.handlers['event'][event.getName()].pop(handler_key)
+                    del dead_handlers
+                    if current is not None and event.getName() in current.handlers['event']:
+                        dead_handlers = []
+                        for handler_key, handler in current.handlers['event'][event.getName()].items():
+                            if handler(i, event):
+                                dead_handlers.append(handler_key)
+                        for handler_key in dead_handlers:
+                            self.handlers['event'][event.getName()].pop(handler_key)
+                        del dead_handlers
 
             if (lastTime % endTime > time % endTime) if loop else lastTime < endTime <= time:
                 count = int(time / endTime)
-                if current.listener is not None:
-                    current.listener.complete(i, count)
-                for ii in range(len(self.listeners)):
-                    self.listeners.get(ii).complete(i, count)
+                for handler in self.handlers['complete'].values():
+                    handler(i, count)
+                if current is not None:
+                    for handler in current.handlers['complete'].values():
+                        handler(i, count)
 
             current.lastTime = current.time
 
@@ -222,19 +235,20 @@ class AnimationState:
             self.clearTrack(i)
         self.tracks.clear()
 
-    def clearTrack(self, trackIndex):
-        if trackIndex >= len(self.tracks):
+    def clearTrack(self, track_index):
+        if track_index >= len(self.tracks):
             return
-        current = self.tracks.get(trackIndex)
+        current = self.tracks.get(track_index)
         if current is None:
             return
 
-        if current.listener is not None:
-            current.listener.end(trackIndex)
-        for i in range(len(self.listeners)):
-            self.listeners.get(i).end(trackIndex)
+        for handler in self.handlers['end'].values():
+            handler(track_index)
+        if current is not None:
+            for handler in current.handlers['end'].values():
+                handler(track_index)
 
-        self.tracks.set(trackIndex, None)
+        self.tracks.set(track_index, None)
 
         self.freeAll(current)
         if current.previous is not None:
@@ -259,10 +273,10 @@ class AnimationState:
             previous = current.previous
             current.previous = None
 
-            if current.listener is not None:
-                current.listener.end(index)
-            for i in range(len(self.listeners)):
-                self.listeners.get(i).end(index)
+            for handler in self.handlers['end'].values():
+                handler(index)
+            for handler in current.handlers['end'].values():
+                handler(index)
 
             entry.mixDuration = self.data.getMix(current.animation, entry.animation)
             if entry.mixDuration > 0:
@@ -279,12 +293,16 @@ class AnimationState:
                 self.trackEntryPool.free(previous)
         self.tracks.set(index, entry)
 
-        if entry.listener is not None:
-            entry.listener.start(index)
-            for i in range(len(self.listeners)):
-                self.listeners.get(i).start(index)
+        for handler in self.handlers['start'].values():
+            handler(index)
+        if current is not None:
+            for handler in current.handlers['start'].values():
+                handler(index)
 
-    def setAnimation(self, trackIndex, animationarg, loop):
+    def getAnimationList(self):
+        return self.data.getSkeletonData().getAnimationNames()
+
+    def setAnimation(self, track_index, animationarg, loop):
         if isinstance(animationarg, str):
             animation = self.data.getSkeletonData().findAnimation(animationarg)
             if animation is None:
@@ -292,7 +310,7 @@ class AnimationState:
         else:
             animation = animationarg
 
-        current = self.expandToIndex(trackIndex)
+        current = self.expandToIndex(track_index)
         if current is not None:
             self.freeAll(current.next)
 
@@ -300,10 +318,10 @@ class AnimationState:
         entry.animation = animation
         entry.loop = loop
         entry.endTime = animation.getDuration()
-        self.setCurrent(trackIndex, entry)
+        self.setCurrent(track_index, entry)
         return entry
 
-    def addAnimation(self, trackIndex, animationarg, loop, delay):
+    def addAnimation(self, track_index, animationarg, loop, delay):
         if isinstance(animationarg, str):
             animation = self.data.getSkeletonData().findAnimation(animationarg)
             if animation is None:
@@ -316,13 +334,13 @@ class AnimationState:
         entry.loop = loop
         entry.endTime = animation.getDuration()
 
-        last = self.expandToIndex(trackIndex)
+        last = self.expandToIndex(track_index)
         if last is not None:
             while last.next is not None:
                 last = last.next
             last.next = entry
         else:
-            self.tracks.set(trackIndex, entry)
+            self.tracks.set(track_index, entry)
 
         if delay <= 0:
             if last != None:
@@ -333,24 +351,30 @@ class AnimationState:
 
         return entry
 
-    def getCurrent(self, trackIndex):
-        if trackIndex >= len(self.tracks):
+    def getCurrent(self, track_index):
+        if track_index >= len(self.tracks):
             return None
-        return self.tracks.get(trackIndex)
+        return self.tracks.get(track_index)
 
-    def addListener(self, listener):
-        if listener is None:
-            raise Exception("listener cannot be None")
-        self.listeners.add(listener)
+    def add_handler(self, type, key, handler):
+        self.handlers[type][key] = handler
 
-    def removeListener(self, listener):
-        self.listeners.removeValue(listener, True)
+    def add_event_handler(self, event, key, handler):
+        if event not in self.handlers['event']:
+            self.handlers['event'][event] = {}
+        self.handlers['event'][event][key] = handler
 
-    def getTimeScale(self):
-        return self.timeScale
+    def remove_handler(self, type, key):
+        self.handlers[type].pop(key)
 
-    def setTimeScale(self, timeScale):
-        self.timeScale = timeScale
+    def remove_event_handler(self, event, key):
+        self.handlers['event'][event].pop(key)
+
+    def get_time_scale(self):
+        return self.time_scale
+
+    def set_time_scale(self, new_time_scale):
+        self.time_scale = new_time_scale
 
     def getData(self):
         return self.data

@@ -10,25 +10,36 @@ load_kv(__name__)
 
 
 class EmptyCharacterPreviewScreen(Screen):
-    preview = ObjectProperty(None)
     locked = BooleanProperty(False)
+    current = BooleanProperty(False)
     do_hover = BooleanProperty(True)
 
-    def is_valid_touch(self):
-        return self.preview.portfolio.is_current()
+    def __init__(self, **kwargs):
+        self.register_event_type('on_select')
+        self.name = 'empty'
+        super().__init__(**kwargs)
+
+    def __eq__(self, other):
+        if other is None:
+            return False
+        if isinstance(other, str):
+            return self.name == other
+        if isinstance(other, Screen):
+            return self.name == other.name
+        return False
 
     def update_lock(self, locked):
         self.locked = locked
-        if self.locked:
-            self.ids.lock.opacity = 1
-        else:
-            self.ids.lock.opacity = 0
 
     def on_button(self, *args):
         if self.locked:
             return
-        if self.preview.is_disabled:
-            return
-        if not self.is_valid_touch():
-            return
-        self.preview.show_select_screen(self, False)
+        # if not self.current:
+        #     return
+        self.dispatch('on_select', False)
+
+    def on_select(self, is_support):
+        pass
+
+    def close_hints(self):
+        pass

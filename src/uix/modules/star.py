@@ -22,7 +22,7 @@ class Star:
     @staticmethod
     def make_star(index, size, pos):
         return {'id':        f'star_{index}',
-                'source':    'screens/stats/star.png',
+                'source':    'icons/star.png',
                 'broken': False,
                 'size_hint': size,
                 'pos_hint':  pos}
@@ -36,6 +36,6 @@ class Star:
         else:
             return False, None
         if not star['broken'] and character.get_rank(rank).is_broken():
-            star['source'] = 'screens/stats/rankbrk.png'
+            star['source'] = 'icons/rankbrk.png'
             star['broken'] = True
         return True, star
