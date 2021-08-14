@@ -8,5 +8,8 @@ class Bitmap:
         self.matrix_id = m_id
         self.texture_fragment_id = tf_id
 
+    def is_construct(self):
+        return False
+
     def __str__(self):
-        return f"Bitmap <Matrix Id: {self.matrix_id}, TF Id: {self.texture_fragment_id}>"
+        return f"BitmapFormat <Matrix Id: {self.matrix_id}, TF Id: {self.texture_fragment_id}>"

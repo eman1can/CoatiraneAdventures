@@ -1,7 +1,7 @@
 __all__ = ('Bitmap',)
 
 from .object import Object
-from ..format import Object as ObjectType
+from ..format.object import Object as ObjectType
 
 
 class Bitmap(Object):
@@ -11,5 +11,11 @@ class Bitmap(Object):
         self.data_matrix_id = lwf.data.bitmaps[obj_id].matrix_id
         self.renderer = lwf.renderer_factory.construct_bitmap(lwf, obj_id, self)
 
+    def is_construct(self):
+        return True
+
+    def is_bitmap(self):
+        return True
+
     def __str__(self):
-        return f"Bitmap <>"
+        return f"BitmapConstruct <{self.data_matrix_id}>"

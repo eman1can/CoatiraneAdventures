@@ -1,5 +1,7 @@
 __all__ = ('Matrix',)
 
+from lwf.filelogger import log
+
 
 class Matrix:
     def __init__(self, *args):
@@ -25,7 +27,7 @@ class Matrix:
             self.translate_y = t_y
 
     def __str__(self):
-        return f"SX: {self.scale_x}, SY: {self.scale_y}, SK0: {self.skew_0}, SK1: {self.skew_1}, TX: {self.translate_x}, TY: {self.translate_y}"
+        return "SX: {:.4f}, SY: {:.4f}, SK0: {:.4f}, SK1: {:.4f}, TX: {:.4f}, TY: {:.4f}".format(self.scale_x, self.scale_y, self.skew_0, self.skew_1, self.translate_x, self.translate_y)
 
     def __eq__(self, other):
         return self.scale_x == other.scale_x and self.scale_y == other.scale_y and self.skew_0 == other.skew_0 and self.skew_1 == other.skew_1 and self.translate_x == other.translate_x and self.translate_y == other.translate_y
@@ -74,6 +76,7 @@ class Matrix:
         s_1 = m.skew_1
         t_x = m.translate_x
         t_y = m.translate_y
+        log(f'Set with Comparing - {m} - {self}')
         changed = False
         if self.scale_x != s_x:
             self.scale_x = s_x

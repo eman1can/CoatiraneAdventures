@@ -6,10 +6,30 @@ __all__ = ('read_animation', 'read_item_array', 'read_header', 'read_header_comp
            'read_control_move_mcb', 'read_control', 'read_frame', 'read_movie_clip_event', 'read_movie', 'read_movie_linkage', 'read_string_data', 'read_string')
 
 from .binary_reader import read_byte, read_int32, read_single
-from ..constructs import Animation
-from ..format import Animation, Bitmap, BitmapEx, Button, ButtonCondition, Control, ControlMoveC, ControlMoveM, ControlMoveMC, ControlMoveMCB, Event, Font, Frame, Graphic, GraphicObject, Header, HeaderCompat, InstanceName, ItemArray, Label, Movie, \
-    MovieClipEvent, MovieLinkage, Object, Particle, ParticleData, PlaceCompat, ProgramObject, String, Text, TextProperty, Texture, TextureFragment, TextureFragmentCompat
+from ..constructs.animation import Animation as Anim
+from ..format.animation import Animation
+from ..format.bitmap import Bitmap, BitmapEx
+from ..format.button import Button, ButtonCondition
+from ..format.control import Control, ControlMoveC, ControlMoveM, ControlMoveMC, ControlMoveMCB
+from ..format.event import Event
+from ..format.font import Font
+from ..format.frame import Frame
+from ..format.graphic import Graphic, GraphicObject
+from ..format.header import Header, HeaderCompat
+from ..format.instance_name import InstanceName
+from ..format.item_array import ItemArray
+from ..format.label import Label
+from ..format.movie import Movie, MovieClipEvent, MovieLinkage
+from ..format.object import Object
+from ..format.particle import Particle, ParticleData
+from ..format.place import PlaceCompat, Place
+from ..format.string import String
+from ..format.text import Text
+from ..format.text import TextProperty
+from ..format.texture import Texture, TextureFragment, TextureFragmentCompat
+from ..format.program_object import ProgramObject
 from ..type import AlphaTransform, Color, ColorTransform, Matrix, Translate
+from ...filelogger import log
 
 
 def read_item_array(data_bytes, p):
@@ -158,11 +178,18 @@ def read_translate(data_bytes, p):
 def read_matrix(data_bytes, p):
     matrix = Matrix()
     matrix.scale_x, p = read_single(data_bytes, p)
+    # matrix.scale_x = round(matrix.scale_x, 6)
     matrix.scale_y, p = read_single(data_bytes, p)
+    # matrix.scale_y = round(matrix.scale_y, 6)
     matrix.skew_0, p = read_single(data_bytes, p)
+    # matrix.skew_0 = round(matrix.skew_0, 6)
     matrix.skew_1, p = read_single(data_bytes, p)
+    # matrix.skew_1 = round(matrix.skew_1, 6)
     matrix.translate_x, p = read_single(data_bytes, p)
+    # matrix.translate_x = round(matrix.translate_x, 6)
     matrix.translate_y, p = read_single(data_bytes, p)
+    # matrix.translate_y = round(matrix.translate_y, 6)
+    log(f'Read Matrix - {matrix}')
     return matrix, p
 
 
@@ -477,18 +504,18 @@ def read_animation(animation_byte_data, animation_data):
         code, p = read_byte(animation_byte_data, p)
         array.append(int(code))
 
-        if code == Animation.PLAY or code == Animation.STOP or code == Animation.NEXT_FRAME or code == Animation.PREV_FRAME:
+        if code == Anim.PLAY or code == Anim.STOP or code == Anim.NEXT_FRAME or code == Anim.PREV_FRAME:
             pass
-        elif code == Animation.GOTO_FRAME or code == Animation.GOTO_LABEL or code == Animation.EVENT or code == Animation.CALL:
+        elif code == Anim.GOTO_FRAME or code == Anim.GOTO_LABEL or code == Anim.EVENT or code == Anim.CALL:
             target, p = read_int32(animation_byte_data, p)
             array.append(target)
             continue
-        elif code == Animation.SET_TARGET:
+        elif code == Anim.SET_TARGET:
             count, p = read_int32(animation_byte_data, p)
             array.append(count)
             for i in range(0, int(count)):
                 target, p = read_int32(animation_byte_data, p)
                 array.append(target)
             continue
-        elif code == Animation.END:
+        elif code == Anim.END:
             return array

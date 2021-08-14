@@ -71,3 +71,6 @@ class ColorTransform:
             changed = True
 
         return changed
+
+    def __str__(self):
+        return f'ColorTransform <{self.multi} = {self.add}>'

@@ -1,6 +1,6 @@
 __all__ = ('Event',)
 
-from src.lwf.core.format.string.base import StringBase
+from .string.base import StringBase
 
 
 class Event(StringBase):

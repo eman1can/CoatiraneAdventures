@@ -14,9 +14,13 @@ from .particle import Particle
 from .program_object import ProgramObject
 from .property import Property
 from .text import Text
-from ..format import Constant, Control as ControlType, MovieClipEvent as ClipEvent, Object as ObjectType
-from ..tools import Utility
+from ..format.constant import Constant
+from ..format.control import Control as ControlType
+from ..format.movie import MovieClipEvent as ClipEvent
+from ..format.object import Object as ObjectType
+from ..tools.utility import Utility
 from ..type import Bounds, ColorTransform, Matrix, Point
+from ...filelogger import log
 
 
 class LabelData:
@@ -541,7 +545,7 @@ class Movie(IObject):
         if not self.visible or not self.active:
             v = False
 
-        print('Render Movie')
+        log(f'Render Movie - {v} - {r_offset}')
 
         use_blend_mode = False
         use_mask_mode = False

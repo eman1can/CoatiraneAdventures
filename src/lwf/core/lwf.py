@@ -3,10 +3,15 @@ __all__ = ('LWF',)
 from datetime import datetime
 from math import ceil
 
-from .constructs import Animation, ButtonEventHandlers, Movie, MovieEventHandlers, Property
-from .format import Constant
-from .tools import Utility
+from .constructs.animation import Animation
+from .constructs.button_event_handlers import ButtonEventHandlers
+from .constructs.movie import Movie
+from .constructs.movie_event_handlers import MovieEventHandlers
+from .constructs.property import Property
+from .format.constant import Constant
+from .tools.utility import Utility
 from .type import ColorTransform, Matrix
+from ..filelogger import log
 
 
 class LWF:
@@ -20,7 +25,7 @@ class LWF:
     _i_object_offset = 0
     _texture_load_handler = None
 
-    def __init__(self, d, r):
+    def __init__(self, d, r, l):
         self.data = d
         self.renderer_factory = None
         self.property = Property(self)
@@ -176,12 +181,12 @@ class LWF:
         return self.rendering_index
 
     def begin_blend_mode(self, blend_mode):
-        print('\tBegin Blend Mode')
+        log(f'Begin Blend Mode - {blend_mode}')
         self._blend_modes.append(blend_mode)
         self.renderer_factory.set_blend_mode(blend_mode)
 
     def end_blend_mode(self):
-        print('\tEnd Blend Mode')
+        log('End Blend Mode')
         self._blend_modes.pop()
         blend_mode = Constant.BLEND_MODE_NORMAL
         if len(self._blend_modes) != 0:
@@ -220,6 +225,7 @@ class LWF:
         return (((time.day * 24 + time.hour) * 60 + time.minute) * 60 + time.second) * 1000 + time.microsecond / 1000.0
 
     def init(self):
+        log(f'Init LWF Object')
         self.time = 0
         self._progress = 0
 
@@ -231,6 +237,7 @@ class LWF:
         self._movie_commands.clear()
 
         self._root_movie_string_id = self.get_string_id('_root')
+        log(f'Root movie id is {self._root_movie_string_id}')
         if self.root_movie:
             self.root_movie.destroy()
         self.root_movie = Movie(self, None, self.data.header.root_movie_id, self.search_instance_id(self._root_movie_string_id))
@@ -244,7 +251,7 @@ class LWF:
             else:
                 m = p.matrix
         else:
-            m = self._matrix_identity if matrix else matrix
+            m = self._matrix_identity if matrix is None else matrix
         return m
 
     def calc_color_transform(self, color_transform):
@@ -268,6 +275,7 @@ class LWF:
                 self.focus = None
 
     def exec_internal(self, t):
+        log('lwf - Execute Internal - {:.6f}'.format(t))
         if not self.playing:
             return self.rendering_count
 
@@ -335,6 +343,7 @@ class LWF:
         return self.rendering_count
 
     def exec(self, t, matrix=None, color_transform=None):
+        log('lwf - Execute - {:.6f}'.format(t))
         needs_to_call_update = False
         if matrix:
             needs_to_call_update |= self._exec_matrix.set_with_comparing(matrix)
@@ -383,7 +392,7 @@ class LWF:
         self._needs_update_for_attach_lwf = False
 
     def render(self, r_index=0, r_count=0, r_offset=-2147483648):
-        print('Render LWF')
+        log(f'Render LWF -  {r_index} -  {r_count} - {r_offset}')
         if self._fast_forward_current:
             return 0
         if r_count > 0:
@@ -667,11 +676,13 @@ class LWF:
         if text_name in self._text_dictionary:
             self._text_dictionary[text_name][1] = None
 
-    def set_texture_load_handler(self, h):
-        self._texture_load_handler = h
+    @staticmethod
+    def set_texture_load_handler(h):
+        LWF._texture_load_handler = h
 
-    def get_texture_load_handler(self):
-        return self._texture_load_handler
+    @staticmethod
+    def get_texture_load_handler():
+        return LWF._texture_load_handler
 
     def play_animation(self, animation_id, movie, button=None):
         i = 0

@@ -28,4 +28,4 @@ class Color:
         return self.red == c.red and self.green == c.green and self.blue == c.blue and self.alpha == c.alpha
 
     def __str__(self):
-        return f"Color <{self.red}, {self.green}, {self.blue}, {self.alpha}>"
+        return "Color <{:.4f}, {:.4f}, {:.4f}, {:.4f}>".format(self.red, self.green, self.blue, self.alpha)

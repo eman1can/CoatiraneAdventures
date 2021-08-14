@@ -272,13 +272,15 @@ class Map:
 
     # Add node data marker to markers
     def update_markers(self, node_data, generated):
-        if generated:
-            self._explored_nodes = {}
-            self._explored_node_counters = {}
-            for marked_nodes in node_data.values():
-                for marked_node in marked_nodes:
-                    self._explored_nodes[marked_node] = False
-                    self._explored_node_counters[marked_node] = 4
+        # if generated:
+        self._explored_nodes = {}
+        self._explored_node_counters = {}
+        for marked_nodes in node_data.values():
+            for marked_node in marked_nodes:
+                self._explored_nodes[marked_node] = False
+                self._explored_node_counters[marked_node] = 4
+        # else:
+
             # Clear bought / obtained node maps from inventory
         for marker, nodes in node_data.items():
             self._markers[marker] = nodes

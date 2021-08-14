@@ -1,109 +1,116 @@
 __all__ = ('Utility',)
 
-from math import atan2, pi, sqrt
+from math import atan2, pi, sqrt, log10, floor
 
-from ..format import Constant
+from ..format.constant import Constant
 from ..type import ColorTransform, Matrix
+from ...filelogger import log
+
+
+def fltround(x):
+    if x == 0:
+        return x
+    return round(x, -int(floor(log10(abs(x)))) + 8)
 
 
 class Utility:
-    @staticmethod
-    def calc_matrix_to_point(sx, sy, m):
-        dx = m.scale_x * sx + m.skew_0 * sy + m.translate_x
-        dy = m.skew_1 * sx + m.scale_y * sy + m.translate_y
-        return dx, dy
-
-    @staticmethod
-    def get_matrix_determinant(matrix):
-        return matrix.scale_x * matrix.scale_y - matrix.skew_0 * matrix.skew_1 < 0
-
-    @staticmethod
-    def sync_matrix(movie):
-        matrix_id = movie.matrix_id
-        scale_x = 1
-        scale_y = 1
-        rotation = 0
-        matrix = Matrix()
-        if (matrix_id & Constant.MATRIX_FLAG) == 0:
-            translate = movie.lwf.data.translates[matrix_id]
-            matrix.set(scale_x, scale_y, 0, 0, translate.translate_x, translate.translate_y)
-        else:
-            matrix_id &= ~-Constant.MATRIX_FLAG_MASK
-            matrix.set(movie.lwf.data.matrices[matrix_id])
-            md = bool(Utility.get_matrix_determinant(matrix))
-            scale_x = sqrt(matrix.scale_x * matrix.scale_x + matrix.skew_1 * matrix.skew_1)
-            if md:
-                scale_x = -scale_x
-            scale_y = sqrt(matrix.scale_y * matrix.scale_y + matrix.skew_0 * matrix.skew_0)
-            if md:
-                rotation = atan2(matrix.skew_1, -matrix.scale_x)
-            else:
-                rotation = atan2(matrix.skew_1, matrix.scale_x)
-            rotation = rotation / pi * 180.0
-        movie.set_matrix(matrix, scale_x, scale_y, rotation)
-
-    @staticmethod
-    def get_x(movie):
-        matrix_id = movie.matrix_id
-        if (matrix_id & Constant.MATRIX_FLAG) == 0:
-            translate = movie.lwf.data.translates[matrix_id]
-            return translate.translate_x
-        else:
-            matrix_id &= ~-Constant.MATRIX_FLAG_MASK
-            matrix = movie.lwf.data.matrices[matrix_id]
-            return matrix.translate_x
-
-    @staticmethod
-    def get_y(movie):
-        matrix_id = movie.matrix_id
-        if (matrix_id & Constant.MATRIX_FLAG) == 0:
-            translate = movie.lwf.data.translates[matrix_id]
-            return translate.translate_y
-        else:
-            matrix_id &= ~-Constant.MATRIX_FLAG_MASK
-            matrix = movie.lwf.data.matrices[matrix_id]
-            return matrix.translate_y
-
-    @staticmethod
-    def get_scale_x(movie):
-        matrix_id = movie.matrix_id
-        if (matrix_id & Constant.MATRIX_FLAG) == 0:
-            return 1
-        else:
-            matrix_id &= ~-Constant.MATRIX_FLAG_MASK
-            matrix = movie.lwf.data.matrices[matrix_id]
-            md = bool(Utility.get_matrix_determinant(matrix))
-            scale_x = sqrt(matrix.scale_x * matrix.scale_x + matrix.skew_1 * matrix.skew_1)
-            if md:
-                scale_x = -scale_x
-            return scale_x
-
-    @staticmethod
-    def get_scale_y(movie):
-        matrix_id = movie.matrix_id
-        if (matrix_id & Constant.MATRIX_FLAG) == 0:
-            return 1
-        else:
-            matrix_id &= ~-Constant.MATRIX_FLAG_MASK
-            matrix = movie.lwf.data.matrices[matrix_id]
-            scale_y = sqrt(matrix.scale_y * matrix.scale_y + matrix.skew_0 * matrix.skew_0)
-            return scale_y
-
-    @staticmethod
-    def get_rotation(movie):
-        matrix_id = movie.matrix_id
-        if (matrix_id & Constant.MATRIX_FLAG) == 0:
-            return 0
-        else:
-            matrix_id &= ~-Constant.MATRIX_FLAG_MASK
-            matrix = movie.lwf.data.matrices[matrix_id]
-            md = bool(Utility.get_matrix_determinant(matrix))
-            if md:
-                rotation = atan2(matrix.skew_1, -matrix.scale_x)
-            else:
-                rotation = atan2(matrix.skew_1, matrix.scale_x)
-            rotation = rotation / pi * 180.0
-            return rotation
+    # @staticmethod
+    # def calc_matrix_to_point(sx, sy, m):
+    #     dx = m.scale_x * sx + m.skew_0 * sy + m.translate_x
+    #     dy = m.skew_1 * sx + m.scale_y * sy + m.translate_y
+    #     return dx, dy
+    #
+    # @staticmethod
+    # def get_matrix_determinant(matrix):
+    #     return matrix.scale_x * matrix.scale_y - matrix.skew_0 * matrix.skew_1 < 0
+    #
+    # @staticmethod
+    # def sync_matrix(movie):
+    #     matrix_id = movie.matrix_id
+    #     scale_x = 1
+    #     scale_y = 1
+    #     rotation = 0
+    #     matrix = Matrix()
+    #     if (matrix_id & Constant.MATRIX_FLAG) == 0:
+    #         translate = movie.lwf.data.translates[matrix_id]
+    #         matrix.set(scale_x, scale_y, 0, 0, translate.translate_x, translate.translate_y)
+    #     else:
+    #         matrix_id &= ~-Constant.MATRIX_FLAG_MASK
+    #         matrix.set(movie.lwf.data.matrices[matrix_id])
+    #         md = bool(Utility.get_matrix_determinant(matrix))
+    #         scale_x = sqrt(matrix.scale_x * matrix.scale_x + matrix.skew_1 * matrix.skew_1)
+    #         if md:
+    #             scale_x = -scale_x
+    #         scale_y = sqrt(matrix.scale_y * matrix.scale_y + matrix.skew_0 * matrix.skew_0)
+    #         if md:
+    #             rotation = atan2(matrix.skew_1, -matrix.scale_x)
+    #         else:
+    #             rotation = atan2(matrix.skew_1, matrix.scale_x)
+    #         rotation = rotation / pi * 180.0
+    #     movie.set_matrix(matrix, scale_x, scale_y, rotation)
+    #
+    # @staticmethod
+    # def get_x(movie):
+    #     matrix_id = movie.matrix_id
+    #     if (matrix_id & Constant.MATRIX_FLAG) == 0:
+    #         translate = movie.lwf.data.translates[matrix_id]
+    #         return translate.translate_x
+    #     else:
+    #         matrix_id &= ~-Constant.MATRIX_FLAG_MASK
+    #         matrix = movie.lwf.data.matrices[matrix_id]
+    #         return matrix.translate_x
+    #
+    # @staticmethod
+    # def get_y(movie):
+    #     matrix_id = movie.matrix_id
+    #     if (matrix_id & Constant.MATRIX_FLAG) == 0:
+    #         translate = movie.lwf.data.translates[matrix_id]
+    #         return translate.translate_y
+    #     else:
+    #         matrix_id &= ~-Constant.MATRIX_FLAG_MASK
+    #         matrix = movie.lwf.data.matrices[matrix_id]
+    #         return matrix.translate_y
+    #
+    # @staticmethod
+    # def get_scale_x(movie):
+    #     matrix_id = movie.matrix_id
+    #     if (matrix_id & Constant.MATRIX_FLAG) == 0:
+    #         return 1
+    #     else:
+    #         matrix_id &= ~-Constant.MATRIX_FLAG_MASK
+    #         matrix = movie.lwf.data.matrices[matrix_id]
+    #         md = bool(Utility.get_matrix_determinant(matrix))
+    #         scale_x = sqrt(matrix.scale_x * matrix.scale_x + matrix.skew_1 * matrix.skew_1)
+    #         if md:
+    #             scale_x = -scale_x
+    #         return scale_x
+    #
+    # @staticmethod
+    # def get_scale_y(movie):
+    #     matrix_id = movie.matrix_id
+    #     if (matrix_id & Constant.MATRIX_FLAG) == 0:
+    #         return 1
+    #     else:
+    #         matrix_id &= ~-Constant.MATRIX_FLAG_MASK
+    #         matrix = movie.lwf.data.matrices[matrix_id]
+    #         scale_y = sqrt(matrix.scale_y * matrix.scale_y + matrix.skew_0 * matrix.skew_0)
+    #         return scale_y
+    #
+    # @staticmethod
+    # def get_rotation(movie):
+    #     matrix_id = movie.matrix_id
+    #     if (matrix_id & Constant.MATRIX_FLAG) == 0:
+    #         return 0
+    #     else:
+    #         matrix_id &= ~-Constant.MATRIX_FLAG_MASK
+    #         matrix = movie.lwf.data.matrices[matrix_id]
+    #         md = bool(Utility.get_matrix_determinant(matrix))
+    #         if md:
+    #             rotation = atan2(matrix.skew_1, -matrix.scale_x)
+    #         else:
+    #             rotation = atan2(matrix.skew_1, matrix.scale_x)
+    #         rotation = rotation / pi * 180.0
+    #         return rotation
 
     @staticmethod
     def sync_color_transform(movie):
@@ -161,29 +168,33 @@ class Utility:
     def calc_matrix(*args):
         if isinstance(args[0], Matrix):
             dst, src_0, src_1 = args
-            dst.scale_x = src_0.scale_x * src_1.scale_x + src_0.skew_0 * src_1.skew_1
-            dst.skew_0 = src_0.scale_x * src_1.skew_0 + src_0.skew_0 * src_1.scale_y
-            dst.translate_x = src_0.scale_x * src_1.translate_x + src_0.skew_0 * src_1.translate_y + src_0.translate_x
-            dst.skew_1 = src_0.skew_1 * src_1.scale_x + src_0.scale_y * src_1.skew_1
-            dst.scale_y = src_0.skew_1 * src_1.skew_0 + src_0.scale_y * src_1.scale_y
-            dst.translate_y = src_0.skew_1 * src_1.translate_x + src_0.scale_y * src_1.translate_y + src_0.translate_y
+            log(f'Calc Matrix - {src_0} - {src_1} - {dst}')
+            dst.scale_x = fltround(fltround(src_0.scale_x * src_1.scale_x) + fltround(src_0.skew_0 * src_1.skew_1))
+            dst.skew_0 = fltround(fltround(src_0.scale_x * src_1.skew_0) + fltround(src_0.skew_0 * src_1.scale_y))
+            dst.translate_x = fltround(fltround(src_0.scale_x * src_1.translate_x) + fltround(src_0.skew_0 * src_1.translate_y) + src_0.translate_x)
+            dst.skew_1 = fltround(fltround(src_0.skew_1 * src_1.scale_x) + fltround(src_0.scale_y * src_1.skew_1))
+            dst.scale_y = fltround(fltround(src_0.skew_1 * src_1.skew_0) + fltround(src_0.scale_y * src_1.scale_y))
+            dst.translate_y = fltround(fltround(src_0.skew_1 * src_1.translate_x) + fltround(src_0.scale_y * src_1.translate_y) + src_0.translate_y)
+            log(f'Calc Matrix Output - {dst}')
             return dst
         else:
             lwf, dst, src_0, src_1_id = args
+            log(f'Calc Matrix - {src_0} - {src_1_id} - {dst}')
             if src_1_id == 0:
                 dst.set(src_0)
             elif (src_1_id & Constant.MATRIX_FLAG) == 0:
                 translate = lwf.data.translates[src_1_id]
                 dst.scale_x = src_0.scale_x
                 dst.skew_0 = src_0.skew_0
-                dst.translate_x = src_0.scale_x * translate.translate_x + src_0.skew_0 * translate.translate_y + src_0.translate_x
+                dst.translate_x = fltround(fltround(src_0.scale_x * translate.translate_x) + fltround(src_0.skew_0 * translate.translate_y) + src_0.translate_x)
                 dst.skew_1 = src_0.skew_1
                 dst.scale_y = src_0.scale_y
-                dst.translate_y = src_0.skew_1 * translate.translate_x + src_0.scale_y * translate.translate_y + src_0.translate_y
+                dst.translate_y = fltround(fltround(src_0.skew_1 * translate.translate_x) + fltround(src_0.scale_y * translate.translate_y) + src_0.translate_y)
             else:
                 matrix_id = src_1_id & ~-Constant.MATRIX_FLAG_MASK
                 src_1 = lwf.data.matrices[matrix_id]
                 Utility.calc_matrix(dst, src_0, src_1)
+            log(f'Calc Matrix Output - {dst}')
             return dst
 
     @staticmethod
@@ -196,16 +207,18 @@ class Utility:
 
     @staticmethod
     def invert_matrix(dst, src):
-        dt = src.scale_x * src.scale_y - src.skew_0 * src.skew_1
+        log(f'Invert Matrix - {src} - {dst}')
+        dt = fltround(src.scale_x * src.scale_y) - fltround(src.skew_0 * src.skew_1)
         if dt != 0.0:
-            dst.scale_x = src.scale_y / dt
-            dst.skew_0 = -src.skew_0 / dt
-            dst.translate_x = (src.skew_0 * src.translate_y - src.translate_x * src.scale_y) / dt
-            dst.skew_1 = -src.skew_1 / dt
-            dst.scale_y = src.scale_x / dt
-            dst.translate_y = (src.translate_x * src.skew_1 - src.scale_x * src.translate_y) / dt
+            dst.scale_x = fltround(src.scale_y / dt)
+            dst.skew_0 = fltround(-src.skew_0 / dt)
+            dst.translate_x = fltround((fltround(src.skew_0 * src.translate_y) - fltround(src.translate_x * src.scale_y)) / dt)
+            dst.skew_1 = fltround(-src.skew_1 / dt)
+            dst.scale_y = fltround(src.scale_x / dt)
+            dst.translate_y = fltround((fltround(src.translate_x * src.skew_1) - fltround(src.scale_x * src.translate_y)) / dt)
         else:
             dst.clear()
+        log(f'Invert Matrix Output - {dst}')
 
     @staticmethod
     def calc_color_transform(*args):

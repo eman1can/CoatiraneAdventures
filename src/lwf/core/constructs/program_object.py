@@ -1,7 +1,7 @@
 __all__ = ('ProgramObject',)
 
 from .object import Object
-from ..format import Object as ObjectType
+from ..format.object import Object as ObjectType
 
 
 class ProgramObject(Object):

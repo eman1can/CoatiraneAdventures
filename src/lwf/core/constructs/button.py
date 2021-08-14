@@ -2,8 +2,9 @@ __all__ = ('Button',)
 
 from .button_event_handlers import ButtonEventHandlers
 from .iobject import IObject
-from ..format import ButtonCondition as BC, Object as ObjectType
-from ..tools import Utility
+from ..format.button import ButtonCondition as BC
+from ..format.object import Object as ObjectType
+from ..tools.utility import Utility
 from ..type import Matrix
 
 

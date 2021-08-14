@@ -1,8 +1,9 @@
 __all__ = ('Object',)
 
-from ..format import Object as ObjectType
-from ..tools import Utility
+from ..format.object import Object as ObjectType
+from ..tools.utility import Utility
 from ..type import ColorTransform, Matrix
+from ...filelogger import log
 
 
 class Object:
@@ -63,7 +64,7 @@ class Object:
         self.lwf.render_object()
 
     def render(self, v, r_offset):
-        print('Render object')
+        log(f'Render Object - {v} - {r_offset}')
         if self.renderer:
             r_index = self.lwf.rendering_index
             r_index_offsetted = self.lwf.rendering_index_offsetted
