@@ -208,8 +208,6 @@ class CALoader(Widget):
             if LOADING_FILES[trigger_index]:
                 filename = LOADING_FILENAMES[trigger_index]
 
-                print(filename)
-
                 with open(resource_find(filename), 'r', encoding='utf-8') as file:
                     chunks = file.read().split(DELIMITERS[self.curr_values[CURRENT_INDEX] - 1])
                 self.max_values[self.curr_values[CURRENT_INDEX]] = len(chunks)

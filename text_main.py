@@ -52,9 +52,8 @@ class CoatiraneAdventures(App):
 
         super().__init__(**kwargs)
 
-
-    def log(self, message, level='info'):
-        Logger.log({'info': 20, 'warn': 30, 'debug': 10, 'error': 40}[level], f"CoatiraneAdventures: {message}")
+    def log(self, message, level='info', tag='CoatiraneAdventures'):
+        Logger.log({'info': 20, 'warn': 30, 'debug': 10, 'error': 40}[level], f"{tag}: {message}")
 
     def build(self):
         layout = RelativeLayout()

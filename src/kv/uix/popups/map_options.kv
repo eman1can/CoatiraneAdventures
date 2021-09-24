@@ -1,0 +1,165 @@
+<GabriolaBlack@Label>:
+    font_name: 'Gabriola'
+    font_size: self.height * 0.5
+    color: 0, 0, 0, 1
+
+<OutlinedButton@CallbackButton>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        Color:
+            rgba: 0, 0, 0, 1
+        Line:
+            width: 3
+            points: self.x + 2, self.y + 2, self.x + 2, self.y + self.height - 2, self.x + self.width - 2, self.y + self.height - 2, self.x + self.width - 2, self.y + 2, self.x + 2, self.y + 2
+    background_normal: 'buttons/invisible.normal.png'
+    background_down: 'buttons/invisible.normal.png'
+    font_name: 'Gabriola'
+    font_size: self.height * 0.5
+    color: 0, 0, 0, 1
+
+<SwitchButton>:
+    canvas.before:
+        Color:
+            rgba: 0, 0.7, 0, 1
+        Rectangle:
+            size: self.width * 0.5, self.height
+        Color:
+            rgba: 0.7, 0, 0, 1
+        Rectangle:
+            size: self.width * 0.5, self.height
+            pos: self.width * 0.5, 0
+    canvas.after:
+        Color:
+            rgba: 0, 0, 0, 0.5
+        Rectangle:
+            size: self.width * 0.5, self.height
+            pos: self.x + (self.width * 0.5 if self.enabled else 0), self.y
+    GabriolaBlack:
+        size_hint: 0.5, 1
+        text: root.enabled_text
+    GabriolaBlack:
+        size_hint: 0.5, 1
+        pos_hint: {'x': 0.5}
+        text: root.disabled_text
+    Button:
+        opacity: 0
+        on_release: root.toggle()
+
+<SelectionButton>:
+    canvas.before:
+        Color:
+            rgba: 0, 0, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+        Color:
+            rgba: 1, 0, 0, 1
+        Rectangle:
+            size: self.width, self.button_height
+            pos: self.x, self.height - self.button_height
+    canvas.after:
+        Color:
+            rgba: 0, 0, 0, 1
+        Triangle:
+            points: self.x + self.width * 0.9, self.y + self.height - (self.button_height * 0.5), self.x + self.width * 0.8, self.y + self.height - (self.button_height * 0.5), self.x + self.width * 0.85, self.y + self.height - (self.button_height * 0.6)
+    OutlinedButton:
+        size_hint: 1, None
+        height: root.button_height
+        pos_hint: {'top': 1}
+        on_release: root.toggle()
+    GabriolaBlack:
+        size_hint: 1, None
+        height: root.button_height
+        pos_hint: {'top': 1}
+        text: root.current_selection if root.current_selection is not None else ''
+    OptionList:
+        id: options
+        size_hint: 1, None
+        height: root.height - root.button_height
+        viewclass: 'OutlinedButton'
+        opacity: 0
+        disabled: True
+        RecycleBoxLayout:
+            default_size: None, root.button_height
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+
+<LayerOption>:
+    GabriolaBlack:
+        size_hint: None, 1
+        width: self.texture_size[0]
+        text: root.layer_name
+    SwitchButton:
+        id: button
+        size_hint: 0.125, 1
+        pos_hint: {'right': 1}
+        on_toggle: root.enabled = not root.enabled
+
+
+<MapOptions>:
+    GabriolaBlack:
+        size_hint: 1, 0.1
+        pos_hint: {'center_x': 0.5, 'top': 0.975}
+        text: 'Map Options'
+    GabriolaBlack:
+        size_hint: None, 0.1
+        width: self.texture_size[0]
+        pos_hint: {'x': 0.1, 'top': 0.9}
+        text: 'Map Enabled'
+    SwitchButton:
+        id: map_enabled
+        size_hint: 0.25, 0.1
+        pos_hint: {'x': 0.6, 'top': 0.9}
+        enabled_text: 'TRUE'
+        disabled_text: 'FALSE'
+    GabriolaBlack:
+        size_hint: None, 0.1
+        width: self.texture_size[0]
+        pos_hint: {'x': 0.1, 'top': 0.8}
+        text: 'Map Radius'
+    GabriolaBlack:
+        size_hint: None, 0.1
+        width: self.texture_size[0]
+        pos_hint: {'x': 0.1, 'top': 0.7}
+        text: 'Show Path to Destination'
+    SwitchButton:
+        id: path_enabled
+        size_hint: 0.25, 0.1
+        pos_hint: {'x': 0.6, 'top': 0.7}
+    GabriolaBlack:
+        size_hint: None, 0.1
+        width: self.texture_size[0]
+        pos_hint: {'x': 0.1, 'top': 0.6}
+        text: 'Destination'
+    GabriolaBlack:
+        size_hint: None, 0.1
+        width: self.texture_size[0]
+        pos_hint: {'x': 0.1, 'top': 0.5}
+        text: 'Map Layers'
+    RecycleView:
+        id: layers
+        size_hint: 0.75, 0.35
+        pos_hint: {'x': 0.1, 'y': 0.05}
+        viewclass: 'LayerOption'
+        RecycleBoxLayout:
+            default_size: None, root.height * 0.1
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+    SelectionButton:
+        id: map_destination
+        size_hint: 0.25, 0.5
+        pos_hint: {'x': 0.6, 'top': 0.6}
+        button_height: root.height * 0.1
+    SelectionButton:
+        id: map_radius
+        size_hint: 0.25, 0.5
+        pos_hint: {'x': 0.6, 'top': 0.8}
+        button_height: root.height * 0.1

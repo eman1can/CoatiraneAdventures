@@ -25,7 +25,7 @@ class SquareCharacterPreview(RelativeLayout):
     stat_type = OptionProperty('Strength', options=['Strength', 'Magic', 'Endurance', 'Dexterity', 'Agility',
                                            'Phy. Atk', 'Mag. Atk', 'Defense', 'Health', 'Mana',
                                            'Party', 'Rank', 'Name', 'Score', 'Worth'])
-    stat_image_source = StringProperty('screens/stats/str.png')
+    stat_image_source = StringProperty('icons/str.png')
     stat_text = StringProperty('Str: ')
     stat_number = NumericProperty(19.99)
 
@@ -35,7 +35,7 @@ class SquareCharacterPreview(RelativeLayout):
     char_button_source = StringProperty('buttons/char_button_square')
     char_button_collide_image = StringProperty('')
 
-    background_source = StringProperty('screens/stats/preview_square_background.png')
+    background_source = StringProperty('preview_square_background.png')
     char_image_source = StringProperty('')
     overlay_source = StringProperty('')
 
@@ -50,43 +50,43 @@ class SquareCharacterPreview(RelativeLayout):
         if self.character is None:
             return
         if self.stat_type == 'Strength':
-            self.stat_image_source = 'screens/stats/str.png'
+            self.stat_image_source = 'icons/str.png'
             self.stat_text = 'Str.'
             self.stat_number = self.character.get_strength()
         elif self.stat_type == 'Magic':
-            self.stat_image_source = 'screens/stats/mag.png'
+            self.stat_image_source = 'icons/mag.png'
             self.stat_text = 'Mag.'
             self.stat_number = self.character.get_magic()
         elif self.stat_type == 'Endurance':
-            self.stat_image_source = 'screens/stats/end.png'
+            self.stat_image_source = 'icons/end.png'
             self.stat_text = 'End.'
             self.stat_number = self.character.get_endurance()
         elif self.stat_type == 'Dexterity':
-            self.stat_image_source = 'screens/stats/dex.png'
+            self.stat_image_source = 'icons/dex.png'
             self.stat_text = 'Dex.'
             self.stat_number = self.character.get_dexterity()
         elif self.stat_type == 'Agility':
-            self.stat_image_source = 'screens/stats/agi.png'
+            self.stat_image_source = 'icons/agi.png'
             self.stat_text = 'Agi.'
             self.stat_number = self.character.get_agility()
         elif self.stat_type == 'Health':
-            self.stat_image_source = 'screens/stats/health.png'
+            self.stat_image_source = 'icons/health.png'
             self.stat_text = 'Hp.'
             self.stat_number = self.character.get_health()
         elif self.stat_type == 'Mana':
-            self.stat_image_source = 'screens/stats/mana.png'
+            self.stat_image_source = 'icons/mana.png'
             self.stat_text = 'Mana'
             self.stat_number = self.character.get_mana()
         elif self.stat_type == 'Phy. Atk':
-            self.stat_image_source = 'screens/stats/physicalattack.png'
+            self.stat_image_source = 'icons/physicalattack.png'
             self.stat_text = 'Phy. Atk'
             self.stat_number = self.character.get_phyatk()
         elif self.stat_type == 'Mag. Atk':
-            self.stat_image_source = 'screens/stats/magicalattack.png'
+            self.stat_image_source = 'icons/magicalattack.png'
             self.stat_text = 'Mag. Atk'
             self.stat_number = self.character.get_magatk()
         elif self.stat_type == 'Defense':
-            self.stat_image_source = 'screens/stats/defense.png'
+            self.stat_image_source = 'icons/defense.png'
             self.stat_text = 'Def.'
             self.stat_number = self.character.get_defense()
         elif self.stat_type == 'Party':
@@ -124,15 +124,15 @@ class SquareCharacterPreview(RelativeLayout):
                 return True
             if character.get_rank(rank).broken:
                 self.star_data[f'star_{index}']['broken'] = True
-                self.star_data[f'star_{index}']['source'] = 'screens/stats/rankbrk.png'
+                self.star_data[f'star_{index}']['source'] = 'icons/rankbrk.png'
                 return True
         if character.get_rank(rank).unlocked:
             star = {'id': f'star_{index}',
-                    'source': 'screens/stats/star.png',
+                    'source': 'icons/star.png',
                     'size_hint': Refs.app.get_dkey(f'scp.star_{index} s_h'),
                     'pos_hint': Refs.app.get_dkey(f'scp.star_{index} p_h')}
             if character.get_rank(rank).broken:
-                star['source'] = 'screens/stats/rankbrk.png'
+                star['source'] = 'icons/rankbrk.png'
                 star['broken'] = True
             else:
                 star['broken'] = False
@@ -142,15 +142,15 @@ class SquareCharacterPreview(RelativeLayout):
             return False
 
     def on_character(self, *args):
-        self.char_image_source = self.character.preview_image_source
+        self.char_image_source = self.character.get_image('preview')
         self.on_stat_type()
         self.update_overlay()
 
     def update_overlay(self):
         if self.has_stat and self.stat_type != 'Party' and self.stat_type != 'Rank':
-            self.overlay_source = 'screens/stats/preview_overlay_square_stat.png'
+            self.overlay_source = 'preview_overlay_square_stat.png'
         else:
-            self.overlay_source = 'screens/stats/preview_overlay_square_empty.png'
+            self.overlay_source = 'preview_overlay_square_empty.png'
 
     def on_has_stat(self, *args):
         self.update_overlay()

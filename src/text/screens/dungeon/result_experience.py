@@ -19,8 +19,8 @@ def get_screen(console, screen_data):
         if character is None:
             continue
         rows = [character.get_name().split(' ')[0]]
-        char_increases = increases[character.get_id()]
-        char_fam_increases = fam_bonus_increases[character.get_id()]
+        char_increases = increases[character.get_index()]
+        char_fam_increases = fam_bonus_increases[character.get_index()]
 
         stats = [character.get_health(), character.get_mana(), character.get_strength(), character.get_magic(), character.get_endurance(), character.get_agility(), character.get_dexterity()]
         increase_functions = [character.increase_health, character.increase_mana, character.increase_strength, character.increase_magic, character.increase_endurance, character.increase_agility, character.increase_dexterity]
@@ -34,10 +34,10 @@ def get_screen(console, screen_data):
             else:
                 rows.append(f'{int(stats[index])} → {int(new_stats[index])}')
         rows.append('')
-        for partner_id, amount in char_fam_increases.items():
-            character.add_familiarity(partner_id, amount)
+        for partner_index, amount in char_fam_increases.items():
+            partner = Refs.gc.get_char_by_index(partner_index)
+            character.add_familiarity(partner.get_id(), amount)
             if amount > 0.004:
-                partner = Refs.gc.get_char_by_id(partner_id)
                 partner_name = partner.get_name()
                 if ' ' in partner_name:
                     partner_name = partner_name.split(' ')[0]

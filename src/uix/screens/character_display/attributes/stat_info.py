@@ -9,15 +9,12 @@ load_kv(__name__)
 
 
 class StatInfoBox(RelativeLayout):
-    flag_source = StringProperty('screens/attributes/char_type_flag.png')
-    type_flag_source = StringProperty('')
-    element_flag_source = StringProperty('')
-    element_flag_image_source = StringProperty('')
+    char_flag = StringProperty('adventurer')
+    type_flag = StringProperty('physical')
+    element_flag = StringProperty('wind')
+
     overlay_bar_source = StringProperty('screens/stats/overlay_bar.png')
 
-    char_type = StringProperty('')
-    char_stype = StringProperty('')
-    char_element = StringProperty('')
     char_display_name = StringProperty('')
     char_name = StringProperty('')
     skills_switch_text = StringProperty('')

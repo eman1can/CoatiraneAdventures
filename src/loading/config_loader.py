@@ -1,11 +1,8 @@
 __all__ = ('GAME_VERSION', 'PROGRAM_TYPE',)
 
-from os import environ, getcwd, path
-import sys
-if hasattr(sys, '_MEIPASS'):
-    base_path = path.join(sys._MEIPASS)
-else:
-    base_path = getcwd()
+from os import environ
+
+base_path = environ['CA_PATH']
 environ['KIVY_HOME'] = base_path + '/data/'
 
 from kivy.config import Config
@@ -21,27 +18,27 @@ Cache.register('kv.texture', 5000, 120)
 from kivy.logger import Logger
 Logger.info('Loader: using a thread pool of {} workers'.format(Loader.num_workers))
 Logger.info('Loader: set max upload per frame to {}'.format(Loader.max_upload_per_frame))
-from kivy.utils import platform
+# from kivy.utils import platform
 if first_open == 'True':
     Config.set('kivy', 'first_open', False)
     Logger.info('CoatiraneAdventures: Detected first opening')
 
-if platform == 'win':
-    # Use ctypes to get resolution
-    import ctypes
-    GetSystemMetrics = ctypes.windll.user32.GetSystemMetrics
-    width, height = GetSystemMetrics(0), GetSystemMetrics(1)
-else:
-    raise Exception("Running on unsupported Platform!")
-if width != int(Config.get('graphics', 'screen_width')) or height != int(Config.get('graphics', 'screen_height')):
-    Logger.info('CoatiraneAdventures: Setting window size')
-    Config.set('graphics', 'screen_width', width)
-    Config.set('graphics', 'screen_height', height)
-    Config.set('graphics', 'width', int(width * 2 / 3))
-    Config.set('graphics', 'minimum_width', int(width * 2 / 6))
-    Config.set('graphics', 'height', int(height * 2 / 3))
-    Config.set('graphics', 'minimum_height', int(height * 2 / 6))
-    Config.write()
+# if platform == 'win':
+#     # Use ctypes to get resolution
+#     import ctypes
+#     GetSystemMetrics = ctypes.windll.user32.GetSystemMetrics
+#     width, height = GetSystemMetrics(0), GetSystemMetrics(1)
+# else:
+#     raise Exception("Running on unsupported Platform!")
+
+    # Logger.info('CoatiraneAdventures: Setting window size')
+    # Config.set('graphics', 'screen_width', width)
+    # Config.set('graphics', 'screen_height', height)
+    # Config.set('graphics', 'width', int(width * 2 / 3))
+    # Config.set('graphics', 'minimum_width', int(width * 2 / 6))
+    # Config.set('graphics', 'height', int(height * 2 / 3))
+    # Config.set('graphics', 'minimum_height', int(height * 2 / 6))
+    # Config.write()
 
 GAME_VERSION = Config.get('coatiraneadventures', 'version')
 PROGRAM_TYPE = Config.get('coatiraneadventures', 'type')

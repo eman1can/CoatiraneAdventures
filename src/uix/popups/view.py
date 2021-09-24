@@ -12,8 +12,8 @@ class View(RelativeLayout):
         self.register_event_type('on_pre_dismiss')
         super().__init__(**kwargs)
 
-    def hover_subscribe(self, widget=None, layer=0, adjust=None):
-        super().hover_subscribe(widget, layer+1, adjust)
+    def hover_subscribe(self, widget=None, layer=0, adjust=None, blocking=False):
+        super().hover_subscribe(widget, layer+1, adjust, blocking)
 
     def size_override(self):
         return 0.9, 0.9

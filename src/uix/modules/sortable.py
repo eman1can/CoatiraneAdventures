@@ -92,36 +92,37 @@ class Sortable(object):
     def get_values(self):
         values = []
         for preview in self.previews_sort:
+            character = Refs.gc.get_char_by_index(preview['character'])
             if self.sort_type == 'Strength':
-                value = preview['character'].get_strength()
+                value = character.get_strength()
             elif self.sort_type == 'Magic':
-                value = preview['character'].get_magic()
+                value = character.get_magic()
             elif self.sort_type == 'Endurance':
-                value = preview['character'].get_endurance()
+                value = character.get_endurance()
             elif self.sort_type == 'Dexterity':
-                value = preview['character'].get_dexterity()
+                value = character.get_dexterity()
             elif self.sort_type == 'Agility':
-                value = preview['character'].get_agility()
+                value = character.get_agility()
             elif self.sort_type == 'Health':
-                value = preview['character'].get_health()
+                value = character.get_health()
             elif self.sort_type == 'Mana':
-                value = preview['character'].get_mana()
+                value = character.get_mana()
             elif self.sort_type == 'Phy. Atk':
-                value = preview['character'].get_physical_attack()
+                value = character.get_physical_attack()
             elif self.sort_type == 'Mag. Atk':
-                value = preview['character'].get_magical_attack()
+                value = character.get_magical_attack()
             elif self.sort_type == 'Defense':
-                value = preview['character'].get_defense()
+                value = character.get_defense()
             elif self.sort_type == 'Party':
                 value = Refs.gc.get_party_index(preview['character'])
             elif self.sort_type == 'Rank':
-                value = preview['character'].get_current_rank()
+                value = character.get_current_rank()
             elif self.sort_type == 'Name':
-                value = preview['character'].get_name()
+                value = character.get_name()
             elif self.sort_type == 'Score':
-                value = preview['character'].get_score()
+                value = character.get_score()
             elif self.sort_type == 'Worth':
-                value = preview['character'].get_worth()
+                value = character.get_worth()
             else:
                 value = None
             values.append(value)

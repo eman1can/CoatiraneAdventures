@@ -10,7 +10,7 @@
 <SortPopup>:
     id: sort
     auto_dismiss: False
-    background: 'screens/stats/sort_background.png'
+    background: 'sort_background.png'
 #    size_hint: app.get_dkey('sw s_h')
 #    pos_hint: app.get_dkey('sw p_h')
 #    border: app.get_dkey('sw b')
@@ -36,7 +36,7 @@
             font_size: app.get_dkey('sw.t fs', root.height)
             size_hint: app.get_dkey('sw.t s_h')
         Image:
-            source: 'screens/stats/overlay_bar.png'
+            source: 'overlay_bar.png'
             size_hint: app.get_dkey('sw.ob s_h')
         GridLayout:
             id: direction
@@ -54,7 +54,7 @@
                 text: 'Descending'
                 on_release: root.do_sorting(self.text)
         Image:
-            source: 'screens/stats/overlay_bar.png'
+            source: 'overlay_bar.png'
             size_hint: app.get_dkey('sw.ob s_h')
         GridLayout:
             id: query

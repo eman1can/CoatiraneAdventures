@@ -1,0 +1,122 @@
+<ResultListItem>:
+    Image:
+        id: item_portrait
+        size_hint: None, 0.9
+        width: self.height
+        source: root.background_source
+        pos_hint: {'center_y': 0.5}
+    Image:
+        id: item_portrait
+        size_hint: None, 0.9
+        width: self.height
+        source: root.portrait_source
+        pos_hint: {'center_y': 0.5}
+    Label:
+        size_hint: None, 0.8
+        width: self.texture_size[0]
+        x: item_portrait.width + root.width * 0.05
+        text: root.name + ' x' + str(root.count)
+        font_name: 'Gabriola'
+        font_size: self.height * 0.75
+        pos_hint: {'center_y': 0.5}
+        color: root.color
+
+<ResultHud>:
+    canvas:
+        Color:
+            rgba: 0, 0, 0, 0.5 if self.encounter else 0
+        Rectangle:
+            size: (self.width, self.height)
+    Label:
+        size_hint: 0.5, 0.1
+        pos_hint: {'y': 0.875, 'x': 0.05} if root.encounter else {'y': 0.875, 'right': 0.95}
+        text: 'Enemies Defeated'
+        font_name: 'Gabriola'
+        font_size: self.height * 0.75
+        color: (1, 1, 1, 1) if root.encounter else (0, 0, 0, 1)
+    RecycleView:
+        id: enemy_list
+        opacity: 0 if len(enemy_list.data) == 0 else 1
+        size_hint: 0.5, 0.375
+        pos_hint: {'y': 0.5, 'x': 0.05} if root.encounter else {'y': 0.5, 'right': 0.95}
+        viewclass: 'EnemyListItem'
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 0 if root.encounter else 0.3
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        RecycleBoxLayout:
+            default_size: None, dp(75)
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+    Label:
+        opacity: 1 if len(enemy_list.data) == 0 else 0
+        size_hint: 0.5, 0.375
+        pos_hint: {'y': 0.5, 'x': 0.05} if root.encounter else {'y': 0.5, 'right': 0.95}
+        text: 'None'
+        font_name: 'Gabriola'
+        font_size: self.height * 0.25
+        color: (1, 1, 1, 1) if root.encounter else (0, 0, 0, 1)
+    Label:
+        id: items_title
+        size_hint: 0.5, 0.1
+        pos_hint: {'top': 0.5, 'x': 0.05} if root.encounter else {'top': 0.5, 'right': 1, 'right': 0.95}
+        text: 'Items Obtained'
+        font_name: 'Gabriola'
+        font_size: self.height * 0.75
+        color: (1, 1, 1, 1) if root.encounter else (0, 0, 0, 1)
+    RecycleView:
+        id: item_list
+        opacity: 0
+        size_hint: 0.5, 0.375
+        pos_hint: {'top': 0.4, 'x': 0.05} if root.encounter else {'top': 0.4, 'right': 0.95}
+        viewclass: 'ResultListItem'
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 0 if root.encounter else 0.3
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        RecycleBoxLayout:
+            default_size: None, dp(75)
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+    Label:
+        opacity: 1 if len(item_list.data) == 0 and not root.encounter else 0
+        size_hint: 0.5, 0.375
+        pos_hint: {'top': 0.4, 'x': 0.05} if root.encounter else {'top': 0.4, 'right': 0.95}
+        text: 'None'
+        font_name: 'Gabriola'
+        font_size: self.height * 0.25
+        color: (1, 1, 1, 1) if root.encounter else (0, 0, 0, 1)
+    Label:
+        size_hint: 0.5, 0.1
+        pos_hint: {'x': 0.5} if root.encounter else {'x': 0}
+        text: 'Click To Continue...'
+        font_name: 'Gabriola'
+        font_size: self.height * 0.75
+        color: (1, 1, 1, 1) if root.encounter else (0, 0, 0, 1)
+    Button:
+        id: button
+        opacity: 0
+        on_release: root.continue_click()
+    Button:
+        id: harvest_button
+        opacity: 0
+        size_hint: 0.5, 0.375
+        pos_hint: {'top': 0.4, 'x': 0.05} if root.encounter else {'top': 0.4, 'right': 0.95}
+        on_release: root.dispatch('on_harvest')
+    Label:
+        id: harvest
+        opacity: 1 if root.encounter else 0
+        size_hint: 0.5, 0.375
+        pos_hint: {'top': 0.4, 'x': 0.05} if root.encounter else {'top': 0.4, 'right': 0.95}
+        text: 'Harvest Materials'
+        font_name: 'Gabriola'
+        font_size: self.height * 0.15
+        color: (1, 1, 1, 1) if root.encounter else (0, 0, 0, 1)

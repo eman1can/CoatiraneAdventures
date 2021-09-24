@@ -11,57 +11,38 @@ class Poolable:
 
 class Pool:
 
-    def newObject(self):
+    def new_object(self):
         pass
 
     def __init__(self, *args):
-
-        self.max = 0
+        self.max = MAX_VALUE
         self.peak = 0
-
-        self.freeObjects = None
-
-        if len(args) == 0:
-            initialCapacity, maximum = 16, MAX_VALUE
-        elif len(args) == 1:
-            initialCapacity, maximum = args[0], MAX_VALUE
-        elif len(args) == 2:
-            initialCapacity, maximum = args[1], args[2]
-        else:
-            initialCapacity, maximum = args[0], args[1]
-
-        self.freeObjects = Array(False, initialCapacity)
-        self.max = maximum
+        self.free_objects = Array(False, 16)
 
     def obtain(self):
-        return self.newObject() if len(self.freeObjects) == 0 else self.freeObjects.pop()
+        return self.new_object() if len(self.free_objects) == 0 else self.free_objects.pop()
 
-    def free(self, object):
-        if object is None:
-            raise Exception("object cannot be None")
-        if len(self.freeObjects) < self.max:
-            self.freeObjects.add(object)
-            self.peak = max(self.peak, len(self.freeObjects))
-        self.reset(object)
+    def free(self, obj):
+        assert(obj is not None, "Object to free cannot be None")
+        if len(self.free_objects) < self.max:
+            self.free_objects.add(obj)
+            self.peak = max(self.peak, len(self.free_objects))
+        self.reset(obj)
 
-    def reset(self, object):
-        if isinstance(object, Poolable):
-            object.reset()
+    def reset(self, obj):
+        if isinstance(obj, Poolable):
+            obj.reset()
 
-    def freeAll(self, objects):
-        if objects is None:
-            raise Exception("Objects cannot be None")
-        for i in range(len(objects)):
-            object = objects[i]
-            if object is None:
-                continue
-            if len(self.freeObjects) < self.max:
-                self.freeObjects.add(object)
-            self.reset(object)
-        self.peak = max(self.peak, len(self.freeObjects))
+    def free_all(self, objects):
+        assert(objects is not None, 'Objects to free cannot be None')
+        for obj in objects:
+            if len(self.free_objects) < self.max:
+                self.free_objects.add(obj)
+            self.reset(obj)
+        self.peak = max(self.peak, len(self.free_objects))
 
     def clear(self):
-        self.freeObjects.clear()
+        self.free_objects.clear()
 
-    def getFree(self):
-        return len(self.freeObjects)
+    def get_free(self):
+        return len(self.free_objects)

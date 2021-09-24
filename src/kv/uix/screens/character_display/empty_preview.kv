@@ -1,7 +1,6 @@
 <EmptyCharacterPreviewScreen>:
     background_source: ''
     background: False
-    name: 'empty'
     PPCHoverPathButton:
         id: button
         path: 'buttons/empty_overlay'
@@ -10,7 +9,7 @@
         on_release: root.on_button()
     Image:
         id: lock
-        source: 'screens/stats/lock.png'
+        source: 'icons/lock.png'
         allow_stretch: True
         opacity: 1 if root.locked else 0
         size_hint: app.get_dkey('ecp.l s_h')

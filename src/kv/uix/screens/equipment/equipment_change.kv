@@ -1,17 +1,8 @@
 #:import GesturePad modules.gesture_pad.GesturePad
+#:import Refs refs.Refs
 
 <EquipmentChange>:
-    name: 'equipment_change_unassigned' if root.char is None else 'equipment_change_' + str(root.char.get_id())
-
-    weapon: None if root.char is None else root.char.get_equipment().weapon
-    helmet: None if root.char is None else root.char.get_equipment().helmet
-    chest: None if root.char is None else root.char.get_equipment().chest
-    grieves: None if root.char is None else root.char.get_equipment().grieves
-    boots: None if root.char is None else root.char.get_equipment().boots
-    vambraces: None if root.char is None else root.char.get_equipment().vambraces
-    gloves: None if root.char is None else root.char.get_equipment().gloves
-    necklace: None if root.char is None else root.char.get_equipment().necklace
-    ring: None if root.char is None else root.char.get_equipment().ring
+    name: 'equipment_change_unassigned'
 
     DetailEquipmentSlot:
         id: chest
@@ -75,7 +66,7 @@
 #        allow_stretch: True
     Image:
         id: portrait
-        source: 'characters/test/badass_ais/portrait.png'
+        source: root.portrait_source
         size_hint:app.get_dkey('ecs.por s_h')
         pos_hint: app.get_dkey('ecs.por p_h')
         allow_stretch: True
@@ -94,72 +85,72 @@
     cols: 1
     rows: 10
     spacing: [0, ((self.height / 9) - (self.width * 50 / 200)) * 9 / 8]
-    opacity: 0 if self.char is None else 1
+    opacity: 0 if self.char == -1 else 1
     DisplayEquipmentSlot:
         id: weapon
         slot_name: "weapon"
-        item: None if root.char is None else root.char.get_equipment().weapon
+        item: root.weapon
         font: 'Gabriola'
         color: app.get_dkey('cas.el c')
     DisplayEquipmentSlot:
         id: necklace
-        item: None if root.char is None else root.char.get_equipment().necklace
+        item: root.necklace
         slot_name: 'necklace'
         font: 'Gabriola'
         color: app.get_dkey('cas.el c')
     DisplayEquipmentSlot:
         id: ring
-        item: None if root.char is None else root.char.get_equipment().ring
+        item: root.ring
         slot_name: 'ring'
         font: 'Gabriola'
         color: app.get_dkey('cas.el c')
     DisplayEquipmentSlot:
         id: helmet
-        item: None if root.char is None else root.char.get_equipment().helmet
+        item: root.helmet
         slot_name: 'helmet'
         font: 'Gabriola'
         color: app.get_dkey('cas.el c')
     DisplayEquipmentSlot:
         id: vambraces
-        item: None if root.char is None else root.char.get_equipment().vambraces
+        item: root.vambraces
         slot_name: 'vambraces'
         font: 'Gabriola'
         color: app.get_dkey('cas.el c')
     DisplayEquipmentSlot:
         id: gloves
-        item: None if root.char is None else root.char.get_equipment().gloves
+        item: root.gloves
         slot_name: 'gloves'
         font: 'Gabriola'
         color: app.get_dkey('cas.el c')
     DisplayEquipmentSlot:
         id: chest
-        item: None if root.char is None else root.char.get_equipment().chest
+        item: root.chest
         slot_name: 'chest'
         font: 'Gabriola'
         color: app.get_dkey('cas.el c')
     DisplayEquipmentSlot:
         id: grieves
-        item: None if root.char is None else root.char.get_equipment().grieves
+        item: root.grieves
         slot_name: 'grieves'
         font: 'Gabriola'
         color: app.get_dkey('cas.el c')
     DisplayEquipmentSlot:
         id: boots
-        item: None if root.char is None else root.char.get_equipment().boots
+        item: root.boots
         slot_name: 'boots'
         font: 'Gabriola'
         color: app.get_dkey('cas.el c')
 
 
 <CharEquipButton>:
-    opacity: 0 if self.char is None else 1
+    opacity: 0 if self.char == -1 else 1
     Image:
         id: char_preview
-        source: '' if root.char is None else root.char.preview_image_source
+        source: root.image_source
         size_hint: 0.98, 0.98
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
     Image:
-        source: 'screens/equip/preview_background.png'
+        source: 'preview_background.png'
         allow_stretch: True
         keep_ratio: False
     PPCHoverPathButton:
@@ -197,71 +188,74 @@
         direction: 'bottom'
         RelativeLayout:
             GridLayout:
+                id: char_overview
                 cols: 8
                 size_hint: 1, 0.225
                 pos_hint: {'center_x': 0.5, 'top': 1}
                 padding: [root.height * 0.025, root.height * 0.025, root.height * 0.025, 0]
                 spacing: root.height * 0.0125
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][0]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][1]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][2]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][3]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][4]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][5]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][6]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][7]
+#                CharEquipButton:
+#                    char: Refs.gc.get_current_party()[0]
+#                CharEquipButton:
+#                    char: Refs.gc.get_current_party()[0]
+#                CharEquipButton:
+#                    char: Refs.gc.get_current_party()[0]
+#                CharEquipButton:
+#                    char: Refs.gc.get_current_party()[0]
+#                CharEquipButton:
+#                    char: Refs.gc.get_current_party()[0]
+#                CharEquipButton:
+#                    char: Refs.gc.get_current_party()[0]
+#                CharEquipButton:
+#                    char: Refs.gc.get_current_party()[0]
+#                CharEquipButton:
+#                    char: Refs.gc.get_current_party()[0]
             GridLayout:
+                id: char_multi
                 cols: 8
                 padding: [root.height * 0.025, root.height * 0.0125, root.height * 0.025, 0]
                 spacing: root.height * 0.0125
                 size_hint: 1, 0.60
                 pos_hint: {'center_x': 0.5, 'top': 0.775}
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][0]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][1]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][2]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][3]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][4]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][5]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][6]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][7]
+#                MultiEquipmentChange:
+#                    char: Refs.gc.get_current_party()[0]
+#                MultiEquipmentChange:
+#                    char: Refs.gc.get_current_party()[0]
+#                MultiEquipmentChange:
+#                    char: Refs.gc.get_current_party()[0]
+#                MultiEquipmentChange:
+#                    char: Refs.gc.get_current_party()[0]
+#                MultiEquipmentChange:
+#                    char: Refs.gc.get_current_party()[0]
+#                MultiEquipmentChange:
+#                    char: Refs.gc.get_current_party()[0]
+#                MultiEquipmentChange:
+#                    char: Refs.gc.get_current_party()[0]
+#                MultiEquipmentChange:
+#                    char: Refs.gc.get_current_party()[0]
             GridLayout:
+                id: char_missing
                 cols: 8
                 padding: [root.height * 0.025, root.height * 0.025, root.height * 0.025, 0]
                 spacing: root.height * 0.0125
                 size_hint: 1, 0.8125
                 pos_hint: {'center_x': 0.5, 'top': 1}
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][0] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][1] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][2] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][3] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][4] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][5] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][6] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][7] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][0] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][1] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][2] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][3] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][4] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][5] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][6] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][7] is None else 0
             PPCHoverPathButton:
                 id: back_button_1
                 path: 'buttons/back_vflipped'
@@ -354,69 +348,73 @@
                 font_size: self.height * 0.45
                 pos_hint: {'center_x': 0.833, 'center_y': 0.9125}
             GridLayout:
+                id: support_overview
                 cols: 8
                 size_hint: 1, 0.225
                 pos_hint: {'center_x': 0.5, 'y': 0.6}
                 padding: [root.height * 0.025, 0, root.height * 0.025, root.height * 0.0125]
                 spacing: root.height * 0.0125
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 0]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 1]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 2]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 3]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 4]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 5]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 6]
-                CharEquipButton:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 7]
+#                CharEquipButton:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 0]
+#                CharEquipButton:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 1]
+#                CharEquipButton:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 2]
+#                CharEquipButton:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 3]
+#                CharEquipButton:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 4]
+#                CharEquipButton:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 5]
+#                CharEquipButton:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 6]
+#                CharEquipButton:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 7]
             GridLayout:
+                id: support_multi
                 cols: 8
                 padding: [root.height * 0.025, 0, root.height * 0.025, root.height * 0.025]
                 spacing: root.height * 0.0125
                 size_hint: 1, 0.6
                 pos_hint: {'center_x': 0.5, 'y': 0}
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 0]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 1]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 2]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 3]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 4]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 5]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 6]
-                MultiEquipmentChange:
-                    char: app.main.parties[app.main.parties[0] + 1][8 + 7]
+#                MultiEquipmentChange:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 0]
+#                MultiEquipmentChange:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 1]
+#                MultiEquipmentChange:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 2]
+#                MultiEquipmentChange:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 3]
+#                MultiEquipmentChange:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 4]
+#                MultiEquipmentChange:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 5]
+#                MultiEquipmentChange:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 6]
+#                MultiEquipmentChange:
+#                    char: app.main.parties[app.main.parties[0] + 1][8 + 7]
             GridLayout:
+                id: support_missing
                 cols: 8
                 padding: [root.height * 0.025, 0, root.height * 0.025, root.height * 0.025]
                 spacing: root.height * 0.0125
                 size_hint: 1, 0.8125
                 pos_hint: {'center_x': 0.5, 'y': 0.0125}
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 0] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 1] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 2] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 3] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 4] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 5] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 6] is None else 0
-                MissingEquip:
-                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 7] is None else 0
+
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 0] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 1] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 2] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 3] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 4] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 5] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 6] is None else 0
+#                MissingEquip:
+#                    opacity: 1 if app.main.parties[app.main.parties[0] + 1][8 + 7] is None else 0
 

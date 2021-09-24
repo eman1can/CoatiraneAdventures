@@ -17,10 +17,8 @@ load_kv(__name__)
 
 
 class TavernMain(Screen):
-    background_texture = ObjectProperty(None, allownone=True)
-
     def __init__(self, **kwargs):
-        self.sound = SoundLoader.load('../res/snd/recruit.wav')
+        self.sound = SoundLoader.load('res/snd/recruit.wav')
         self.sound.seek(0)
         super().__init__(**kwargs)
 
@@ -34,7 +32,7 @@ class TavernMain(Screen):
         if len(obtained_characters) == len(characters):
             Refs.gp.display_popup(self, 'tm_no_recruit')
         else:
-            unobtained_characters = [char for char in characters if char.index not in obtained_characters]
+            unobtained_characters = [char for char in characters if char.get_index() not in obtained_characters]
             index = random.randint(0, len(unobtained_characters) - 1)
             viewed_characters = [unobtained_characters[index]]
             Refs.gs.transition = SwapTransition(duration=2)

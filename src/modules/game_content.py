@@ -8,6 +8,7 @@ from game.equipment import NECKLACE, RING, UnGeneratedArmor, UnGeneratedTool, Un
 from game.floor_data import FloorData
 from game.inventory import Inventory
 from game.save_load import load_floor_data, save_game
+from kivy.cache import Cache
 from refs import Refs
 # from src.spine.skeleton.skeletonloader import SkeletonLoader
 
@@ -21,8 +22,8 @@ class GameContent:
         self._obtained_characters_s = None
         self._obtained_characters_a = None
         self._character_skeletons = None
-        self._skeleton_states = None
         self._parties = None
+        self._characters = None
 
         self._tavern_locked = True
         self._potion_crafting_locked = False
@@ -31,8 +32,7 @@ class GameContent:
         self._data = None
         self._program_type = program_type
 
-        self._skeleton_scale = 0.325
-        # self._skel_loader = SkeletonLoader()
+        self._skeleton_scale = 0.125
 
         self._current_floor = 0
         self._floor_data = None
@@ -74,6 +74,16 @@ class GameContent:
             return self._data['items'][item_id]
         else:
             return self._data['drop_items'][item_id]
+
+    def initialize(self, loader):
+        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'items', 'drop_items', 'housing', 'perks', 'materials', 'equipment', 'recipes', 'save']
+        self._data = {}
+        for key in keys:
+            self._data[key] = loader.get(key)
+        for perk_id in self._data['perks']:
+            self._unlocked_perks[perk_id] = False
+
+        Cache.register('preview.slides', 25, 60)
 
     def update_data(self, save_data):
         self._inventory = Inventory(self['items'], self['drop_items'], self['equipment'], save_data['inventory'])
@@ -124,6 +134,9 @@ class GameContent:
             if domain.get_title() == self._domain:
                 self._domain_object = domain
                 break
+
+    def get_skeleton_scale(self):
+        return self._skeleton_scale
 
     def get_domain_info(self):
         return self._domain_object
@@ -205,17 +218,21 @@ class GameContent:
     def get_program_type(self):
         return self._program_type
 
+    def __getitem__(self, item):
+        if self._data is None:
+            return None
+        return self._data[item]
+
     def setup_parties(self):
         self._obtained_characters = []
         self._obtained_characters_a = []
         self._obtained_characters_s = []
         self._character_skeletons = []
-        self._skeleton_states = []
-        self._parties = [0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+        self._parties = [0] + [None for x in range(16)]
 
     def create_empty_parties(self):
         for x in range(len(self._parties) - 1):
-            self.set_party([None for _ in range(16)], x)
+            self.set_party([-1 for _ in range(16)], x)
 
     def load_parties(self, oc, oca, ocs, cp):
         self._obtained_characters = oc
@@ -224,18 +241,9 @@ class GameContent:
         if cp is not None:
             self._parties = cp
 
-    def initialize(self, loader):
-        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'items', 'drop_items', 'housing', 'perks', 'materials', 'equipment', 'recipes', 'save']
-        self._data = {}
-        for key in keys:
-            self._data[key] = loader.get(key)
-        for perk_id in self._data['perks']:
-            self._unlocked_perks[perk_id] = False
-
-    def __getitem__(self, item):
-        if self._data is None:
-            return None
-        return self._data[item]
+    def load_characters(self, characters):
+        self._characters = list(characters.values())
+        ids = characters.values()
 
     def get_current_party_index(self):
         return self._parties[0]
@@ -249,11 +257,11 @@ class GameContent:
     def get_party(self, index):
         return self._parties[index + 1]
 
-    def get_party_index(self, char):
+    def get_party_index(self, char_index):
         index = -1
         for index, party in enumerate(self._parties[1:]):
             for character in party:
-                if character == char:
+                if character == char_index:
                     return index
         return index
 
@@ -263,14 +271,22 @@ class GameContent:
     def get_char_by_id(self, char_id):
         return self._data['chars'][char_id]
 
+    def get_char_by_index(self, index):
+        if index == -1:
+            return None
+        return self._characters[index]
+
+    def get_characters(self):
+        return self._characters
+
     def get_obtained_characters(self, support):
         chars = []
         if support:
             for char_index in self._obtained_characters_s:
-                chars.append(list(self._data['chars'].values())[char_index])
+                chars.append(self._characters[char_index])
         else:
             for char_index in self._obtained_characters_a:
-                chars.append(list(self._data['chars'].values())[char_index])
+                chars.append(self._characters[char_index])
         return chars
 
     def get_obtained_character_indexes(self, support):
@@ -284,7 +300,7 @@ class GameContent:
 
     def get_non_obtained_characters(self):
         chars = []
-        for char in self._data['chars'].values():
+        for char in self._characters:
             if char.get_index() not in self._obtained_characters:
                 chars.append(char)
         return chars
@@ -302,21 +318,24 @@ class GameContent:
         score = 0
         if party is None:
             return score
-        for char in party:
-            if char is not None:
-                score += char.get_score()
+        for char_index in party:
+            if char_index == -1:
+                continue
+            score += self._characters[char_index].get_score()
         return round(score, 2)
 
-    def load_party_skeletons(self):
-        battle_chars = []
-        skeletons = {}
-        for character in self.get_current_party():
-            if character is None or character.is_support():
-                continue
-            battle_chars.append(create_battle_character(character))
-        for character in battle_chars:
-            skeletons[character] = character.load_skeleton(self._skel_loader)
-        return skeletons
+    def get_char_list(self, current_char):
+        party = self.get_current_party()
+        if current_char in party and len(party) > 1:
+            return [char for char in party if char is not None]
+        else:
+            # TODO: Need to some how incorporate sorting into chars?
+            chars = Refs.gs.get_screen('select_char').ids.multi.data
+            return [char['character'] for char in chars]
+
+    def get_next_char(self, current_char, direction):
+        char_list = self.get_char_list(current_char.get_index())
+        return char_list[char_list.index(current_char) - 1] if direction else char_list[(char_list.index(current_char) + 1) % len(char_list)]
 
     def is_tavern_locked(self):
         return self._tavern_locked
@@ -514,18 +533,6 @@ class GameContent:
                 viable_recipes.append(crafting_recipe)
         return viable_recipes
 
-    def get_char_list(self, current_char):
-        party = self.get_current_party()
-        if current_char in party and len(party) > 1:
-            return [char for char in party if char is not None]
-        else:
-            chars = Refs.gs.get_screen('select_char').ids.multi.data
-            return [char['character'] for char in chars]
-
-    def get_next_char(self, current_char, direction):
-        char_list = self.get_char_list(current_char)
-        return char_list[char_list.index(current_char) - 1] if direction else char_list[(char_list.index(current_char) + 1) % len(char_list)]
-
     def get_abilities(self):
         return self._data['abilities']
 
@@ -585,26 +592,30 @@ class GameContent:
     """
     @staticmethod
     def generate_familiarity_bonuses(party):
-        visited = []
+        visited = {}
         bonuses = {}
-        chars = []
-        for char in party:
-            if char is None:
+        for char_index in party:
+            if char_index == -1:
                 continue
-            # if not char.is_support() and char.is_dead() or char.get_stamina() < 0:
-            #     continue
-            bonuses[char.get_id()] = {}
-            chars.append(char)
-        for char in chars:
-            for partner_char in chars:
-                if char == partner_char:
+            visited[char_index] = []
+            for partner_index in party:
+                if partner_index == -1 or char_index == partner_index:
                     continue
-                if (char, partner_char) in visited or (partner_char, char) in visited:
+                if char_index in visited and partner_index in visited[char_index]:
                     continue
-                visited.append((char, partner_char))
+                if partner_index in visited and char_index in visited[partner_index]:
+                    continue
+
+                visited[char_index].append(partner_index)
                 bonus = round(random.uniform(0.01, 0.05), 3)
-                bonuses[char.get_id()][partner_char.get_id()] = bonus
-                bonuses[partner_char.get_id()][char.get_id()] = bonus
+
+                if char_index not in bonuses:
+                    bonuses[char_index] = {}
+                bonuses[char_index][partner_index] = bonus
+                if partner_index not in bonuses:
+                    bonuses[partner_index] = {}
+                bonuses[partner_index][char_index] = bonus
+        del visited
         return bonuses
 
     """
@@ -614,31 +625,36 @@ class GameContent:
     ex: 50% → 1%, 25% → 0.5%, 99% → 1.98%, 100 -> 3%
 
     """
-    def calculate_familiarity_bonus(self, char_checking, char_exclude=None):
-        if char_checking is None:
-            return -1
+    def calculate_familiarity_bonus(self, checking_index, exclude_index=-1, party=None):
+        if checking_index == -1:
+            return -1, 0, 0, {}
 
         value_gold = 0.00
         value_total = 0.00
         bonus = 0.00
 
         count = 0
-        fam = {}
-        for char in self.get_current_party():
-            if char == char_checking or char == char_exclude:
+        familiarity = {}
+        character_checking = self.get_char_by_index(checking_index)
+        if party is None:
+            party = self.get_current_party()
+        for char in party:
+            if char == checking_index or char == exclude_index or char == -1:
                 continue
-            if char is not None:
-                percentage = char_checking.get_familiarity(char.get_id())
-                fam[char.get_display_name().capitalize() + ' ' + char.get_name().capitalize()] = percentage
-                if percentage == 100.00:  # gold
-                    value_gold += 1
-                    bonus += 1
-                value_total += percentage / 100
-                bonus += 2 * (percentage / 100)
-                count += 1
+            character = self.get_char_by_index(char)
+
+            percentage = character_checking.get_familiarity(character.get_id())
+            familiarity[character.get_full_name()] = percentage
+            if percentage == 100.00:  # gold
+                value_gold += 1.0
+                bonus += 1.0
+            value_total += percentage / 100.0
+            bonus += 2.0 * (percentage / 100.0)
+            count += 1
+        character_checking.familiarity_bonus = 1 + bonus / 100
         if count < 1:
-            return 0, 0, 0, {}
-        return value_total / count, value_gold / count, bonus, fam
+            return -1, 0, 0, {}
+        return value_total / count, value_gold / count, bonus, familiarity
 
     """
     Can be -5%, -4%, -3%, -2%, -1%, 0%, 1%, 2%, 3%, 4%, 5%

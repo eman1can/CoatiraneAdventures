@@ -1,0 +1,26 @@
+<MapScatterLayout>:
+    id: scatter
+    do_rotation: False
+    do_translation: False
+    scale_min: 0.75
+    scale_max: 2
+    Label:
+        id: full_screen_map
+        on_size: scatter.map_size = self.size
+        canvas.before:
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+            Color:
+                rgba: 1, 1, 1, 1
+
+        size: self.texture_size
+        size_hint: None, None
+        color: 1, 1, 1, 1
+        font_name: 'CourierNew'
+        font_size: '15pt'
+        line_height: 0.99
+        markup: True
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}

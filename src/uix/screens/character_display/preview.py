@@ -2,7 +2,8 @@
 # Kivy Imports
 from kivy.properties import BooleanProperty, NumericProperty, ObjectProperty
 
-from kivy.uix.screenmanager import ScreenManager
+from kivy.cache import Cache
+from kivy.uix.screenmanager import NoTransition, ScreenManager, SlideTransition
 from refs import Refs
 # UIX Imports
 from uix.screens.character_display.empty_preview import EmptyCharacterPreviewScreen
@@ -11,123 +12,135 @@ from uix.screens.character_display.filled_preview import FilledCharacterPreviewS
 
 class CharacterPreview(ScreenManager):
     is_select = BooleanProperty(False)
-    is_disabled = BooleanProperty(False)
+    displayed = BooleanProperty(True)
+    locked = BooleanProperty(False)
     index = NumericProperty(-1)
 
-    char = ObjectProperty(None, allownone=True)
-    support = ObjectProperty(None, allownone=True)
+    character = NumericProperty(-1)
+    support = NumericProperty(-1)
 
-    def __init__(self, app, portfolio, **kwargs):
-        self.app = app
-        self.portfolio = portfolio
+    def __init__(self, **kwargs):
+        self.register_event_type('on_party_change')
+        self.register_event_type('on_resolve')
+        self._old_slides = []
         super().__init__(**kwargs)
         self.transition.direction = 'left'
 
-        if self.char is None:
+    def on_kv_post(self, base_widget):
+        if self.character == -1:
             self.set_empty()
         else:
-            self.set_char_screen(False, self.char, self.support)
+            self.set_char_screen(self.character, self.support, False)
 
-    #def get_score(self):
-    #    if self.char is None:
-    #        return 0
-    #    else:
-    #        score = self.char.get_score()
-    #        if self.support is not None:
-    #            score += self.support.get_score()
-    #        return round(score, 1)
-
-    def update_lock(self, locked):
-        if len(self.children) > 0:
-            self.children[0].update_lock(locked)
+    def on_locked(self, instance, locked):
+        if self.current_screen is not None:
+            self.current_screen.update_lock()
 
     def close_hints(self):
-        for child in self.children:
-            if isinstance(child, FilledCharacterPreviewScreen):
-                child.close_hints()
+        if self.current_screen is not None:
+            self.current_screen.close_hints()
 
-    def set_empty(self, *args):
-        # Want to make an Empty character Preview and display it
-        old_screen = None
-        if len(self.children) > 0:
-            old_screen = self.children[0]
+    def on_displayed(self, instance, displayed):
+        if self.current_screen is not None:
+            self.current_screen.current = displayed
 
-        emptied = False
-        for screen in self.screens:
-            if screen.name == 'empty':
-                self.current = 'empty'
-                emptied = True
-                break
-        self.char = None
-        self.support = None
-
-        if not self.is_select:
-            self.portfolio.party_change(self, self.char, self.support)
-
-        if not emptied:
-            preview = EmptyCharacterPreviewScreen(preview=self)
-            preview.size = self.size
-            self.add_widget(preview)
-            self.current = preview.name
-        Refs.gs.get_screen('dungeon_main').update_party_score()
-        #if self.dungeon is not None:
-        #    self.dungeon.update_party_score()
-        if old_screen is not None:
-            self.remove_widget(old_screen)
-        if self.parent is not None:
-            self.parent.reload()
-
-    def on_size(self, *args):
+    def on_size(self, instance, size):
         if self.current_screen is not None:
             self.current_screen.size = self.size
 
-    def set_char_screen(self, resolve, character, support):
-        # Want to set the char screen using the correct overlay
-        # check to make sure that we need to change the screen
-        old_screen = None
-        if len(self.children) > 0 and (self.char != character or self.support != support):
-            old_screen = self.children[0]
-        # do we need to interface with another preview?
-        if resolve:
-            spt = self.parent.resolve(self, character, support)
-            if spt is not None:
-                support = spt
-        # set new char, support and name values
-        self.char = character
-        self.support = support
-        name = self.char.get_id()
-        if self.support is not None:
-            name += '_' + self.support.get_id()
-        # update information
-        if not self.is_select:
-            self.portfolio.party_change(self, self.char, self.support)
-            Refs.gs.get_screen('dungeon_main').update_party_score()
-            #self.dungeon.update_party_score()
-
-        # transition to existing screen if it exists
-        for child in self.screens:
-            if child.name == name:
-                # self.transition.direction = 'left'
-                self.current = child.name
-                if old_screen is not None:
-                    if old_screen.name != 'empty':
-                        self.remove_widget(old_screen)
-                return True
-        # otherwise make new screen and use it
-        preview = FilledCharacterPreviewScreen(preview=self, is_support=False, character=character, support=support, size_hint=(None, None))
-        preview.size = self.size
-        preview.preview.pos = (0, 0)# Force update pos, since the screen will never update pos after initialization. Only needed for new screens.
-        self.add_widget(preview)
-        self.transition.direction = 'left'
-        self.current = preview.name
-        if old_screen is not None:
-            if old_screen.name != 'empty':
-                self.remove_widget(old_screen)
-        # self.parent.reload()
-
-    def show_select_screen(self, return_screen, is_support):
+    def on_select_screen(self, preview, is_support):
         Refs.gs.display_screen('select_char', True, True, self, is_support)
 
+    def on_attr_screen(self, preview, is_support):
+        if is_support:
+            character = Refs.gc.get_char_by_index(self.support)
+        else:
+            character = Refs.gc.get_char_by_index(self.character)
+        Refs.gs.display_screen('char_attr_' + character.get_id(), True, True, self, is_support)
+
+    def on_remove(self, preview, is_support):
+        if is_support:
+            self.set_char_screen(self.character, -1, False)
+        else:
+            self.set_empty()
+
     def reload(self):
-        if not isinstance(self.children[0], EmptyCharacterPreviewScreen):
-            self.children[0].reload()
+        if self.current_screen is not None and self.current_screen != 'empty':
+            self.current_screen.reload()
+
+    def set_empty(self, direction='left'):
+        self.character = self.support = -1
+
+        if not self.is_select:
+            self.dispatch('on_party_change', -1, -1)
+
+        # if skip_transition:
+        #     self.transition = NoTransition()
+        # else:
+        #     self.transition = SlideTransition()
+
+        self.transition.direction = direction
+
+        old_screen = self.current_screen
+        if 'empty' in self.screens:
+            self.current = 'empty'
+        else:
+            empty = EmptyCharacterPreviewScreen(size_hint=(None, None))
+            empty.bind(on_select=self.on_select_screen)
+            empty.size = self.size
+            self.switch_to(empty)
+
+        if old_screen is not None:
+            self.remove_widget(old_screen)
+
+    def set_char_screen(self, character, support, resolve, direction='right'):
+        if character == self.character and support == self.support:
+            return
+
+        if resolve:
+            self.dispatch('on_resolve', character, support)
+            return
+
+        self.character, self.support = character, support
+        if not self.is_select:
+            self.dispatch('on_party_change', character, support)
+
+        char = Refs.gc.get_char_by_index(character)
+        supt = Refs.gc.get_char_by_index(support)
+
+        name = char.get_id()
+        if supt is not None:
+            name += '_' + supt.get_id()
+
+        screen = Cache.get('preview.slides', name)
+        in_cache = screen is not None
+        if in_cache and screen.parent is not None:
+            screen = None
+
+        old_screen = self.current_screen
+
+        if screen is None:
+            screen = FilledCharacterPreviewScreen(is_support=False, character=character, support=support, size_hint=(None, None))
+            preview = screen.get_root()
+            preview.bind(on_select=self.on_select_screen)
+            preview.bind(on_attr=self.on_attr_screen)
+            preview.bind(on_empty=self.on_remove)
+            screen.size = self.size
+            if not in_cache:
+                Cache.append('preview.slides', name, screen)
+
+        if direction is None:
+            self.transition = NoTransition()
+        else:
+            self.transition = SlideTransition()
+            self.transition.direction = direction
+        self.switch_to(screen)
+
+        if old_screen and old_screen != 'empty':
+            self.remove_widget(old_screen)
+
+    def on_party_change(self, char, support):
+        pass
+
+    def on_resolve(self, character, support):
+        pass

@@ -1,6 +1,10 @@
 __all__ = ('CoatiraneAdventures',)
 
 # Project imports
+from datetime import datetime
+from os import mkdir
+from os.path import exists, expanduser
+
 from loading.config_loader import GAME_VERSION, PROGRAM_TYPE  # import must be first
 from refs import Refs
 from loading.base import CALoader
@@ -28,6 +32,9 @@ class CoatiraneAdventures(App):
         Window.bind(on_resize=self.on_resize)
         Window.bind(on_request_close=self.close_window)
         Window.bind(on_memorywarning=self.on_memory_warning)
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        self._keyboard.bind(on_key_up=self._on_keyboard_up)
 
         # Builder.load_file('Game.kv')
 
@@ -39,6 +46,8 @@ class CoatiraneAdventures(App):
         self._popup_manager = PopupManager()
         self.use_kivy_settings = False
         self.width, self.height = self._size
+        self.x, self.y = 0, 0
+        self._end_screen = 'town_main'
 
         self._content = GameContent(PROGRAM_TYPE)
 
@@ -48,12 +57,88 @@ class CoatiraneAdventures(App):
         Refs.app = self
 
         self.settings_cls = Settings
+        self._keyboard_bindings = {
+            'on_key_up': [],
+            'on_key_down': []
+        }
 
         super().__init__(**kwargs)
         self.initialized = False
 
-    def log(self, message, level='info'):
-        Logger.log({'info': 20, 'warn': 30, 'debug': 10, 'error': 40}[level], f"CoatiraneAdventures: {message}")
+    def _keyboard_closed(self):
+        self.log('The keyboard has been closed!')
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard.unbind(on_key_up=self._on_keyboard_up)
+        self._keyboard = None
+
+    def map_key_name(self, code):
+        if code == '':
+            return
+        key_name = None
+        if code in ('w', 'up'):
+            key_name = 'move_up'
+        elif code in ('a', 'left'):
+            key_name = 'move_left'
+        elif code in ('s', 'down'):
+            key_name = 'move_down'
+        elif code in ('d', 'right'):
+            key_name = 'move_right'
+        elif code in ('m',):
+            key_name = 'map'
+        elif code in ('o',):
+            key_name = 'options'
+        elif code in ('i',):
+            key_name = 'inventory'
+        elif code in ('esc',):
+            key_name = 'pause'
+        elif code in ('q',):
+            key_name = 'secondary_action_1'
+        elif code in ('e',):
+            key_name = 'secondary_action_2'
+        elif code in ('f',):
+            key_name = 'primary_action'
+        elif code in ('f12',):
+            key_name = 'screenshot'
+        return key_name
+
+    def take_screenshot(self):
+        path = expanduser('~/Saved Games/Coatirane Adventures/screenshots/').replace('\\', '/')
+        if not exists(path):
+            mkdir(path)
+        Window.screenshot(f'{path}Coatirane Adventures - {datetime.now().strftime("%d-%m-%Y %H-%M-%S")}.png')
+
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        Refs.log(f'Key was pressed - {keycode}')
+        key_name = self.map_key_name(keycode[1])
+        if key_name is not None:
+            if key_name == 'screenshot':
+                self.take_screenshot()
+            else:
+                for callback in self._keyboard_bindings['on_key_down']:
+                    callback(keyboard, key_name, text, modifiers)
+
+    def _on_keyboard_up(self, keyboard, keycode):
+        key_name = self.map_key_name(keycode[1])
+        if key_name == 'screenshot' or key_name is None:
+            return
+        for callback in self._keyboard_bindings['on_key_up']:
+            callback(keyboard, key_name)
+
+    def bind_keyboard(self, **kwargs):
+        self.log(f'Add binding for master keyboard')
+        for key, callback in kwargs.items():
+            self._keyboard_bindings[key].append(callback)
+
+    def unbind_keyboard(self, **kwargs):
+        self.log(f'Remove binding for master keyboard')
+        for key, callback in kwargs.items():
+            self._keyboard_bindings[key].remove(callback)
+
+    def log(self, message, level='info', tag='CoatiraneAdventures'):
+        Logger.log({'info': 20, 'warn': 30, 'debug': 10, 'error': 40}[level], f"{tag}: {message}")
+
+    def to_window(self, x, y):
+        return x, y
 
     def build(self):
         self.log('loading the starting game window')
@@ -74,16 +159,18 @@ class CoatiraneAdventures(App):
         self._background.add_widget(self._screen_manager)
         return self._background
 
-    def start_loading(self, save_slot):
+    def start_loading(self, save_slot, finish_screen):
         self.log('Starting background loader')
         self._background.add_widget(self._loader)
         self._screen_manager.opacity = 0
+        self._end_screen = finish_screen
+        Refs.gc.set_save_slot(save_slot)
         Clock.schedule_once(lambda dt: self._loader.load_game(save_slot), 0)
 
     def finished_loading(self):
         self.log('Finished Loading')
         self._background.remove_widget(self._loader)
-        self._screen_manager.display_screen('town_main', True, False)
+        self._screen_manager.display_screen(self._end_screen, True, False)
         self._screen_manager.opacity = 1
 
     def get_manager(self):

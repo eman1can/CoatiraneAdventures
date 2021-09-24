@@ -20,8 +20,8 @@ class HeartIndicator(RelativeLayout):
         self.register_event_type('on_hint_close')
         super().__init__(**kwargs)
 
-    def on_mouse_pos(self, hover):
-        return self.ids.button.dispatch('on_mouse_pos', hover)
+    # def on_mouse_pos(self, hover):
+    #     return self.ids.button.dispatch('on_mouse_pos', hover)
 
     def on_touch_down(self, touch):
         if self.disabled:
@@ -52,7 +52,6 @@ class HeartIndicator(RelativeLayout):
 
     def show_hint(self):
         if self.opacity > 0:
-            print(self.how_opened)
             if self.how_opened == 'Closed':
                 self.dispatch('on_hint_open')
                 self.how_opened = 'Hover'

@@ -181,7 +181,10 @@ def get_screen(console, screen_data):
         # Add to current page
         sub_text += ip_text
         for number, option in ip_options.items():
-            sub_options[number] = (option, len(option.split('#')) > 3)
+            if 'confirm' not in option:
+                sub_options[number] = (option, len(option.split('#')) > 3)
+            else:
+                sub_options[number] = option
     elif page_data != '':
         item_id, item_count = page_data.split('#')
         if bstype:

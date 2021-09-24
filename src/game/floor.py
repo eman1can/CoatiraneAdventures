@@ -2,6 +2,7 @@
 from random import randint, choices
 
 N, S, E, W = 1, 2, 4, 8  # 0001 0010 0100 1000
+COORDS = {W: (-1, 0), N: (0, -1), E: (1, 0), S: (0, 1)}
 
 ENTRANCE_COLOR = '#0000FF'
 EXIT_COLOR = '#FF0000'
@@ -272,13 +273,15 @@ class Map:
 
     # Add node data marker to markers
     def update_markers(self, node_data, generated):
-        if generated:
-            self._explored_nodes = {}
-            self._explored_node_counters = {}
-            for marked_nodes in node_data.values():
-                for marked_node in marked_nodes:
-                    self._explored_nodes[marked_node] = False
-                    self._explored_node_counters[marked_node] = 4
+        # if generated:
+        self._explored_nodes = {}
+        self._explored_node_counters = {}
+        for marked_nodes in node_data.values():
+            for marked_node in marked_nodes:
+                self._explored_nodes[marked_node] = False
+                self._explored_node_counters[marked_node] = 4
+        # else:
+
             # Clear bought / obtained node maps from inventory
         for marker, nodes in node_data.items():
             self._markers[marker] = nodes
@@ -293,6 +296,7 @@ class Map:
         return self._map_radius
 
     def set_radius(self, radius):
+        print('Set Radius', radius)
         self._map_radius = radius
 
     def get_explored(self):
@@ -340,9 +344,15 @@ class Map:
         if found and show_node:
             self._explored[node] = True
             self._map_data.show_node(*node)
-        # Restore previous color
+        # Restore previous color and update path on that node
         if self._current_node is not None:
             self._map_data.color_node(*self._current_node, self._current_prev_color)
+            if self._current_path is not None and self._shortest_key is not None:
+                route = self._path_solutions[self._current_path][self._shortest_key]
+                if len(route) > 0 and node == route[-1]:
+                    self._clear_path_node(self._current_node)
+                else:
+                    self._color_path_node(self._current_node)
         self._update_path(node)
         # Set next current
         self._last_node = self._current_node
@@ -362,12 +372,22 @@ class Map:
         self._current_prev_color = None
 
     # Get rows of map for output
-    def get_rows(self):
-        return self._map_data.get_section(*self._current_node, self._map_radius)
+    def get_rows(self, border=True):
+        return self._map_data.get_section(*self._current_node, self._map_radius, border)
+
+    def get_text(self, border=True, force_radius=None):
+        if force_radius:
+            rows, radius = self._map_data.get_section(*self._current_node, force_radius, border)
+        else:
+            rows, radius = self._map_data.get_section(*self._current_node, self._map_radius, border)
+        return '\n'.join(rows)
 
     # Used for getting data from map data
     def get_directions(self):
         return self._nodes[self._current_node]
+
+    def get_node_direction(self, node):
+        return self._nodes[node]
 
     def get_markers(self):
         return self._markers
@@ -378,8 +398,7 @@ class Map:
     def set_layer_active(self, layer, active):
         self._layers[layer] = active
         self._check_markers()
-        if not self._layers['path']:
-            self._clear_path()
+        self._calculate_path()
 
     # Get or set the current path objective
     def get_current_path(self):
@@ -417,12 +436,17 @@ class Map:
     def _update_path(self, node):
         # Update the path arrays for every defined path
         for layer, layer_route in self._path_solutions.items():
+            print(f'{layer.title()}:')
             for route_end, route in layer_route.items():
-                if layer == self._current_path and route_end == self._shortest_key:
+                print(f'\t{node} → {route}')
+                # Color the last pth according to display
+                if self._current_path == layer and self._shortest_key == route_end:
+                    print('Update last path node')
                     if len(route) > 0 and node == route[-1]:
-                        self._clear_path_node(self._current_node)
+                        self._clear_path_node(node)
                     else:
-                        self._color_path_node(self._current_node)
+                        self._color_path_node(node)
+                # Update route with node movement
                 if len(route) > 0 and node == route[-1]:
                     route.pop()
                 else:
@@ -461,6 +485,7 @@ class Map:
             self._shortest_key = None
 
     def _clear_path_node(self, node):
+        print('Clear path from', node)
         if self._map_data.get_color(*node) == PATH_COLOR:
             self._map_data.color_node(*node, None)
 
@@ -469,15 +494,18 @@ class Map:
             self._color_path_node(node)
 
     def _color_path_node(self, node):
-        if not self._map_data.get_color(*node):
+        if self._map_data.get_color(*node) is None:
             self._map_data.color_node(*node, PATH_COLOR)
 
     # Make sure that path type has routes
     def _check_path(self):
         if self._current_path not in self._path_solutions:
+            print(f'{self._current_path.title()}:')
             routes = {}
+            print(f'\t{self._current_node} →')
             for route_end in self._markers[self._current_path]:
                 routes[route_end] = list(reversed(self.solve_path(self._nodes, self._current_node, route_end)))
+                print(f'\t\t→ {routes[route_end]}')
             self._path_solutions[self._current_path] = routes
         # Show the shortest route
         self._calculate_path()
@@ -526,13 +554,13 @@ class Map:
 
         while (x, y) != end:
             options = []
-            if (nodes[(x, y)] & N) == N and travelled[-1] != S and (x, y - 1) not in visited:
+            if (nodes[(x, y)] & N) == N and travelled[-1] != COORDS[S] and (x, y - 1) not in visited:
                 options.append((0, -1))
-            if (nodes[(x, y)] & E) == E and travelled[-1] != W and (x + 1, y) not in visited:
+            if (nodes[(x, y)] & E) == E and travelled[-1] != COORDS[W] and (x + 1, y) not in visited:
                 options.append((1, 0))
-            if (nodes[(x, y)] & S) == S and travelled[-1] != N and (x, y + 1) not in visited:
+            if (nodes[(x, y)] & S) == S and travelled[-1] != COORDS[N] and (x, y + 1) not in visited:
                 options.append((0, 1))
-            if (nodes[(x, y)] & W) == W and travelled[-1] != E and (x - 1, y) not in visited:
+            if (nodes[(x, y)] & W) == W and travelled[-1] != COORDS[E] and (x - 1, y) not in visited:
                 options.append((-1, 0))
 
             if len(options) == 0:
@@ -543,12 +571,12 @@ class Map:
                 travelled.append((dx, dy))
                 x, y = x + dx, y + dy
                 visited += [(x, y)]
-        # Convert (dx, dy) to (x, y)
         x, y = start
         for index in range(len(travelled)):
             dx, dy = travelled[index]
-            travelled[index] = (x + dx, y + dy)
-        return travelled[1:-1]  # We don't want to color current node or ending node
+            x, y = x + dx, y + dy
+            travelled[index] = (x, y)
+        return travelled[1:-1]
 
 
 class MapData:
@@ -585,9 +613,11 @@ class MapData:
     def color_node(self, x, y, color):
         prev_color = self._colors[y][x]
         self._colors[y][x] = color
+        print('set', y, x, color)
         return prev_color
 
     def get_color(self, x, y):
+        print('get', y, x, self._colors[y][x])
         return self._colors[y][x]
 
     # Will get the node from the full map
@@ -606,28 +636,35 @@ class MapData:
         self._visible_data[ay][ax] = ' '
         self._visible_data[ay][ax - 1] = ' '
 
-    def _insert_colors(self, dx, top, bottom, left, right):
-        data = ['┌']
-        for _ in range(dx):
-            data[-1] += '─'
-        data[-1] += '┐'
+    def _insert_colors(self, dx, top, bottom, left, right, border=True):
+        data = [''] if border else []
+        if border:
+            data[-1] += '┌'
+            for _ in range(dx):
+                data[-1] += '─'
+            data[-1] += '┐'
         for ay in range(top, bottom):
-            data.append('│')
+            if border:
+                data.append('│')
+            else:
+                data.append('')
             for ax in range(left, right):
                 x, y = int((ax - 1) / 2), ay - 1
                 if self._colors[y][x]:
                     data[-1] += f'[color={self._colors[y][x]}]' + self._visible_data[ay][ax] + '[/color]'
                 else:
                     data[-1] += self._visible_data[ay][ax]
-            data[-1] += '│'
-        data.append('└')
-        for _ in range(dx):
-            data[-1] += '─'
-        data[-1] += '┘'
+            if border:
+                data[-1] += '│'
+        if border:
+            data.append('└')
+            for _ in range(dx):
+                data[-1] += '─'
+            data[-1] += '┘'
         return data
 
     # Will get the section of the visible map
-    def get_section(self, x, y, radius):
+    def get_section(self, x, y, radius, border=True):
         radius = int(min((self._size - 1) / 2, radius))
         x, y = self._abs(x, y)
         rx, ry = radius * 2, radius
@@ -648,4 +685,4 @@ class MapData:
             else:
                 top = bottom - dy
 
-        return self._insert_colors(dx, top, bottom, left, right), radius
+        return self._insert_colors(dx, top, bottom, left, right, border), radius

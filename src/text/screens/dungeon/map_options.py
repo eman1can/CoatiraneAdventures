@@ -17,12 +17,10 @@ def get_screen(console, screen_data):
         if layer in [ENTRANCE, EXIT, SAFE_ZONES]:
             layers.append(layer)
             continue
-        count = 0
         for node in nodes:
             if explored_nodes[node]:
-                count += 1
-        if count > 0:
-            layers.append(layer)
+                layers.append(layer)
+                break
 
     if screen_data == 'change_destination':
         display_text += '\n\tChoose a destination to map to.\n'
@@ -88,7 +86,7 @@ def handle_action(console, action):
         new_path = action.split('#')[1]
         floor_map.set_current_path(new_path)
     elif action.startswith('change_radius#'):
-        new_radius = action.split('#')
+        new_radius = action.split('#')[1]
         floor_map.set_radius(int(new_radius))
     else:
         console.set_screen(f'{MAP_OPTIONS}:{action}', True)

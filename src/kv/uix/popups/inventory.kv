@@ -1,0 +1,73 @@
+#:import InventoryItemList uix.screens.inventory.InventoryItemList
+
+<EquippedItem>:
+    Label:
+        id: title
+        size_hint: None, 0.25
+        pos_hint: {'top': 1}
+        width: self.texture_size[0]
+        font_name: 'Gabriola'
+        color: 0, 0, 0, 1
+        font_size: self.height * 0.7
+        text: 'Equipped ' + root.type
+    Image:
+        id: background
+        size_hint: None, 0.75
+        pos_hint: {'top': 0.75}
+        width: self.height
+        source: root.background_source
+        opacity: 0
+    Image:
+        id: portrait
+        size_hint: None, 0.75
+        pos_hint: {'top': 0.75}
+        width: self.height
+        source: root.portrait_source
+        opacity: 0
+    Label:
+        id: item_name
+        size_hint: None, 0.25
+        pos_hint: {'top': 0.75}
+        width: self.texture_size[0]
+        x: portrait.width + root.width * 0.05
+        text: root.name
+        font_name: 'Gabriola'
+        color: 0, 0, 0, 1
+        font_size: self.height * 0.75
+    Label:
+        id: description
+        size_hint: None, 0.25
+        pos_hint: {'top': 0.5}
+        width: self.texture_size[0]
+        x: portrait.width + root.width * 0.05
+        text: root.description
+        font_name: 'Gabriola'
+        color: 0, 0, 0, 1
+        font_size: self.height * 0.5
+        opacity: 0
+    Button:
+        background_normal: 'buttons/invisible.normal.png'
+        on_release: root.dispatch('on_change_item')
+
+<Inventory>:
+    EquippedItem:
+        id: pickaxe
+        size_hint: 0.3, 0.2
+        pos_hint: {'x': 0.05, 'top': 0.975}
+        type: 'Pickaxe'
+    EquippedItem:
+        id: shovel
+        size_hint: 0.3, 0.2
+        pos_hint: {'x': 0.05, 'top': 0.75}
+        type: 'Shovel'
+    EquippedItem:
+        id: knife
+        size_hint: 0.3, 0.2
+        pos_hint: {'x': 0.05, 'top': 0.525}
+        type: 'Harvesting Knife'
+
+
+    InventoryItemList:
+        id: inventory_items
+        size_hint: 0.4, 0.8
+        pos_hint: {'x': 0.5, 'y': 0.1}

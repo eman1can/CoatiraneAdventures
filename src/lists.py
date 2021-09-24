@@ -1,4 +1,10 @@
 # UIX Imports
+from uix.popups.inspection import Inspection
+from uix.popups.inventory import Inventory
+from uix.popups.map_options import MapOptions
+from uix.screens.dungeon.result import DungeonResult
+from uix.screens.equipment.equipment_change import GearChange
+from uix.screens.inventory import InventoryMain
 from uix.popups.filterable import FilterPopup
 from uix.popups.sortable import SortPopup
 from uix.popups.tavern import Cancel as TMCancel, Confirm as TMConfirm, NoRecruit as TMNoRecruit, Roll as TMRoll
@@ -8,31 +14,36 @@ from uix.screens.character_display.attributes.status_board import StatusBoardMan
 from uix.screens.character_display.character_selector import CharacterSelector
 from uix.screens.dungeon.battle import DungeonBattle
 from uix.screens.dungeon.main import DungeonMain
-from uix.screens.family.domain import FamilyDomain
-from uix.screens.family.intro import FamilyIntro
-from uix.screens.family.select import SelectScreen
-from uix.screens.image_preview import ImagePreview
-from uix.screens.pre_game.new_game import NewGameScreen
-from uix.screens.pre_game.select_save import SelectSaveScreen
+from uix.screens.intro.intro_domain import IntroDomain
+from uix.screens.intro.intro_news import IntroNews
+from uix.screens.intro.intro_start import IntroStart
+from uix.screens.intro.intro_select import IntroSelect
+from uix.screens.character_display.image_preview import ImagePreview
+from uix.screens.intro.start_game import StartGame
+from uix.screens.intro.save_select import SaveSelect
 from uix.screens.tavern import TavernMain
 from uix.screens.tavern.recruit_preview import RecruitPreview
-from uix.screens.town import TownScreen
+from uix.screens.town import TownMain
 
 
-SCREEN_LIST = {'new_game': NewGameScreen,
-               'select_save': SelectSaveScreen,
-               'intro_start': FamilyIntro,
-               'intro_domain': FamilyDomain,
-               'select_start': SelectScreen,
-               'town_main': TownScreen,
+SCREEN_LIST = {'start_game': StartGame,
+               'save_select': SaveSelect,
+               'intro_start': IntroStart,
+               'intro_domain': IntroDomain,
+               'intro_select': IntroSelect,
+               'intro_news': IntroNews,
+               'town_main': TownMain,
                'dungeon_main': DungeonMain,
                'select_char': CharacterSelector,
                'tavern_main': TavernMain,
+               'inventory_main': InventoryMain,
                'char_attr_': CharacterAttributeScreen,
                'recruit_': RecruitPreview,
                'image_preview_': ImagePreview,
                'status_board_': StatusBoardManager,
-               'dungeon_battle': DungeonBattle}
+               'dungeon_battle': DungeonBattle,
+               'dungeon_result': DungeonResult,
+               'gear_change': GearChange}
 
 SCREEN_NON_WHITELIST = ["char_attr_", "status_board_", "image_preview_", "equipment_change_"]
 
@@ -44,6 +55,12 @@ POPUP_LIST = {'tm_confirm': TMConfirm,
               'tm_no_recruit': TMNoRecruit,
               'dm_confirm': DMConfirm,
               'sort': SortPopup,
-              'filter': FilterPopup}
+              'filter': FilterPopup,
+              'inventory': Inventory,
+              'map_options': MapOptions,
+              'inspection': Inspection}
 
-POPUP_WHITELIST = []
+POPUP_WHITELIST = [
+    'map_options',
+    'inventory'
+]

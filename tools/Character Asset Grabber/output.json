@@ -1,0 +1,861 @@
+{
+    "chars": {
+        "001": "Bell Cranel",
+        "003": "Liliruca Arde",
+        "011": "Welf Crozzo",
+        "021": "Sanjouno Haruhime",
+        "027": "Hestia",
+        "123": "Aphrodite",
+        "002": "Ais Wallenstein",
+        "004": "Yamato Mikoto",
+        "005": "Finn Deimne",
+        "006": "Riveria Ljos Alf",
+        "007": "Ottarl",
+        "008": "Asfi Al Andromeda",
+        "009": "Tione Hiryute",
+        "010": "Tiona Hiryute",
+        "012": "Bete Loga",
+        "013": "Gareth Landrock",
+        "014": "Hitachi Chigusa",
+        "015": "Kashima Ouka",
+        "016": "Raul Nord",
+        "017": "Lulune Louie",
+        "018": "Lefiya Viridis",
+        "019": "Filvis Challia",
+        "020": "Ryu Lion",
+        "022": "Aisha Belka",
+        "024": "Naza Ersuisu",
+        "025": "Fels",
+        "026": "Tsubaki Collbrande",
+        "036": "Anya Fromel",
+        "038": "Hermes",
+        "041": "Chloe Lolo",
+        "042": "Lunor Faust",
+        "043": "Amid Teasanare",
+        "047": "Line Arshe",
+        "048": "Mord Latro",
+        "049": "Anakitty Autumn",
+        "050": "Ais (Girl)",
+        "052": "Bete (Boy)",
+        "054": "Bell (Boy)",
+        "057": "Anya (Girl)",
+        "058": "Chloe (Girl)",
+        "059": "Liliruca (Girl)",
+        "060": "Welf (Boy)",
+        "063": "Lunor (Girl)",
+        "066": "Allen Fromel",
+        "067": "Alfrigg Gulliver",
+        "073": "Shakti Varma",
+        "078": "Artemis",
+        "079": "Argonaut",
+        "081": "Elmina",
+        "083": "Crozzo",
+        "084": "Yuri",
+        "085": "Galmus",
+        "086": "Fina",
+        "090": "Hyakinthos Clio",
+        "091": "Daphne Lauros",
+        "092": "Cassandra Ilion",
+        "094": "Lena Tally",
+        "095": "Samira",
+        "098": "Alicia Forestlight",
+        "099": "Elfy Colette",
+        "102": "Ardee Varma",
+        "103": "Alise Lovell",
+        "105": "Lyra",
+        "106": "Gojouno Kaguya",
+        "110": "Zard",
+        "111": "Alfia",
+        "114": "Wiene",
+        "115": "Argana",
+        "116": "Bache",
+        "117": "Lyd",
+        "118": "Ray",
+        "119": "Fear",
+        "500": "Kino",
+        "502": "Shizu & Riku",
+        "505": "Photo & Sou",
+        "507": "Mikasa Ackerman",
+        "508": "Levi",
+        "511": "Eren Jaeger",
+        "515": "Shido Itsuka",
+        "516": "Touka Yatogami",
+        "517": "Origami Tobiichi",
+        "518": "Kurumi Tokisaki",
+        "520": "Kotori Itsuka",
+        "521": "Goblin Slayer",
+        "522": "Priestess",
+        "523": "High Elf Archer",
+        "526": "Noble Fencer",
+        "527": "Kino",
+        "528": "Kojo Akatsuki",
+        "529": "Yukina Himeragi",
+        "530": "La Folia Rihavein",
+        "531": "Sayaka Kirasaka",
+        "028": "Loki",
+        "029": "Syr Flover",
+        "030": "Eina Tulle",
+        "031": "Hephaistios",
+        "032": "Freya",
+        "033": "Ganesha",
+        "034": "Demeter",
+        "035": "Mia Grand",
+        "037": "Miach",
+        "039": "Misha Frot",
+        "040": "Takemikazuchi",
+        "044": "Dionysus",
+        "045": "Goibniu",
+        "046": "Ouranos"
+    },
+    "versions": {
+        "001": {
+            "1028": "Unbreakable Freese",
+            "1001": "Adventurer",
+            "1002": "Liaris Freese",
+            "1003": "Ox Slayer",
+            "1004": "Removed",
+            "1005": "Argonaut",
+            "1006": "Breezy Freese",
+            "1008": "The White Rabbit",
+            "1009": "A Fresh Start",
+            "1010": "Dungeon Addict",
+            "1011": "Honor Succession",
+            "1012": "ODM Fight",
+            "1013": "Asipiring Elegance",
+            "1014": "Moonlight Oath",
+            "1015": "The Edgiest Teen",
+            "1016": "Outlaw Rabbit",
+            "1017": "The Enlightened",
+            "1018": "Regalia Freese",
+            "1019": "Sword Unleashed",
+            "1020": "Ready For Act",
+            "1021": "Pyonkichi MK-II",
+            "1022": "Duel Strive",
+            "1023": "Fiesta Freese",
+            "1024": "Decisive Will",
+            "1025": "Liaris Blanc",
+            "1026": "Girly Boy",
+            "1027": "Gleaming Freese",
+            "2001": "Living Dead Child"
+        },
+        "003": {
+            "1021": "Devoted Sniper",
+            "1001": "Supporter",
+            "1002": "Artel Assist",
+            "1003": "Removed",
+            "1004": "Disguised Pallum",
+            "1005": "Temptations",
+            "1006": "Sweet Devil",
+            "1007": "Artel Tart",
+            "1008": "Removed",
+            "1009": "Enjoy Onsen",
+            "1010": "Honestly Wicked",
+            "1011": "Lovely Travel",
+            "1012": "Summer Fun",
+            "1013": "Winter Cream",
+            "1014": "Echoing Arrow",
+            "1015": "Metal Robot",
+            "1016": "Longing Bride",
+            "1017": "Aschenputtel",
+            "1018": "Unbreakable Heart",
+            "1019": "Faithful",
+            "1020": "Petite Treat",
+            "2001": "Your Favorite",
+            "2002": "Advisor Mech",
+            "2003": "Petite Spirit",
+            "2004": "Transfiguration"
+        },
+        "011": {
+            "1010": "Dauntless Blade",
+            "1001": "Blacksmith",
+            "1002": "Ignis",
+            "1003": "Ignis",
+            "1004": "Smithy Expert",
+            "1006": "Smity Expert",
+            "1007": "Determination",
+            "1008": "Glacier Blade",
+            "1009": "Blood Ties",
+            "2001": "Festive Blade"
+        },
+        "021": {
+            "1007": "Foxy Prayer",
+            "1001": "Foxy Princess",
+            "1002": "Silver Fox",
+            "1003": "An Ocean of Virtue",
+            "1004": "Foxy Yukata",
+            "1005": "Pearly Renard",
+            "1006": "Hazy Vixen",
+            "2001": "Devotion",
+            "2002": "In Dreams",
+            "2003": "Sweet Vixen",
+            "2004": "Neo Fox"
+        },
+        "027": {
+            "1001": "Hero Goddess (?)",
+            "2001": "Childish Goddess",
+            "2002": "Goddess of Hearth",
+            "2003": "Goddess of Purity",
+            "2004": "Lovebird",
+            "2005": "Part-time Goddess",
+            "2006": "Seaside Goddess",
+            "2008": "Goddess' Devotion",
+            "2009": "Mummy Goddess",
+            "2010": "Jingle Bell",
+            "2011": "Dreaming Goddess",
+            "2012": "Removed",
+            "2013": "Paradise Mood",
+            "2014": "Cunning Goddess",
+            "2016": "Filmic Goddess",
+            "2017": "All Abroad",
+            "2018": "Ceremonial Flame",
+            "2019": "Summer Goddess",
+            "2020": "Bunny Goddess",
+            "2021": "Glitter Goddess",
+            "2022": "Reindeer Goddess",
+            "2023": "Kunoichi Goddess",
+            "2024": "Sacred Fire",
+            "2025": "Beloved Goddess",
+            "2026": "Moonlight Reunion",
+            "2027": "Chief Goddess",
+            "2028": "Director Goddess",
+            "2029": "Pajama Goddess",
+            "2030": "Wedding Wish",
+            "2031": "Day for Exploring",
+            "2032": "Azure Goddess",
+            "2033": "Gift Goddess",
+            "2034": "Yellow Bird",
+            "2035": "Swimsuit Contest",
+            "2036": "Adventurer's Set",
+            "2037": "Space Ribbon",
+            "2038": "Pasture Goddess",
+            "2040": "Celebration Goddess",
+            "2041": "Carnival Goddess",
+            "2042": "I'm Working!",
+            "2044": "Drenched Deity",
+            "2045": "Divine Spirit",
+            "2046": "Goddess of Salvation"
+        },
+        "123": {
+            "1001": "Lunar Blesser",
+            "2001": "Vibrant Beauty"
+        },
+        "002": {
+            "1003": "Sword Princess",
+            "1001": "Battle Princess",
+            "1002": "Removed",
+            "1004": "Heroic Liaris",
+            "1005": "Broken",
+            "1006": "Gorgeous Princess",
+            "1007": "Splash Princess",
+            "1009": "Santa Princess",
+            "1010": "Bathroom Princess",
+            "1011": "Sparkle Princess",
+            "1012": "Cold Princess",
+            "1013": "Honor Princess",
+            "1014": "Summer Princess",
+            "1015": "Bunny Princess",
+            "1016": "Glitter Princess",
+            "1017": "Starving Mind",
+            "1018": "Regiment Princess",
+            "1019": "Crimson Tempest",
+            "1020": "Sweet Princess",
+            "1021": "Devil Princess",
+            "1022": "Angelic Leader",
+            "1023": "Beauty",
+            "1024": "Jade Princess",
+            "1025": "Dancing Princess",
+            "1026": "New Armed",
+            "1027": "Pacific Rhapsody",
+            "1028": "Mobile Suit Princess",
+            "1029": "Gallant Armor",
+            "1031": "Storm Princess",
+            "1032": "Seabreeze Princess",
+            "1034": "Thermae Princess",
+            "1035": "Gracious Princess",
+            "1036": "Demon King",
+            "2001": "Outside Orario",
+            "2002": "Backstage Princess",
+            "2003": "Marine Sword Princess",
+            "2004": "Royal Sword Princess",
+            "2005": "Fiesta Princess"
+        },
+        "004": {
+            "1001": "Samurai Girl",
+            "1002": "Zetsu Ei",
+            "1003": "Removed",
+            "1004": "Samurai Kunooichi",
+            "1006": "Yukata Beauty",
+            "1007": "Yhe Traditional",
+            "1008": "Snow White",
+            "1009": "Love Lesson",
+            "1010": "Kunoichi",
+            "1011": "Power of Change",
+            "1012": "Patissiere",
+            "2001": "Onsen Samurai",
+            "2002": "Bathing Beauty"
+        },
+        "005": {
+            "1001": "Captain",
+            "1002": "Braver",
+            "1003": "Removed",
+            "1004": "Masked Braver",
+            "1005": "Classy Gentleman",
+            "1006": "Removed",
+            "1007": "Brave Swordsman",
+            "1008": "Oriental Attire",
+            "1009": "Brave Spearman",
+            "1010": "Unwavering Spear",
+            "1011": "Braver Blanc",
+            "2001": "Key Strategist"
+        },
+        "006": {
+            "1001": "Great Mage",
+            "1002": "Nine Hell",
+            "1003": "Removed",
+            "1004": "Royal Elf",
+            "1005": "Holy White Royal",
+            "1007": "Removed",
+            "1008": "Dressed Royal",
+            "1009": "Regina",
+            "1010": "Festive Royale",
+            "1011": "Crimson Balefire",
+            "1012": "Ninth Duel",
+            "1013": "Royal Mage",
+            "2001": "Dark Divine"
+        },
+        "007": {
+            "1001": "King",
+            "1002": "Superior Reign",
+            "1003": "Mighty King",
+            "1004": "Fierce Rage",
+            "1005": "The King's War"
+        },
+        "008": {
+            "1001": "Alchemist",
+            "1002": "Combat Commander",
+            "1003": "Removed",
+            "1004": "Sailor Princess",
+            "1006": "Onsen Princess",
+            "1007": "Almighty Fighter",
+            "1009": "Thunderous Perseus",
+            "1010": "Operation Idol",
+            "1011": "Evil Business",
+            "1012": "Flaming Soar",
+            "2001": "Lawful Judge",
+            "2002": "Wings of Succession"
+        },
+        "009": {
+            "1001": "Berserker",
+            "1002": "Backdraft",
+            "1003": "Pine Heart",
+            "1004": "Suntan Girl",
+            "1005": "Twinkle Stream",
+            "1006": "Removed",
+            "1007": "Crimson Dahlia",
+            "1008": "Blushing Peony",
+            "1009": "Passionately Postal",
+            "1010": "School Professor",
+            "1011": "Marine Snake",
+            "1012": "Valiant Intensity"
+        },
+        "010": {
+            "1001": "Full Throttle",
+            "1002": "Berserker",
+            "1003": "Removed",
+            "1004": "Summer Swim",
+            "1005": "Dancing Blessing",
+            "1006": "Removed",
+            "1007": "Amber Sunflower",
+            "1008": "Blustering Beauty",
+            "1009": "Marine Amazon",
+            "1010": "Bursting Intensity",
+            "1011": "Steamy Amazon"
+        },
+        "012": {
+            "1001": "Werewolf",
+            "1002": "Ulfheoinn",
+            "1003": "Removed",
+            "1004": "Silver Moonshadow",
+            "1006": "Moonlit Wolf",
+            "1007": "Lone Werewolf",
+            "1008": "Uniformed Werewolf",
+            "2001": "Werewolf Blanc"
+        },
+        "013": {
+            "1001": "Elgarm",
+            "1002": "Torrential",
+            "1003": "Removed",
+            "1004": "Sunrise Axe",
+            "1005": "Roaring Axe",
+            "1006": "Intrepid Elgarm",
+            "2001": "Elgarm Blanc"
+        },
+        "014": {
+            "1001": "Thousand Blades",
+            "1002": "Evanescent",
+            "1003": "Sparkling Crystal",
+            "1004": "Secret Onsen",
+            "1005": "Fushi-Kaden",
+            "1006": "Frosty Blooms",
+            "2001": "Cowgirl Dress"
+        },
+        "015": {
+            "1001": "Wad God's Child",
+            "1002": "Solid Resolutions",
+            "1004": "Will of Iron",
+            "1005": "Demonslayer Samurai"
+        },
+        "016": {
+            "1001": "High Novice",
+            "1002": "Night Buster",
+            "1003": "Glistening Knight"
+        },
+        "017": {
+            "1002": "Muddle"
+        },
+        "018": {
+            "1001": "Thousand Elf",
+            "1002": "Incantation",
+            "1003": "Bashful Elf",
+            "1004": "Removed",
+            "1005": "Winter Elf",
+            "1006": "Elven Awakening",
+            "1007": "Dark Class Act",
+            "1008": "Elf's Honor",
+            "1009": "Offshore Elf",
+            "1010": "Wicked Elf",
+            "1011": "Geisha Elf",
+            "1012": "Elegant Elf",
+            "1013": "Love Magic",
+            "1014": "Model Student",
+            "1015": "Melodious Elf",
+            "1016": "Arcanic Cascade",
+            "1017": "Marine Thousand Elf",
+            "1018": "Glinting Elf",
+            "1019": "DPS Psycho",
+            "1020": "Fiesta Elf",
+            "2001": "Dazed Elf",
+            "2002": "Uniform Elf"
+        },
+        "019": {
+            "1001": "Maenads",
+            "1002": "Maenad's Maiden",
+            "1003": "Cute Elf",
+            "1004": "Blessed Elf",
+            "1005": "Darkness Overload",
+            "1006": "Dazzling Elf",
+            "1007": "Merry Maiden"
+        },
+        "020": {
+            "1001": "Gale",
+            "1002": "Vampiric Fairy",
+            "1003": "Holy Gale",
+            "1004": "Beach Winds",
+            "1005": "Gale in Yukata",
+            "1006": "Gale Disguised",
+            "1007": "Glistening Elf",
+            "1008": "Pretty Lady",
+            "1009": "Roaring Gale",
+            "1010": "Knight Elf",
+            "1011": "Lightning Flame",
+            "1012": "Scarlet Elf",
+            "1013": "Elven Gale",
+            "1014": "Wind of Purity",
+            "1015": "Justice Succession",
+            "1016": "Intoxicating Elf",
+            "1018": "Jade Comet",
+            "1019": "Flaring Gale",
+            "1020": "Shadow Elf",
+            "2002": "Removed",
+            "2003": "Elegant Vanguard",
+            "2004": "Elven Employee"
+        },
+        "022": {
+            "1001": "Magnificent Ruler",
+            "1002": "Brave Antianeria",
+            "1003": "Rejuvenated Antianeria",
+            "1004": "Blazing Antianeira",
+            "2001": "Alluring Dancer"
+        },
+        "024": {
+            "1001": "Medicinal Archer",
+            "1002": "Uniform Hound",
+            "2001": "Silver Pharmacist",
+            "2002": "Cyan"
+        },
+        "025": {
+            "1001": "The Shadow",
+            "1002": "Forbidden Chant",
+            "2001": "Ghost",
+            "2002": "Haar Ghost"
+        },
+        "026": {
+            "1001": "Cyclops",
+            "1002": "Iron Warrior",
+            "1003": "Invincible Master",
+            "2001": "Camellia Kimono"
+        },
+        "036": {
+            "1001": "Feline Lancer",
+            "1002": "Brave Fighter",
+            "1003": "Holiday Cat",
+            "1004": "Sneaky Cat",
+            "1005": "Sweet Tooth Tabby",
+            "2001": "Lighthearted",
+            "2002": "Cat-Ears",
+            "2003": "Clumsy Detective"
+        },
+        "038": {
+            "1002": "Two-Wheel Racer",
+            "2001": "Fearless Smile",
+            "2002": "God of Traveler",
+            "2003": "Banquet Attire",
+            "2004": "Producer",
+            "2005": "Live Commentator"
+        },
+        "041": {
+            "1001": "Black Cat",
+            "1002": "Holly Wreath",
+            "1003": "Gallant Fighter",
+            "1004": "Catty",
+            "1005": "Candied Kitty",
+            "2001": "Sinister Cat",
+            "2002": "The Sly Cat"
+        },
+        "042": {
+            "1001": "Black Fist",
+            "1002": "Blazing Fist",
+            "2001": "Fertility Helper",
+            "2003": "Prideful Waitress",
+            "2004": "Dungeon Waitress"
+        },
+        "043": {
+            "1002": "Dea Saint",
+            "1003": "Beach Saint",
+            "1004": "Temporary Healer",
+            "1005": "Priestess Image",
+            "1006": "Sunset Saint",
+            "2001": "White Healer",
+            "2002": "Modern Medicine"
+        },
+        "047": {
+            "1001": "Faithful Mage",
+            "1002": "Twilight Supporter"
+        },
+        "048": {
+            "1001": "Dogfight",
+            "1002": "Outlaw Style"
+        },
+        "049": {
+            "1001": "White Flash",
+            "1002": "Twilight Cat",
+            "1003": "Tipsy Tabby"
+        },
+        "050": {
+            "1001": "Little Princess"
+        },
+        "052": {
+            "1001": "Little Wolf"
+        },
+        "054": {
+            "1001": "Little Freese"
+        },
+        "057": {
+            "1001": "Hyper Energetic"
+        },
+        "058": {
+            "1001": "Absolute Discover"
+        },
+        "059": {
+            "1001": "Little Girl"
+        },
+        "060": {
+            "1001": "Zeal Blast"
+        },
+        "063": {
+            "1001": "Little Detective"
+        },
+        "066": {
+            "1001": "Lightspeed"
+        },
+        "067": {
+            "1001": "Black Raid"
+        },
+        "073": {
+            "1001": "Fist Fighter",
+            "1002": "Casino Lady",
+            "1003": "Blue Lotus",
+            "1004": "City Guardian"
+        },
+        "078": {
+            "1001": "Virgin Goddess"
+        },
+        "079": {
+            "1001": "Clown",
+            "1002": "The Dawn",
+            "1003": "Thunderous Blade"
+        },
+        "081": {
+            "1001": "Deathly Dance"
+        },
+        "083": {
+            "1001": "The Ancestry"
+        },
+        "084": {
+            "1001": "Wolven Pride"
+        },
+        "085": {
+            "1001": "Vigorous Hammerer"
+        },
+        "086": {
+            "1001": "Elven Mage",
+            "1002": "Elven Flash"
+        },
+        "090": {
+            "1001": "High and Proud",
+            "1002": "Glowing Pride"
+        },
+        "091": {
+            "1001": "Serene Swordsman",
+            "1002": "Laurel Mistral",
+            "1003": "Swimsuit Swordsman"
+        },
+        "092": {
+            "1001": "Cynic",
+            "1002": "First Dream",
+            "1003": "Dreamy Beach"
+        },
+        "094": {
+            "1001": "Wild Fantasy",
+            "1002": "Azure Bloom"
+        },
+        "095": {
+            "1001": "Crushing Fighter"
+        },
+        "098": {
+            "1001": "Dueling Caster",
+            "1002": "Waterside Eden"
+        },
+        "099": {
+            "1001": "Delightful Mage",
+            "1002": "Waterside Grimoire"
+        },
+        "102": {
+            "1001": "Faith Keeper"
+        },
+        "103": {
+            "1001": "Flaming Blade",
+            "1002": "Flaming Will"
+        },
+        "105": {
+            "1001": "Conspired Hand"
+        },
+        "106": {
+            "1001": "Scarlet Sword"
+        },
+        "110": {
+            "1001": "Predator",
+            "1002": "The Entruster"
+        },
+        "111": {
+            "1001": "Silence",
+            "1002": "Entrusted Sound"
+        },
+        "114": {
+            "1001": "Drakguard's Will",
+            "1002": "Sweetheart Dragon"
+        },
+        "115": {
+            "1001": "The Goddess's Shadow"
+        },
+        "116": {
+            "1001": "The Poison Queen"
+        },
+        "117": {
+            "1001": "Maverick Swordsman"
+        },
+        "118": {
+            "1001": "Golden Feathers"
+        },
+        "119": {
+            "1001": "Crimson Feathers"
+        },
+        "500": {
+            "1001": "Traveler",
+            "1002": "Foreign Traveler"
+        },
+        "502": {
+            "1001": "Wondering Man"
+        },
+        "505": {
+            "1001": "Photographer"
+        },
+        "507": {
+            "1001": "First in Class"
+        },
+        "508": {
+            "1001": "Strongest Soldier"
+        },
+        "511": {
+            "1001": "Wings of Freedom"
+        },
+        "515": {
+            "1001": "Spirit Conquest"
+        },
+        "516": {
+            "1001": "Princess"
+        },
+        "517": {
+            "1001": "Angel"
+        },
+        "518": {
+            "1001": "Nightmare"
+        },
+        "520": {
+            "1001": "Blast Fire"
+        },
+        "521": {
+            "1001": "Solver Adventurer"
+        },
+        "522": {
+            "1001": "Affectionate Maiden"
+        },
+        "523": {
+            "1001": "Stellar Wind"
+        },
+        "526": {
+            "1001": "Lightning Flash"
+        },
+        "527": {
+            "1001": "Food Fighter"
+        },
+        "528": {
+            "1001": "The Fourth Primogenitor"
+        },
+        "529": {
+            "1001": "Baby Sitter",
+            "1002": "Sword Shaman"
+        },
+        "530": {
+            "1001": "Royalty"
+        },
+        "531": {
+            "1001": "Shamanic War Dancer"
+        },
+        "028": {
+            "2001": "Craft Goddess",
+            "2002": "Cheers!",
+            "2003": "Trickster",
+            "2004": "Red Quipster",
+            "2005": "Banquet Goddess",
+            "2006": "Oni Demon",
+            "2007": "Trickster's Truth",
+            "2008": "Whoever",
+            "2009": "Swimsuit Jester",
+            "2010": "Uniformed Jester"
+        },
+        "029": {
+            "2001": "Fertility Staff",
+            "2002": "A Loving Lunch",
+            "2003": "Brightened Pub",
+            "2004": "Pure-White Dress",
+            "2005": "Summer Mischief",
+            "2006": "Tricky Angel",
+            "2007": "Pure White",
+            "2008": "Removed",
+            "2009": "Countess",
+            "2010": "Holiday Spirit",
+            "2011": "Pure Bride",
+            "2012": "New Year Kimono",
+            "2013": "Faithful Formal",
+            "2014": "Devoted Hand",
+            "2015": "Summeer Color",
+            "2016": "The Ivory Maiden"
+        },
+        "030": {
+            "2001": "Receptionist",
+            "2002": "Advisor",
+            "2003": "Scholar",
+            "2004": "Elf's Gist",
+            "2005": "Brains and Beauty",
+            "2006": "Removed",
+            "2007": "Holy Choir",
+            "2008": "Minstrel Elf",
+            "2009": "Midsummer Maiden",
+            "2010": "Handmade Elf",
+            "2011": "Valorous Elf",
+            "2012": "Wannabe Nerd",
+            "2013": "Spring Sky",
+            "2014": "Ensconced Elf"
+        },
+        "031": {
+            "2001": "The One-Eyed",
+            "2002": "Burning Forge",
+            "2003": "Legendary Artisan",
+            "2004": "Artiess",
+            "2005": "Removed",
+            "2006": "Black Rose",
+            "2007": "Gallant Formal"
+        },
+        "032": {
+            "2001": "Intrigued Goddess",
+            "2002": "Devious Emotion",
+            "2003": "Prowling for Lust",
+            "2004": "Banquet Queen",
+            "2005": "Elegant Queen",
+            "2007": "Beautiful Admirer",
+            "2008": "Utmost Beauty",
+            "2009": "Queen of Beauty",
+            "2010": "Dreamy Swimmer",
+            "2011": "Captivating Beauty",
+            "2012": "Divine Gaze"
+        },
+        "033": {
+            "2001": "God of the Masses",
+            "2002": "Mighty Elephant",
+            "2004": "Masked God",
+            "2006": "Maharaja Elephant"
+        },
+        "034": {
+            "2001": "Mother Seedling",
+            "2002": "Removed",
+            "2003": "Harvest Goddess",
+            "2004": "Golden Wheat",
+            "2005": "Colonel"
+        },
+        "035": {
+            "2001": "Overwhelm",
+            "2002": "Fertility's Mom"
+        },
+        "037": {
+            "2001": "God of Medicine",
+            "2002": "Pharmacist",
+            "2003": "God Neighbor",
+            "2004": "New Year Medic"
+        },
+        "039": {
+            "2001": "Workplace Gossip",
+            "2002": "Guild Worker",
+            "2004": "Summer Break"
+        },
+        "040": {
+            "2002": "War Incarnation",
+            "2003": "Battle God",
+            "2004": "Winter War God"
+        },
+        "044": {
+            "2002": "Tipsy Gaze",
+            "2003": "Classy God",
+            "2005": "God of Wine",
+            "2006": "Classy Noble"
+        },
+        "045": {
+            "2001": "Elder Smith",
+            "2002": "Godly Swordsmith"
+        },
+        "046": {
+            "2001": "God of Origins",
+			"2002": "Divine Skies"
+        }
+    }
+}

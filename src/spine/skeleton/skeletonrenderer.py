@@ -23,12 +23,11 @@ class SkeletonRenderer:
         self.preMultipliedAlpha = premultipliedAlpha
 
     def draw(self, canvas, skeleton):
-        canvas.clear()
-        canvas.add(skeleton.clear_color)
         if skeleton.clear_color.a == 0:
             return
-        premultipliedAlpha = self.preMultipliedAlpha
-        srcFunc = GL_ONE if self.preMultipliedAlpha else GL_SRC_ALPHA
+        canvas.add(skeleton.clear_color)
+        # premultipliedAlpha = self.preMultipliedAlpha
+        # srcFunc = GL_ONE if self.preMultipliedAlpha else GL_SRC_ALPHA
         # glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         additive = False
@@ -60,7 +59,7 @@ class SkeletonRenderer:
                 rootBone.setScaleY(oldScaleY)
                 rootBone.setRotation(oldRotation)
             else:
-                attachment.updateWorldVertices(slot, premultipliedAlpha)
+                attachment.updateWorldVertices(slot, self.preMultipliedAlpha)
                 if not attachment.is_tex_set():
                     attachment.set_texture(attachment.getRegion().getTexture())
                 canvas.add(attachment.getMesh())

@@ -2,7 +2,6 @@ import os
 from kivy.graphics import Color
 
 from src.spine.animation import ColorTimeline, AttachmentTimeline, RotateTimeline, ScaleTimeline, TranslateTimeline, FlipXTimeline, FlipYTimeline, IkConstraintTimeline, FfdTimeline, DrawOrderTimeline, EventTimeline, Animation
-from src.spine.animation.eventdata import EventData
 from src.spine.animation.event import Event
 from src.spine.atlas.atlasattachmentloader import AtlasAttachmentLoader
 from src.spine.attachment.attachmentloader import AttachmentLoader
@@ -143,11 +142,11 @@ class SkeletonBinary:
 
             # Events
             for i in range(input.readVarInt(True)):
-                eventData = EventData(input.readString())
-                eventData.intValue = input.readVarInt(False)
-                eventData.floatValue = input.readFloat()
-                eventData.stringVale = input.readString()
-                skeletonData.events.append(eventData)
+                event = Event(input.readString())
+                event.intValue = input.readVarInt(False)
+                event.floatValue = input.readFloat()
+                event.stringVale = input.readString()
+                skeletonData.events.append(event)
 
             # Animations
             for i in range(input.readVarInt(True)):
@@ -188,6 +187,7 @@ class SkeletonBinary:
             path = input.readString()
             if path is None:
                 path = name
+            # print(path, name)
             region = self.attachmentLoader.newRegionAttachment(skin, name, path)
             if region is None:
                 return None
@@ -462,11 +462,10 @@ class SkeletonBinary:
                 timeline = EventTimeline(eventCount)
                 for i in range(eventCount):
                     time = input.readFloat()
-                    eventData = skeletonData.events[input.readVarInt(True)]
-                    event = Event(eventData)
-                    event.intValue = input.readVarInt(False)
-                    event.floatValue = input.readFloat()
-                    event.stringValue = input.readString() if input.readBoolean() else eventData.stringValue
+                    event = skeletonData.events[input.readVarInt(True)]
+                    event.setInt(input.readVarInt(False))
+                    event.setFloat(input.readFloat())
+                    event.setString(input.readString() if input.readBoolean() else event.stringValue)
                     timeline.setFrame(i, time, event)
                 timelines.append(timeline)
                 duration = max(duration, timeline.getFrames()[eventCount - 1])

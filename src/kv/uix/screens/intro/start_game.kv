@@ -1,0 +1,38 @@
+#:import PPCHoverPathButton kivy.uix.buttonversions.PPCHoverPathButton
+#:import LayeredImage modules.layered_image.LayeredImage
+#:import TwirlEffect modules.twirl_effect.TwirlEffect
+#:import CharacterHud uix.screens.dungeon.battle_hud.CharacterHud
+#:import MoveHud uix.screens.dungeon.battle_hud.MoveHud
+#:import ResultHud uix.screens.dungeon.result_hud.ResultHud
+
+<StartGame>:
+    name: 'start_game'
+    background_source: 'new_game_background.png'
+    Image:
+        id: background
+        source: root.background_source
+        opacity: 0 if not root.background else 1
+        allow_stretch: True
+    Image:
+        id: title_signs
+        size_hint: 1, 1
+        source: 'new_game_title_signs.png'
+    HoverPathButton:
+        id: continue
+        size_hint: 0.177, 0.073
+        pos_hint: {'x': 0.434, 'y': 0.574}
+        path: 'buttons/new_game_continue'
+        disabled: not root.continue_enabled
+        on_release: root.on_start_game('load')
+    PPCHoverPathButton:
+        id: new_game
+        size_hint: 0.185, 0.072
+        pos_hint: {'x': 0.430, 'y': 0.475}
+        path: 'buttons/new_game_new_game'
+        on_release: root.on_start_game('new_game')
+    PPCHoverPathButton:
+        id: quit_game
+        size_hint: 0.197, 0.124
+        pos_hint: {'x': 0.350, 'y': 0.319}
+        path: 'buttons/new_game_quit_game'
+        on_release: root.on_exit_game()

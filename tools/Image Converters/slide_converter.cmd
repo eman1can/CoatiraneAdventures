@@ -5,7 +5,7 @@ setlocal
 :: --- Configuration --->
 
 :: Temp-/Infofile path/name
-set info=%temp%\info.txt
+set info="%cd%\info.txt"
 
 :: IrfanView
 set iview=C:\IrfanView\i_view64.exe
@@ -14,19 +14,26 @@ set iview=C:\IrfanView\i_view64.exe
 set imagick_convert=C:\ImageMagick\convert.exe
 
 :: File extensions
-set filext=*.png
+set filext=.png
 
 :: <--- Configuration ---
 
-for /r %cd%\slide_input\ %%a in (%filext%) do call :EXTRACT "%%a"
+echo Storing Output at %info%
+
+for /r "%cd%\slide_input\" %%a in (*%filext%) do call :EXTRACT "%%a"
 goto :END
 
 :EXTRACT
-"%iview%" %1 /info="%info%"
+for /F "delims=" %%i in (%1) do set name=%%~ni
+set output_file=%cd%\output\%name%_slide%filext%
+echo Copy %~1 to %output_file%
+xcopy /Y %1 "%output_file%*"
+echo Converting %output_file%
+"%iview%" %output_file% /info=%info%
 
 for /f "tokens=4,6" %%a in ('type %info% ^| find.exe /i "Image dimensions"') do (set /a width=%%a) & (set /a height=%%b)
 
-echo Found Dimensions for %~1
+echo Found Dimensions for %name%%filext%
 echo Width: %width%, Height: %height%
 
 set /a dig1=%width%/250
@@ -41,24 +48,23 @@ if %dig2% GEQ 2 (
 set /a new_width=%multiplier%*240
 echo First Resize:
 echo    -Scale to new width of: %new_width%
-"%imagick_convert%" %1 -resize %new_width%x -depth 16 -quality 100 %1
+"%imagick_convert%" "%output_file%" -resize %new_width%x -depth 16 -quality 100 "%output_file%"
 
 set /a canvas_width=(%multiplier%*250-%new_width%)/2
 echo First Canvas Edit:
 echo   -Expand Sides by %canvas_width%
-"%imagick_convert%" %1 -matte -bordercolor none -border %canvas_width%x0 %1
+"%imagick_convert%" "%output_file%" -matte -bordercolor none -border %canvas_width%x0 "%output_file%"
 
 set /a canvas_height=%multiplier%*60
 echo Second Canvas Edit:
 echo -Expand Top and Bottom by %canvas_height%
-"%imagick_convert%" %1 -matte -bordercolor none -border 0x%canvas_height% %1
+"%imagick_convert%" "%output_file%" -matte -bordercolor none -border 0x%canvas_height% "%output_file%"
 
 set /a final_width=250*%multiplier%
 set /a final_height=935*%multiplier%
 echo Third Canvas Edit:
 echo -Expand Bottom until we reach aspect - %final_width%, %final_height%
-"%imagick_convert%" %1 -matte -background none -extent %final_width%x%final_height% %1
-move "%1" "%cd%\output\%~n1.png"
+"%imagick_convert%" "%output_file%" -matte -background none -extent %final_width%x%final_height% "%output_file%"
 echo Finished!
 
 goto :EOF

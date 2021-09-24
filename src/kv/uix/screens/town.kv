@@ -1,11 +1,45 @@
 #:import PPCHoverPathButton kivy.uix.buttonversions.PPCHoverPathButton
+#:import Gradient src.modules.gradient.Gradient
+#:import time_header src.uix.modules.headers.time_header
+#:import profile_header src.uix.modules.headers.profile_header
 
 <SmallTownButton@PPCHoverPathButton>:
     collision_source: 'buttons/smallbutton.collision.png'
 
-<TownScreen>:
+<TownMain>:
     name: 'town_main'
-    background_source: 'backgrounds/townClip.jpg'
+    background_source: 'town_background.jpg'
+    RelativeLayout:
+        id: overlay_background
+        size_hint: 1, 0.05
+        pos_hint: {'top': 1}
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                size: self.size
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                size: self.width, self.height * 0.05
+        Label:
+            id: profile_header
+            size_hint: None, 0.75
+            width: self.texture_size[0] * 1.125
+            pos_hint: {'x': 0.125, 'center_y': 0.5}
+            font_size: '20pt'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: profile_header()
+        Label:
+            id: time_header
+            size_hint: None, 0.75
+            width: self.texture_size[0] * 1.125
+            pos_hint: {'right': 0.875, 'center_y': 0.5}
+            font_size: '20pt'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: time_header()
     SmallTownButton:
         id: tavern
         size_hint: 0.1, 0.203
@@ -74,6 +108,7 @@
         size_hint: 0.1, 0.203
         pos_hint: {'x': 0.015, 'center_y': 0.143}
         path: 'buttons/inventory_button'
+        on_release: root.on_inventory()
     Label:
         id: inventory_label
         size_hint: 0.15, 0.032

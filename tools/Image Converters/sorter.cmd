@@ -3,15 +3,21 @@ cls
 setlocal
 
 :: <id>_<fname>_full.png
+:: The file that is displayed on the status page
+:: <id>_<fname>_inspect.png
+:: The file that is displayed when the image is inspected on the status page
+:: <id>_<fname>_bustup.png
+:: The image to use for cutin animations
 :: <id>_<fname>_slide.png
+:: The slide image to use on the preview character slides
 :: <id>_<fname>_preview.png
+:: The preview image to use in the battle hud
 :: <id>_<fname>_slide_support.png
-
-
+:: The preview image to use in preview character slides
 
 :: Check if full image
 set filext=*.png
-for /r %cd%\output\ %%a in (%filext%) do call :EXTRACT "%%a"
+for /r "%cd%\output\" %%a in (%filext%) do call :EXTRACT "%%a"
 goto :END
 
 :EXTRACT
@@ -29,7 +35,17 @@ if errorlevel 1 (
 		if errorlevel 1 (
 			echo %name%|findstr /r ".*_slide"
 			if errorlevel 1 (
-				echo not valid
+				echo %name%|findstr /r ".*_bustup"
+				if errorlevel 1 (
+					echo %name%|findstr /r ".*_inspect"
+					if errorlevel 1 (
+						echo %name% is not valid
+					) else (
+						call :INSPECT
+					)
+				) else (
+					call :BUSTUP
+				)
 			) else (
 				call :SLIDE
 			)
@@ -51,7 +67,16 @@ GOTO :EOF
 set dir=%name:~0,-5%
 goto :EOF
 
+:SLIDE
+set dir=%name:~0,-6%
+goto :EOF
+
+:BUSTUP
+set dir=%name:~0,-7%
+goto :EOF
+
 :PREVIEW
+:INSPECT
 set dir=%name:~0,-8%
 goto :EOF
 
@@ -59,9 +84,7 @@ goto :EOF
 set dir=%name:~0,-14%
 goto :EOF
 
-:SLIDE
-set dir=%name:~0,-6%
-goto :EOF
+
 
 :END
 PAUSE

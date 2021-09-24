@@ -42,6 +42,7 @@ class FloorData:
         self._activated_safe_zones = {}
         self._rest_count = 0
         self._node_time = 0
+        self._encounter_count = 1
 
         if not previous_floor_data:
             self._adventurers = None
@@ -50,7 +51,7 @@ class FloorData:
             self._party_perks = []
             self._increases = None
             self._fam_bonus_increases = None
-            self._special_amount = 0
+            # self._special_amount = 0
             self._gained_items = {}
             self._killed_monsters = {}
         else:
@@ -58,10 +59,13 @@ class FloorData:
             self._supporters = previous_floor_data._supporters
             self._get_supporters = previous_floor_data._get_supporters
             self._party_perks = previous_floor_data.get_party_perks()
-            self._special_amount = previous_floor_data._special_amount
+            # self._special_amount = previous_floor_data._special_amount
             self._increases, self._fam_bonus_increases = previous_floor_data.get_increases()
             self._gained_items = previous_floor_data.get_gained_items()
             self._killed_monsters = previous_floor_data.get_killed()
+
+        self._battle_characters = []
+
         self._in_encounter = False
         self._battle_data = None
         self._beaten_boss = False
@@ -69,6 +73,33 @@ class FloorData:
         self._is_boss_fight = False
         if not previous_floor_data:
             self._generate_characters()
+
+    # The characters keep the same special skill charge, health, mana, and status effects encounter to encounter
+    def _generate_characters(self):
+        party = Refs.gc.get_current_party()
+        self._adventurers = []
+        self._supporters = []
+        self._get_supporters = {}
+        self._increases = {}
+        self._fam_bonus_increases = {}
+        self._party_perks = []
+
+        for index in range(8):
+            char_index = party[index]
+            if char_index == -1:
+                continue
+            support_index = party[index + 8]
+            character = Refs.gc.get_char_by_index(char_index)
+            support = Refs.gc.get_char_by_index(support_index)
+            self._increases[char_index] = [0 for _ in range(7)]
+            self._fam_bonus_increases[char_index] = {}
+            if support:
+                self._increases[support_index] = [0 for _ in range(7)]
+                self._fam_bonus_increases[support_index] = {}
+            self._adventurers.append(create_battle_character(character, support))
+            self._party_perks += character.get_perks()
+            self._supporters.append(support)
+            self._get_supporters[char_index] = support_index
 
     # Basic getter functions
     def get_floor(self):
@@ -80,20 +111,42 @@ class FloorData:
     def get_next_floor(self):
         return self._next_floor
 
+    def get_encounters(self):
+        return self._encounter_count
+
+    # Get every adventurer in the party
     def get_characters(self):
         return self._adventurers
 
+    # Get non-dead and non-asleep adventurers
     def get_able_characters(self):
         characters = []
         for character in self._adventurers:
-            if not character.is_dead() and character.get_stamina() > 0:
+            if not character.is_dead() and not character.is_asleep():
                 characters.append(character)
         return characters
 
+    # Get non-dead characters
     def get_alive_characters(self):
         characters = []
         for character in self._adventurers:
             if not character.is_dead():
+                characters.append(character)
+        return characters
+
+    # Get dead characters
+    def get_dead_characters(self):
+        characters = []
+        for character in self._adventurers:
+            if character.is_dead():
+                characters.append(character)
+        return characters
+
+    # Get asleep characters
+    def get_asleep_characters(self):
+        characters = []
+        for character in self._adventurers:
+            if character.is_asleep():
                 characters.append(character)
         return characters
 
@@ -103,11 +156,11 @@ class FloorData:
     def get_increases(self):
         return self._increases, self._fam_bonus_increases
 
-    def increase_stat(self, char_id, index, amount):
-        support = self._get_supporters[char_id]
-        if support is not None:
-            self._increases[support.get_id()][index] += amount
-        self._increases[char_id][index] += amount
+    def increase_stat(self, char_index, index, amount):
+        support_index = self._get_supporters[char_index]
+        if support_index != -1:
+            self._increases[support_index][index] += amount
+        self._increases[char_index][index] += amount
 
     def have_beaten_boss(self):
         return self._beaten_boss
@@ -152,6 +205,9 @@ class FloorData:
     def activate_safe_zone(self):
         self._activated_safe_zones[self._floor.get_map().get_current_node()] = 5
 
+    def get_activated_safe_zones(self):
+        return self._activated_safe_zones
+
     def increase_rest_count(self, count=1):
         self._rest_count += count
 
@@ -164,6 +220,12 @@ class FloorData:
         for key in remove_keys:
             self._activated_safe_zones.pop(key)
 
+    def get_floor_map(self):
+        return self._floor.get_map()
+
+    def get_rest_count(self):
+        return self._rest_count
+
     def progress_by_direction(self, direction):
         floor_map = self._floor.get_map()
         dx, dy = COORDS[direction]
@@ -172,6 +234,7 @@ class FloorData:
 
         self._last_direction = self._current_direction
         self._current_direction = direction
+        self._rest_count = 0
 
         # Do map exploration
         if floor_map.set_current_node(next_node, self.party_has_perk('mapping')):
@@ -182,40 +245,40 @@ class FloorData:
 
         # Progress Character stamina. Check for incapacitation.
 
-        for character in self._adventurers:
-            if not character.is_dead() and character.get_stamina() > 0:
-                self.increase_stat(character.get_id(), 5, Refs.gc.get_random_stat_increase())
-                character.walk(Refs.gc.get_stamina_weight() + 1)
-
-        all_asleep = True
-        for character in self._adventurers:
-            if character.is_dead():
-                continue
-            all_asleep &= character.get_stamina() <= 0
-
-        if not all_asleep:
-            if (x, y) not in self._activated_safe_zones and not floor_map.is_marker(EXIT):
-                chance = 15
-                node = None
-                for enemy_id in self._floor.get_enemies().keys():
-                    if floor_map.is_marker(enemy_id):
-                        node = enemy_id
-                        chance += 50
-                        break
-                chance += 20 * self._rest_count
-                self._rest_count = 0
-                print('Chance is ', chance)
-                if randint(1, 100) <= min(100, chance):
-                    self.generate_encounter(node, int(max(0, 100 - chance) / 50))
-                    if node is not None:
-                        # If we are standing on a node, and we get that enemy generated, reduce positions counter
-                        for enemy in self._battle_data.get_enemies():
-                            if enemy.get_id() == node:
-                                if self.party_has_perk('hunter'):
-                                    floor_map.decrease_node_counter(2)
-                                else:
-                                    floor_map.decrease_node_counter(1)
-                                break
+        # for character in self._adventurers:
+        #     if not character.is_dead() and character.get_stamina() > 0:
+        #         self.increase_stat(character.get_id(), 5, Refs.gc.get_random_stat_increase())
+        #         character.walk(Refs.gc.get_stamina_weight() + 1)
+        #
+        # all_asleep = True
+        # for character in self._adventurers:
+        #     if character.is_dead():
+        #         continue
+        #     all_asleep &= character.get_stamina() <= 0
+        #
+        # if not all_asleep:
+        #     if (x, y) not in self._activated_safe_zones and not floor_map.is_marker(EXIT):
+        #         chance = 15
+        #         node = None
+        #         for enemy_id in self._floor.get_enemies().keys():
+        #             if floor_map.is_marker(enemy_id):
+        #                 node = enemy_id
+        #                 chance += 50
+        #                 break
+        #         chance += 20 * self._rest_count
+        #         self._rest_count = 0
+        #         print('Chance is ', chance)
+        #         if randint(1, 100) <= min(100, chance):
+        #             self.generate_encounter(node, int(max(0, 100 - chance) / 50))
+        #             if node is not None:
+        #                 # If we are standing on a node, and we get that enemy generated, reduce positions counter
+        #                 for enemy in self._battle_data.get_enemies():
+        #                     if enemy.get_id() == node:
+        #                         if self.party_has_perk('hunter'):
+        #                             floor_map.decrease_node_counter(2)
+        #                         else:
+        #                             floor_map.decrease_node_counter(1)
+        #                         break
 
     def generate_time_encounter(self, time):
         self._node_time = time
@@ -427,6 +490,30 @@ class FloorData:
     def get_encounter_state(self):
         return self._battle_data.get_state()
 
+    def _generate_battle_characters(self):
+        adventurers = self.get_able_characters()[:4]
+        supporters = []
+
+        for adventurer in adventurers:
+            index = self._adventurers.index(adventurer)
+            supporters.append(self._supporters[index])
+        return adventurers, supporters
+
+    def generate_encounter(self, node_type, extra_boost):
+        self._in_encounter = True
+        self._encounter_count += 1
+        self._battle_data = BattleData(self, *self._generate_battle_characters())
+        self._battle_data.set_state('start')
+        enemies = self._floor.generate_enemies(node_type, extra_boost)
+        self._battle_data.set_enemies(enemies)
+
+    def generate_boss_encounter(self):
+        self._is_boss_fight = True
+        self._encounter_count += 1
+        self._battle_data = BattleData(self, *self._generate_battle_characters(), True)
+        self._battle_data.set_state('battle')
+        self._battle_data.set_enemies(self._floor.generate_boss())
+
     def end_encounter(self):
         self._in_encounter = False
         for item, count in self._battle_data.get_dropped_items().items():
@@ -437,7 +524,7 @@ class FloorData:
             if enemy.get_name() not in self._killed_monsters:
                 self._killed_monsters[enemy.get_name()] = 0
             self._killed_monsters[enemy.get_name()] += 1
-        self._special_amount = self._battle_data.get_special_amount()
+        # self._special_amount = self._battle_data.get_special_amount()
         self._battle_data = None
         if not self._beaten_boss and self._is_boss_fight:
             self._beaten_boss = self._is_boss_fight
@@ -446,64 +533,29 @@ class FloorData:
             character.clear_effects()
         # Award Fam Bonus
         bonuses = Refs.gc.generate_familiarity_bonuses(Refs.gc.get_current_party())
-        for character_id, increases in bonuses.items():
-            for partner_id, amount in increases.items():
-                if partner_id not in self._fam_bonus_increases[character_id]:
-                    self._fam_bonus_increases[character_id][partner_id] = 0
-                self._fam_bonus_increases[character_id][partner_id] += amount
-
-    def generate_encounter(self, node_type, extra_boost):
-        self._in_encounter = True
-        adventurers = []
-        supporters = []
-        for index, adventurer in enumerate(self._adventurers):
-            if not adventurer.is_dead() and adventurer.get_stamina() > 0:
-                adventurers.append(adventurer)
-                if self._supporters[index] is not None:
-                    supporters.append(self._supporters[index])
-        self._battle_data = BattleData(adventurers, supporters, self._special_amount)
-        self._battle_data.set_state('start')
-        enemies = self._floor.generate_enemies(node_type, extra_boost)
-        self._battle_data.set_enemies(enemies)
-
-    def generate_boss_encounter(self):
-        self._in_encounter = True
-        self._is_boss_fight = True
-        adventurers = []
-        supporters = []
-        for index, adventurer in enumerate(self._adventurers):
-            if not adventurer.is_dead() and adventurer.get_stamina() > 0:
-                adventurers.append(adventurer)
-                if self._supporters[index] is not None:
-                    supporters.append(self._supporters[index])
-        self._battle_data = BattleData(adventurers, supporters, self._special_amount, True)
-        self._battle_data.set_state('battle')
-        self._battle_data.set_enemies(self._floor.generate_boss())
-
-    # The characters keep the same special skill charge, health, mana, and status effects encounter to encounter
-    def _generate_characters(self):
-        party = Refs.gc.get_current_party()
-        self._adventurers = []
-        self._supporters = []
-        self._get_supporters = {}
-        self._increases = {}
-        self._fam_bonus_increases = {}
-        self._party_perks = []
-
-        for index in range(8):
-            character = party[index]
-            support = party[index + 8]
-            if character is None:
-                continue
-            self._increases[character.get_id()] = [0 for _ in range(7)]
-            self._fam_bonus_increases[character.get_id()] = {}
-            if support:
-                self._increases[support.get_id()] = [0 for _ in range(7)]
-                self._fam_bonus_increases[support.get_id()] = {}
-            self._adventurers.append(create_battle_character(character, support))
-            self._party_perks += character.get_perks()
-            self._supporters.append(support)
-            self._get_supporters[character.get_id()] = support
+        for char_index, increases in bonuses.items():
+            for partner_index, amount in increases.items():
+                if partner_index not in self._fam_bonus_increases[char_index]:
+                    self._fam_bonus_increases[char_index][partner_index] = 0
+                self._fam_bonus_increases[char_index][partner_index] += amount
 
     def get_battle_data(self):
         return self._battle_data
+
+    def replace_character(self, battle_characters, index):
+        replaced = False
+        for character in self.get_able_characters():
+            if character in battle_characters:
+                continue
+            replaced = True
+            battle_characters[index] = character
+            break
+        if not replaced:
+            battle_characters[index] = None
+        return battle_characters
+
+    def swap_character_order(self, character, other_character):
+        index = self._adventurers.index(character)
+        other_index = self._adventurers.index(other_character)
+        self._adventurers[index] = other_character
+        self._adventurers[other_index] = character

@@ -23,7 +23,7 @@ def get_screen(console, screen_data):
 
     character = floor_data.get_able_characters()[randint(0, len(floor_data.get_able_characters()) - 1)]
     character.take_action(Refs.gc.get_stamina_weight() + 1)
-    floor_data.increase_stat(character.get_id(), 2, Refs.gc.get_random_stat_increase())
+    floor_data.increase_stat(character.get_index(), 2, Refs.gc.get_random_stat_increase())
 
     for enemy, count in counts.items():
         display_text += f'\n\t\t{enemy.get_name()} x {count}:'

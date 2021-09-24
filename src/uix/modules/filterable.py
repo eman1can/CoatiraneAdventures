@@ -38,6 +38,10 @@ class Filterable(object):
         self.dispatch('on_after_filter')
 
     def apply_filter(self, filter_all):
+
+        self.output = self.previews_filter
+        return
+
         if filter_all:
             self.output = []
             self.stage_1_output = []

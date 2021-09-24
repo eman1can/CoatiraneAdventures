@@ -1,6 +1,6 @@
 import os
 
-files = ['../../text_main.py']
+files = ['../../main.py']
 
 imports = []
 

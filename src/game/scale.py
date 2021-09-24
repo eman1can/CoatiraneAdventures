@@ -69,7 +69,7 @@ class Scale:
 
     @staticmethod
     def get_scale_as_image_path(value, max_val):
-        return 'screens/stats/' + Scale.get_scale(value, max_val) + '.png'
+        return 'icons/' + Scale.get_scale(value, max_val) + '.png'
 
     @staticmethod
     def get_scale_as_character(value, max_val):

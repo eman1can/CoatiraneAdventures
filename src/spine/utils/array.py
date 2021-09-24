@@ -18,6 +18,9 @@ class Array:
     def __len__(self):
         return self.size
 
+    def __str__(self):
+        return f'<{self.items}>'
+
     def add(self, value):
         if self.size + 1 >= len(self.items):
             self.resize(max(8, int(self.size * 1.75)))

@@ -3,10 +3,21 @@ from math import ceil
 from random import choices, randint, uniform
 
 from game.battle_enemy import BattleEnemy
+from game.entity import Entity
 from refs import Refs
 
 LEVEL_MULTIPLIER = [1, 1.5, 2, 2.75, 3.5, 4.75, 6, 8, 10]
 NICKNAMES = ['', 'Uncommon ', 'Abnormal ', 'Scary ', 'Freaky ', 'Beastly ', 'Menacing ', 'Nightmarish ', 'World Devouring ']
+
+# - - 1 1 Common - Bronze Background
+# 0 0 2 2 Uncommon - Bronze Background w/ bloody background
+# 1 0 3 3 Abnormal - Bronze Background w/ chaos background
+# 2 0 4 4 Scary - Silver background w/ 2nd stage monster
+# 3 1 5 5 Freaky - Silver background w/ 2nd stage monster and bloody background
+# 4 1 6 0 Beastly - Silver Background w/ 2nd stage monster and chaos background
+# 5 1 4 Menacing - Gold background w/ 2nd stage monster
+# 6 2 5 Nightmarish - Gold background w/ 2nd stage background and bloody background
+# 7 2 6 World Devouring - Gold background w/ 2nd stage background and chaos background
 
 STAT_INDEX = [0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 6, 8, 12]
 HEALTH, STR, MAG, END, AGI, DEX = 0, 1, 2, 3, 4, 5
@@ -17,7 +28,7 @@ class Enemy:
         self._id = identifier
         self._name = name
         self._skel_id = skeleton_id
-        self._skel_path = f'res/enemies/{program_type}/{name.lower()}/{skeleton_id}.skel'
+        self._skel_path = f'res/enemies/{name.lower().replace(" ", "_")}/{skeleton_id}.skel'
 
         self._skills = skills
         self._skill_probabilities = skill_probabilities
@@ -103,5 +114,5 @@ class Enemy:
         hmsmead = [0.0 for _ in range(DEX + 1)]
         for stat in range(DEX + 1):
             hmsmead[stat] = uniform(self._min_hsmead[stat] * multiplier, self._max_hsmead[stat] * multiplier)
-
-        return BattleEnemy(self._id, f'{nickname}{self._name}', self._skel_path, self._attack_type, hmsmead[HEALTH], 0, hmsmead[STR], hmsmead[MAG], hmsmead[END], hmsmead[AGI], hmsmead[DEX], boost, self._element, self._sub_element, self._skills, self._skill_probabilities)
+        entity = Entity(self._id, f'{nickname}{self._name}', self._skel_path, hmsmead[HEALTH], 0, hmsmead[STR], hmsmead[MAG], hmsmead[END], hmsmead[STR], hmsmead[MAG], hmsmead[END], hmsmead[AGI], hmsmead[DEX], self._element, self._skills)
+        return BattleEnemy(entity, boost, self._skill_probabilities, self._sub_element, self._id + str(randint(0, 1000000)))

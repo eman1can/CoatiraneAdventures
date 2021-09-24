@@ -1,18 +1,118 @@
+#:import ResultHud uix.screens.dungeon.result_hud.ResultHud
+
 <DungeonResult>:
-    Label:
-        font_name: 'Precious'
-        font_size: root.height * 0.1
-        size_hint: 0.5, 0.2
-        pos_hint: {'top': 1}
-        text: root.win_message
-        color: 0, 0, 0, 1
     AsyncImage:
+        id: character_image
         source: root.image_source
         allow_stretch: True
-        size_hint: 0.563, 1
-        pos_hint: {'right': 1, 'top': 1}
-    PPCHoverPathButton:
-        path: 'buttons/click_to_continue'
-        on_release: root.goto_dungeon_main()
-        size_hint: 0.3, 0.0762
+        size_hint: None, 1
+        width: self.height * self.image_ratio
+    Label:
+        font_name: 'Gabriola'
+        font_size: self.height * 0.75
+        color: 0, 0, 0, 1
+        text: 'You successfully escaped!'
+        size_hint: 0.4, 0.1
+        pos_hint: {'top': 1}
+    ResultHud:
+        id: result_hud
+        encounter: False
+        on_continue: root.on_display_stats()
+    StatHud:
+        id: stat_hud
+        supports: False
+        opacity: 0
+        disabled: True
+        Label:
+            size_hint: 0.5, 0.1
+            pos_hint: {'x': 0}
+            text: 'Click To Continue...'
+            font_name: 'Gabriola'
+            font_size: self.height * 0.75
+            color: (0, 0, 0, 1)
+        Button:
+            opacity: 0
+            on_release: root.on_stat_continue()
+    StatHud:
+        id: stat_hud_supports
+        supports: True
+        opacity: 0
+        disabled: True
+        Label:
+            size_hint: 0.5, 0.1
+            pos_hint: {'x': 0}
+            text: 'Click To Continue...'
+            font_name: 'Gabriola'
+            font_size: self.height * 0.75
+            color: (0, 0, 0, 1)
+        Button:
+            opacity: 0
+            on_release: root.on_support_stat_continue()
+
+<CharacterStatPreview>:
+    Image:
+        id: frame
+        source: 'preview_square_background.png'
+        size_hint: 1, None
+        height: self.width
+        allow_stretch: True
+        pos_hint: {'top': 1}
+    Image:
+        id: image
+        source: root.image_source
+        size_hint: 1, None
+        height: self.width
+        allow_stretch: True
+        pos_hint: {'top': 1}
+    LayeredImage:
+        id: stats
+        data: root.stat_list_data
+        size_hint: 0.2, 0.375
+        pos_hint: {'top': image.y / root.height}
+    Label:
+        id: stats
+        font_name: 'Gabriola'
+        font_size: self.height / 7
+        color: 0, 0, 0, 1
+        text: root.text
+        size_hint: 0.8, 0.375
+        pos_hint: {'x': 0.2, 'top': image.y / root.height}
+        text_size: self.size
+        halign: 'center'
+    Label:
+        id: fam_bonus
+        font_name: 'Gabriola'
+        font_size: self.height * 0.75
+        color: 0, 0, 0, 1
+        text: 'Familiarity Bonuses'
+        size_hint: 1, 0.05
+        pos_hint: {'top': stats.y / root.height}
+        text_size: self.size
+        halign: 'center'
+    Label:
+        font_name: 'Gabriola'
+        font_size: fam_bonus.height * 0.75
+        color: 0, 0, 0, 1
+        text: 'None'
+        size_hint: 1, None
+        height: fam_bonus.y * 0.5
+        pos_hint: {'top': fam_bonus.y / root.height}
+        text_size: self.size
+        halign: 'center'
+
+
+<FamiliarityIncrease>:
+    Image:
+        id: image
+        source: root.image_source
+        size_hint: None, 1
+        width: self.height
+        allow_stretch: True
+    Label:
+        font_name: 'Gabriola'
+        font_size: '12sp'
+        color: 0, 0, 0, 1
+        text: str(root.amount) + '% → ' + str(root.new_amount) + '%'
+        size_hint: None, 1
+        width: root.width - image.width
         pos_hint: {'right': 1}
