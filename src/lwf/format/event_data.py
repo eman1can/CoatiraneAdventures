@@ -1,6 +1,6 @@
 __all__ = ('Event',)
 
-from lwf.format.string_base import StringBase
+from .string.base import StringBase
 
 
 class Event(StringBase):
@@ -8,4 +8,4 @@ class Event(StringBase):
         super().__init__()
 
     def __str__(self):
-        return f"Event <{self.string}>"
+        return f"Event <{super().__str__()}>"
