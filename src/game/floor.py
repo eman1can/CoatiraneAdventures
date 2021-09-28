@@ -296,7 +296,6 @@ class Map:
         return self._map_radius
 
     def set_radius(self, radius):
-        print('Set Radius', radius)
         self._map_radius = radius
 
     def get_explored(self):
@@ -436,12 +435,9 @@ class Map:
     def _update_path(self, node):
         # Update the path arrays for every defined path
         for layer, layer_route in self._path_solutions.items():
-            print(f'{layer.title()}:')
             for route_end, route in layer_route.items():
-                print(f'\t{node} → {route}')
                 # Color the last pth according to display
                 if self._current_path == layer and self._shortest_key == route_end:
-                    print('Update last path node')
                     if len(route) > 0 and node == route[-1]:
                         self._clear_path_node(node)
                     else:
@@ -485,7 +481,6 @@ class Map:
             self._shortest_key = None
 
     def _clear_path_node(self, node):
-        print('Clear path from', node)
         if self._map_data.get_color(*node) == PATH_COLOR:
             self._map_data.color_node(*node, None)
 
@@ -500,12 +495,9 @@ class Map:
     # Make sure that path type has routes
     def _check_path(self):
         if self._current_path not in self._path_solutions:
-            print(f'{self._current_path.title()}:')
             routes = {}
-            print(f'\t{self._current_node} →')
             for route_end in self._markers[self._current_path]:
                 routes[route_end] = list(reversed(self.solve_path(self._nodes, self._current_node, route_end)))
-                print(f'\t\t→ {routes[route_end]}')
             self._path_solutions[self._current_path] = routes
         # Show the shortest route
         self._calculate_path()
@@ -613,11 +605,9 @@ class MapData:
     def color_node(self, x, y, color):
         prev_color = self._colors[y][x]
         self._colors[y][x] = color
-        print('set', y, x, color)
         return prev_color
 
     def get_color(self, x, y):
-        print('get', y, x, self._colors[y][x])
         return self._colors[y][x]
 
     # Will get the node from the full map

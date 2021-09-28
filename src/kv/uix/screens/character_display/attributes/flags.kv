@@ -16,7 +16,7 @@
 <TypeFlag>:
     Image:
         id: flag
-        source: 'flags/' + root.type + '_flag.png'
+        source: '' if root.element_type == '' else ('flags/' + root.type + '_flag.png')
     Label:
         id: flag_label
         text: root.type.title() + ' Type'
@@ -28,7 +28,7 @@
 <ElementFlag>:
     Image:
         id: flag
-        source: 'flags/' + root.type + '_flag.png'
+        source: '' if root.element_type == '' else ('flags/' + root.type + '_flag.png')
         allow_stretch: True
     Label:
         id: flag_label
@@ -47,7 +47,7 @@
             PopMatrix
     Image:
         id: element
-        source: 'icons/' + root.type + '.png'
+        source: '' if root.element_type == '' else ('icons/' + root.type + '.png')
         allow_stretch: True
         size_hint: 0.375, 0.375
         pos_hint: {'center_x': 0.5, 'center_y': 0.2565}

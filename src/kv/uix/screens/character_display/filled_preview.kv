@@ -84,7 +84,7 @@
         opacity: 0 if root.is_select else 1
         pos_hint: {'center_y': 0.927, 'center_x': 0.94}
         size_hint: 0.12, 0.0375
-        source: 'icons/' + root.element_type + '.png'
+        source: '' if root.element_type == '' else ('icons/' + root.element_type + '.png')
     # STATS
     LayeredImage:
         id: stats
