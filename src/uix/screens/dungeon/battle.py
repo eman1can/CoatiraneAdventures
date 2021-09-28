@@ -489,6 +489,7 @@ class DungeonBattle(Screen):
     def on_fullscreen_map(self):
         new_opacity = 1 - self.ids.map.opacity
         self.ids.map.opacity = new_opacity
+        self.ids.map.disabled = not self.ids.map.disabled
         self.ids.map_action_flags = new_opacity
         self.ids.action_flags.opacity = 1 - new_opacity
 
