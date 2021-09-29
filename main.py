@@ -1,11 +1,19 @@
 __all__ = ('CoatiraneAdventures',)
 
 # Project imports
+import sys
 from datetime import datetime
-from os import mkdir
+from os import mkdir, environ, getcwd
 from os.path import exists, expanduser
 
+# Add src to python path
+base_path = getcwd()
+sys.path.insert(0, f'{base_path}\\src')
+sys.path.insert(0, f'{base_path}\\res')
+environ['KIVY_HOME'] = f'{base_path}\\data'
+
 from loading.config_loader import GAME_VERSION, PROGRAM_TYPE  # import must be first
+
 from refs import Refs
 from loading.base import CALoader
 from modules.game_content import GameContent
@@ -285,8 +293,6 @@ class CoatiraneAdventures(App):
             return eval(d[v].format(x=x, y=y, z=z, w=w, t=t, u=u))
 
 
-if __name__ == "__main__":
-    game = CoatiraneAdventures()
-    game.run()
-    del game
-    quit()
+game = CoatiraneAdventures()
+game.run()
+sys.exit(0)

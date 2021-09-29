@@ -1,9 +1,11 @@
-from os import environ
+import sys
+from os import getcwd, environ
 
-base_path = environ['CA_PATH']
-environ['KIVY_HOME'] = base_path + '/data/'
-
-print('LAUNCHING from', base_path)
+# Add src to python path
+base_path = getcwd()
+sys.path.insert(0, f'{base_path}\\src')
+sys.path.insert(0, f'{base_path}\\res')
+environ['KIVY_HOME'] = f'{base_path}\\data'
 
 from kivy.config import Config
 from kivy.utils import platform
@@ -389,12 +391,9 @@ class Launcher(App):
         return self.rootw
 
 
-if __name__ == "__main__":
-    # Open Launcher
-
-    launcher = Launcher()
-    root_widget = launcher.build()
-    launcher.run()
-    if play_game:
-        quit(0)
-    quit(1)
+launcher = Launcher()
+root_widget = launcher.build()
+launcher.run()
+if play_game:
+    sys.exit(0)
+sys.exit(1)

@@ -1,9 +1,7 @@
 __all__ = ('GAME_VERSION', 'PROGRAM_TYPE',)
 
-from os import environ
-
-base_path = environ['CA_PATH']
-environ['KIVY_HOME'] = base_path + '/data/'
+from os import getcwd
+base_path = getcwd()
 
 from kivy.config import Config
 first_open = Config.get('kivy', 'first_open')
@@ -22,23 +20,6 @@ Logger.info('Loader: set max upload per frame to {}'.format(Loader.max_upload_pe
 if first_open == 'True':
     Config.set('kivy', 'first_open', False)
     Logger.info('CoatiraneAdventures: Detected first opening')
-
-# if platform == 'win':
-#     # Use ctypes to get resolution
-#     import ctypes
-#     GetSystemMetrics = ctypes.windll.user32.GetSystemMetrics
-#     width, height = GetSystemMetrics(0), GetSystemMetrics(1)
-# else:
-#     raise Exception("Running on unsupported Platform!")
-
-    # Logger.info('CoatiraneAdventures: Setting window size')
-    # Config.set('graphics', 'screen_width', width)
-    # Config.set('graphics', 'screen_height', height)
-    # Config.set('graphics', 'width', int(width * 2 / 3))
-    # Config.set('graphics', 'minimum_width', int(width * 2 / 6))
-    # Config.set('graphics', 'height', int(height * 2 / 3))
-    # Config.set('graphics', 'minimum_height', int(height * 2 / 6))
-    # Config.write()
 
 GAME_VERSION = Config.get('coatiraneadventures', 'version')
 PROGRAM_TYPE = Config.get('coatiraneadventures', 'type')
