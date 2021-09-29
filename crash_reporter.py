@@ -1,9 +1,12 @@
 from datetime import datetime
-from os import environ
+from os import environ, getcwd
 import sys, platform
 
-base_path = environ['CA_PATH']
-environ['KIVY_HOME'] = base_path + '/data/'
+# Add src to python path
+base_path = getcwd()
+sys.path.insert(0, f'{base_path}\\src')
+sys.path.insert(0, f'{base_path}\\res')
+environ['KIVY_HOME'] = f'{base_path}\\data'
 
 from kivy.config import Config
 from kivy.utils import platform as operating_system
@@ -162,8 +165,6 @@ class Reporter(App):
         return self.rootw
 
 
-if __name__ == "__main__":
-    # Open Launcher
-    logfile = sys.argv[1]
-    launcher = Reporter(logfile).run()
-
+logfile = sys.argv[1]
+launcher = Reporter(logfile).run()
+sys.exit(0)
