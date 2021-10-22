@@ -71,6 +71,14 @@ class SnapCarousel(Carousel):
             return
         self.load_slide(self.slides[index])
 
-
+    def replace_widget(self, index, widget):
+        if index >= len(self.slides):
+            return False
+        slide = self.slides[index]
+        container = slide.parent
+        container.remove_widget(slide)
+        container.add_widget(widget)
+        self.slides[index] = widget
+        return True
 
 

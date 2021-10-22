@@ -1,6 +1,6 @@
 # UIX Imports
 # Kivy Imports
-from kivy.properties import BooleanProperty
+from kivy.properties import BooleanProperty, StringProperty
 
 # KV Import
 from loading.kv_loader import load_kv
@@ -10,6 +10,10 @@ load_kv(__name__)
 
 
 class Confirm(View):
+    title_text = StringProperty('')
+    description_text = StringProperty('')
+    cancel_text = StringProperty('')
+    confirm_text = StringProperty('')
 
     def __init__(self, **kwargs):
         self.register_event_type('on_confirm')

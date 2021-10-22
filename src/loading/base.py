@@ -17,7 +17,7 @@ from loading.family import load_family_chunk
 from loading.housing import load_housing_chunk
 from loading.floor import load_floor_chunk
 from loading.material import load_material_chunk
-from loading.move import load_move_chunk
+from loading.move import load_skill_chunk
 from loading.perks import load_perk_chunk
 from loading.save import load_save_chunk
 from loading.shop import load_shop_item_chunk
@@ -63,7 +63,7 @@ LOADING_SECTIONS = [
     'Game Data'
 ]
 LOADING_FUNCTIONS = [
-    load_move_chunk,
+    load_skill_chunk,
     load_material_chunk,
     load_crafting_recipe_chunk,
     load_shop_item_chunk,
@@ -94,7 +94,7 @@ LOADING_FILENAMES = [
 ]
 
 DELIMITERS = [
-    '\n',     # Skills/Abilities
+    '\n',     # Skills
     '\n#\n',  # Materials
     '\n#\n',  # Crafting Recipes
     '\n\n',   # Shop Items

@@ -1,6 +1,7 @@
 __all__ = ('Root',)
 
 # Kivy Imports
+from kivy.cache import Cache
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 # Project Imports
 from lists import SCREEN_LIST, SCREEN_NON_WHITELIST, SCREEN_WHITELIST
@@ -12,6 +13,8 @@ class Root(ScreenManager):
         self.app = app
         super().__init__(**kwargs)
 
+        Cache.register('screens', 20, 60 * 10)
+
         self.transition = FadeTransition(duration=0.25)
         self.whitelist = []
         self.list = []
@@ -21,9 +24,9 @@ class Root(ScreenManager):
         self._initialized = True
 
     def make_screens(self):
-        # self._create_screen('select_start')
-        for screen in self.whitelist:
-            self._create_screen(screen)
+        pass
+        # for screen in self.whitelist:
+        #     self._create_screen(screen)
 
     def clean_whitelist(self):
         remove = []
@@ -45,24 +48,15 @@ class Root(ScreenManager):
         del remove
 
     def get_screen(self, screen_name):
-        for screen in self.screens:
-            if screen.name == screen_name:
-                return screen
-        for screen in self.list:
-            if screen.name == screen_name:
-                return screen
-        return None
+        return Cache.get('screens', screen_name)
 
     def display_screen(self, next_screen, direction, track, *args, **kwargs):
         old_screen = None
         if isinstance(next_screen, str):
-            for screen in self.screens:
-                if screen.name == next_screen:
-                    next_screen = screen
-                    next_screen.reload(*args, **kwargs)
-                    break
-            if isinstance(next_screen, str):
-                next_screen = self._create_screen(next_screen, *args, **kwargs)
+            screen = Cache.get('screens', next_screen)
+            if screen is None:
+                screen = self._create_screen(next_screen, *args, **kwargs)
+            next_screen = screen
         if len(self.children) > 0:
             old_screen = self.children[0]
         if not direction:
@@ -74,10 +68,10 @@ class Root(ScreenManager):
                 return
         if next_screen not in self.screens:
             self.add_widget(next_screen)
+        print(next_screen, next_screen.name)
         self.current = next_screen.name
         if old_screen is not None:
-            if old_screen.name not in self.whitelist and old_screen.name not in SCREEN_WHITELIST:
-                self.remove_widget(old_screen)
+            self.remove_widget(old_screen)
             if track:
                 self.list.append(old_screen)
 
@@ -86,6 +80,7 @@ class Root(ScreenManager):
         for screen_option, screen_class in SCREEN_LIST.items():
             if screen_name.startswith(screen_option):
                 screen = screen_class(*args, **kwargs)
+                Cache.append('screens', screen_name, screen)
                 found = True
                 break
         if not found:

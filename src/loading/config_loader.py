@@ -5,6 +5,7 @@ base_path = getcwd()
 
 from kivy.config import Config
 first_open = Config.get('kivy', 'first_open')
+Config.set('graphics', 'resizable', 0)
 
 from kivy.loader import Loader
 Loader.max_upload_per_frame = 3

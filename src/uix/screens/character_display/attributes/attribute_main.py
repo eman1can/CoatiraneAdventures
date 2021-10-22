@@ -1,6 +1,6 @@
 # Project Imports
 # Kivy Imports
-from kivy.properties import DictProperty, ListProperty, ObjectProperty, StringProperty
+from kivy.properties import DictProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
 
 # KV Import
 from game.equipment import BOOTS, CHEST, GLOVES, GRIEVES, HELMET, NECKLACE, RING, VAMBRACES, WEAPON
@@ -14,7 +14,7 @@ load_kv(__name__)
 
 class CharacterAttributeScreen(Screen):
     preview = ObjectProperty(None, allownone=True)
-    char = ObjectProperty(None, allownone=True)
+    char = NumericProperty(-1)
 
     overlay_background_source = StringProperty('stat_background.png')
     overlay_source = StringProperty('stat_background_overlay.png')
@@ -25,6 +25,15 @@ class CharacterAttributeScreen(Screen):
 
     star_data = DictProperty({})
     star_list_data = ListProperty([])
+
+    char_name = StringProperty('')
+    char_display_name = StringProperty('')
+    char_type_flag = StringProperty('')
+    char_attack_flag = StringProperty('')
+    char_element_flag = StringProperty('')
+
+    char_image_source = StringProperty('')
+    char_symbol_source = StringProperty('')
 
     family_name = StringProperty('No Family')
     score = StringProperty('Score: 0')
@@ -38,6 +47,15 @@ class CharacterAttributeScreen(Screen):
 
     def __init__(self, character, preview, **kwargs):
         self.char = character
+        char = Refs.gc.get_char_by_index(character)
+        self.name = 'char_attr_' + char.get_id()
+        self.char_name = char.get_name()
+        self.char_display_name = char.get_display_name()
+        self.char_type_flag = 'Supporter' if char.is_support() else 'Adventurer'
+        self.char_attack_flag = char.get_attack_type_string()
+        self.char_element_flag = char.get_element_string()
+        self.char_image_source = char.get_image('full')
+        self.char_symbol_source = char.get_image('symbol')
         self.preview = preview
         super().__init__(**kwargs)
         self.update_stars()
@@ -55,14 +73,16 @@ class CharacterAttributeScreen(Screen):
     #     return False
 
     def on_image_preview(self):
-        Refs.gs.display_screen('image_preview_' + self.char.get_id(), True, True, char=self.char)
+        char = Refs.gc.get_char_by_index(self.char)
+        Refs.gs.display_screen('image_preview_' + char.get_id(), True, True, self.char)
 
     def on_leave(self, *args):
         if self.skills_switch_text == 'Status':
             self.on_skills_switch()
 
     def on_status_board(self):
-        Refs.gs.display_screen('status_board_' + self.char.get_id(), True, True, char=self.char)
+        char = Refs.gc.get_char_by_index(self.char)
+        Refs.gs.display_screen('status_board_' + char.get_id(), True, True, self.char)
 
     def on_skills_switch(self):
         if self.skills_switch_text == 'Skills':
@@ -75,16 +95,19 @@ class CharacterAttributeScreen(Screen):
         self.ids.skillslist.update_from_scroll()
 
     def on_change_equip(self):
-        Refs.gs.display_screen('equipment_change_' + self.char.get_id(), True, True, self.char)
+        char = Refs.gc.get_char_by_index(self.char)
+        Refs.gs.display_screen('equipment_change_' + char.get_id(), True, True, char=self.char)
 
     def goto_char_attr(self, direction):
-        next_char = Refs.gc.get_next_char(self.char, direction)
+        next_char_index = Refs.gc.get_next_char(self.char, direction)
+        next_char = Refs.gc.get_char_by_index(next_char_index)
         Refs.gs.display_screen('char_attr_' + next_char.get_id(), True, False, next_char, self.preview)
 
     def update_stars(self):
-        if self.char is not None:
+        if self.char != -1:
+            char = Refs.gc.get_char_by_index(self.char)
             for index in range(1, 11):
-                if not self.make_star(self.char, index, index):
+                if not self.make_star(char, index, index):
                     break
         self.star_list_data = self.star_data.values()
 
@@ -112,22 +135,24 @@ class CharacterAttributeScreen(Screen):
             return False
 
     def update_info(self):
-        if self.char is None:
+        if self.char == -1:
             return
-        self.family_name = str(self.char.get_family()) + " Family"
-        self.score = "Score: " + str(self.char.get_score())
-        self.floor_depth = "Floor Depth: " + str(self.char.get_floor_depth())
-        self.race = "Race: " + str(self.char.get_race())
-        self.worth = "Worth: " + str(self.char.get_worth())
-        self.monsters_slain = "Monsters Slain: " + str(self.char.get_monsters_killed())
-        self.gender = "Gender: " + str(self.char.get_gender())
-        self.high_dmg = "High Dmg.: " + str(self.char.get_high_damage())
-        self.people_slain = "People Slain: " + str(self.char.get_people_killed())
+        char = Refs.gc.get_char_by_index(self.char)
+        self.family_name = str(char.get_family()) + " Family"
+        self.score = "Score: " + str(char.get_score())
+        self.floor_depth = "Floor Depth: " + str(char.get_floor_depth())
+        self.race = "Race: " + str(char.get_race())
+        self.worth = "Worth: " + str(char.get_worth())
+        self.monsters_slain = "Monsters Slain: " + str(char.get_monsters_killed())
+        self.gender = "Gender: " + str(char.get_gender())
+        self.high_dmg = "High Dmg.: " + str(char.get_high_damage())
+        self.people_slain = "People Slain: " + str(char.get_people_killed())
 
     def update_items(self):
         if self.char is None:
             return
-        outfit = self.char.get_equipment()
+        char = Refs.gc.get_char_by_index(self.char)
+        outfit = char.get_equipment()
         self.ids.weapon.item = outfit.get_equipment(WEAPON)
         self.ids.necklace = outfit.get_equipment(NECKLACE)
         self.ids.ring = outfit.get_equipment(RING)
@@ -151,6 +176,9 @@ class CharacterAttributeScreen(Screen):
         #TODO: Reload equipment?
         self.update_items()
         #TODO: Call Dungeon Main Reload
-        Refs.gs.get_screen('dungeon_main').reload()
-        Refs.gs.get_screen('select_char').reload()
-
+        dungeon_main = Refs.gs.get_screen('dungeon_main')
+        if dungeon_main is not None:
+            dungeon_main.reload()
+        select = Refs.gs.get_screen('select_char')
+        if select is not None:
+            select.reload()

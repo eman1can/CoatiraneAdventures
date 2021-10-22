@@ -636,13 +636,13 @@
       "f": {
         "p_h": {
           "center_y": "0.9275",
-          "center_x": "0.5"
+          "center_x": "0.45"
         }
       },
       "sd": {
         "p_h": {
           "center_y": "0.9275",
-          "center_x": "0.80"
+          "center_x": "0.70"
         }
       }
     },

@@ -1,10 +1,10 @@
 <CustomSlot>:
     AsyncImage:
         id: background
-        source: 'screens/status/slot_' + str(root.type) + '_background.png'
+        source: 'buttons/slot_' + str(root.type) + '_background.png'
     AsyncImage:
         id: unlocked_overlay
-        source: 'screens/status/slot_unlocked_overlay.png'
+        source: 'buttons/slot_unlocked_overlay.png'
         opacity: 0 if root.locked else 1
     Label:
         id: label_letter
@@ -26,17 +26,17 @@
         font_name: 'Gabriola'
     AsyncImage:
         id: hover_overlay
-        source: 'screens/status/slot_hover_overlay.png'
+        source: 'buttons/slot_hover_overlay.png'
         opacity: 0 if root.disabled else 0 if not root.locked else 1 if root.hover else 0
     AsyncImage:
         id: disabled_overlay
-        source: 'screens/status/slot_disabled_overlay.png'
+        source: 'buttons/slot_disabled_overlay.png'
         opacity: 0 if not root.locked else 1 if root.disabled else 0
     PPCHoverPathButton:
         id: button
-        collision_source: 'screens/status/slot_collide.png'
+        collision_source: 'buttons/slot_collide.png'
         disabled: root.disabled
         opacity: 0
         on_release: root.dispatch('on_unlock')
-        on_hover_enter: root.hover = True
-        on_hover_exit: root.hover = False
+#        on_hover_enter: root.hover = True
+#        on_hover_exit: root.hover = False

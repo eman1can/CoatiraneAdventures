@@ -1,0 +1,135 @@
+#:import Gradient modules.gradient.Gradient
+
+<ProfileMain>:
+    name: 'profile_main'
+    PPCHoverPathButton:
+        id: back_button
+        path: 'buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    Label:
+        id: name_label
+        size_hint: None, 0.125
+        width: self.texture_size[0]
+        pos_hint: {'x': 0.025, 'top': 0.875}
+        font_size: '60pt'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: root.name_string
+    Image:
+        id: gender_image
+        size_hint: None, None
+        width: self.height
+        height: name_label.height / 2
+        pos_hint: {'top': 0.875}
+        x: name_label.right
+        source: root.gender_source
+    Image:
+        id: domain_image
+        size_hint: None, None
+        width: name_label.width / 2
+        height: self.width
+        pos_hint: {'x': 0.025}
+        y: name_label.y - self.height
+        source: root.domain_source
+    Label:
+        id: domain_description
+        size_hint: 0.5, None
+        height: self.texture_size[1]
+        text_size: self.width, None
+        pos: domain_image.right, domain_image.top - self.height
+        font_size: '36sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: root.domain_desc
+    Label:
+        id: domain_stats
+        size_hint: 0.5, None
+        height: self.texture_size[1]
+        text_size: self.width, None
+        pos: domain_image.x, domain_image.y - self.height
+        font_size: '36sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: root.domain_stats
+    Label:
+        id: renown
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'top': 0.4, 'x': 0.025}
+        font_size: '36sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: 'Renown - '
+    Image:
+        id: renown_icon
+        size_hint: None, None
+        height: renown.height
+        width: self.height
+        pos: renown.right, renown.y
+        source: root.renown_source
+    Label:
+        id: info
+        size_hint: None, None
+        size: self.texture_size
+        pos: renown.x, renown.y - self.height
+        font_size: '36sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: root.info_desc
+    RelativeLayout:
+        size_hint: 0.35, 0.75
+        pos_hint: {'x': 0.6, 'y': 0.2}
+        canvas.before:
+            Rectangle:
+                size: self.size
+                pos: self.pos
+                texture: Gradient.center_drop(self.width, self.height, (0, 0, 0, 255), (0, 0, 0, 0))
+        ScrollView:
+            size_hint: 0.9, 0.9
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            GridLayout:
+                id: scroll
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+
+    Label:
+        id: info
+        size_hint: 0.35, 0.75
+        pos_hint: {'x': 0.6, 'y': 0.2}
+        font_size: '36sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: 'No Perks Unlocked'
+        opacity: 0 if root.perks_visible else 1
+    Button:
+        size_hint: 0.3, 0.1
+        pos_hint: {'x': 0.625, 'y': 0.05}
+        font_size: '36sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: 'View Skill Tree'
+        on_release: root.on_skill_tree()
+
+
+<TreeLabel>:
+    font_size: '36sp'
+    font_name: 'Precious'
+    color: 0, 0, 0, 1
+    size_hint: None, None
+    size: self.texture_size[0], self.texture_size[1] * 1.5
+
+<PerkLabel>:
+    font_size: '24sp'
+    font_name: 'Precious'
+    color: 0, 0, 0, 1
+    size_hint: None, None
+    size: self.texture_size[0], self.texture_size[1] * 1.5
+
+<CharacterList>:
+    size_hint: 1, None
+    BoxLayout:
+        id: images
+        orientation: 'horizontal'

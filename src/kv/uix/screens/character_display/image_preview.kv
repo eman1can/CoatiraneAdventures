@@ -1,12 +1,11 @@
 <ImagePreview>:
-    name: 'image_preview_unassigned' if root.char is None else 'image_preview_' + str(root.char.get_id())
     Image:
         id: background
         source: root.background_source
         allow_stretch: True
     Image:
         id: char_image
-        source: '' if root.char is None else root.char.get_image('inspect')
+        source: root.char_image_source
         allow_stretch: True
     PPCHoverPathButton:
         id: back_button

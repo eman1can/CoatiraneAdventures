@@ -1,18 +1,18 @@
 <TavernMain>
     name: 'tavern_main'
     background_source: 'tavern_background.png'
-    Label:
-        id: title
-        size_hint: (None, None)
-        markup: True
-        text: '[b]Recruitment[/b]'
-        font_name: 'Precious.ttf'
-        size: self.texture_size
-        color: app.get_dkey('tas.t c')
-        outline_width: app.get_dkey('tas.t ow')
-        outline_color: app.get_dkey('tas.t oc')
-        font_size: app.get_dkey('tas.t fs', root.width)
-        pos_hint: app.get_dkey('tas.t p_h')
+#    Label:
+#        id: title
+#        size_hint: (None, None)
+#        markup: True
+#        text: '[b]Recruitment[/b]'
+#        font_name: 'Precious.ttf'
+#        size: self.texture_size
+#        color: app.get_dkey('tas.t c')
+#        outline_width: app.get_dkey('tas.t ow')
+#        outline_color: app.get_dkey('tas.t oc')
+#        font_size: app.get_dkey('tas.t fs', root.width)
+#        pos_hint: app.get_dkey('tas.t p_h')
     PPCHoverPathButton:
         id: recruit_button
         collision_source: 'buttons/largebutton.collision.png'
@@ -26,26 +26,24 @@
         size_hint: app.get_dkey('tas.rb s_h', root.width)
         pos_hint: app.get_dkey('tas.rb p_h', root.width, root.height)
     PPCHoverPathButton:
-        id: recruit_button
+        id: relax_button
         collision_source: 'buttons/largebutton.collision.png'
         path: 'buttons/blank_button'
         font_name: 'Precious.ttf'
-        text: 'Chat'
-        disabled: True
-        on_release: root.on_recruit()
+        text: 'Relax'
+        on_release: root.on_relax()
         label_color: app.get_dkey('tas.rb lc')
         label_padding: app.get_dkey('tas.rb lp', root.width)
         font_size: app.get_dkey('tas.rb fs', root.width)
         size_hint: app.get_dkey('tas.rb s_h', root.width)
         pos_hint: {"center_x": 0.25, "y": 0.1}
     PPCHoverPathButton:
-        id: recruit_button
+        id: chat_button
         collision_source: 'buttons/largebutton.collision.png'
         path: 'buttons/blank_button'
         font_name: 'Precious.ttf'
-        text: 'Get Info'
-        disabled: True
-        on_release: root.on_recruit()
+        text: 'Chat'
+        on_release: root.on_chat()
         label_color: app.get_dkey('tas.rb lc')
         label_padding: app.get_dkey('tas.rb lp', root.width)
         font_size: app.get_dkey('tas.rb fs', root.width)

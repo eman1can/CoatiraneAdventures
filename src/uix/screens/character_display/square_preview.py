@@ -47,48 +47,49 @@ class SquareCharacterPreview(RelativeLayout):
         super().__init__(**kwargs)
 
     def on_stat_type(self, *args):
-        if self.character is None:
+        if self.character == -1:
             return
+        character = Refs.gc.get_char_by_index(self.character)
         if self.stat_type == 'Strength':
             self.stat_image_source = 'icons/str.png'
             self.stat_text = 'Str.'
-            self.stat_number = self.character.get_strength()
+            self.stat_number = character.get_strength()
         elif self.stat_type == 'Magic':
             self.stat_image_source = 'icons/mag.png'
             self.stat_text = 'Mag.'
-            self.stat_number = self.character.get_magic()
+            self.stat_number = character.get_magic()
         elif self.stat_type == 'Endurance':
             self.stat_image_source = 'icons/end.png'
             self.stat_text = 'End.'
-            self.stat_number = self.character.get_endurance()
+            self.stat_number = character.get_endurance()
         elif self.stat_type == 'Dexterity':
             self.stat_image_source = 'icons/dex.png'
             self.stat_text = 'Dex.'
-            self.stat_number = self.character.get_dexterity()
+            self.stat_number = character.get_dexterity()
         elif self.stat_type == 'Agility':
             self.stat_image_source = 'icons/agi.png'
             self.stat_text = 'Agi.'
-            self.stat_number = self.character.get_agility()
+            self.stat_number = character.get_agility()
         elif self.stat_type == 'Health':
-            self.stat_image_source = 'icons/health.png'
+            self.stat_image_source = 'icons/hea.png'
             self.stat_text = 'Hp.'
-            self.stat_number = self.character.get_health()
+            self.stat_number = character.get_health()
         elif self.stat_type == 'Mana':
-            self.stat_image_source = 'icons/mana.png'
+            self.stat_image_source = 'icons/mna.png'
             self.stat_text = 'Mana'
-            self.stat_number = self.character.get_mana()
+            self.stat_number = character.get_mana()
         elif self.stat_type == 'Phy. Atk':
-            self.stat_image_source = 'icons/physicalattack.png'
+            self.stat_image_source = 'icons/patk.png'
             self.stat_text = 'Phy. Atk'
-            self.stat_number = self.character.get_phyatk()
+            self.stat_number = character.get_phyatk()
         elif self.stat_type == 'Mag. Atk':
-            self.stat_image_source = 'icons/magicalattack.png'
+            self.stat_image_source = 'icons/matk.png'
             self.stat_text = 'Mag. Atk'
-            self.stat_number = self.character.get_magatk()
+            self.stat_number = character.get_magatk()
         elif self.stat_type == 'Defense':
-            self.stat_image_source = 'icons/defense.png'
+            self.stat_image_source = 'icons/def.png'
             self.stat_text = 'Def.'
-            self.stat_number = self.character.get_defense()
+            self.stat_number = character.get_defense()
         elif self.stat_type == 'Party':
             self.stat_text = ''
             self.stat_number = 0.0
@@ -99,16 +100,16 @@ class SquareCharacterPreview(RelativeLayout):
             self.stat_image_source = ''
         elif self.stat_type == 'Name':
             self.stat_image_source = ''
-            self.stat_text = self.character.get_name()
+            self.stat_text = character.get_name()
             self.stat_number = 0.0
         elif self.stat_type == 'Score':
             self.stat_text = 'Score'
             self.stat_image_source = ''
-            self.stat_number = self.character.get_score()
+            self.stat_number = character.get_score()
         elif self.stat_type == 'Worth':
             self.stat_text = 'Worth'
             self.stat_image_source = ''
-            self.stat_number = self.character.get_worth()
+            self.stat_number = character.get_worth()
         self.update_overlay()
 
     def update_stars(self):
@@ -142,7 +143,8 @@ class SquareCharacterPreview(RelativeLayout):
             return False
 
     def on_character(self, *args):
-        self.char_image_source = self.character.get_image('preview')
+        character = Refs.gc.get_char_by_index(self.character)
+        self.char_image_source = character.get_image('preview')
         self.on_stat_type()
         self.update_overlay()
 

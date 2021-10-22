@@ -19,16 +19,16 @@ class EquipmentSlot(RelativeLayout):
 
 
 class DisplayEquipmentSlot(EquipmentSlot):
-    background_source = StringProperty('screens/attributes/equipment.png')
+    background_source = StringProperty('equipment.png')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
 
 class DetailEquipmentSlot(EquipmentSlot):
-    background_source = StringProperty('screens/equip/background.png')
-    slot_source = StringProperty('screens/equip/slot.png')
-    list_source = StringProperty('screens/equip/list.png')
+    background_source = StringProperty('background.png')
+    slot_source = StringProperty('slot.png')
+    list_source = StringProperty('list.png')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -44,6 +44,6 @@ class DurabilityBar(RelativeLayout):
     foreground_source = StringProperty('')
 
     def __init__(self, **kwargs):
-        self.background_source = 'screens/stats/progress_background.png'
-        self.foreground_source = 'screens/stats/progress_foreground.png'
+        self.background_source = 'progress_background.png'
+        self.foreground_source = 'progress_foreground.png'
         super().__init__(**kwargs)

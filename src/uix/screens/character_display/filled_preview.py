@@ -374,7 +374,7 @@ class FilledCharacterPreview(RelativeLayout):
     def handle_right_click(self, is_support):
         if not self.is_click_valid() or self.is_select:
             return
-        # self.dispatch('on_attr', is_support)
+        self.dispatch('on_attr', is_support)
 
     def handle_long_click(self, is_support):
         if self.is_select:

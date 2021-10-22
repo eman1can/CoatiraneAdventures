@@ -1,0 +1,131 @@
+<SkillTreeMain>:
+    name: 'skill_tree_main'
+    PPCHoverPathButton:
+        id: back_button
+        path: 'buttons/back'
+        size_hint: app.get_dkey('bb s_h')
+        pos_hint: app.get_dkey('bb p_h')
+        on_release: root.on_back_press()
+    RelativeLayout:
+        size_hint: 0.048, 1
+        Label:
+            id: level4_left
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'center_y': 0.6875, 'right': 1}
+            font_size: '36sp'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: '105'
+        Label:
+            id: level3_left
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'center_y': 0.5625, 'right': 1}
+            font_size: '36sp'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: '21'
+        Label:
+            id: level2_left
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'center_y': 0.4375, 'right': 1}
+            font_size: '36sp'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: '3'
+        Label:
+            id: level1_left
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'center_y': 0.3125, 'right': 1}
+            font_size: '36sp'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: '1'
+    StackLayout:
+        id: tree_titles
+        size_hint: 0.904, 0.1
+        pos_hint: {'x': 0.048, 'y': 0.75}
+    StackLayout:
+        id: perk_grid
+        size_hint: 0.904, 0.5
+        pos_hint: {'x': 0.048, 'center_y': 0.5}
+    RelativeLayout:
+        size_hint: 0.048, 1
+        pos_hint: {'right': 1}
+        Label:
+            id: level4_right
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'center_y': 0.6875}
+            font_size: '36sp'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: '105'
+        Label:
+            id: level3_right
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'center_y': 0.5625}
+            font_size: '36sp'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: '21'
+        Label:
+            id: level2_right
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'center_y': 0.4375}
+            font_size: '36sp'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: '3'
+        Label:
+            id: level1_right
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'center_y': 0.3125}
+            font_size: '36sp'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: '1'
+    Label:
+        id: perk_points
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_x': 0.5, 'center_y': 0.125}
+        font_size: '36sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: 'You have x perk points'
+
+
+<PerkBox>:
+    canvas.before:
+        Rectangle:
+            size: self.width * 0.9, self.height * 0.9
+            pos: self.width * 0.05, self.height * 0.05
+            texture: Gradient.center_drop(self.width, self.height, self.color, self.color_fade, 10)
+    Label:
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        text_size: root.width * 0.75, root.height * 0.75
+
+        halign: 'center'
+        valign: 'middle'
+
+        font_size: '24sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: root.text
+    Image:
+        source: 'icons/lock.png'
+        size_hint: 0.25, 0.25
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        opacity: 1 if not root.active else 0
+    Button:
+        opacity: 0
+        on_release: root.on_perk_info()

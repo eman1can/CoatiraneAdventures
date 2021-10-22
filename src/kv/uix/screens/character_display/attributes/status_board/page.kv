@@ -5,13 +5,13 @@
         locked: root.grid_locked
         unlocked: root.ability_slot_unlocked
         set: root.ability_slot_unlocked
-        name: '' if root.ability is None else root.ability.name
+        name: root.ability_name
         size_hint: 0.25, 0.111
         pos_hint: {'x': 0, 'top': 0.9}
         on_touch: root.on_ability_open()
     SkillBox:
         id: skill_box
-        name: '' if root.skill is None else root.skill.name
+        name: root.skill_name
         opacity: 1 if root.skill_slot else 0
         locked: root.grid_locked
         unlocked: root.skill_slot_unlocked

@@ -30,7 +30,7 @@ def get_screen(console, screen_data):
     if Refs.gc.get_housing().get_bill_due() < 0:
         display_text += f'\n\t{RED_C}Your housing bill is overdue!{END_OPT_C}\n'
     elif Refs.gc.get_housing().get_bill_due() < 5:
-        display_text += f'\n\t{RED_C}Your housing bill is due in {Refs.gc.get_housing().bill_due()} days.{END_OPT_C}\n'
+        display_text += f'\n\t{RED_C}Your housing bill is due in {Refs.gc.get_housing().get_bill_due()} days.{END_OPT_C}\n'
     display_text += f'\n\t{OPT_C}0:{END_OPT_C} Tavern'
     if Refs.gc.is_tavern_locked():
         display_text += ' - LOCKED'

@@ -15,7 +15,7 @@ ATTACK_TYPE  = 9
 ELEMENT      = 10
 
 
-def load_move_chunk(line, loader, program_type, callbacks):
+def load_skill_chunk(line, loader, program_type, callbacks):
     values = [x.strip() for x in line.split('*')]
     skill_id = int(values[ID])
     name = values[NAME]

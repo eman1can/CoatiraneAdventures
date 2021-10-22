@@ -181,6 +181,9 @@ class CoatiraneAdventures(App):
         self._screen_manager.display_screen(self._end_screen, True, False)
         self._screen_manager.opacity = 1
 
+    def reset_loader(self):
+        self._loader.reset()
+
     def get_manager(self):
         return self._screen_manager
 

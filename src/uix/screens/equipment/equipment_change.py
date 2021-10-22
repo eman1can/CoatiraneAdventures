@@ -19,37 +19,27 @@ class EquipmentChange(Screen):
 
     portrait_source = StringProperty('')
 
-    weapon = ObjectProperty(None, allownone=True)
-    helmet = ObjectProperty(None, allownone=True)
-    chest = ObjectProperty(None, allownone=True)
-    grieves = ObjectProperty(None, allownone=True)
-    boots = ObjectProperty(None, allownone=True)
-    vambraces = ObjectProperty(None, allownone=True)
-    gloves = ObjectProperty(None, allownone=True)
-    necklace = ObjectProperty(None, allownone=True)
-    ring = ObjectProperty(None, allownone=True)
-
-    def __init__(self, **kwargs):
+    def __init__(self, char, **kwargs):
+        self.char = char
         super().__init__(**kwargs)
 
-    def on_char(self, instance, value):
+    def on_kv_post(self, base_widget):
         if self.char == -1:
             self.name = 'equipment_change_unassigned'
-            self.weapon = self.helmet = self.chest = self.grieves = self.boots = self.vambraces = self.gloves = self.necklace = self.ring = None
         else:
             char = Refs.gc.get_char_by_index(self.char)
             self.name = f'equipment_change_{char.get_id()}'
             self.portrait_source = char.get_image('portrait')
             outfit = char.get_equipment()
-            self.weapon = outfit.get_equipment('weapon')
-            self.helmet = outfit.get_equipment('helmet')
-            self.chest = outfit.get_equipment('chest')
-            self.grieves = outfit.get_equipment('grieves')
-            self.boots = outfit.get_equipment('boots')
-            self.vambraces = outfit.get_equipment('vambraces')
-            self.gloves = outfit.get_equipment('gloves')
-            self.necklace = outfit.get_equipment('necklace')
-            self.ring = outfit.get_equipment('ring')
+            self.ids.weapon.item = outfit.get_equipment(WEAPON)
+            self.ids.helmet.item = outfit.get_equipment(HELMET)
+            self.ids.chest.item = outfit.get_equipment(CHEST)
+            self.ids.grieves.item = outfit.get_equipment(GRIEVES)
+            self.ids.boots.item = outfit.get_equipment(BOOTS)
+            self.ids.vambraces.item = outfit.get_equipment(VAMBRACES)
+            self.ids.gloves.item = outfit.get_equipment(GLOVES)
+            self.ids.necklace.item = outfit.get_equipment(NECKLACE)
+            self.ids.ring.item = outfit.get_equipment(RING)
 
     def goto_equipment_change(self, direction):
         next_char = Refs.gc.get_next_char(self.char, direction)

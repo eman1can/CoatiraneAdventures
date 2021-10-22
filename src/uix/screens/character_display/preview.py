@@ -56,7 +56,7 @@ class CharacterPreview(ScreenManager):
             character = Refs.gc.get_char_by_index(self.support)
         else:
             character = Refs.gc.get_char_by_index(self.character)
-        Refs.gs.display_screen('char_attr_' + character.get_id(), True, True, self, is_support)
+        Refs.gs.display_screen('char_attr_' + character.get_id(), True, True, character.get_index(), self)
 
     def on_remove(self, preview, is_support):
         if is_support:

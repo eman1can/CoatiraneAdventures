@@ -117,7 +117,8 @@ class Character(Entity):
         self._slide_support = f'{res_path}_slide_support.png'
         self._bustup = f'{res_path}_bustup.png'
         self._portrait = f'{res_path}_portrait.png'
-        self._symbol = Refs.gc.get_symbol()
+        symbol = Refs.gc.get_symbol().split('_')[-1]
+        self._symbol = f'family/symbols/{symbol}.png'
 
         self._rank = -1
         self._ranks = None
@@ -255,6 +256,8 @@ class Character(Entity):
             return self._full
         elif image_type == 'portrait':
             return self._portrait
+        elif image_type == 'symbol':
+            return self._symbol
         else:
             return self._inspect
 

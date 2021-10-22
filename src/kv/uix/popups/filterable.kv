@@ -1,11 +1,13 @@
-<FilterButton@PPCHoverPathButton>:
+#:import LayeredImage modules.layered_image.LayeredImage
+
+<FilterButton@PPCHoverPathToggleButton>:
     path: 'buttons/long_toggle'
-#    size_hint: app.get_dkey('fw.fb s_h')
+    size_hint: 1, 1
     state: 'down'
-#    font_size: app.get_dkey('sw.bu fs', root.height)
     color: 0, 0, 0, 1
+    font_size: '30sp'
     font_name: 'Gabriola'
-    font_size: '30pt'
+
 
 <FilterPopup>:
     id: filter
@@ -32,64 +34,60 @@
         Label:
             id: title
             text: 'Filter'
+            size_hint: 1, 0.1868
             font_name: 'Precious'
             color: 0, 0, 0, 1
-            font_size: '60pt'
-            size_hint: 1, 0.1868
+            font_size: '60sp'
 #            color: app.get_dkey('fw.t c')
 #            font_size: app.get_dkey('fw.t fs', root.height)
 #            size_hint: app.get_dkey('fw.t s_h')
 #            height: self.texture_size[1]
         RelativeLayout:
             id: space
-            size_hint: 1, 0.1174
+            size_hint: 1, 0.093
             PPCHoverPathButton:
                 id: apply_filter
                 text: 'Apply Filter'
                 path: 'buttons/long_stat'
                 color: 0, 0, 0, 1
                 font_name: 'Gabriola'
-                size_hint: 0.15, 1
+                size_hint: 0.2, 1
                 pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-    #            size_hint: app.get_dkey('fw.fb s_h')
+#                size_hint: app.get_dkey('fw.fb s_h')
     #            font_size: app.get_dkey('fw.fb fs', root.height)
-    #            pos_hint: app.get_dkey('fw.fb p_h', root.height)
+#                pos_hint: app.get_dkey('fw.fb p_h', root.height)
         GridLayout:
             rows: 1
             cols: 3
+            size_hint: 1, 0.0768
             Label:
                 id: type_label
                 text: 'By Type'
                 font_name: 'Precious'
                 color: app.get_dkey('fw.ot c')
-                size_hint: 0.275, 1
                 font_size: '30pt'
-#                size_hint: app.get_dkey('fw.ot s_h')
-#                size: self.texture_size
-#                font_size: app.get_dkey('fw.ot fs', root.height)
+                size_hint: 0.275, 1
             Image:
                 id: type_overlay_bar
                 allow_stretch: True
-                source: 'screens/stats/overlay_bar.png'
+                source: 'overlay_bar.png'
                 size_hint: 0.475, 1
-#                size_hint: app.get_dkey('fw.ob s_h')
             Widget:
                 size_hint: 0.275, 1
         GridLayout:
             id: layout_type
             cols: 5
-            rows: 2
-            size_hint: 1, 0.125
-#            size_hint: app.get_dkey("fw.ols s_h")
+            size_hint: 1, 0.093
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 1, 0.25
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
             FilterButton:
                 id: magical
                 text: 'Magical'
                 on_release: root.modify_filtering(self.text)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
-#                font_size: app.get_dkey('fw.bu fs', root.height)
-#                label_padding: app.get_dkey('fw.bu lp', self.height)
             FilterButton:
                 id: physical
                 text: 'Physical'
@@ -129,10 +127,11 @@
         GridLayout:
             cols: 3
             rows: 1
+            size_hint: 1, 0.0768
             Label:
                 id: element_label
                 text: 'By Element'
-                font_name: 'Precious.ttf'
+                font_name: 'Precious'
                 color: app.get_dkey('fw.ot c')
                 font_size: '30pt'
                 size_hint: 0.275, 1
@@ -151,7 +150,7 @@
             id: layout_element
             cols: 5
             rows: 2
-            size_hint: 1, 0.25
+            size_hint: 1, 0.1862
             FilterButton:
                 id: light
                 text: 'Light'
@@ -218,10 +217,11 @@
         GridLayout:
             cols: 3
             rows: 1
+            size_hint: 1, 0.0768
             Label:
                 id: rank_label
                 text: 'By Rank'
-                font_name: 'Precious.ttf'
+                font_name: 'Precious'
                 color: app.get_dkey('fw.ot c')
                 size_hint: 0.275, 1
                 font_size: '30pt'
@@ -240,314 +240,84 @@
             id: rank_element
             cols: 5
             rows: 2
-            size_hint: 1, 0.25
+            size_hint: 1, 0.1862
             FilterButton:
                 id: rank_1
                 on_release: root.modify_filtering(1)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_1_stars
             FilterButton:
                 id: rank_2
                 on_release: root.modify_filtering(2)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_2_stars
             FilterButton:
                 id: rank_3
                 on_release: root.modify_filtering(3)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_3_stars
             FilterButton:
                 id: rank_4
                 on_release: root.modify_filtering(4)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'icons/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_4_stars
             FilterButton:
                 id: rank_5
                 on_release: root.modify_filtering(5)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5025, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6615, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_5_stars
             FilterButton:
                 id: rank_6
                 on_release: root.modify_filtering(6)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.4936, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6704, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_6_stars
             FilterButton:
                 id: rank_7
                 on_release: root.modify_filtering(7)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.46275, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5025, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6615, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.70125, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_7_stars
             FilterButton:
                 id: rank_8
                 on_release: root.modify_filtering(8)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.4583, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.4936, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6704, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.7057, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_8_stars
             FilterButton:
                 id: rank_9
                 on_release: root.modify_filtering(9)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.423, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.46275, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5025, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.54225, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.582, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.62175, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6615, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.70125, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.741, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_9_stars
             FilterButton:
                 id: rank_10
                 on_release: root.modify_filtering(10)
-#                path: 'buttons/long_toggle'
-#                toggle_enabled: True
-#                toggle_state: True
                 RelativeLayout:
                     size: self.parent.size
                     pos: self.parent.pos
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.423, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.4583, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.4936, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5289, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5642, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.5998, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6351, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.6704, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.7057, 'center_y': 0.5}
-                    Image:
-                        source: 'screens/stats/star.png'
-                        size_hint: 0.226, 0.6
-                        pos_hint: {'center_x': 0.741, 'center_y': 0.5}
+                    LayeredImage:
+                        id: rank_10_stars

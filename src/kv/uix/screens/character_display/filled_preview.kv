@@ -16,24 +16,30 @@
     Image:
         id: background
         source: root.background_source
+        allow_stretch: True
     AsyncImage:
         id: char_image
         source: root.char_image_source
+        allow_stretch: True
     Image:
         id: support_background
         opacity: 0 if root.support == -1 else 1
         source: root.support_background_source
+        allow_stretch: True
     AsyncImage:
         id: support_image
         opacity: 0 if root.support == -1 else 1
         source: root.support_image_source
+        allow_stretch: True
     Image:
         id: overlay
         source: root.overlay_source
+        allow_stretch: True
     Image:
         id: support_overlay
         opacity: 0 if root.support == -1 else 1
         source: root.support_overlay_source
+        allow_stretch: True
     PreviewButton:
         id: char_button
         path: root.char_button_source

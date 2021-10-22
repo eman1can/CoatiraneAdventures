@@ -1,5 +1,5 @@
 # UIX Imports
-from kivy.properties import BooleanProperty, DictProperty, ListProperty, ObjectProperty, StringProperty
+from kivy.properties import BooleanProperty, DictProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
 
 # Kivy Imports
 from kivy.uix.widget import Widget
@@ -14,10 +14,19 @@ load_kv(__name__)
 
 
 class StatusBoardManager(Screen):
-    char = ObjectProperty(None)
+    char = NumericProperty(-1)
 
-    overlay_background_source = StringProperty('screens/attributes/stat_background.png')
-    overlay_source = StringProperty('screens/attributes/stat_background_overlay.png')
+    overlay_background_source = StringProperty('stat_background.png')
+    overlay_source = StringProperty('stat_background_overlay.png')
+
+    char_name = StringProperty('')
+    char_display_name = StringProperty('')
+    char_type_flag = StringProperty('')
+    char_attack_flag = StringProperty('')
+    char_element_flag = StringProperty('')
+
+    char_image_source = StringProperty('')
+    char_symbol_source = StringProperty('')
 
     skills_switch_text = StringProperty('Skills')
     current_board_name = StringProperty('Rank 1\nStatus Board')
@@ -29,32 +38,51 @@ class StatusBoardManager(Screen):
     star_data = DictProperty({})
     star_list_data = ListProperty([])
 
-    def __init__(self, **kwargs):
+    def __init__(self, character, **kwargs):
         self.rank_loaded_max = 0
         self.rank_loaded_min = 0
         self.finished_loading = False
         self.rank_current = -1
         self.slot_confirm = SlotConfirm()
         self.unlock_all = SBUnlockAll()
+
+        self.char = character
+        self.name = 'status_board_unassigned'
+
+        if self.char == -1:
+            super().__init__(**kwargs)
+            return
+
+        char = Refs.gc.get_char_by_index(character)
+        self.name = 'status_board_' + str(char.get_id())
+        self.char_symbol_source = char.get_image('symbol')
+
+        self.char_type_flag = 'Supporter' if char.is_support() else 'Adventurer'
+        self.char_attack_flag = char.get_attack_type_string()
+        self.char_element_flag = char.get_element_string()
+        self.char_image_source = char.get_image('full')
+        self.char_symbol_source = char.get_image('symbol')
+
         super().__init__(**kwargs)
+
         self.update_stars()
         self.unlock_all.bind(on_dismiss=self.modal_dismiss)
         self.slot_confirm.bind(on_dismiss=self.modal_dismiss)
         self.unlock_all.bind(on_confirm=self.unlock_all_slots)
 
         sb = self.ids.status_board_screen
-        ranks = self.char.get_grids()
-        self.rank_loaded_min = self.rank_current = self.rank_loaded_max = self.char.get_current_rank() - 1
+        ranks = char.get_ranks()
+        self.rank_loaded_min = self.rank_current = self.rank_loaded_max = char.get_current_rank() - 1
 
         if self.rank_current != 0:
             for index in range(0, self.rank_current - 1):
                 sb.add_widget(Widget())
             self.rank_loaded_min = self.rank_current - 1
-            sb.add_widget(GridWidget(self.char.get_current_rank(), self.rank_current - 1, ranks[self.rank_current - 1].grid, manager=self))
-        sb.add_widget(GridWidget(self.char.get_current_rank(), self.rank_current, ranks[self.rank_current].grid, manager=self))
+            sb.add_widget(GridWidget(self, self.char, self.rank_current - 1, ranks[self.rank_current - 1].get_board()))
+        sb.add_widget(GridWidget(self, self.char, self.rank_current, ranks[self.rank_current].get_board()))
         if self.rank_current != 9:
             self.rank_loaded_max = self.rank_current + 1
-            sb.add_widget(GridWidget(self.char.get_current_rank(), self.rank_current + 1, ranks[self.rank_current + 1].grid, manager=self))
+            sb.add_widget(GridWidget(self, self.char, self.rank_current + 1, ranks[self.rank_current + 1].get_board()))
             for index in range(self.rank_current + 2, 10):
                 sb.add_widget(Widget())
         self.current_board_name = f'Rank {self.rank_current + 1}\nStatus Board'
@@ -76,9 +104,10 @@ class StatusBoardManager(Screen):
             return
         if self.rank_loaded_max > self.rank_current:
             return
-        ranks = self.char.get_grids()
+        char = Refs.gc.get_char_by_index(self.char)
         self.rank_loaded_max += 1
-        self.ids.status_board_screen.replace_widget(self.rank_loaded_max, GridWidget(self.char.get_current_rank(), self.rank_loaded_max, ranks[self.rank_loaded_max].grid, manager=self))
+        board = char.get_rank(self.rank_loaded_max).get_board()
+        self.ids.status_board_screen.replace_widget(self.rank_loaded_max, GridWidget(self, self.char, self.rank_loaded_max, board))
 
     def goto_previous_board(self, *args):
         self.rank_current -= 1
@@ -86,11 +115,12 @@ class StatusBoardManager(Screen):
             return
         if self.rank_loaded_min < self.rank_current:
             return
-        ranks = self.char.get_grids()
+        char = Refs.gc.get_char_by_index(self.char)
         self.rank_loaded_min -= 1
-        self.ids.status_board_screen.replace_widget(self.rank_loaded_min, GridWidget(self.char.get_current_rank(), self.rank_loaded_min, ranks[self.rank_loaded_min].grid, manager=self))
+        board = char.get_rank(self.rank_loaded_min).get_board()
+        self.ids.status_board_screen.replace_widget(self.rank_loaded_min, GridWidget(self, self.char, self.rank_loaded_min, board))
 
-    def on_board_move(self, index):
+    def on_board_move(self, instance, index):
         if self.finished_loading:
             print("in ", index, self.rank_current)
             if index < self.rank_current:
@@ -100,7 +130,7 @@ class StatusBoardManager(Screen):
 
         self.current_board_name = f'Rank {self.rank_current + 1}\nStatus Board'
 
-        self.ids.arrows.unanimate_arrows()
+        self.ids.arrows.un_animate_arrows()
         self.ids.arrows.animate_arrows(index)
 
     def on_skills_switch(self):
@@ -117,7 +147,7 @@ class StatusBoardManager(Screen):
         self.ids.arrows.animate_arrows(self.ids.status_board_screen.index)
 
     def on_leave(self, *args):
-        self.ids.arrows.unanimate_arrows()
+        self.ids.arrows.un_animate_arrows()
         if self.modal_open:
             self.slot_confirm.dismiss()
             self.unlock_all.dismiss()
@@ -126,9 +156,10 @@ class StatusBoardManager(Screen):
         self.modal_open = False
 
     def update_stars(self):
-        if self.char is not None:
+        if self.char != -1:
+            char = Refs.gc.get_char_by_index(self.char)
             for index in range(1, 11):
-                if not self.make_star(self.char, index, index):
+                if not self.make_star(char, index, index):
                     break
         self.star_list_data = self.star_data.values()
 
@@ -143,8 +174,8 @@ class StatusBoardManager(Screen):
         if character.get_rank(rank).is_unlocked():
             star = {'id': f'star_{index}',
                     'source': 'icons/star.png',
-                    'size_hint': Refs.app.get_dkey(f'sbs.star_{index} s_h'),
-                    'pos_hint': Refs.app.get_dkey(f'sbs.star_{index} p_h')}
+                    'size_hint': Refs.app.get_dkey(f'sbm.star_{index} s_h'),
+                    'pos_hint': Refs.app.get_dkey(f'sbm.star_{index} p_h')}
             if character.get_rank(rank).is_broken():
                 star['source'] = 'icons/rankbrk.png'
                 star['broken'] = True
@@ -156,19 +187,20 @@ class StatusBoardManager(Screen):
             return False
 
     def on_release(self, slot_obj, type, slot_num):
-        rank = self.char.get_rank(slot_num)
+        char = Refs.gc.get_char_by_index(self.char)
+        rank = char.get_rank(slot_num)
         self.slot_confirm.text_main = type[:3].capitalize() + '. +' + str(slot_obj.value)
         stat = 0
         if type == 'strength':
-            stat = self.char.get_strength(slot_num)
+            stat = char.get_strength(slot_num)
         elif type == 'magic':
-            stat = self.char.get_magic(slot_num)
+            stat = char.get_magic(slot_num)
         elif type == 'endurance':
-            stat = self.char.get_endurance(slot_num)
+            stat = char.get_endurance(slot_num)
         elif type == 'dexterity':
-            stat = self.char.get_dexterity(slot_num)
+            stat = char.get_dexterity(slot_num)
         elif type == 'agility':
-            stat = self.char.get_agility(slot_num)
+            stat = char.get_agility(slot_num)
         self.slot_confirm.text_update = str(stat) + ' -> ' + str(stat + slot_obj.value)
         self.slot_confirm.callback = lambda: self.unlock_slot(slot_obj, type, rank)
         self.slot_confirm.open()
@@ -388,5 +420,6 @@ class StatusBoardManager(Screen):
         self.ids.total_abilities_box.reload()
 
     def goto_status_board(self, direction):
-        next_char = Refs.gc.get_next_char(self.char, direction)
+        next_char_index = Refs.gc.get_next_char(self.char, direction)
+        next_char = Refs.gc.get_char_by_index(next_char_index)
         Refs.gs.display_screen('status_board_' + next_char.get_id(), True, False, next_char)

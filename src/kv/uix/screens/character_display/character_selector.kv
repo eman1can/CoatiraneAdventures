@@ -6,9 +6,10 @@
     Image:
         id: overlay
         source: 'select_char_overlay.png'
+        allow_stretch: True
     Image:
         id: number_icon
-        source: 'party_count.png'
+        source: 'icons/party_count.png'
         size: app.get_dkey('cs.ni s_h', root.width, root.height)
         pos: app.get_dkey('cs.ni pos', root.width, root.height)
     PPCHoverPathButton:
@@ -20,29 +21,35 @@
     PPCHoverPathButton:
         id: sort
         path: 'buttons/long_stat'
-        font_size: app.get_dkey('cs.bs fs', root.height)
         size_hint: app.get_dkey('cs.bs s_h')
         pos_hint: app.get_dkey('cs.bs.s p_h')
         on_release: root.on_sort()
+
+        color: 0, 0, 0, 1
+        font_size: '36sp'
+        font_name: 'Precious'
     PPCHoverPathButton:
         id: filter
         path: 'buttons/long_stat'
-        text: 'Filter'
-        font_size: app.get_dkey('cs.bs fs', root.height)
         size_hint: app.get_dkey('cs.bs s_h')
         pos_hint: app.get_dkey('cs.bs.f p_h')
         on_release: root.on_filter()
+
+        color: 0, 0, 0, 1
+        text: 'Filter'
+        font_size: '36sp'
+        font_name: 'Precious'
     PPCHoverPathToggleButton:
         id: switch_display
         path: 'buttons/long_stat'
-        text: 'Switch Display'
-        font_size: app.get_dkey('cs.bs fs', root.height)
         size_hint: app.get_dkey('cs.bs s_h')
         pos_hint: app.get_dkey('cs.bs.sd p_h')
         on_release: root.on_scroll() if self.state.endswith('normal') else root.on_grid()
-        #toggle_enabled: True
-        #on_toggle_up: root.on_scroll()
-        #on_toggle_down: root.on_grid()
+
+        text: 'Grid' if root.toggle else 'Scroll'
+        color: 0, 0, 0, 1
+        font_size: '36sp'
+        font_name: 'Precious'
     Label:
         id: number
         font_name: 'Precious.ttf'
@@ -57,7 +64,7 @@
         text: 'No Characters to Display'
         color: 0, 0, 0, 1
         font_size: root.height * 0.1
-        opacity: 0 if multi is None else 0 if root.character_num > 0 else 1
+        opacity: 0 if root.character_num > 0 else 1
         pos_hint: {'y': 0, 'right': 1}
         size_hint_x: 1 if root.has_left is None else 0.85
         size_hint_y: 0.85
@@ -69,4 +76,3 @@
         id: multi
         size_hint: (0.85, 0.85) if root.has_left else (1, 0.85)
         pos_hint: {'right': 1}
-        #is_support: root.is_support

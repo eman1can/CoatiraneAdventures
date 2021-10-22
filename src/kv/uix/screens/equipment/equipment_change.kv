@@ -2,62 +2,51 @@
 #:import Refs refs.Refs
 
 <EquipmentChange>:
-    name: 'equipment_change_unassigned'
-
     DetailEquipmentSlot:
         id: chest
         size_hint: app.get_dkey('ecs.slo s_h')
         pos_hint: app.get_dkey('ecs.slo.che p_h')
         slot_name: 'Chest'
-        item: root.chest
     DetailEquipmentSlot:
         id: vambraces
         size_hint: app.get_dkey('ecs.slo s_h')
         pos_hint: app.get_dkey('ecs.slo.vam p_h')
         slot_name: 'Vambraces'
-        item: root.vambraces
     DetailEquipmentSlot:
         id: grieves
         size_hint: app.get_dkey('ecs.slo s_h')
         pos_hint: app.get_dkey('ecs.slo.gre p_h')
         slot_name: 'Grieves'
-        item: root.grieves
     DetailEquipmentSlot:
         id: helmet
         size_hint: app.get_dkey('ecs.slo s_h')
         pos_hint: app.get_dkey('ecs.slo.hel p_h')
         slot_name: 'Helmet'
-        item: root.helmet
     DetailEquipmentSlot:
         id: boots
         size_hint: app.get_dkey('ecs.slo s_h')
         pos_hint: app.get_dkey('ecs.slo.bot p_h')
         slot_name: 'Boots'
-        item: root.boots
     DetailEquipmentSlot:
         id: weapon
         size_hint: app.get_dkey('ecs.slo s_h')
         pos_hint: app.get_dkey('ecs.slo.wep p_h')
         slot_name: 'Weapon'
-        item: root.weapon
     DetailEquipmentSlot:
         id: gloves
         size_hint: app.get_dkey('ecs.slo s_h')
         pos_hint: app.get_dkey('ecs.slo.glo p_h')
         slot_name: 'Gloves'
-        item: root.gloves
     DetailEquipmentSlot:
         id: necklace
         size_hint: app.get_dkey('ecs.slo s_h')
         pos_hint: app.get_dkey('ecs.slo.nek p_h')
         slot_name: 'Necklace'
-        item: root.necklace
     DetailEquipmentSlot:
         id: ring
         size_hint: app.get_dkey('ecs.slo s_h')
         pos_hint: app.get_dkey('ecs.slo.rng p_h')
         slot_name: 'Ring'
-        item: root.ring
 #    Image:
 #        id: shadow
 #        source: 'characters/test/badass_ais/portrait_shadow.png'
@@ -161,7 +150,7 @@
 
 <MissingEquip>:
     Image:
-        source: 'screens/equip/missing.png'
+        source: 'icons/missing.png'
         allow_stretch: True
         keep_ratio: False
     Label:

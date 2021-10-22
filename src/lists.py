@@ -2,8 +2,9 @@
 from uix.popups.inspection import Inspection
 from uix.popups.inventory import Inventory
 from uix.popups.map_options import MapOptions
+from uix.popups.skill_tree import PerkInfo
 from uix.screens.dungeon.result import DungeonResult
-from uix.screens.equipment.equipment_change import GearChange
+from uix.screens.equipment.equipment_change import EquipmentChange, GearChange
 from uix.screens.inventory import InventoryMain
 from uix.popups.filterable import FilterPopup
 from uix.popups.sortable import SortPopup
@@ -21,6 +22,8 @@ from uix.screens.intro.intro_select import IntroSelect
 from uix.screens.character_display.image_preview import ImagePreview
 from uix.screens.intro.start_game import StartGame
 from uix.screens.intro.save_select import SaveSelect
+from uix.screens.profile.main import ProfileMain
+from uix.screens.profile.skill_tree import SkillTreeMain
 from uix.screens.tavern import TavernMain
 from uix.screens.tavern.recruit_preview import RecruitPreview
 from uix.screens.town import TownMain
@@ -43,7 +46,10 @@ SCREEN_LIST = {'start_game': StartGame,
                'status_board_': StatusBoardManager,
                'dungeon_battle': DungeonBattle,
                'dungeon_result': DungeonResult,
-               'gear_change': GearChange}
+               'gear_change': GearChange,
+               'equipment_change': EquipmentChange,
+               'profile_main': ProfileMain,
+               'skill_tree_main': SkillTreeMain}
 
 SCREEN_NON_WHITELIST = ["char_attr_", "status_board_", "image_preview_", "equipment_change_"]
 
@@ -58,7 +64,8 @@ POPUP_LIST = {'tm_confirm': TMConfirm,
               'filter': FilterPopup,
               'inventory': Inventory,
               'map_options': MapOptions,
-              'inspection': Inspection}
+              'inspection': Inspection,
+              'perk_info': PerkInfo}
 
 POPUP_WHITELIST = [
     'map_options',

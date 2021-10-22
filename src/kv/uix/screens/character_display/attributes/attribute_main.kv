@@ -9,17 +9,16 @@
 #:import LayeredImage modules.layered_image.LayeredImage
 
 <CharacterAttributeScreen>:
-    name: 'char_attr_' + self.char.get_id()
     Image:
         id: familia_mark
-        source: '' if root.char is None else root.char.get_image('symbol')
+        source: root.char_symbol_source
         nocache: True
         size_hint: app.get_dkey('cas.ci s_h')
         width: self.height * self.image_ratio
         pos_hint: app.get_dkey('cas.ci p_h')
     Image:
         id: char_image
-        source: '' if root.char is None else root.char.get_image('full')
+        source: root.char_image_source
         allow_stretch: True
         nocache: True
         size_hint: app.get_dkey('cas.ci s_h')
@@ -45,11 +44,11 @@
         pos_hint: app.get_dkey('cas.os p_h')
     StatInfoBox:
         id: persistent_layout
-        char_flag: '' if root.char is None else 'Supporter' if root.char.is_support() else 'Adventurer'
-        type_flag: '' if root.char is None else root.char.get_attack_type_string()
-        element_flag: '' if root.char is None else root.char.get_element_string()
-        char_display_name: '' if root.char is None else root.char.get_display_name()
-        char_name: '' if root.char is None else root.char.get_name()
+        char_flag: root.char_type_flag
+        type_flag: root.char_attack_flag
+        element_flag: root.char_element_flag
+        char_display_name: root.char_display_name
+        char_name: root.char_name
         skills_switch_text: root.skills_switch_text
         on_skills_switch: root.on_skills_switch()
         size_hint: app.get_dkey('cas.os.o s_h')
@@ -251,6 +250,7 @@
         path: 'buttons/long_stat'
         text: 'Change Equip'
         font_name: 'Gabriola'
+        color: 0, 0, 0, 1
 #        label_color: app.get_dkey('cas.ceb lc')
         font_size: app.get_dkey('cas.ceb fs', root.height)
         size_hint: app.get_dkey('cas.ceb s_h')
@@ -261,6 +261,7 @@
         path: 'buttons/long_stat'
         text: 'Status Board'
         font_name: 'Gabriola'
+        color: 0, 0, 0, 1
 #        label_color: app.get_dkey('cas.sbb lc')
         font_size: app.get_dkey('cas.sbb fs', root.height)
         size_hint: app.get_dkey('cas.sbb s_h')
@@ -275,27 +276,27 @@
     LayeredImage:
         id: stars
         data: root.star_list_data
-    Button:
-        text: 'ru'
-        size_hint: 0.05, 0.05
-        pos_hint: {'right': 1, 'top': 1}
-        on_release:
-            root.char.rank_up()
-            root.reload()
-    Button:
-        size_hint: 0.05, 0.05
-        text: 'rb'
-        pos_hint: {'right': 1, 'top': 0.95}
-        on_release:
-            root.char.rank_break()
-            root.reload()
-    Button:
-        size_hint: 0.05, 0.05
-        text: 'ms'
-        pos_hint: {'right': 0.95, 'top': 0.95}
-        on_release:
-            root.char.max_stats()
-            root.reload()
+#    Button:
+#        text: 'ru'
+#        size_hint: 0.05, 0.05
+#        pos_hint: {'right': 1, 'top': 1}
+#        on_release:
+#            root.char.rank_up()
+#            root.reload()
+#    Button:
+#        size_hint: 0.05, 0.05
+#        text: 'rb'
+#        pos_hint: {'right': 1, 'top': 0.95}
+#        on_release:
+#            root.char.rank_break()
+#            root.reload()
+#    Button:
+#        size_hint: 0.05, 0.05
+#        text: 'ms'
+#        pos_hint: {'right': 0.95, 'top': 0.95}
+#        on_release:
+#            root.char.max_stats()
+#            root.reload()
     GesturePad:
         on_left: root.goto_char_attr(True)
         on_right: root.goto_char_attr(False)

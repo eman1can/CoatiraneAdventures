@@ -13,7 +13,7 @@ class StatInfoBox(RelativeLayout):
     type_flag = StringProperty('physical')
     element_flag = StringProperty('wind')
 
-    overlay_bar_source = StringProperty('screens/stats/overlay_bar.png')
+    overlay_bar_source = StringProperty('overlay_bar.png')
 
     char_display_name = StringProperty('')
     char_name = StringProperty('')

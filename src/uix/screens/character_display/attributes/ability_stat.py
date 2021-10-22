@@ -4,6 +4,7 @@ from kivy.properties import BooleanProperty, ListProperty, NumericProperty, Obje
 from kivy.uix.relativelayout import RelativeLayout
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
 
 load_kv(__name__)
 
@@ -40,27 +41,28 @@ class AbilityStatBox(RelativeLayout):
         self.reload()
 
     def reload(self):
-        if self.char is None:
+        if self.char == -1:
             return
+        char = Refs.gc.get_char_by_index(self.char)
         if not self.rank:
-            self.strength = self.char.get_strength()
-            self.strength_path = self.char.get_strength_rank_image()
-            self.magic = self.char.get_magic()
-            self.magic_path = self.char.get_magic_rank_image()
-            self.endurance = self.char.get_endurance()
-            self.endurance_path = self.char.get_endurance_rank_image()
-            self.dexterity = self.char.get_dexterity()
-            self.dexterity_path = self.char.get_dexterity_rank_image()
-            self.agility = self.char.get_agility()
-            self.agility_path = self.char.get_agility_rank_image()
+            self.strength = char.get_strength()
+            self.strength_path = char.get_strength_rank_image()
+            self.magic = char.get_magic()
+            self.magic_path = char.get_magic_rank_image()
+            self.endurance = char.get_endurance()
+            self.endurance_path = char.get_endurance_rank_image()
+            self.dexterity = char.get_dexterity()
+            self.dexterity_path = char.get_dexterity_rank_image()
+            self.agility = char.get_agility()
+            self.agility_path = char.get_agility_rank_image()
         else:
-            self.strength = self.char.get_strength(self.char.get_current_rank())
-            self.strength_path = self.char.get_strength_rank_image(self.char.get_current_rank())
-            self.magic = self.char.get_magic(self.char.get_current_rank())
-            self.magic_path = self.char.get_magic_rank_image(self.char.get_current_rank())
-            self.endurance = self.char.get_endurance(self.char.get_current_rank())
-            self.endurance_path = self.char.get_endurance_rank_image(self.char.get_current_rank())
-            self.dexterity = self.char.get_dexterity(self.char.get_current_rank())
-            self.dexterity_path = self.char.get_dexterity_rank_image(self.char.get_current_rank())
-            self.agility = self.char.get_agility(self.char.get_current_rank())
-            self.agility_path = self.char.get_agility_rank_image(self.char.get_current_rank())
+            self.strength = char.get_strength(char.get_current_rank())
+            self.strength_path = char.get_strength_rank_image(char.get_current_rank())
+            self.magic = char.get_magic(char.get_current_rank())
+            self.magic_path = char.get_magic_rank_image(char.get_current_rank())
+            self.endurance = char.get_endurance(char.get_current_rank())
+            self.endurance_path = char.get_endurance_rank_image(char.get_current_rank())
+            self.dexterity = char.get_dexterity(char.get_current_rank())
+            self.dexterity_path = char.get_dexterity_rank_image(char.get_current_rank())
+            self.agility = char.get_agility(char.get_current_rank())
+            self.agility_path = char.get_agility_rank_image(char.get_current_rank())

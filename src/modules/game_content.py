@@ -144,7 +144,7 @@ class GameContent:
     def set_save_slot(self, save_slot):
         self._save_slot = save_slot
 
-    def save_game(self, callback):
+    def save_game(self, callback=None):
         if not self._calendar:
             return
         self._last_save_time = self._calendar.get_int_time()
@@ -334,7 +334,7 @@ class GameContent:
             return [char['character'] for char in chars]
 
     def get_next_char(self, current_char, direction):
-        char_list = self.get_char_list(current_char.get_index())
+        char_list = self.get_char_list(current_char)
         return char_list[char_list.index(current_char) - 1] if direction else char_list[(char_list.index(current_char) + 1) % len(char_list)]
 
     def is_tavern_locked(self):

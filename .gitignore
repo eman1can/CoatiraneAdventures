@@ -3,6 +3,7 @@ __pycache__/
 *__pycache__/
 *../.idea
 *.idea/
+test_scripts/
 *.DS_Store
 *.py[cod]
 *.DS_Store

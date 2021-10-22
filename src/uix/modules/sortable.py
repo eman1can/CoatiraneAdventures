@@ -8,7 +8,7 @@ from refs import Refs
 class Sortable(object):
     previews_sort = ListProperty(None)
     values_sort = ListProperty([])
-    ascending = BooleanProperty(True)
+    ascending = BooleanProperty(False)
     sort_type = OptionProperty('Strength', options=['Strength', 'Magic', 'Endurance', 'Dexterity', 'Agility',
                                            'Phy. Atk', 'Mag. Atk', 'Defense', 'Health', 'Mana',
                                            'Party', 'Rank', 'Name', 'Score', 'Worth'])
@@ -47,7 +47,7 @@ class Sortable(object):
         for j in range(start, end):  # Check against elements
 
             # If current element obeys order change
-            if self.values_sort[j] <= pivot and not self.ascending or self.values_sort[j] >= pivot and self.ascending:
+            if self.values_sort[j] <= pivot and self.ascending or self.values_sort[j] >= pivot and not self.ascending:
                 # increment index of element
                 i = i + 1
                 self.values_sort[i], self.values_sort[j] = self.values_sort[j], self.values_sort[i]

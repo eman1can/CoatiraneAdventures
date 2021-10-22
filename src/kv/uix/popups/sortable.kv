@@ -1,25 +1,16 @@
-<SortButton@PPCHoverPathButton>:
+<SortButton@PPCHoverPathToggleButton>:
     path: 'buttons/long_stat'
     size_hint: app.get_dkey('sw.bu s_h')
-#    font_size: app.get_dkey('sw.bu fs', root.height)
     color: 0, 0, 0, 1
+    allow_no_selection: False
+    font_size: '40sp'
     font_name: 'Gabriola'
-    font_size: '30pt'
 
 
 <SortPopup>:
     id: sort
     auto_dismiss: False
     background: 'sort_background.png'
-#    size_hint: app.get_dkey('sw s_h')
-#    pos_hint: app.get_dkey('sw p_h')
-#    border: app.get_dkey('sw b')
-#    RelativeLayout:
-#        PPCHoverPathButton:
-#            id: back
-#            path: 'buttons/back'
-#            size_hint: app.get_dkey('sw.bb s_h')
-#            pos_hint: app.get_dkey('sw.bb p_h')
     GridLayout:
         id: main
         cols: 1
@@ -31,10 +22,10 @@
         Label:
             id: title
             text: 'Sort'
-            font_name: 'Precious.ttf'
-            color: app.get_dkey('sw.t c')
-            font_size: app.get_dkey('sw.t fs', root.height)
             size_hint: app.get_dkey('sw.t s_h')
+            color: 0, 0, 0, 1
+            font_size: '60sp'
+            font_name: 'Precious'
         Image:
             source: 'overlay_bar.png'
             size_hint: app.get_dkey('sw.ob s_h')
@@ -47,10 +38,14 @@
             size_hint: app.get_dkey('sw.l1 s_h')
             SortButton:
                 id: ascending
+                group: 'sort_direction'
+                state: 'down' if root.ascending else 'normal'
                 text: 'Ascending'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: descending
+                group: 'sort_direction'
+                state: 'down' if not root.ascending else 'normal'
                 text: 'Descending'
                 on_release: root.do_sorting(self.text)
         Image:
@@ -65,61 +60,91 @@
             size_hint: app.get_dkey('sw.l2 s_h')
             SortButton:
                 id: strength
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Strength'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: magic
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Magic'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: endurance
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Endurance'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: dexterity
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Dexterity'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: agility
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Agility'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: health
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Health'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: mana
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Mana'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: phyatk
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Phy. Atk'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: magatk
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Mag. Atk'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: defense
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Defense'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: party
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Party'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: rank
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Rank'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: name
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Name'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: score
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Score'
                 on_release: root.do_sorting(self.text)
             SortButton:
                 id: worth
+                group: 'sort_type'
+                state: 'down' if self.text == root.sort_text else 'normal'
                 text: 'Worth'
                 on_release: root.do_sorting(self.text)

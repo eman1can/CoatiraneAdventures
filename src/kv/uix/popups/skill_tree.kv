@@ -1,0 +1,37 @@
+<PerkInfo>:
+    Label:
+        id: name_label
+        size_hint: None, 0.125
+        width: self.texture_size[0]
+        pos_hint: {'x': 0.025, 'top': 0.95}
+        font_size: '60sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: root.name
+    Label:
+        id: description_label
+        size_hint: None, 0.125
+        width: self.texture_size[0]
+        text_size: root.width * 0.75, None
+        pos_hint: {'x': 0.025, 'top': 0.675}
+        font_size: '36sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: root.description
+    Label:
+        id: cost_label
+        size_hint: None, 0.125
+        width: self.texture_size[0]
+        text_size: root.width * 0.75, None
+        pos_hint: {'x': 0.025, 'top': 0.375}
+        font_size: '36sp'
+        font_name: 'Precious'
+        color: 0, 0, 0, 1
+        text: root.cost
+    Button:
+        id: bestow
+        size_hint: 0.25, 0.125
+        pos_hint: {'x': 0.075, 'y': 0.075}
+        text: 'Bestow upon an adventurer'
+        font_name: 'Precious'
+        font_size: '24sp'

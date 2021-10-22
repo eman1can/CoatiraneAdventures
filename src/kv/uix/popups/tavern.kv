@@ -12,12 +12,22 @@
             size_hint: 1, 0.2
             pos_hint: {'center_x': 0.5, 'top': 1}
             font_name: 'Gabriola.ttf'
-            text: 'Are you sure?'
+            text: root.title_text
+        Label:
+            id: description
+            font_size: root.height * 0.05
+            color: 0, 0, 0, 1
+            size_hint: 0.75, 0.5
+            pos_hint: {'center_x': 0.5, 'top': 0.8}
+            font_name: 'Gabriola'
+            text: root.description_text
         PPCHoverPathButton:
             id: cancel
             font_name: 'Gabriola.ttf'
-            text: 'Cancel'
+            text: root.cancel_text
             path: 'buttons/long_stat'
+            opacity: 0 if self.text == '' else 1
+            disabled: True if self.text == '' else False
             on_release: root.manager.goto_previous()
             font_size: root.height * 0.075
             size_hint: 0.40, 0.15
@@ -25,7 +35,9 @@
         PPCHoverPathButton:
             id: confirm
             font_name: 'Gabriola.ttf'
-            text: 'Confirm'
+            text: root.confirm_text
+            opacity: 0 if self.text == '' else 1
+            disabled: True if self.text == '' else False
             path: 'buttons/long_stat'
             on_release: root.confirm()
             font_size: root.height * 0.075

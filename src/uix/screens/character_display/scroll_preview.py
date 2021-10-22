@@ -15,22 +15,20 @@ load_kv(__name__)
 
 
 class RecyclePreview(RecycleView, Filterable, Sortable):
-    characters = ListProperty([])
     is_support = BooleanProperty(False)
 
-    mode = StringProperty('scroll')
+    mode = StringProperty('')
     scroll = ObjectProperty(None)
     grid = ObjectProperty(None)
 
     def __init__(self, **kwargs):
+        self._characters = []
         super().__init__(**kwargs)
 
         self.scroll = ScrollPreview()
         self.grid = GridPreview()
 
-        self.add_widget(self.scroll)
-        self.viewclass = 'FilledCharacterPreview'
-        self.child = self.scroll
+        self.set_scroll()
 
     def hover_subscribe(self, widget=None, layer=0, adjust=None, blocking=False):
         if adjust is None:
@@ -45,6 +43,9 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
             return False
         return self.dispatch_to_relative_children(touch)
 
+    def set_characters(self, characters):
+        self._characters = characters
+
     def update(self, preview, char, is_support):
         self.is_support = is_support
 
@@ -58,8 +59,6 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
         self.refresh_from_data()
         self.filter()
 
-        # self.force_update_values()
-
     def update_preview(self, character, preview):
         if self.is_support:
             preview.set_char_screen(preview.character, character, True)
@@ -70,7 +69,7 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
     def change_hover(self, new_hover):
         self.child.change_hover(new_hover)
 
-    def do_scroll(self):
+    def set_scroll(self):
         if self.mode == 'scroll':
             return
         self.remove_widget(self.grid)
@@ -80,7 +79,7 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
         self.child = self.scroll
         self.refresh_from_layout()
 
-    def do_grid(self):
+    def set_grid(self):
         if self.mode == 'grid':
             return
         self.remove_widget(self.scroll)

@@ -4,6 +4,7 @@ from kivy.properties import ListProperty, NumericProperty, ObjectProperty, Strin
 from kivy.uix.relativelayout import RelativeLayout
 # KV Import
 from loading.kv_loader import load_kv
+from refs import Refs
 
 load_kv(__name__)
 
@@ -41,10 +42,11 @@ class StatBox(RelativeLayout):
         self.reload()
 
     def reload(self):
-        if self.char is None:
+        if self.char == -1:
             return
-        self.health = self.char.get_health()
-        self.mana = self.char.get_mana()
-        self.phy_attack = self.char.get_physical_attack()
-        self.mag_attack = self.char.get_magical_attack()
-        self.defense = self.char.get_defense()
+        char = Refs.gc.get_char_by_index(self.char)
+        self.health = char.get_health()
+        self.mana = char.get_mana()
+        self.phy_attack = char.get_physical_attack()
+        self.mag_attack = char.get_magical_attack()
+        self.defense = char.get_defense()

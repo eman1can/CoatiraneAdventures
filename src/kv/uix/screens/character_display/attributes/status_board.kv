@@ -2,7 +2,6 @@
 #:import LeftRightNavigationArrows modules.navigation_arrows.LeftRightNavigationArrows
 
 <StatusBoardManager>:
-    name: 'status_board_unassigned' if root.char is None else 'status_board_' + str(root.char.get_id())
     Image:
         id: background
         source: root.background_source
@@ -15,13 +14,13 @@
         on_release: root.on_back_press()
     Image:
         id: familia_mark
-        source: '' if root.char is None else 'familias/marks/Takemikazuchi.png'
+        source: root.char_symbol_source
         size_hint: app.get_dkey('sbm.sbs s_h')
         pos_hint: app.get_dkey('sbm.sbs p_h')
-    DragSnapWidget:
+    SnapCarousel:
         id: status_board_screen
         relative: True
-        on_change: root.on_board_move(self.index)
+        on_index_update: root.on_board_move(*args)
         size_hint: app.get_dkey('sbm.sbs s_h')
         pos_hint: app.get_dkey('sbm.sbs p_h')
     Label:
@@ -67,14 +66,11 @@
         pos_hint: app.get_dkey('sbm.os p_h')
     StatInfoBox:
         id: persistent_layout
-        type_flag_source: '' if root.char is None else "screens/recruit/" + str(root.char.get_type()).lower() + "_flag.png"
-        element_flag_source: '' if root.char is None else "screens/attributes/" + root.char.get_element().lower() + "_flag.png"
-        element_flag_image_source: '' if root.char is None else "screens/attributes/" + root.char.get_element().lower() + ".png"
-        char_type: '' if root.char is None else 'Supporter' if root.char.is_support() else 'Adventurer'
-        char_stype: '' if root.char is None else str(root.char.get_type()) + " Type"
-        char_element: '' if root.char is None else str(root.char.get_element()).capitalize()
-        char_display_name: '' if root.char is None else str(root.char.get_display_name())
-        char_name: '' if root.char is None else str(root.char.get_name())
+        char_flag: root.char_type_flag
+        type_flag: root.char_attack_flag
+        element_flag: root.char_element_flag
+        char_display_name: root.char_display_name
+        char_name: root.char_name
         skills_switch_text: root.skills_switch_text
         on_skills_switch: root.on_skills_switch()
         size_hint: app.get_dkey('sbm.os.o s_h')
@@ -117,11 +113,7 @@
         StatBox:
             id: total_stats_box
             font: 'Gabriola'
-            health: 0 if root.char is None else root.char.get_health()
-            mana: 0 if root.char is None else root.char.get_mana()
-            phy_attack:  0 if root.char is None else root.char.get_phyatk()
-            mag_attack: 0 if root.char is None else root.char.get_magatk()
-            defense: 0 if root.char is None else root.char.get_defense()
+            char: root.char
             color: app.get_dkey('sbm.sts c')
             number_color: app.get_dkey('sbm.sts nc')
             size_hint: app.get_dkey('sbm.sts s_h')
@@ -138,16 +130,7 @@
         AbilityStatBox:
             id: total_abilities_box
             font: 'Gabriola'
-            strength: 0 if root.char is None else root.char.get_strength()
-            strength_path: '' if root.char is None else root.char.get_strength_rank()
-            magic: 0 if root.char is None else root.char.get_magic()
-            magic_path: '' if root.char is None else root.char.get_magic_rank()
-            endurance: 0 if root.char is None else root.char.get_endurance()
-            endurance_path: '' if root.char is None else root.char.get_endurance_rank()
-            dexterity: 0 if root.char is None else root.char.get_dexterity()
-            dexterity_path: '' if root.char is None else root.char.get_dexterity_rank()
-            agility: 0 if root.char is None else root.char.get_agility()
-            agility_path: '' if root.char is None else root.char.get_agility_rank()
+            char: root.char
             color: app.get_dkey('sbm.tab c')
             size_hint: app.get_dkey('sbm.tab s_h')
             pos_hint: app.get_dkey('sbm.tab p_h')

@@ -29,7 +29,7 @@
         pos_hint: app.get_dkey('deqs.lble.one p_h') if root.item is None else app.get_dkey('deqs.lble.two p_h')
     Image:
         id: image_equip
-        source: 'items/equipment/empty.png' if root.item is None else 'items/equipment/' + root.item.get_id() + '.png'
+        source: 'items/empty.png' if root.item is None else 'items/equipment/' + root.item.get_id() + '.png'
         opacity: 0 if root.item is None else 1
         size_hint: app.get_dkey('deqs.imge s_h')
         pos_hint: app.get_dkey('deqs.imge p_h')
@@ -58,19 +58,19 @@
         pos_hint: app.get_dkey('deteqs.lbl p_h')
     Image:
         id: type
-        source: '' if root.item is None else 'screens/equip/' + root.item.get_type() + 'Attack_black.png'
+        source: '' if root.item is None else 'icons/' + root.item.get_type()[0] + 'atk Black.png'
         opacity: 0 if root.item is None else 1
         size_hint: app.get_dkey('deteqs.timg s_h')
         pos_hint: app.get_dkey('deteqs.timg p_h')
     Image:
         id: element
-        source: '' if root.item is None else 'screens/attributes/' + root.item.get_element() + '.png'
+        source: '' if root.item is None else 'icons/' + root.item.get_element() + '.png'
         opacity: 0 if root.item is None else 1
         size_hint: app.get_dkey('deteqs.eimg s_h')
         pos_hint: app.get_dkey('deteqs.eimg p_h')
     Image:
         id: rank
-        source: '' if root.item is None else 'screens/stats/' + root.item.get_rank() + '.png'
+        source: '' if root.item is None else 'icons/' + root.item.get_rank() + '.png'
         opacity: 0 if root.item is None else 1
         size_hint: app.get_dkey('deteqs.rimg s_h')
         pos_hint: app.get_dkey('deteqs.rimg p_h')
@@ -97,8 +97,8 @@
         size_hint: app.get_dkey('deteqs.lble.one s_h') if root.item is None else app.get_dkey('deteqs.lble.two s_h')
         pos_hint: app.get_dkey('deteqs.lble.one p_h') if root.item is None else app.get_dkey('deteqs.lble.two p_h')
     Image:
-        source: 'items/equipment/empty.png' if root.item is None else 'items/equipment/' + root.item.get_id() + '.png'
-        source: 'items/equipment/empty.png' if root.item is None else 'items/equipment/' + root.item.get_id() + '.png'
+        source: 'items/empty.png' if root.item is None else 'items/equipment/' + root.item.get_id() + '.png'
+        source: 'items/empty.png' if root.item is None else 'items/equipment/' + root.item.get_id() + '.png'
         opacity: 0 if root.item is None else 1
         size_hint: app.get_dkey('deteqs.imge s_h')
         pos_hint: app.get_dkey('deteqs.imge p_h')
@@ -120,11 +120,11 @@
         GridLayout:
             cols: 2
             size_hint_y: None
-            orientation: 'vertical'
+            orientation: 'tb-lr'
             height: self.minimum_height
             Image:
                 id: patk
-                source: 'screens/equip/PhysicalAttack_black.png'
+                source: 'icons/PAtk Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:
@@ -133,7 +133,7 @@
                 font_name: 'Gabriola'
             Image:
                 id: matk
-                source: 'screens/equip/MagicalAttack_black.png'
+                source: 'icons/MAtk Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:
@@ -142,7 +142,7 @@
                 font_name: 'Gabriola'
             Image:
                 id: def
-                source: 'screens/equip/Defense_black.png'
+                source: 'icons/Def Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:
@@ -151,7 +151,7 @@
                 font_name: 'Gabriola'
             Image:
                 id: health
-                source: 'screens/equip/Health_black.png'
+                source: 'icons/Hea Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:
@@ -160,7 +160,7 @@
                 font_name: 'Gabriola'
             Image:
                 id: mana
-                source: 'screens/equip/Mana_black.png'
+                source: 'icons/Mna Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:
@@ -169,7 +169,7 @@
                 font_name: 'Gabriola'
             Image:
                 id: strength
-                source: 'screens/equip/Str_black.png'
+                source: 'icons/Str Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:
@@ -178,7 +178,7 @@
                 font_name: 'Gabriola'
             Image:
                 id: magic
-                source: 'screens/equip/Mag_black.png'
+                source: 'icons/Mag Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:
@@ -187,7 +187,7 @@
                 font_name: 'Gabriola'
             Image:
                 id: endurance
-                source: 'screens/equip/End_black.png'
+                source: 'icons/End Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:
@@ -196,7 +196,7 @@
                 font_name: 'Gabriola'
             Image:
                 id: dexerity
-                source: 'screens/equip/Dex_black.png'
+                source: 'icons/Dex Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:
@@ -205,7 +205,7 @@
                 font_name: 'Gabriola'
             Image:
                 id: agility
-                source: 'screens/equip/Agi_black.png'
+                source: 'icons/Agi Black.png'
                 size_hint: app.get_dkey('deteqs.lstimg s_h')
                 height: app.get_dkey('deteqs.lstimg h', root.height)
             Label:

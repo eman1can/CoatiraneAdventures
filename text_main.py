@@ -1,3 +1,13 @@
+# Standard Library Imports
+import os
+import sys
+
+# Add src to python path
+base_path = os.getcwd()
+sys.path.insert(0, f'{base_path}\\src')
+sys.path.insert(0, f'{base_path}\\res')
+os.environ['KIVY_HOME'] = f'{base_path}\\data'
+
 # Project imports
 from loading.config_loader import GAME_VERSION, PROGRAM_TYPE  # Must be first
 from kivy.uix.scrollview import ScrollView
@@ -5,10 +15,6 @@ from loading.base_text import TextCALoader
 from modules.game_content import GameContent
 from refs import Refs
 from text.console import Console
-
-# Standard Library Imports
-import os
-import sys
 
 # UIX Imports
 from uix.settings import Settings

@@ -73,6 +73,27 @@ class Gradient:
 
         return Gradient.create_texture(gradient, width, height)
 
-    # @staticmethod
-    # def diagonal(*args):
-    #     return Gradient.create_texture(gradient, width, height)
+    @staticmethod
+    def center_drop(width, height, color1, color2, size=20):
+        if width <= 0 or height <= 0:
+            return None
+        width, height = int(width), int(height)
+
+        cols = Gradient.interpolate_two(size, size, *color1, *color2) + [*color2] * (width - size * 2) + Gradient.interpolate_two(size, size, *color2, *color1)
+        rows = Gradient.interpolate_two(size, size, *color1, *color2) + [*color2] * (height - size * 2) + Gradient.interpolate_two(size, size, *color2, *color1)
+
+        pixels = []
+        for vindex in range(height):
+            for hindex in range(width):
+                if width > height:
+                    if hindex > height and vindex < hindex - width + height and hindex - width + height > height - vindex or hindex < vindex < height - hindex:
+                        r, g, b, a = cols[hindex * 4:(hindex + 1) * 4]
+                    else:
+                        r, g, b, a = rows[vindex * 4:(vindex + 1) * 4]
+                else:
+                    if vindex > height - width and vindex - height + width > hindex and vindex - height + width > width - hindex or vindex < width and vindex < hindex and vindex < width - hindex:
+                        r, g, b, a = rows[vindex * 4:(vindex + 1) * 4]
+                    else:
+                        r, g, b, a = cols[hindex * 4:(hindex + 1) * 4]
+                pixels += [r, g, b, a]
+        return Gradient.create_texture(pixels, width, height)
