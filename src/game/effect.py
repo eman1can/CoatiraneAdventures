@@ -118,74 +118,68 @@ DEVASTATING = 3
 EFFECT_TYPES = {
     POISON: {
         WEAK: 'Weak Poison',
-        NORMAL: 'Poison',
         STRONG: 'Strong Poison',
-        DEVASTATING: 'Devastating Poison'
+        DEVASTATING: 'Devastating Poison',
+        NORMAL: 'Poison',
     },
     SICKNESS: {
         WEAK: 'Weak Sickness',
-        NORMAL: 'Sickness',
         STRONG: 'Strong Sickness',
-        DEVASTATING: 'Devastating Sickness'
+        DEVASTATING: 'Devastating Sickness',
+        NORMAL: 'Sickness',
     },
     BLEED: {
         WEAK: 'Weak Bleed',
-        NORMAL: 'Bleed',
         STRONG: 'Strong Bleed',
-        DEVASTATING: 'Devastating Bleed'
+        DEVASTATING: 'Devastating Bleed',
+        NORMAL: 'Bleed',
     },
     STUN: {
         WEAK: 'Weak Stun',
-        NORMAL: 'Stun',
         STRONG: 'Strong Stun',
-        DEVASTATING: 'Devastating Stun'
+        DEVASTATING: 'Devastating Stun',
+        NORMAL: 'Stun',
     },
     SLEEP: {
         WEAK: 'Weak Sleep',
-        NORMAL: 'Sleep',
         STRONG: 'Strong Sleep',
-        DEVASTATING: 'Devastating Sleep'
+        DEVASTATING: 'Devastating Sleep',
+        NORMAL: 'Sleep',
     },
     SEAL: {
         WEAK: 'Weak Seal',
-        NORMAL: 'Seal',
         STRONG: 'Strong Seal',
-        DEVASTATING: 'Devastating Seal'
+        DEVASTATING: 'Devastating Seal',
+        NORMAL: 'Seal',
     },
     TAUNT: {
         WEAK: 'Weak Taunt',
-        NORMAL: 'Taunt',
         STRONG: 'Strong Taunt',
-        DEVASTATING: 'Devastating Taunt'
+        DEVASTATING: 'Devastating Taunt',
+        NORMAL: 'Taunt',
     },
     CHARM: {
         WEAK: 'Weak Charm',
-        NORMAL: 'Charm',
         STRONG: 'Strong Charm',
-        DEVASTATING: 'Devastating Charm'
+        DEVASTATING: 'Devastating Charm',
+        NORMAL: 'Charm',
     },
     SLOW: {
         WEAK: 'Weak Slow',
-        NORMAL: 'Slow',
         STRONG: 'Strong Slow',
-        DEVASTATING: 'Devastating Slow'
+        DEVASTATING: 'Devastating Slow',
+        NORMAL: 'Slow',
     }
 }
 
 # TODO SMEAD Grabbing Doesn't Affect HMPMD in battle entities
 STAT_TYPES = {
-    STRENGTH: 'Str.',  # Implemented
-    MAGIC: 'Mag.',  # Implemented
-    ENDURANCE: 'End.',  # Implemented
-    AGILITY: 'Agi.',  # Implemented
-    DEXTERITY: 'Dex.',  # Implemented
     HEALTH_REGEN: 'HP Regen',  # Implemented
     HEALTH_DOT: 'HP DOT',  # Implemented
     MANA_REGEN: 'MP Regen',  # Implemented
     MANA_DOT: 'MP DOT',  # Implemented
     PHYSICAL_ATTACK: 'Phy. Atk.',  # Implemented
     MAGICAL_ATTACK: 'Mag. Atk.',  # Implemented
-    DEFENSE: 'Def.',  # Implemented
     PHYSICAL_RESIST: 'Phy. Resist',  # Implemented
     MAGICAL_RESIST: 'Mag. Resist',  # Implemented
     HYBRID_RESIST: 'Hyb. Resist',  # Implemented
@@ -200,7 +194,13 @@ STAT_TYPES = {
     PENETRATION_CHANCE: 'Penetration',  # Implemented
     CRITICAL_CHANCE: 'Critical',  # Implemented
     BLOCK_CHANCE: 'Block',  # Implemented
-    EVADE_CHANCE: 'Evade'  # Implemented
+    EVADE_CHANCE: 'Evade',  # Implemented
+    STRENGTH: 'Str.',  # Implemented
+    MAGIC: 'Mag.',  # Implemented
+    ENDURANCE: 'End.',  # Implemented
+    AGILITY: 'Agi.',  # Implemented
+    DEXTERITY: 'Dex.',  # Implemented
+    DEFENSE: 'Def.',  # Implemented
 }
 
 # Counter Types
@@ -238,6 +238,40 @@ TYPES = {
     COUNTER: COUNTER_TYPES,
     DURATION: DURATION_TYPES,
 }
+
+
+def parse_effect(index, values):
+    effect_type = int(values[index])
+    effect_sub_type = None
+    effect_target = None
+    effect_amount = None
+    effect_duration = None
+
+    if effect_type == STAT:
+        effect_sub_type = int(values[index + 1])
+        effect_target = int(values[index + 2])
+        effect_amount = float(values[index + 3]) / 100
+        effect_duration = int(values[index + 4])
+        index += 5
+    elif effect_type == COUNTER:
+        effect_sub_type = int(values[index + 1])
+        effect_target = int(values[index + 2])
+        effect_amount = float(values[index + 3])
+        index += 4
+    elif effect_type == DURATION:
+        effect_sub_type = int(values[index + 1])
+        effect_target = int(values[index + 2])
+        effect_duration = int(values[index + 3])
+        index += 4
+    elif effect_type == SPECIFIC_TARGET:
+        pass
+    elif effect_type == STATUS_EFFECT:
+        effect_sub_type = int(values[index + 1])  # Type of effect
+        effect_amount = int(values[index + 2])  # Level of effect
+        effect_duration = float(values[index + 3])  # Chance to inflict
+        index += 3
+    effect = Effect(effect_type, effect_sub_type, effect_target, effect_amount, effect_duration)
+    return effect, index
 
 
 class Effect:

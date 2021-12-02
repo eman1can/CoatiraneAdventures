@@ -12,7 +12,7 @@ def get_screen(console, screen_data):
     recipe_id, material_ids = screen_data.split('#', 1)
     recipe = Refs.gc['recipes'][recipe_id]
 
-    equipment = Refs.gc['equipment'][recipe.get_item_id()]
+    equipment = Refs.gc['equipment'][recipe.get_output_id()]
     display_text = f'\n\tWhat materials would you like to use in the {equipment.get_name()}?'
 
     materials = []
@@ -200,7 +200,7 @@ def handle_action(console, action):
         recipe_id, material_ids = action.split('#', 2)[1:]
 
         recipe = Refs.gc['recipes'][recipe_id]
-        equipment = Refs.gc['equipment'][recipe.get_item_id()]
+        equipment = Refs.gc['equipment'][recipe.get_output_id()]
         materials = []
         material_items = []
         for material_id in material_ids.split('#'):
@@ -250,9 +250,9 @@ def get_craft_equipment_item(recipe, index, current_text, page_name, page_num):
     require_string = ''
     for ingredient, count in recipe.get_ingredients().items():
         require_string += f'{count}x {ingredient}\n\t\t'
-    item = Refs.gc['equipment'][recipe.get_item_id()]
+    item = Refs.gc['equipment'][recipe.get_output_id()]
 
-    action_string = f'{page_name}:{recipe.get_item_id()}'
+    action_string = f'{page_name}:{recipe.get_output_id()}'
     material_length = len(recipe.get_ingredients())
     if not item.is_tool():
         material_length += 2

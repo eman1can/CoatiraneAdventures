@@ -67,37 +67,3 @@
         id: inventory_items
         size_hint: 0.8, 0.8
         pos_hint: {'x': 0.1, 'y': 0.1}
-    Label:
-        id: profile_header
-        canvas.before:
-            Rectangle:
-                size: self.size
-                pos: self.pos
-                texture: Gradient.vertical_center(int(self.width), int(self.height), int(self.height), (255, 255, 255, 255), (255, 255, 255, 0), 0.2)
-        size_hint: None, 0.05
-        width: self.texture_size[0] * 1.125
-        pos_hint: {'x': 0.125, 'top': 0.975}
-        font_size: '20pt'
-        font_name: 'Precious'
-        color: 0, 0, 0, 1
-        text: profile_header()
-    Label:
-        id: time_header
-        canvas.before:
-            Rectangle:
-                size: self.size
-                pos: self.pos
-                texture: Gradient.vertical_center(int(self.width), int(self.height), int(self.height), (255, 255, 255, 255), (255, 255, 255, 0), 0.2)
-        size_hint: None, 0.05
-        width: self.texture_size[0] * 1.125
-        pos_hint: {'right': 0.875, 'top': 0.975}
-        font_size: '20pt'
-        font_name: 'Precious'
-        color: 0, 0, 0, 1
-        text: time_header()
-    PPCHoverPathButton:
-        id: back_button
-        path: 'buttons/back'
-        size_hint: app.get_dkey('bb s_h')
-        pos_hint: app.get_dkey('bb p_h')
-        on_release: root.on_back_press()

@@ -2,7 +2,7 @@ from random import randint, uniform
 from time import time_ns
 
 from game.hmpmd import HMPMD
-from game.item import Item, MultiItem
+from game.item import Item, ShopItem
 from game.skill import NONE
 from refs import Refs
 
@@ -158,6 +158,9 @@ class EquipmentClass:
 
     def get_id(self):
         return self._item_id
+
+    def get_image(self):
+        return f'items/default/{self._item_id}.png'
 
     def get_name(self):
         return self._name
@@ -414,14 +417,16 @@ class ArmorClass(EquipmentClass):
         return True
 
 
-class UnGeneratedEquipment(MultiItem):
+class UnGeneratedEquipment(ShopItem):
     def __init__(self, tool_class, material):
         self._equipment_class = tool_class
         self._material = material
         item_id = self.get_id()
         item_name = self.get_name()
-        min_price, max_price = 500 * self._material.get_hardness(), 500 * self._material.get_max_hardness()
-        super().__init__(item_id, item_name, self._equipment_class.get_description(), None, 'equipment', 'multi', min_price, max_price)
+        super().__init__(item_id, item_name, self._equipment_class.get_description(), None, 'equipment')
+
+    def get_base_id(self):
+        return self._equipment_class.get_id()
 
     def get_id(self):
         return f'{self._material.get_id()}/{self._equipment_class.get_id()}'
@@ -499,7 +504,7 @@ class UnGeneratedArmor(UnGeneratedMultiMaterialEquipment):
         return True
 
 
-class Equipment(HMPMD, Item):
+class Equipment(HMPMD, ShopItem):
     def __init__(self, equipment_class, item_hash, hardness, durability, durability_current, hp, mp, p, m, d, weight, material):
         self._class = equipment_class
         self._hash = item_hash
@@ -517,7 +522,7 @@ class Equipment(HMPMD, Item):
         HMPMD.__init__(self, hp, mp, p, m, d)
         name = self.get_name()
         description = self.get_description()
-        Item.__init__(self, self._class.get_id(), name, description, None, 'equipment', 'single', self._worth)
+        ShopItem.__init__(self, self._class.get_id(), name, description, None, 'equipment')
 
     def get_hash(self):
         return self._hash

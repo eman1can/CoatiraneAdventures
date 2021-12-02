@@ -1,10 +1,8 @@
 # UIX Imports
 # KV Import
-from kivy.clock import Clock
 from kivy.properties import StringProperty
 from loading.kv_loader import load_kv
 from refs import Refs
-from uix.modules.headers import time_header
 from uix.modules.screen import Screen
 
 load_kv(__name__)
@@ -13,11 +11,8 @@ load_kv(__name__)
 class TownMain(Screen):
     profile_source = StringProperty('')
 
-    # def __init__(self, **kwargs):
-    #     super().__init__(**kwargs)
-
-        # self.sound = SoundLoader.load('res/town.mp3')
-        # self.sound.loop = True
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def on_kv_post(self, base_widget):
         symbol = Refs.gc.get_symbol().split('_')[1]
@@ -34,19 +29,6 @@ class TownMain(Screen):
 
     def on_pre_enter(self, *args):
         self.check_locks()
-
-    def on_enter(self):
-        Clock.schedule_interval(self.update_time_header, 5)
-        # if self.sound:
-        #     self.sound.play()
-
-    def on_leave(self):
-        Clock.unschedule(self.update_time_header)
-        # if self.sound:
-        #     self.sound.stop()
-
-    def update_time_header(self, dt):
-        self.ids.time_header.text = time_header()
 
     def check_locks(self):
         self.ids.tavern_lock.opacity = int(self.content.is_tavern_locked())
@@ -67,10 +49,10 @@ class TownMain(Screen):
             self.manager.display_screen('tavern_main', True, True)
 
     def on_shop(self):
-        pass
+        self.manager.display_screen('shop_main', True, True, 'main')
 
     def on_quests(self):
-        pass
+        self.manager.display_screen('quests_main', True, True)
 
     def on_crafting(self):
         if not self.content.is_tavern_locked():
@@ -83,7 +65,7 @@ class TownMain(Screen):
         self.manager.display_screen('profile_main', True, True)
 
     def on_almanac(self):
-        pass
+        self.manager.display_screen('almanac_main', True, True)
 
     def on_housing(self):
         pass

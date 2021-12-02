@@ -9,24 +9,11 @@
             width: self.image_ratio * self.height
             pos: self.parent.x + root.width / 2 - self.width / 2, self.parent.y + root.height / 2 - self.height / 2
     FloatLayout:
-        canvas:
-            Color:
-                rgba: 0, 0, 0, 1
-            Line:
-                width: 2
-                points: self.x, self.y, self.right, self.y, self.right, self.top, self.x, self.top, self.x, self.y
-            Line:
-                width: 1.75
-                points: self.x + self.width - self.height * 0.0125, self.y + self.height * 0.9875, self.x + self.width - self.height * 0.075, self.y + self.height * 0.925
-            Line:
-                width: 1.75
-                points: self.x + self.width - self.height * 0.0125, self.y + self.height * 0.925, self.x + self.width - self.height * 0.075, self.y + self.height * 0.9875
-            Color:
-                rgba: 1, 1, 1, 1
-        Button:
-            size_hint: None, 0.075
+        PPCHoverPathButton:
+            id: close_button
+            path: 'buttons/close'
+            size_hint: None, None
+            height: root.height * 0.15
             width: self.height
-            x: root.x + root.width - (root.height * 0.01) - self.width
-            y: root.y + root.height * 0.99 - self.height
-            opacity: 0
+            pos_hint: {'top': 1, 'right': 1}
             on_release: root.goto_previous()

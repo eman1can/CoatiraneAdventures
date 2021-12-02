@@ -1,15 +1,18 @@
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.image import Image
 
 from loading.kv_loader import load_kv
 from refs import Refs
-
-load_kv(__name__)
 
 
 class ParallaxBackground(FloatLayout):
     def __init__(self, floor_data, **kwargs):
         self.register_event_type('on_move')
         super().__init__(**kwargs)
+
+        self.background_layer = None
+        self.foreground_layer = None
+
         self.view_width = Refs.app.width
         self.view_height = Refs.app.height
         self.size = self.view_width, self.view_height
@@ -33,19 +36,34 @@ class ParallaxBackground(FloatLayout):
             self.ax, self.ay = self.width * 0.5, self.height * 0.177
 
         self.mode = -1
+
+    def set_background_layer(self, layer):
+        self.background_layer = layer
+        for node in range(1, 5):
+            image_node = Image(allow_stretch=True)
+            layer.add_widget(image_node)
+            self.ids[f'node_{node}_background'] = image_node
+        self.update(0, 0)
+
+    def set_foreground_layer(self, layer):
+        self.foreground_layer = layer
+        for node in range(1, 5):
+            image_node = Image(allow_stretch=True)
+            layer.add_widget(image_node)
+            self.ids[f'node_{node}_foreground'] = image_node
         self.update(0, 0)
 
     def node_to_name(self, x, y):
         try:
             node = self.floor_map.get_node_direction((x, y))
         except KeyError:
-            return 'tile_blank.png'
+            return 'tile_blank'
 
         N = 'N' if node & 1 == 1 else ''
         S = 'S' if node & 2 == 2 else ''
         E = 'E' if node & 4 == 4 else ''
         W = 'W' if node & 8 == 8 else ''
-        return f'tile_{N}{S}{E}{W}.png'
+        return f'tile_{N}{S}{E}{W}'
 
     def node_to_bounds(self, x, y, w, h):
         # if y % 2 != 0:
@@ -105,37 +123,42 @@ class ParallaxBackground(FloatLayout):
 
     def hide_node(self, node):
         self.ids[f'node_{node}_background'].opacity = 0
-        # self.ids[f'node_{node}_foreground'].opacity = 0
+        self.ids[f'node_{node}_foreground'].opacity = 0
 
     def show_node(self, node, x, y):
-        background = self.node_to_name(x, y)
+        tile_name = self.node_to_name(x, y)
         self.ids[f'node_{node}_background'].opacity = 1
-        # self.ids[f'node_{node}_foreground'].opacity = 1
-        self.ids[f'node_{node}_background'].source = f'dungeon/{background}'
-        # self.ids[f'node_{node}_foreground'].source = f'dungeon/{foreground}'
+        self.ids[f'node_{node}_foreground'].opacity = 1
+        self.ids[f'node_{node}_background'].source = f'dungeon/{tile_name}_background.png'
+        self.ids[f'node_{node}_foreground'].source = f'dungeon/{tile_name}_foreground.png'
 
     def update_node_pos(self, node, dx, dy):
-        # print(node, self.ax + dx, self.ay + dy)
-        self.ids[f'node_{node}_background'].pos_hint = {'center_x': (self.node_width - self.ax + dx) / self.node_width, 'center_y': (self.node_height - self.ay + dy) / self.node_height}
-        # self.ids[f'node_{node}_foreground'].pos = self.ax + dx, self.ay + dy
+        node_pos_hint = {'center_x': (self.node_width - self.ax + dx) / self.node_width, 'center_y': (self.node_height - self.ay + dy) / self.node_height}
+        self.ids[f'node_{node}_background'].pos_hint = node_pos_hint
+        self.ids[f'node_{node}_foreground'].pos_hint = node_pos_hint
+
+    def get_pos_info(self):
+        return self.ax, self.ay, self.node_width, self.node_height
 
     def on_move(self, direction):
         pass
 
-    def update(self, dx, dy):
+    def update(self, dx, dy, speed=15):
+        if self.background_layer is None or self.foreground_layer is None:
+            return
         x, y = self.floor_map.get_current_node()
         # y *= 2
         # if self._insert_node:
         #     y += 1
         bounds = self.node_to_bounds(x, y, self.node_width, self.node_height)
 
-        if bounds(self.ax + dx * 15, self.ay + dy * 15):
-            self.ax += dx * 15
-            self.ay += dy * 15
-        elif bounds(self.ax, self.ay + dy * 15):
-            self.ay += dy * 15
-        elif bounds(self.ax + dx * 15, self.ay):
-            self.ax += dx * 15
+        if bounds(self.ax + dx * speed, self.ay + dy * speed):
+            self.ax += dx * speed
+            self.ay += dy * speed
+        elif bounds(self.ax, self.ay + dy * speed):
+            self.ay += dy * speed
+        elif bounds(self.ax + dx * speed, self.ay):
+            self.ax += dx * speed
         else:
             return False
 
@@ -170,9 +193,7 @@ class ParallaxBackground(FloatLayout):
             # self.floor_map.set_current_node((x, int(y)))
 
         if new_node:
-            print(self.updates)
             self.updates = 0
-
 
         cx, cy = self.width / 2, self.height / 2
         # In perfect center - Mode 0

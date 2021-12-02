@@ -4,3 +4,31 @@
         source: root.background_source
         opacity: 0 if not root.background else 1
         allow_stretch: True
+    RelativeLayout:
+        id: screen_title
+        size_hint: 0.147, 0.117
+        pos_hint: {'top': 1}
+        opacity: 0 if root.title_hidden else 1
+        Image:
+            id: menu_background
+            source: 'screen_title/background.png'
+            allow_stretch: True
+        Image:
+            id: menu_title
+            source: root.title_source
+            allow_stretch: True
+    PPCHoverPathButton:
+        id: back_button
+        path: 'buttons/back_vflipped'
+        size_hint: 0.0625, 0.1112
+        on_release: root.on_back_press()
+        disabled: not root.back_enabled
+        opacity: 0 if root.back_hidden else 1
+    PPCHoverPathButton:
+        id: home_button
+        path: 'buttons/home'
+        size_hint: 0.0625, 0.1112
+        pos_hint: {'top': 1, 'right': 1}
+        on_release: root.on_home_press()
+        disabled: not root.home_enabled
+        opacity: 0 if root.home_hidden else 1

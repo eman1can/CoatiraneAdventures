@@ -2,12 +2,11 @@
 
 <ProfileMain>:
     name: 'profile_main'
-    PPCHoverPathButton:
-        id: back_button
-        path: 'buttons/back'
-        size_hint: app.get_dkey('bb s_h')
-        pos_hint: app.get_dkey('bb p_h')
-        on_release: root.on_back_press()
+    title_source: 'screen_title/profile.png'
+    Image:
+        id: symbol_image
+        allow_stretch: True
+        source: root.symbol_source
     Label:
         id: name_label
         size_hint: None, 0.125

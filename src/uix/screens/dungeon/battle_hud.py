@@ -232,12 +232,12 @@ class MoveHud(RelativeLayout):
         self.all_moves = move_list
 
     def hide_move_labels(self):
-        for index in range(4):
+        for index, char in enumerate(self.chars):
             self.ids[f'move_label_{index}'].opacity = 0
 
     def show_move_labels(self):
-        for index in range(4):
-            if not self.chars[index].is_dead():
+        for index, char in enumerate(self.chars):
+            if not char.is_dead():
                 self.ids[f'move_label_{index}'].opacity = 1
 
     def replace_character(self, index, character):

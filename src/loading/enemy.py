@@ -56,7 +56,7 @@ def get_skill_data(values, loader):
 
 
 def load_enemy_chunk(chunk, loader, program_type, callbacks):
-    enemy_data, item_data = chunk.strip().split('\n')
+    enemy_data, description, item_data = chunk.strip().split('\n')
     values = enemy_data.split(',')
     for x in range(len(values)):
         values[x] = values[x].strip()

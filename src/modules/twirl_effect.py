@@ -55,6 +55,12 @@ class TwirlEffect(EffectBase):
         self.time_scale = time_scale
         Clock.schedule_interval(self.update_variables, 1 / 30)
 
+    def pause(self):
+        Clock.unschedule(self.update_variables)
+
+    def resume(self):
+        Clock.schedule_interval(self.update_variables, 1 / 30)
+
     def on_update(self):
         pass
 

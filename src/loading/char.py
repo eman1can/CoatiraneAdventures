@@ -7,14 +7,14 @@ from kivy.resources import resource_find
 
 from refs import Refs
 
-TYPE           = 0
-ID             = 1
-NAME           = 2
-DISPLAY_NAME   = 3
-SKEL_ID        = 4
-RACE           = 5
-GENDER         = 6
-AGE            = 7
+TYPE            = 0
+ID              = 1
+NAME            = 2
+DISPLAY_NAME    = 3
+SKEL_ID         = 4
+RACE            = 5
+GENDER          = 6
+AGE             = 7
 
 HEALTH          = 8
 MANA            = 9
@@ -132,7 +132,7 @@ def load_char_chunk(line, loader, program_type, callbacks):
         element = int(values[ELEMENT])
 
         favorite_weapon = int(values[WEAPON_TYPE])
-        if values[SUB_WEAPON_TYPE] != '-':
+        if values[SUB_WEAPON_TYPE] != '-' and values[SUB_WEAPON_TYPE] != '-1':
             favorite_sub_weapon = int(values[SUB_WEAPON_TYPE])
 
     recruitment_items = {}
@@ -145,12 +145,14 @@ def load_char_chunk(line, loader, program_type, callbacks):
     rank = 1
     familiarities = {}
     abilities = []
+    perks = []
     if character_development is not None:
         for rank_status in character_development['ranks']['unlocked'][1:]:
             if rank_status:
                 rank += 1
         familiarities = character_development['familiarities']
         abilities = character_development['abilities']
+        perks = character_development['perks']
 
     # TODO Add equipped items to save/load and character_development
 
@@ -161,7 +163,7 @@ def load_char_chunk(line, loader, program_type, callbacks):
 
     char = Character(char_id, name, skel_path, res_path, int(hp), int(mp), int(s), int(m), int(e), int(a), int(d), element, skills,
                      _race=race, _gender=gender, _age=age, _description=description,
-                     _familiarities=familiarities, _abilities=abilities,
+                     _familiarities=familiarities, _abilities=abilities, _perks=perks,
                      _display_name=display_name, _index=len(loader.get('chars')), _is_support=is_support, _ranks=ranks, _rank=rank, _attack_type=attack_type,
                      _family=family, _high_damage=high_damage, _lowest_floor=floor_depth, _monsters_slain=monsters_slain, _people_slain=people_slain,
                      _recruitment_items=recruitment_items, _favorite_weapon=favorite_weapon, _favorite_sub_weapon=favorite_sub_weapon)

@@ -119,21 +119,24 @@ class ActionFlag(RelativeLayout):
 
 class DungeonBattle(Screen):
     level_num = NumericProperty(1)
-    is_boss = BooleanProperty(False)
+    # is_boss = BooleanProperty(False)
 
+    fade_interval = NumericProperty(1)
     battle_flash_alpha = NumericProperty(0)
+    boss_warning_alpha = NumericProperty(0)
 
     auto_move_enabled = BooleanProperty(False)
     auto_battle_enabled = BooleanProperty(False)
 
     def __init__(self, level, boss, config, **kwargs):
         self.enemy_huds = {}
-        self.dungeon_config = config
+        # self.dungeon_config = config
         self.level_num = level
-        self.is_boss = boss
+        # self.is_boss = boss
 
         # Base Variables
         self._keys = []
+        self._party_speed = 5
 
         # Non-Battle Variables
         self.speed = 1
@@ -142,12 +145,12 @@ class DungeonBattle(Screen):
 
         # Setup floor map
         self.floor_data = Refs.gc.get_floor_data()
+        self._mapping_enabled = self.floor_data.party_has_perk('mapping')
         self.floor_map = self.floor_data.get_floor_map()
         self.battle_data = self.floor_data.get_battle_data()
 
         # Setup background
-        self.background = ParallaxBackground(self.floor_data)
-        self.background.bind(on_move=self.on_node_update)
+        self.parallax = None
 
         self.lwf_renderer = None
 
@@ -186,31 +189,69 @@ class DungeonBattle(Screen):
         self.char_party = 0.7275 * width, 0.410 * height
         self.action_flags = {}
 
+        # Boss Warning
+        self._fade_in = True
+        self._fade_time = 0
+        self._fade_update = None
+        self._exit_distance = 10000
+        self.boss_encounter = False
+
         super().__init__(**kwargs)
 
     def on_kv_post(self, base_widget):
-        self.ids.parallax_layer.add_widget(self.background)
+        self.setup_data()
+
+    def setup_data(self):
+        self.parallax = ParallaxBackground(self.floor_data)
+        self.parallax.bind(on_move=self.on_node_update)
+        self.ids.parallax_background.clear_widgets()
+        self.ids.parallax_foreground.clear_widgets()
+        self.parallax.set_background_layer(self.ids.parallax_background)
+        self.parallax.set_foreground_layer(self.ids.parallax_foreground)
         self.ids.battle_background.opacity = 0
+        self.ids.battle_foreground.opacity = 0
         self.ids.twirl_widget.effects[0].bind(on_update=self.twirl_update)
         self.ids.twirl_widget.effects[0].bind(on_end=self.twirl_end)
         self.ids.animation_layer.opacity = 0
         self.ids.battle_hud.bind(on_toggle_icons=self.toggle_icons)
-
+        self.ids.map_overlay.opacity = 0
+        self.ids.map_action_flags.opacity = 0
+        self.ids.fullscreen_map.opacity = 0
+        self.ids.map_options.opacity = 0
         self.lwf_renderer = LWFRenderer(self.ids.animation_layer)
 
         characters = self.floor_data.get_characters()
+        avg_speed = 0
         for index, character in enumerate(characters):
             character.load_skeleton(self._skeleton_loader)
             character.set_position(*self.character_positions[index])
             self.ids.battle_hud.huds[character].set_character(character, self.lwf_renderer)
+            avg_speed += character.get_agility()
+        avg_speed /= len(characters)
+        avg_speed /= 200
+        avg_speed = min(max(avg_speed, 5), 50)
+        self._party_speed = avg_speed
 
     def on_enter(self, *args):
         Refs.app.bind_keyboard(on_key_down=self.on_keyboard_down, on_key_up=self.on_keyboard_up)
 
-        self.ids.floor_announcement.fade_out(1.5)
-        Clock.schedule_once(self.setup_after_fade, 1.5)
         Clock.schedule_interval(self.update, 1 / 30)
         Clock.schedule_interval(self.update_time_header, 5)
+        if not self.floor_data.is_in_encounter():
+            self.ids.floor_announcement.fade_out(1.5)
+            Clock.schedule_once(self.setup_after_fade, 1.5)
+            if self._exit_distance < 2000 and self._fade_update is None:
+                self._fade_update = Clock.schedule_interval(self.fade_update, 1 / 30)
+        else:
+            self.ids.twirl_widget.effects[0].resume()
+            # self.update_screen_for_encounter()
+
+    def on_leave(self, *args):
+        Refs.app.unbind_keyboard(on_key_down=self.on_keyboard_down, on_key_up=self.on_keyboard_up)
+        Clock.unschedule(self.update_time_header)
+        if self._fade_update is not None:
+            self._fade_update.cancel()
+            self._fade_update = None
 
     def update_time_header(self, dt):
         self.ids.time_header.text = time_header_simple()
@@ -224,21 +265,24 @@ class DungeonBattle(Screen):
         self.refresh_map()
         self.process_action_flags(True)
         self.ids.battle_hud.opacity = 1
-        self.ids.map_overlay.opacity = 1
+        if self._mapping_enabled:
+            self.ids.map_overlay.opacity = 1
+            self.ids.map_action_flags = 1
+            self.ids.fullscreen_map.opacity = 1
+            self.ids.map_options.opacity = 1
         self.ids.info_hud.opacity = 1
         self.ids.inventory.opacity = 1
+        if self._exit_distance < 2000 and self._fade_update is None:
+            self._fade_update = Clock.schedule_interval(self.fade_update, 1 / 30)
 
     def refresh_map(self):
-        if self.floor_map.get_enabled():
-            self.ids.map_overlay.opacity = 1
-            self.ids.map_overlay.text = self.floor_map.get_text(False)
-            self.ids.map_scatter.set_text(self.floor_map.get_text(False, 200))
-        else:
-            self.ids.map_overlay.opacity = 0
-
-    def on_leave(self, *args):
-        Refs.app.unbind_keyboard(on_key_down=self.on_keyboard_down, on_key_up=self.on_keyboard_up)
-        Clock.unschedule(self.update_time_header)
+        if self._mapping_enabled:
+            if self.floor_map.get_enabled():
+                self.ids.map_overlay.opacity = 1
+                self.ids.map_overlay.text = self.floor_map.get_text(False)
+                self.ids.map_scatter.set_text(self.floor_map.get_text(False, 200))
+                return
+        self.ids.map_overlay.opacity = 0
 
     def set_config(self, config):
         if 'auto_move_enabled' in config:
@@ -310,28 +354,28 @@ class DungeonBattle(Screen):
 
     def update_key(self, key_name):
         if key_name == 'move_up':
-            if self.background.update(0, 1):
+            if self.parallax.update(0, 1, self._party_speed):
                 self.movement_update()
                 return 2
             else:
                 self.stop_animation()
                 return -1
         elif key_name == 'move_left':
-            if self.background.update(-1, 0):
+            if self.parallax.update(-1, 0, self._party_speed):
                 self.movement_update()
                 return 0
             else:
                 self.stop_animation()
                 return -1
         elif key_name == 'move_down':
-            if self.background.update(0, -1):
+            if self.parallax.update(0, -1, self._party_speed):
                 self.movement_update()
                 return 1
             else:
                 self.stop_animation()
                 return -1
         elif key_name == 'move_right':
-            if self.background.update(1, 0):
+            if self.parallax.update(1, 0, self._party_speed):
                 self.movement_update()
                 return 3
             else:
@@ -395,6 +439,33 @@ class DungeonBattle(Screen):
             self.animate(direction)
             self._direction = direction
             self.ids.dungeon_header.text = dungeon_header(direction)
+
+        # Exit / Boss Distance
+        exit_distance = self.floor_map.exit_distance(*self.parallax.get_pos_info())
+        if exit_distance < 4000:
+            if self._fade_update is None:
+                self._fade_update = Clock.schedule_interval(self.fade_update, 1 / 30)
+            self.fade_interval = ((exit_distance - 1400) / 3600) * 2 + 0.25
+        elif self._fade_update is not None:
+            self.boss_warning_alpha = 0
+            self._fade_update.cancel()
+            self._fade_update = None
+
+    def fade_update(self, dt):
+        self._fade_time = min(self._fade_time + dt, self.fade_interval)
+        fade_percent = self._fade_time / self.fade_interval
+        if self._fade_in:
+            self.boss_warning_alpha = 1 * fade_percent
+        else:
+            self.boss_warning_alpha = 1 - 1 * fade_percent
+
+        if self._fade_in and self.boss_warning_alpha >= 1:
+            self._fade_in = False
+        elif not self._fade_in and self.boss_warning_alpha <= 0:
+            self._fade_in = True
+        else:
+            return
+        self._fade_time = 0
 
     # We have moved across a node
     def on_node_update(self, background, direction):
@@ -481,12 +552,16 @@ class DungeonBattle(Screen):
             Refs.gp.display_popup(self, 'inventory')
 
     def on_map_options(self):
+        if not self._mapping_enabled:
+            return
         if Refs.gp.is_popup_open('map_options'):
             Refs.gp.close_popup('map_options')
         else:
             Refs.gp.display_popup(self, 'map_options')
 
     def on_fullscreen_map(self):
+        if not self._mapping_enabled:
+            return
         new_opacity = 1 - self.ids.map.opacity
         self.ids.map.opacity = new_opacity
         self.ids.map.disabled = not self.ids.map.disabled
@@ -504,11 +579,13 @@ class DungeonBattle(Screen):
         self.tool_action(tool, 'pickaxe', 'mine')
 
     def on_ascend(self, instance):
-        Refs.gp.display_popup(self, 'dm_confirm', on_confirm=lambda *args: self.do_ascend())
+        Refs.gp.display_popup(self, 'dm_confirm', current_floor=self.level_num, on_confirm=lambda *args: self.do_ascend())
 
     def do_ascend(self):
-        # What do I need to unload?
-        Refs.gs.display_screen('dungeon_result', True, False)
+        if self.level_num == 1:
+            Refs.gs.display_screen('dungeon_result', True, False)
+        else:
+            Refs.gs.display_screen('dungeon_main', True, False, level=self.level_num, boss=False, locked=True)
 
     def on_descend(self, instance):
         Refs.gp.display_popup(self, 'dm_confirm', on_confirm=lambda *args: self.do_descend())
@@ -583,30 +660,39 @@ class DungeonBattle(Screen):
                 self.ids.battle_hud.huds[character].stamina = character.get_stamina()
             all_asleep &= character.is_asleep()
 
-        # Encounter chance should be ~0.15 per node / 0.0018 per movement
-        x, y = self.floor_map.get_current_node()
-        if not all_asleep:
-            if (x, y) not in self.floor_data.get_activated_safe_zones() and not self.floor_map.is_marker(EXIT):
-                chance = 0.18
-                node = None
-                for enemy_id in self.floor_data.get_floor().get_enemies().keys():
-                    if self.floor_map.is_marker(enemy_id):
-                        node = enemy_id
-                        chance += 0.6
-                        break
-                chance += 0.24 * self.floor_data.get_rest_count()
-                if uniform(0, 99) <= min(99, chance):
-                    self.floor_data.generate_encounter(node, int(max(0, 100 - chance) / 50))
-                    if node is not None:
-                        # If we are standing on a node, and we get that enemy generated, reduce positions counter
-                        for enemy in self.floor_data.get_battle_data().get_enemies():
-                            if enemy.get_id() == node:
-                                if self.floor_data.party_has_perk('hunter'):
-                                    self.floor_map.decrease_node_counter(2)
-                                else:
-                                    self.floor_map.decrease_node_counter(1)
-                                break
-                    self.start_encounter()
+        if all_asleep:
+            self.showing_announcement = True
+            self.show_failure()
+
+        if self.floor_map.is_marker(EXIT) and not self.floor_data.get_floor().is_boss_defeated():
+            # Show boss encounter
+            self.floor_data.generate_boss_encounter()
+            self.start_boss_encounter()
+        else:
+            # Encounter chance should be ~0.15 per node / 0.0018 per movement
+            x, y = self.floor_map.get_current_node()
+            if not all_asleep:
+                if (x, y) not in self.floor_data.get_activated_safe_zones() and not self.floor_map.is_marker(EXIT):
+                    chance = 0.18
+                    node = None
+                    for enemy_id in self.floor_data.get_floor().get_enemies().keys():
+                        if self.floor_map.is_marker(enemy_id):
+                            node = enemy_id
+                            chance += 0.6
+                            break
+                    chance += 0.24 * self.floor_data.get_rest_count()
+                    if uniform(0, 99) <= min(99, chance):
+                        self.floor_data.generate_encounter(node, int(max(0, 100 - chance) / 50))
+                        if node is not None:
+                            # If we are standing on a node, and we get that enemy generated, reduce positions counter
+                            for enemy in self.floor_data.get_battle_data().get_enemies():
+                                if enemy.get_id() == node:
+                                    if self.floor_data.party_has_perk('hunter'):
+                                        self.floor_map.decrease_node_counter(2)
+                                    else:
+                                        self.floor_map.decrease_node_counter(1)
+                                    break
+                        self.start_encounter()
 
     # Animation Functions
     def animate(self, direction):
@@ -757,8 +843,9 @@ class DungeonBattle(Screen):
 
     # Working Functions
     def start_encounter(self):
-        if self.ids.battle_hud.ids.toggle_time_scale.state == 'down':
-            self.ids.battle_hud.time_scale = 1.5
+        # Refresh time scale
+        # if self.ids.battle_hud.ids.toggle_time_scale.state == 'down':
+        #     self.ids.battle_hud.time_scale = 1.5
         # Stop Movement
         self.stop_animation()
         Clock.unschedule(self.move_update)
@@ -794,23 +881,52 @@ class DungeonBattle(Screen):
         self.ids.twirl_widget.effects[0].tintr = True
         self.ids.twirl_widget.effects[0].play(self.ids.battle_hud.time_scale)
 
+    def start_boss_encounter(self):
+        self.boss_encounter = True
+        self.start_encounter()
+
     def twirl_update(self, instance):
+        if self.boss_encounter:
+            if self.floor_data.is_in_encounter():
+                self.ids.twirl_widget.effects[0].pause()
+                self.manager.display_screen('dungeon_main', True, False, boss=True, locked=True)
+                self.update_screen_for_encounter()
+        else:
+            self.update_screen_for_encounter()
+        self._last_animation = None
+
+    def update_screen_for_encounter(self):
         disabled = self.floor_data.is_in_encounter()
         opacity = int(disabled)
 
-        self.ids.map_overlay.opacity = 1 - opacity
+        if self._mapping_enabled:
+            self.ids.map_overlay.opacity = 1 - opacity
         self.ids.info_hud.opacity = 1 - opacity
         self.ids.info_hud.disabled = disabled
         self.ids.inventory.opacity = 1 - opacity
         self.ids.inventory.disabled = disabled
-        self.ids.parallax_layer.opacity = 1 - opacity
+        self.ids.parallax_background.opacity = 1 - opacity
+        self.ids.parallax_foreground.opacity = 1 - opacity
         self.ids.battle_background.opacity = opacity
+        self.ids.battle_foreground.opacity = opacity
         self.ids.animation_layer.opacity = opacity
+
+        if disabled:
+            if self._fade_update is not None:
+                self._fade_update.cancel()
+                self._fade_update = None
+        elif self._exit_distance < 2000 and self._fade_update is None:
+            self._fade_update = Clock.schedule_interval(self.fade_update, 1 / 30)
 
         self.ids.battle_hud.opacity = 1 - opacity
         self.ids.battle_hud.disabled = not disabled
         if not disabled:
             self.ids.battle_hud.leave_battle()
+            for character in self.battle_data.get_characters():
+                if character is None:
+                    continue
+                character.set_in_battle(False)
+                self.ids.battle_hud.huds[character].in_battle = False
         for hud in self.ids.battle_hud.huds.values():
             hud.hide_overlays()
         self.ids.result_hud.opacity = 0
@@ -826,6 +942,9 @@ class DungeonBattle(Screen):
             time = self.play_encount_animations()
             self.floor_data.get_characters()[0].add_event_handler('jumpEnd', 'show_enemies', lambda track, event: self.show_enemies())
             Clock.schedule_once(lambda dt: self.show_assist_animations(), time)
+        elif self.boss_encounter:
+            self.boss_encounter = False
+            self.manager.display_screen('dungeon_main', True, False, level=self.level_num, boss=False, locked=True)
 
     def calculate_assist_effects(self, supports):
         animation_queue = []
@@ -898,6 +1017,10 @@ class DungeonBattle(Screen):
         self.ids.result_hud.set_items_obtained(item_counts)
 
     def show_results(self):
+        if self.boss_encounter:
+            floor = self.floor_data.get_floor()
+            floor.defeat_boss()
+            floor.generate_respawn_time()
         # Play Victory Animations for characters
         for character in self.floor_data.get_characters():
             if character.is_dead() or character.is_asleep():
@@ -944,6 +1067,7 @@ class DungeonBattle(Screen):
             hud.hide_overlays()
         # Hide Enemy Healths
         self.ids.enemy_health.opacity = 0
+        self.ids.lose_screen.disabled = False
         self.ids.lose_screen.opacity = 1
         self.ids.lose_button.disabled = False
         background_fade_in = Animation(opacity=0.5, duration=1, t='in_expo') + Animation(opacity=1, duration=2, t='out_expo')
@@ -964,7 +1088,7 @@ class DungeonBattle(Screen):
 
         Refs.gc.reset_floor_data()
 
-        Refs.gs.display_screen('dungeon_main', True, False, level=0)
+        Refs.gs.display_screen('dungeon_main', True, False, level=0, boss=False)
 
     def refresh_harvest(self):
         inventory = Refs.gc.get_inventory()

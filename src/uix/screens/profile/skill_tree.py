@@ -22,56 +22,40 @@ class SkillTreeMain(Screen):
         self.tree_lines = []
         self.tree_sizes = {}
         self.perks = perks
+
+        self._perk_trees = {}
+        self._perk_count = 0
+        self._box_width = 0
+        self._box_height = 0
         super().__init__(**kwargs)
 
     def on_kv_post(self, base_widget):
-        perk_trees, perk_count = {}, 0
-
         self.ids.perk_points.text = f'You have {Refs.gc.get_perk_points()} perk points'
 
         for perk_id, perk in Refs.gc['perks'].items():
             tree_id, level_id = perk.get_tree(), perk.get_level()
             self.tree_sizes[tree_id] = 0
 
-            if level_id not in perk_trees:
-                perk_trees[level_id] = {}
-            if tree_id not in perk_trees[level_id]:
-                perk_trees[level_id][tree_id] = []
+            if level_id not in self._perk_trees:
+                self._perk_trees[level_id] = {}
+            if tree_id not in self._perk_trees[level_id]:
+                self._perk_trees[level_id][tree_id] = []
 
-            perk_trees[level_id][tree_id].append(perk)
-            perk_count += 1
+            self._perk_trees[level_id][tree_id].append(perk)
+            self._perk_count += 1
 
-        for level_id, trees in perk_trees.items():
+        for level_id, trees in self._perk_trees.items():
             for tree_id, perks in trees.items():
                 self.tree_sizes[tree_id] = max(self.tree_sizes[tree_id], len(perks))
 
         rows = 4
         cols = sum(self.tree_sizes.values())
-        box_width = self.width * 0.904 / cols
-        box_height = self.height * 0.5 / rows
+        self._box_width = self.width * 0.904 / cols
+        self._box_height = self.height * 0.5 / rows
         self._width = self.width
         self._height = self.height
 
-        print(self.perks)
-
-        for level_id, trees in reversed(perk_trees.items()):
-            cost = {4: 105, 3: 21, 2: 3, 1: 1}[level_id]
-            for tree_id, perks in trees.items():
-                spacer_size = (self.tree_sizes[tree_id] - len(perks)) * box_width
-                if spacer_size > 0:
-                    self.ids.perk_grid.add_widget(Widget(size_hint=(None, None), width=spacer_size / 2, height=box_height))
-                for perk in perks:
-                    perk_box = PerkBox(size_hint=(None, None), size=(box_width, box_height))
-                    if Refs.gc.has_perk(perk.get_id()):
-                        perk_box.obtained = True
-                        perk_box.char_list = self.perks[tree_id][perk.get_id()]
-                    elif cost > Refs.gc.get_skill_level() and cost != 1:
-                        perk_box.active = False
-                    perk_box.text = perk.get_name()
-                    perk_box.bind(on_release=lambda instance, perk_id=perk.get_id(): self.show_perk_info(perk_id))
-                    self.ids.perk_grid.add_widget(perk_box)
-                if spacer_size > 0:
-                    self.ids.perk_grid.add_widget(Widget(size_hint=(None, None), width=spacer_size / 2, height=box_height))
+        self.display_perk_boxes()
 
         self.tree_lines.clear()
 
@@ -79,7 +63,7 @@ class SkillTreeMain(Screen):
 
         start = self.width * 0.048
         for index, (tree_id, tree_count) in enumerate(self.tree_sizes.items()):
-            tree_width = tree_count * box_width
+            tree_width = tree_count * self._box_width
 
             tree_title = tree_id.title()
             label = Label(size_hint_x=None, width=tree_width, text=tree_title, font_name='Precious', font_size='36', color=(0, 0, 0, 1))
@@ -93,10 +77,56 @@ class SkillTreeMain(Screen):
             self.canvas.add(line)
             start += tree_width
 
+    def reload(self, perks, *args):
+        self.perks = perks
+        self.display_perk_boxes()
+
+    def display_perk_boxes(self):
+        self.ids.perk_grid.clear_widgets()
+        for level_id, trees in reversed(self._perk_trees.items()):
+            cost = {4: 105, 3: 21, 2: 3, 1: 1}[level_id]
+            for tree_id, perks in trees.items():
+                spacer_size = (self.tree_sizes[tree_id] - len(perks)) * self._box_width
+                if spacer_size > 0:
+                    self.ids.perk_grid.add_widget(Widget(size_hint=(None, None), width=spacer_size / 2, height=self._box_height))
+                for perk in perks:
+                    perk_box = PerkBox(size_hint=(None, None), size=(self._box_width, self._box_height))
+                    if Refs.gc.has_perk(perk.get_id()):
+                        perk_box.obtained = True
+                        perk_box.char_list = self.perks[tree_id][perk.get_id()]
+                    elif cost > Refs.gc.get_skill_level() and cost != 1:
+                        perk_box.active = False
+                    perk_box.text = perk.get_name()
+                    perk_box.bind(on_release=lambda instance, perk_id=perk.get_id(): self.show_perk_info(perk_id))
+                    self.ids.perk_grid.add_widget(perk_box)
+                if spacer_size > 0:
+                    self.ids.perk_grid.add_widget(Widget(size_hint=(None, None), width=spacer_size / 2, height=self._box_height))
+
+    def update_perk_box(self, perk_id, char_id):
+        perk = Refs.gc['perks'][perk_id]
+        tree = perk.get_tree()
+        if tree not in self.perks:
+            self.perks[tree] = []
+        if perk_id not in self.perks[tree]:
+            self.perks[tree][perk_id] = []
+        character = Refs.gc.get_char_by_id(char_id)
+        self.perks[tree][perk_id].append(character)
+
+        for perk_box in self.ids.perk_grid.children:
+            if not isinstance(perk_box, PerkBox):
+                continue
+            if perk_box.text == perk.get_name():
+                perk_box.char_list = self.perks[tree][perk_id]
+                perk_box.obtained = True
+
     def on_size(self, instance, new_size):
         if 'perk_grid' in self.ids:
             scale_width = self.width / self._width
             scale_height = self.height / self._height
+            rows = 4
+            cols = sum(self.tree_sizes.values())
+            self._box_width = self.width * 0.904 / cols
+            self._box_height = self.height * 0.5 / rows
             self._width = self.width
             self._height = self.height
 

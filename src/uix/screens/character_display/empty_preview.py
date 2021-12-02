@@ -14,10 +14,13 @@ class EmptyCharacterPreviewScreen(Screen):
     current = BooleanProperty(False)
     do_hover = BooleanProperty(True)
 
+    displayed = BooleanProperty(False)
+    support_displayed = BooleanProperty(False)
+
     def __init__(self, **kwargs):
         self.register_event_type('on_select')
-        self.name = 'empty'
         super().__init__(**kwargs)
+        self.on_displayed()
 
     def __eq__(self, other):
         if other is None:
@@ -28,14 +31,9 @@ class EmptyCharacterPreviewScreen(Screen):
             return self.name == other.name
         return False
 
-    def update_lock(self, locked):
-        self.locked = locked
-
     def on_button(self, *args):
-        if self.locked:
+        if self.locked or self.disabled:
             return
-        # if not self.current:
-        #     return
         self.dispatch('on_select', False)
 
     def on_select(self, is_support):
@@ -43,3 +41,14 @@ class EmptyCharacterPreviewScreen(Screen):
 
     def close_hints(self):
         pass
+
+    def on_locked(self, *args):
+        self.update_visible()
+
+    def on_displayed(self, *args):
+        self.update_visible()
+
+    def update_visible(self):
+        status = self.locked or not self.displayed
+        self.opacity = 1 - int(status)
+        self.disabled = status

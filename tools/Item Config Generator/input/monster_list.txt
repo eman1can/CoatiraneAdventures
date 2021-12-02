@@ -1,0 +1,133 @@
+Goblin
+Skeleton Number: 350100103
+Found on Floors: 1, 2, 3, 4, 5
+A green-skinned monster commonly believed to be the embodiment of evil. Be careful, they bite.
+Type: Dark, Earth
+Attack Type: Physical
+Hardness: 2.0(hard), None(soft)
+Defining Effect: 50% Chance to inflict strong sickness
+Sub Effect: 10% Chance to inflict weak sickness
+Drops: Claw and Fang
+20 Claws → 1 unit
+25 Fangs → 1 unit
+Attack Type: Physical
+Base Stats: 40, 60, 9, 17, 0, 0, 3, 4, 3, 5, 3, 5
+Skills: 0.5, 0.3, 0.2
+
+Kobold
+Skeleton Number: 350100201
+Found on Floors: 1, 2, 3, 4, 5, 6, 7
+A bipedal relative of the wolf, these monsters have strong claws and strong muscles.
+Type: Earth
+Hardness: 2.0(hard), 1.5(soft)
+Defining Effect (hard): 50% Chance to inflict bleed
+Defining Effect (soft): Increase bleed resist by 50%
+Sub Effect (hard): 10% Chance to inflict weak bleed
+Sub Effect (soft): Increase bleed resist by 10%
+Drops: Claw, Fang, and Hide
+15 Claws → 1 unit
+20 Fangs → 1 unit
+20 Hide → 1 unit
+Attack Type: Physical
+Base Stats: 45, 70, 7, 9, 0, 0, 5, 7, 5, 6, 5, 6
+Skills: 0.6, 0.2, 0.2
+
+Dungeon Lizard
+Skeleton Number: 350100301
+Found on Floors: 4, 5, 6, 7
+Slithering along the walls and ceiling, the Dungeon Lizard ambushes using it's claws and has strong scales.
+Type: Earth
+Hardness: 2.25-2.5(hard), None(soft)
+Defining Effect: Increase Str. and Agi. by 5% (Item only)
+Sub Effect: Increase Str. and Agi. by 1.5% (Item only)
+Drops: Claw, Fang, Scale, and Tongue
+25 Claws → 1 unit
+30 Fangs → 1 unit
+25 Scales → 1 unit
+Attack Type: Physical
+Base Stats: 50,80,6,10,0,0,5,6,7,9,7,9
+Skills: 0.6, 0.25, 0.15
+
+Frog Shooter
+Skeleton Number: 350100601
+Found on Floors: 6
+A frog monster that has one large eye. It attacks by shooting out its long tongue.
+Type: Earth, Water
+Hardness: 2.5(hard), None(soft)
+Defining Effect: Increase Dex. by 12.5% (Item Only)
+Sub Effect: Increase Dex. by 5% (Item Only)
+Drops: Scale and Tongue
+30 Scales → 1 unit
+Attack Type: Physical
+Base Stats: 60,90,9,12,0,0,3,4,10,15,10,15
+Skills: 0.6, 0.2, 0.2
+
+War Shadow
+Skeleton Number: 350100501
+Found on Floors: 7, 8, 9
+A dark humanoid monster that has long arms with three claws that are sharp like knives.
+Type: Dark
+Hardness: 4.0(hard), None(soft)
+Defining Effect: 50% Chance to inflict bleed and Dark Atk. +25%
+Sub Effect: 10% Chance to inflict weak bleed and Dark Atk. +10%
+Drops: Claw
+20 Claws → 1 unit
+Attack Type: Hybrid
+Base Stats: 50,90,12,20,8,16,6,8,9,12,9,12
+Skills: 0.4, 0.2, 0.4
+
+Killer Ant
+Skeleton Number: 350100401
+Found on Floors: 7, 8, 9, 10
+A red ant monster with four legs and two arms. It has a hard shell and has high attack, causing it to be called a new adventurer killer. It can use pheromones to attract companions in a pinch.
+Type: Earth, Dark
+Hardness: 3.0(hard), None(soft)
+Defining Effect: Increase equipped character Str. 5% per character in party
+Sub Effect: Increase equipped character Str. 1% per character in party
+Drops: Scale and Blood
+15 Scales → 1 unit
+Attack Type: Physical
+Base Stats: 90,120,15,24,0,0,0,0,9,12,8,10
+Skills: 0.4, 0.3, 0.3
+
+Purple Moth
+Skeleton Number: 350100801
+Found on Floors: 8, 9, 10, 11
+A moth monster that can spread poisonous powder. The powder can cause poison if covered multiple times.
+Type: Wind
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Wing and Venom
+Attack Type: Physical
+Base Stats: 40,75,9,12,0,0,3,8,10,18,10,18
+Skills: 0.5, 0.3, 0.2
+
+Orc
+Skeleton Number: 350100901
+Found on Floors: 7, 8, 9
+A huge pig headed monster that can reach three meters in height. It wears old hide at the waist like a skirt.
+Type: Earth, Dark
+Hardness: None(hard), 1.0(soft)
+Defining Effect: Increase End. by 10% (Item Only)
+Sub Effect: Increase End. by 2% (Item Only)
+Drops: Hide
+10 Hides → 1 unit
+Attack Type: Physical
+Base Stats: 150,250,13,20,0,0,8,15,3,7,3,7
+Skills: 0.5, 0.25, 0.25
+
+Imp
+Skeleton Number: 350101004
+Found on Floors: 8, 9, 11, 12, 16, 17, 18, 19, 20
+As crafty as their namesake, Imps support other monsters and attack with magic blasts.
+Type: Dark, Fire
+Hardness: 4.5(hard), 2.0(soft)
+Defining Effect: Increase Mag. by 10% (Item Only)
+Sub Effect: Increase Mag. by 2% (Item Only)
+Drops: Claw, Fang, and Hide
+15 Claws → 1 unit
+20 Fangs → 1 unit
+Attack Type: Hybrid
+Base Stats: 90,150,13,19,15,24,6,8,9,12,8,10
+Skills: 0.5, 0.25, 0.25

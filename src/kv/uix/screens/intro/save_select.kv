@@ -1,11 +1,8 @@
 <SaveSelect>:
     name: 'save_select'
-    PPCHoverPathButton:
-        id: back_button
-        path: 'buttons/back'
-        size_hint: app.get_dkey('bb s_h')
-        pos_hint: app.get_dkey('bb p_h')
-        on_release: root.on_back_press()
+    title_hidden: True
+    home_hidden: True
+    home_enabled: False
     Label:
         id: title
         text: 'Select Save'
@@ -26,18 +23,36 @@
         pos_hint: {'center_x': 0.5, 'center_y': 0.625}
         title: 'Save Slot 1'
         on_release: root.load_save(1)
+    PPCHoverPathButton:
+        id: save_trash_1
+        path: 'buttons/trash'
+        size_hint: 0.05625, 0.0984375
+        pos_hint: {'center_y': 0.625, 'x': 0.875}
+        on_release: root.delete_save(1)
     SaveSlot:
         id: save_slot_2
         size_hint: 0.7, 0.2
         pos_hint: {'center_x': 0.5, 'center_y': 0.4}
         title: 'Save Slot 2'
         on_release: root.load_save(2)
+    PPCHoverPathButton:
+        id: save_trash_2
+        path: 'buttons/trash'
+        size_hint: 0.05625, 0.0984375
+        pos_hint: {'center_y': 0.4, 'x': 0.875}
+        on_release: root.delete_save(2)
     SaveSlot:
         id: save_slot_3
         size_hint: 0.7, 0.2
         pos_hint: {'center_x': 0.5, 'center_y': 0.175}
         title: 'Save Slot 3'
         on_release: root.load_save(3)
+    PPCHoverPathButton:
+        id: save_trash_3
+        path: 'buttons/trash'
+        size_hint: 0.05625, 0.0984375
+        pos_hint: {'center_y': 0.175, 'x': 0.875}
+        on_release: root.delete_save(3)
 
 <GameInfoLabel@Label>:
     font_name: 'Gabriola'

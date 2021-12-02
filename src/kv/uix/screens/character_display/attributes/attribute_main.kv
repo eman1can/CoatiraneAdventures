@@ -9,6 +9,7 @@
 #:import LayeredImage modules.layered_image.LayeredImage
 
 <CharacterAttributeScreen>:
+    title_hidden: True
     Image:
         id: familia_mark
         source: root.char_symbol_source
@@ -24,12 +25,6 @@
         size_hint: app.get_dkey('cas.ci s_h')
         width: self.height * self.image_ratio
         pos_hint: app.get_dkey('cas.ci p_h')
-    PPCHoverPathButton:
-        id: back_button
-        path: 'buttons/back'
-        size_hint: app.get_dkey('bb s_h')
-        pos_hint: app.get_dkey('bb p_h')
-        on_release: root.on_back_press()
     Image:
         id: overlay_background
         source: root.overlay_background_source
@@ -240,7 +235,7 @@
         size_hint: app.get_dkey('cas.os.o s_h')
         pos_hint: app.get_dkey('cas.os p_h')
         SkillsList:
-            id: skillslist
+            id: skills_list
             height_unit: skill_layout.height
             size_hint: app.get_dkey('cas.scrl s_h')
             pos_hint: app.get_dkey('cas.scrl p_h')
@@ -256,17 +251,17 @@
         size_hint: app.get_dkey('cas.ceb s_h')
         pos_hint: app.get_dkey('cas.ceb p_h')
         on_release: root.on_change_equip()
-    PPCHoverPathButton:
-        id: status_board
-        path: 'buttons/long_stat'
-        text: 'Status Board'
-        font_name: 'Gabriola'
-        color: 0, 0, 0, 1
-#        label_color: app.get_dkey('cas.sbb lc')
-        font_size: app.get_dkey('cas.sbb fs', root.height)
-        size_hint: app.get_dkey('cas.sbb s_h')
-        pos_hint: app.get_dkey('cas.sbb p_h')
-        on_release: root.on_status_board()
+#    PPCHoverPathButton:
+#        id: status_board
+#        path: 'buttons/long_stat'
+#        text: 'Status Board'
+#        font_name: 'Gabriola'
+#        color: 0, 0, 0, 1
+##        label_color: app.get_dkey('cas.sbb lc')
+#        font_size: app.get_dkey('cas.sbb fs', root.height)
+#        size_hint: app.get_dkey('cas.sbb s_h')
+#        pos_hint: app.get_dkey('cas.sbb p_h')
+#        on_release: root.on_status_board()
     PPCHoverPathButton:
         id: image_preview
         path: 'buttons/preview'

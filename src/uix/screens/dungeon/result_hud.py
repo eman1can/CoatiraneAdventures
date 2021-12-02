@@ -25,11 +25,11 @@ class EnemyListItem(ResultListItem):
         for index, nickname in enumerate(NICKNAMES[1:]):
             if value.startswith(nickname):
                 self.background_source = f'res/uix/items/frame_{int((index + 1) / 3) + 1}.png'
-                monster_name = value[len(nickname):]
+                monster_name = value[len(nickname):].lower().replace(" ", "_")
                 if index < 5:
-                    self.portrait_source = f'res/uix/items/{monster_name} {index + 2}.png'
+                    self.portrait_source = f'res/uix/items/{monster_name}_{index + 2}.png'
                 else:
-                    self.portrait_source = f'res/uix/items/{monster_name} {index - 1}.png'
+                    self.portrait_source = f'res/uix/items/{monster_name}_{index - 1}.png'
                 return
         self.background_source = f'res/uix/items/frame_1.png'
         self.portrait_source = f'res/uix/items/{value} 1.png'

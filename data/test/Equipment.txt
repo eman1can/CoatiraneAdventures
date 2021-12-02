@@ -116,33 +116,41 @@ Exploosssiiooonnn
 1.2, 0.0, 1.5, 0.0, 1.5, 0.0, 1.3
 #
 2, necklace, Necklace, 28
-Jewelry that you hang on your neck. Provides small protection.
+Jewelry that you hang on your neck. Provides small protection
 0.2, 1.0, 0.8, 0.0, 0.0, 0.2, 0.2
 #
 2, ring, Ring, 29
-Jewelry worn on the finger. Provides a tiny bit of protection.
+Jewelry worn on the finger. Provides a tiny bit of protection
 0.2, 0.8, 1.0, 0.0, 0.0, 0.2, 0.2
 #
 2, helmet, Helmet, 30
-Armor to protect the noggin.
+Armor to protect the noggin
 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.9
 #
 2, vambraces, Vambraces, 31
-Armor to protect the arms.
+Armor to protect the arms
 0.8, 0.0, 0.0, 0.0, 0.0, 1.0, 0.8
 #
 2, gloves, Gloves, 32
-Armor to keep your finger from being sliced off.
+Armor to keep your finger from being sliced off
 0.8, 0.0, 0.0, 0.0, 0.0, 0.9, 0.8
 #
-2, chest, Chestplate, 33
-Armor to keep you from being bisected.
+2, chestplate, Chestplate, 33
+Armor to keep you from being bisected
 1.0, 0.0, 0.0, 0.0, 0.0, 1.2, 1.0
 #
 2, grieves, Grieves, 34
-Armor to protect your shins.
+Armor to protect your shins
 0.8, 0.0, 0.0, 0.0, 0.0, 1.0, 0.9
 #
 2, boots, Boots, 35
-Armor to protect your toes.
+Armor to protect your toes
 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0
+#
+2, coat, Coat, 33
+Armor to protect your chest
+1.0, 0.0, 0.0, 0.0, 0.0, 1.2, 1.0
+#
+2, robe, Robe, 33
+Armor to protect your chest
+1.0, 0.0, 0.0, 0.0, 0.0, 1.2, 1.0

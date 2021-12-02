@@ -1,6 +1,6 @@
 from math import floor
 
-from game.calendar import Calendar, MONTHS, NUMBER_ENDINGS
+from game.game_calendar import Calendar, MONTHS, NUMBER_ENDINGS
 from refs import Refs
 
 
@@ -65,7 +65,8 @@ class Housing:
         return Calendar.int_time_to_date(self._bill_due)
 
     def get_bill_due(self):
-        return Refs.gc.get_calendar().get_days_until(self._bill_due)
+        return 2
+        # return Refs.gc.get_calendar().get_days_until(self._bill_due)
 
     def get_bill_due_int_time(self):
         return self._bill_due

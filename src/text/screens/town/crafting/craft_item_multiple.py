@@ -31,7 +31,7 @@ def handle_action(console, action):
         inventory = Refs.gc.get_inventory()
         for ingredient, count in recipe.get_ingredients().items():
             inventory.remove_item(ingredient, count * recipe_count)
-        inventory.add_item(recipe.get_item_id(), recipe_count)
+        inventory.add_item(recipe.get_output_id(), recipe_count)
         console.set_screen(BACK, False)
     else:
         console.set_screen(action, True)
@@ -41,8 +41,8 @@ def craft_items(recipe_count, recipe_id, recipe, page_name):
     inventory = Refs.gc.get_inventory()
     ingredients = {}
 
-    recipe_item = Refs.gc.find_item(recipe.get_item_id())
-    have_recipe_count = inventory.get_item_count(recipe.get_item_id())
+    recipe_item = Refs.gc.find_item(recipe.get_output_id())
+    have_recipe_count = inventory.get_item_count(recipe.get_output_id())
 
     count = 0
     for ingredient, cost in recipe.get_ingredients().items():
@@ -85,9 +85,9 @@ def get_craft_item(recipe, index, current_text, page_name, page_num):
         require_string += f'{count}x {item.get_name()}\n\t\t'
         valid &= item_count > count
         max_create = max(max_create, floor(item_count / count))
-    item = Refs.gc.find_item(recipe.get_item_id())
+    item = Refs.gc.find_item(recipe.get_output_id())
 
     if valid:
-        return f'\n\t{OPT_C}{index}:{END_OPT_C} {item.get_name()} x{recipe.get_item_count()}\n\t\t' + require_string[:-3], f'{page_name}:{page_num}#{recipe.get_item_id()}#{max_create}'
+        return f'\n\t{OPT_C}{index}:{END_OPT_C} {item.get_name()} x{recipe.get_item_count()}\n\t\t' + require_string[:-3], f'{page_name}:{page_num}#{recipe.get_output_id()}#{max_create}'
     else:
         return f'\n\t[s]{OPT_C}{index}:{END_OPT_C} {item.get_name()} x{recipe.get_item_count()}\n\t\t' + require_string[:-3], None

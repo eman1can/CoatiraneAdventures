@@ -134,10 +134,10 @@ class BattleData:
         for entity in self._get_alive_enemies() + self._get_alive_characters():
             animation_queue += entity.update_effects()
 
-        if win:
-            result = True
-        elif loss:
+        if loss:
             result = False
+        elif win:
+            result = True
         else:
             result = None
         return result, animation_queue

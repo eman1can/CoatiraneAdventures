@@ -5,6 +5,7 @@ import random
 from kivy.properties import ObjectProperty
 
 # Kivy Imports
+from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.uix.screenmanager import SwapTransition
 # KV Import
@@ -12,15 +13,23 @@ from loading.kv_loader import load_kv
 from refs import Refs
 # UIX Imports
 from uix.modules.screen import Screen
+from uix.screens.header_screen import HeaderScreen
 
 load_kv(__name__)
 
 
-class TavernMain(Screen):
+class TavernMain(HeaderScreen):
     def __init__(self, **kwargs):
         self.sound = SoundLoader.load('res/snd/recruit.wav')
         self.sound.seek(0)
         super().__init__(**kwargs)
+
+    def on_enter(self):
+        frame_rate = 30
+        Clock.schedule_interval(self.ids.spine_display.update, 1 / frame_rate)
+
+    def on_leave(self):
+        Clock.unschedule(self.ids.spine_display.update)
 
     def on_recruit(self, *args):
         tt = 'Are you sure?'

@@ -2,6 +2,7 @@
 #:import Refs refs.Refs
 
 <EquipmentChange>:
+    title_hidden: True
     DetailEquipmentSlot:
         id: chest
         size_hint: app.get_dkey('ecs.slo s_h')
@@ -59,12 +60,6 @@
         size_hint:app.get_dkey('ecs.por s_h')
         pos_hint: app.get_dkey('ecs.por p_h')
         allow_stretch: True
-    PPCHoverPathButton:
-        id: back_button
-        path: 'buttons/back'
-        size_hint: app.get_dkey('bb s_h')
-        pos_hint: app.get_dkey('bb p_h')
-        on_release: root.on_back_press()
     GesturePad:
         on_left: root.goto_equipment_change(True)
         on_right: root.goto_equipment_change(False)

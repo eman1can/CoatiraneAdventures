@@ -36,6 +36,7 @@ class PopupManager:
         popup.open()
         self.open_popups.append(popup)
         Refs.log('Open popup')
+        return popup
 
     def close_popup(self, popup_name):
         for saved_popup in self.open_popups:

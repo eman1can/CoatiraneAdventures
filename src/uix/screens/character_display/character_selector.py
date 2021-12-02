@@ -16,7 +16,6 @@ class CharacterSelector(Screen):
     toggle = BooleanProperty(False)  # When False, Is Slots
 
     character_num = NumericProperty(0.0)
-
     base_character_list = ListProperty([])
 
     def __init__(self, preview, is_support, **kwargs):
@@ -25,15 +24,13 @@ class CharacterSelector(Screen):
         self._size = 0, 0
         super().__init__(**kwargs)
 
-    def set_character_list(self, characters):
-        self.base_character_list = characters
-        # if 'multi' in self.ids:
-            # self.ids.multi
-
     def reload(self, preview, is_support, **kwargs):
         self._return = preview
         self.is_support = is_support
         self.update_screen()
+
+    def set_character_list(self, characters):
+        self.base_character_list = characters
 
     def on_kv_post(self, base_widget):
         self.update_screen()
@@ -41,9 +38,9 @@ class CharacterSelector(Screen):
 
     def update_screen(self):
         if self.is_support:
-            char = self._return.support
+            char = self._return.get_support()
         else:
-            char = self._return.character
+            char = self._return.get_character()
 
         self.has_left = char != -1
 

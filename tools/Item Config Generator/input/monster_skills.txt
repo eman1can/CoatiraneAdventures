@@ -1,0 +1,27 @@
+Goblin        , Basic Attack    , attack, 812103420, [Foe] Low Dark P. Atk.
+Goblin        , Slash           , skill1, 812103410, [Foe] Mid Dark P. Atk. with 15% Weak Sickness
+Goblin        , Swipe           , skill2, 812103440, [Foes] Low Dark P. Atk.
+Kobold        , Basic Attack    , attack, 812103240, [Foes] Mid Earth P. Atk.
+Kobold        , Swipe           , skill1, 812103220, [Foe] Mid P. Atk. with 15% Weak Bleed
+Kobold        , Growl           , skill2, 812104500, [Foes] Phy. Resist -50% for 2 turns
+Dungeon Lizard, Basic Attack    , attack, 812103220, [Foe] Low Earth P. Atk.
+Dungeon Lizard, Tounge Shot     , skill1, 812103210, [Foe] Mid Earth P. Atk. and [Self] Penetration +50% for 2 turns
+Dungeon Lizard, Pierce          , skill2, 812103230, [Foe] High Earth P. Atk. with Temp. Str. Boost
+Frog Shooter  , Basic Attack    , attack, 812103220, [Foe] Low Earth P. Atk.
+Frog Shooter  , Splash          , skill1, 812104501, [Foes] Dex., Agi., End. -25% for 4 turns
+Frog Shooter  , Tounge Shot     , skill2, 812103630, [Foe] High Water P. Atk.
+War Shadow    , Basic Attack    , attack, 812103420, [Foe] Low Dark P. Atk.
+War Shadow    , War Cry         , skill1, 812104302, [Allies] Dex., Agi., End. +25% for 4 turns
+War Shadow    , Shadow Slash    , skill2, 812103430, [Foes] High Dark H. Atk. with Temp Str. Boost
+Killer Ant    , Basic Attack    , attack, 812103220, [Foe] Low Earth P. Atk.
+Killer Ant    , Pinch           , skill1, 812103410, [Foe] Mid Dark P. Atk. with 10% Weak Bleed
+Killer Ant    , Desperate Strike, skill2, 812103430, [Foe] High Dark P. Atk. with End. -25% for 2 turns and [Allies] Str. +25% for 3 turns
+Purple Moth   , Basic Attack    , attack, 812103020, [Foe] Low Wind P. Atk.
+Purple Moth   , Spore Wind      , skill1, 812103000, [Foes] High Wind P. Atk. with 60% Strong Poison
+Purple Moth   , Bite            , skill2, 812103030, [Foe] High Wind P. Atk. with 90% Strong Poison
+Orc           , Basic Attack    , attack, 812103210, [Foe] Mid Earth P. Atk.
+Orc           , Bellow          , skill1, 812104501, [Foes] Str. & Mag. -20% for 3 turns
+Orc           , Smash           , skill2, 812103230, [Foes] High Earth P. Atk. with Temp Str. Boost
+Imp           , Basic Attack    , attack, 812103440, [Foes] Low Dark H. Atk.
+Imp           , Fireball        , skill1, 812103800, [Foe] High Fire H. Atk.
+Imp           , Disfigure       , skill2, 812103430, [Foes] High Dark H. Atk. with 10% Weak Bleed

@@ -12,6 +12,8 @@ def get_screen(console, screen_data):
     display_text = '\n\t'
     _options = {'0': BACK}
 
+    print(screen_data)
+
     pages = {
         'main':                ['general', 'dungeon_materials', 'ingredients', 'potions_medicines', 'equipment', 'home_supplies', 'other'],
         'general':             ['floor_maps'],
@@ -27,9 +29,9 @@ def get_screen(console, screen_data):
         'ingredients':         [],
         'potions_medicines':   [],
         'floor_maps':          [f'floor_{floor_id}' for floor_id in range(1, min(len(Refs.gc['floors']), Refs.gc.get_lowest_floor()) + 1)]
-             }
+    }
 
-    # Header dsplay options
+    # Header display options
     headers = {
         'main':       'Welcome to the Guild Shopping District where you can find anything you need!\n\t',
         'general':    'Welcome to the General shop! Your premier provider of useful goods.\n\t',

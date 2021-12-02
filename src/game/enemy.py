@@ -55,6 +55,12 @@ class Enemy:
                 rarity_list.append(drop_list)
             self._drops[key] = rarity_list
 
+        self._drops_list = []
+        for index, key in enumerate(['crystal', 'falna', 'drop']):
+            for (item_id, rarity) in drops[key]:
+                self._drops_list.append(item_id)
+        self._drops_list += drops['guaranteed']
+
     def get_id(self):
         return self._id
 
@@ -103,6 +109,12 @@ class Enemy:
                 drop_id, count = drop
                 drops.append((drop_id, count * (boost + 1)))
         return drops
+
+    def get_drop_items(self):
+        return self._drops
+
+    def get_unqiue_drop_items(self):
+        return self._drops_list
 
     def get_score(self, boost):
         return (sum(self._min_hsmead) + (sum(self._max_hsmead) - sum(self._min_hsmead)) / 2) / 5 * LEVEL_MULTIPLIER[boost]

@@ -16,14 +16,16 @@ from loading.equipment import load_equipment_chunk
 from loading.family import load_family_chunk
 from loading.housing import load_housing_chunk
 from loading.floor import load_floor_chunk
+from loading.market import load_market_price_chunk
 from loading.material import load_material_chunk
 from loading.move import load_skill_chunk
 from loading.perks import load_perk_chunk
 from loading.save import load_save_chunk
-from loading.shop import load_shop_item_chunk
+from loading.item import load_item_chunk
 from refs import Refs
 from modules.builder import Builder
 
+COMMENT_CHARACTER = '#'
 CURRENT_INDEX = 0
 TRANSPARENT = 0
 STARTING_TOTAL_INDEX = 1
@@ -40,73 +42,46 @@ LOADING_LAYERS = [
     'perks',
     'floors',
     'items',
-    'drop_items',
+    'market_prices',
     'equipment',
     'save',
     'housing',
     'materials',
     'recipes'
 ]
-LOADING_SECTIONS = [
-    'Skills and Abilities',
-    'Materials',
-    'Crafting Recipes',
-    'Items',
-    'Equipment Types',
-    'Enemies',
-    'Floors',
-    'Housing Options',
-    'Skill Trees',
-    'Game Data',
-    'Families',
-    'Chars',
-    'Game Data'
-]
-LOADING_FUNCTIONS = [
-    load_skill_chunk,
-    load_material_chunk,
-    load_crafting_recipe_chunk,
-    load_shop_item_chunk,
-    load_equipment_chunk,
-    load_enemy_chunk,
-    load_floor_chunk,
-    load_housing_chunk,
-    load_perk_chunk,
-    load_save_chunk,
-    load_family_chunk,
-    load_char_chunk,
-    load_screen_chunk
-]
-LOADING_FILES = [True for _ in range(9)] + [False] + [True for _ in range(2)] + [False]
-LOADING_FILENAMES = [
-    f"data/{PROGRAM_TYPE}/SA.txt",
-    f"data/{PROGRAM_TYPE}/Materials.txt",
-    f"data/{PROGRAM_TYPE}/CraftingRecipes.txt",
-    f"data/{PROGRAM_TYPE}/items.txt",
-    f"data/{PROGRAM_TYPE}/Equipment.txt",
-    f"data/{PROGRAM_TYPE}/Enemies.txt",
-    f"data/{PROGRAM_TYPE}/Floors.txt",
-    f"data/{PROGRAM_TYPE}/Housing.txt",
-    f"data/{PROGRAM_TYPE}/Perks.txt",
-    f'',
-    f"data/{PROGRAM_TYPE}/Families.txt",
-    f"data/{PROGRAM_TYPE}/CharacterDefinitions.txt"
+
+LOADING_DEFINITIONS = [
+    # Load Order, Display Title, Has File, Filename, Delimiter, Loading Function
+    [0,  'Skills and Abilities', True , 'SA.txt'                  , '\n'   , load_skill_chunk          ],
+    [1,  'Enemies'             , True , 'Enemies.txt'             , '#\n'  , load_enemy_chunk          ],
+    [2,  'Materials'           , True , 'Materials.txt'           , '\n#\n', load_material_chunk       ],
+    [3,  'Floors'              , True , 'Floors.txt'              , '\n#\n', load_floor_chunk          ],
+    [4,  'Items'               , True , 'items.txt'               , '\n\n' , load_item_chunk           ],
+    [5,  'Crafting Recipes'    , True , 'CraftingRecipes.txt'     , '\n#\n', load_crafting_recipe_chunk],
+    [6,  'Market Prices'       , True , 'market_prices.txt'       , '\n'   , load_market_price_chunk   ],
+    [7,  'Equipment Types'     , True , 'Equipment.txt'           , '\n#\n', load_equipment_chunk      ],
+    [8,  'Housing Options'     , True , 'Housing.txt'             , '\n#\n', load_housing_chunk        ],
+    [9,  'Skill Trees'         , True , 'Perks.txt'               , '\n#\n', load_perk_chunk           ],
+    [10, 'Save Data'           , False, ''                        , ''     , load_save_chunk           ],
+    [11, 'Families'            , True , 'Families.txt'            , '\n'   , load_family_chunk         ],
+    [12, 'Chars'               , True , 'CharacterDefinitions.txt', '\n\n' , load_char_chunk           ],
+    [13, 'Game Data'           , False, ''                        , ''     , load_screen_chunk         ],
 ]
 
-DELIMITERS = [
-    '\n',     # Skills
-    '\n#\n',  # Materials
-    '\n#\n',  # Crafting Recipes
-    '\n\n',   # Shop Items
-    '\n#\n',  # Equipment
-    '#\n',    # Enemies
-    '\n#\n',  # Floors
-    '\n#\n',  # Housing
-    '\n#\n',  # Perks
-    '',       # Save Data
-    '\n',     # Families
-    '\n\n',   # Chars
-]
+LOADING_SECTIONS   = [None for _ in range(len(LOADING_DEFINITIONS))]
+LOADING_FUNCTIONS  = [None for _ in range(len(LOADING_DEFINITIONS))]
+LOADING_FILES      = [None for _ in range(len(LOADING_DEFINITIONS))]
+LOADING_FILENAMES  = [None for _ in range(len(LOADING_DEFINITIONS))] # [f"data/{PROGRAM_TYPE}/{x}" for x in LOADING_DEFINITIONS]
+LOADING_DELIMITERS = [None for _ in range(len(LOADING_DEFINITIONS))]
+
+for (load_order, display_title, has_file, filename, delimiter, loading_function) in LOADING_DEFINITIONS:
+    LOADING_SECTIONS[load_order]   = display_title
+    LOADING_FILES[load_order]      = has_file
+    LOADING_FILENAMES[load_order]  = f'data/{PROGRAM_TYPE}/{filename}'
+    LOADING_DELIMITERS[load_order] = delimiter
+    LOADING_FUNCTIONS[load_order]  = loading_function
+
+SAVE_INDEX = LOADING_SECTIONS.index('Save Data')
 
 
 class CALoader(Widget):
@@ -167,7 +142,7 @@ class CALoader(Widget):
         self.update_inner()
 
     def done_loading(self, loader):
-        Refs.log(f"{loader.triggers_finished} / {loader.triggers_total}")
+        Refs.log(f"{loader.triggers_finished} / {loader.triggers_total} - {LOADING_SECTIONS[loader.triggers_finished - 1]}")
         if loader.triggers_finished == loader.triggers_total:
             Refs.app.finished_loading()
 
@@ -177,7 +152,9 @@ class CALoader(Widget):
     def get(self, layer):
         return self.layers[layer]
 
-    def append(self, layer, key, value):
+    def append(self, layer, key, value, debug=False):
+        if debug:
+            Refs.log(f'Loader Add {key} - {value}')
         self.layers[layer][key] = value
 
     def set(self, layer, value):
@@ -202,17 +179,23 @@ class CALoader(Widget):
             block_loader = LOADING_FUNCTIONS[trigger_index]
 
             filename = None
-            if trigger_index == 9:
+            if trigger_index == SAVE_INDEX:
                 filename = f'{save_slot}'
 
             if LOADING_FILES[trigger_index]:
                 filename = LOADING_FILENAMES[trigger_index]
 
-                with open(resource_find(filename), 'r', encoding='utf-8') as file:
-                    chunks = file.read().split(DELIMITERS[self.curr_values[CURRENT_INDEX] - 1])
+                filepath = resource_find(filename)
+                if filepath is None:
+                    raise Exception(f"Cannot find file: {filename}")
+
+                with open(filepath, 'r', encoding='utf-8') as file:
+                    chunks = file.read().split(LOADING_DELIMITERS[self.curr_values[CURRENT_INDEX] - 1])
                 self.max_values[self.curr_values[CURRENT_INDEX]] = len(chunks)
 
                 for chunk in chunks:
+                    if chunk.startswith(COMMENT_CHARACTER):
+                        continue
                     block_triggers.append(Clock.create_trigger(lambda dt, c=chunk: block_loader(c, self, self.program_type, [self.increase_current, sub_loader.inc_triggers, lambda: sub_loader.start(), lambda: finished_block(sub_loader, callbacks)])))
             else:
                 block_triggers.append(Clock.create_trigger(lambda dt: block_loader(self, self.program_type, filename, [self.increase_current, sub_loader.inc_triggers, lambda: sub_loader.start(), lambda: finished_block(sub_loader, callbacks)])))

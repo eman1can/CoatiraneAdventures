@@ -1,0 +1,240 @@
+#
+1; 10; 3; 3; goblin,1; kobold,2; jack_bird,5
+0; 0; 
+
+#
+2; 10; 3; 3; goblin,1; kobold,1; jack_bird,5
+0; 0; 
+
+#
+3; 10; 3; 3; goblin,1; kobold,1; jack_bird,5
+1; tin,1.5; 0; 
+
+#
+4; 10; 3; 3; kobold,1; dungeon_lizard,2; goblin,2
+1; tin,1.5; 0; 
+
+#
+5; 10; 3; 3; kobold,1; dungeon_lizard,2; goblin,2
+3; tin,1.5; cadmium,2.0; coal,2.0; 0; 
+
+#
+6; 10; 3; 3; dungeon_lizard,1; kobold,1; frog_shooter,2
+3; tin,1.5; cadmium,2.0; coal,2.06; 0; 
+
+#
+7; 10; 3; 5; kobold,1; dungeon_lizard,2; killer_ant,2; orc,3; war_shadow,3
+5; tin,1.5; cadmium,2.0; coal,2.11; zinc,2.5; silver,2.5; 1; chrysocolla,2.5
+
+#
+8; 10; 3; 5; imp,1; orc,1; killer_ant,2; purple_moth,3; war_shadow,4
+6; tin,1.5; cadmium,2.0; coal,2.17; zinc,2.5; silver,2.56; copper,3.0; 2; chrysocolla,2.59; serpentine,3.0
+
+#
+9; 10; 3; 6; imp,1; orc,1; killer_ant,2; purple_moth,3; war_shadow,4; blue_papilio,5
+6; tin,1.5; cadmium,2.0; coal,2.22; zinc,2.5; silver,2.61; copper,3.0; 2; chrysocolla,2.68; serpentine,3.14
+
+#
+10; 10; 3; 5; killer_ant,1; hard_armored,2; bad_bat,3; purple_moth,4; blue_papilio,5
+6; tin,1.5; cadmium,2.0; coal,2.28; zinc,2.5; silver,2.67; copper,3.0; 2; chrysocolla,2.77; serpentine,3.27
+
+#
+11; 10; 3; 5; hard_armored,1; imp,2; bad_bat,3; purple_moth,4; blue_papilio,5
+5; cadmium,2.0; coal,2.33; zinc,2.5; silver,2.72; copper,3.0; 6; chrysocolla,2.86; serpentine,3.41; ammolite,3.5; azurite,3.5; malachite,3.5; rhodochrosite,3.5
+
+#
+12; 10; 3; 5; hard_armored,1; imp,2; silverback,3; blue_papilio,5; infant_dragon,5
+5; cadmium,2.0; coal,2.39; zinc,2.5; silver,2.78; copper,3.0; 6; chrysocolla,2.95; serpentine,3.55; ammolite,3.59; azurite,3.56; malachite,3.56; rhodochrosite,3.56
+
+#
+13; 10; 3; 4; hard_armored,1; silverback,2; black_wyvern,4; infant_dragon,5
+5; cadmium,2.0; coal,2.44; zinc,2.5; silver,2.83; copper,3.0; 6; chrysocolla,3.05; serpentine,3.68; ammolite,3.68; azurite,3.61; malachite,3.61; rhodochrosite,3.61
+
+#
+14; 10; 3; 5; hard_armored,1; metal_rabbit,1; silverback,1; black_wyvern,4; wyvern,4
+5; coal,2.5; zinc,2.5; silver,2.89; copper,3.0; platinum,4.0; 7; chrysocolla,3.14; serpentine,3.82; ammolite,3.77; azurite,3.67; malachite,3.67; rhodochrosite,3.67; fluorite,4.0
+
+#
+15; 10; 3; 5; hellhound,1; metal_rabbit,1; crystal_mantis,3; black_wyvern,4; wyvern,4
+4; silver,2.94; copper,3.0; platinum,4.06; iron,4.5; 8; chrysocolla,3.23; serpentine,3.95; ammolite,3.86; azurite,3.72; malachite,3.72; rhodochrosite,3.72; fluorite,4.0; kyanite,4.5
+
+#
+16; 10; 3; 6; hellhound,1; needle_rabbit,1; imp,2; crystal_mantis,3; black_wyvern,4; wyvern,4
+4; silver,3.0; copper,3.0; platinum,4.12; iron,4.5; 8; chrysocolla,3.32; serpentine,4.09; ammolite,3.95; azurite,3.78; malachite,3.78; rhodochrosite,3.78; fluorite,4.0; kyanite,4.62
+
+#
+17; 10; 3; 7; almiraj,1; hellhound,1; needle_rabbit,1; imp,2; crystal_mantis,3; lamia_mormos,3; wyvern,4
+2; platinum,4.19; iron,4.5; 13; chrysocolla,3.41; serpentine,4.23; ammolite,4.05; azurite,3.83; malachite,3.83; rhodochrosite,3.83; fluorite,4.0; kyanite,4.74; apatite,5.0; lapis_lazuli,5.0; obsidian,5.0; turquoise,5.0; titanite,5.0
+
+#
+18; 10; 3; 6; hellhound,2; imp,2; crystal_mantis,3; lamia_mormos,3; armarosaurus,4; wyvern,4
+2; platinum,4.25; iron,4.5; 13; chrysocolla,3.5; serpentine,4.36; ammolite,4.14; azurite,3.89; malachite,3.89; rhodochrosite,3.89; fluorite,4.0; kyanite,4.86; apatite,5.0; lapis_lazuli,5.05; obsidian,5.08; turquoise,5.08; titanite,5.05
+
+#
+19; 10; 3; 6; almiraj,1; hellhound,1; imp,2; lamia_mormos,2; poison_vermis,4; wyvern,4
+2; platinum,4.31; iron,4.5; 16; serpentine,4.5; ammolite,4.23; azurite,3.94; malachite,3.94; rhodochrosite,3.94; fluorite,4.0; kyanite,4.98; apatite,5.0; lapis_lazuli,5.1; obsidian,5.15; turquoise,5.15; titanite,5.1; opal,5.5; diopside,5.5; rhodonite,5.5; sodalite,5.5
+
+#
+20; 10; 3; 6; almiraj,1; hellhound,1; imp,2; lamia_mormos,2; minotaur,3; poison_vermis,4
+2; platinum,4.38; iron,4.5; 16; serpentine,4.64; ammolite,4.32; azurite,4.0; malachite,4.0; rhodochrosite,4.0; fluorite,4.0; kyanite,5.1; apatite,5.0; lapis_lazuli,5.15; obsidian,5.23; turquoise,5.23; titanite,5.15; opal,5.55; diopside,5.57; rhodonite,5.55; sodalite,5.55
+
+#
+21; 10; 3; 8; bugbear,1; hobgoblin,1; lygerfang,1; flame_rock,2; minotaur,2; needle_rabbit,2; old_bison,3; dungeon_worm,4
+3; platinum,4.44; iron,4.5; titanium,6.0; 22; serpentine,4.77; ammolite,4.41; kyanite,5.21; apatite,5.0; lapis_lazuli,5.2; obsidian,5.31; turquoise,5.31; titanite,5.2; opal,5.59; diopside,5.64; rhodonite,5.59; sodalite,5.59; andesine,6.0; zoisite,6.0; blizzard_stone,6.0; indraneelam,6.0; jade,6.0; labradorite,6.0; moonstone,6.0; prehnite,6.0; sunstone,6.0; tanzanite,6.0
+
+#
+22; 10; 3; 8; bugbear,1; hobgoblin,1; lygerfang,1; flame_rock,2; minotaur,2; needle_rabbit,2; old_bison,3; dungeon_worm,4
+3; platinum,4.5; iron,4.5; titanium,6.0; 22; serpentine,4.91; ammolite,4.5; kyanite,5.33; apatite,5.0; lapis_lazuli,5.25; obsidian,5.38; turquoise,5.38; titanite,5.25; opal,5.64; diopside,5.71; rhodonite,5.64; sodalite,5.64; andesine,6.04; zoisite,6.04; blizzard_stone,6.07; indraneelam,6.0; jade,6.07; labradorite,6.04; moonstone,6.04; prehnite,6.04; sunstone,6.04; tanzanite,6.04
+
+#
+23; 10; 3; 7; lizardman,1; lygerfang,1; flame_rock,2; hobgoblin,2; minotaur,2; needle_rabbit,2; dungeon_worm,4
+1; titanium,6.0; 31; serpentine,5.05; kyanite,5.45; apatite,5.0; lapis_lazuli,5.3; obsidian,5.46; turquoise,5.46; titanite,5.3; opal,5.68; diopside,5.79; rhodonite,5.68; sodalite,5.68; andesine,6.08; zoisite,6.08; blizzard_stone,6.13; indraneelam,6.0; jade,6.13; labradorite,6.08; moonstone,6.08; prehnite,6.08; sunstone,6.08; tanzanite,6.08; onyx,6.5; agate,6.5; garnet,6.5; aventurine,6.5; hessonite,6.5; jasper,6.5; kunzite,6.5; peridot,6.5; petalite,6.5; spectrolite,6.5
+
+#
+24; 10; 3; 7; battle_boar,1; dungeon_fly,2; lygerfang,2; metal_rabbit,2; minotaur,2; armarosaurus,3; dungeon_worm,3
+1; titanium,6.0; 31; serpentine,5.18; kyanite,5.57; apatite,5.0; lapis_lazuli,5.35; obsidian,5.54; turquoise,5.54; titanite,5.35; opal,5.73; diopside,5.86; rhodonite,5.73; sodalite,5.73; andesine,6.12; zoisite,6.12; blizzard_stone,6.2; indraneelam,6.0; jade,6.2; labradorite,6.12; moonstone,6.12; prehnite,6.12; sunstone,6.12; tanzanite,6.12; onyx,6.54; agate,6.54; garnet,6.56; aventurine,6.5; hessonite,6.56; jasper,6.54; kunzite,6.54; peridot,6.54; petalite,6.5; spectrolite,6.5
+
+#
+25; 10; 3; 7; battle_boar,1; dungeon_fly,2; lygerfang,2; metal_rabbit,2; minotaur,2; armarosaurus,3; dungeon_worm,3
+1; titanium,6.0; 41; serpentine,5.32; kyanite,5.69; lapis_lazuli,5.4; obsidian,5.62; turquoise,5.62; titanite,5.4; opal,5.77; diopside,5.93; rhodonite,5.77; sodalite,5.77; andesine,6.17; zoisite,6.17; blizzard_stone,6.27; indraneelam,6.0; jade,6.27; labradorite,6.17; moonstone,6.17; prehnite,6.17; sunstone,6.17; tanzanite,6.17; onyx,6.58; agate,6.58; garnet,6.62; aventurine,6.5; hessonite,6.62; jasper,6.58; kunzite,6.58; peridot,6.58; petalite,6.5; spectrolite,6.5; danburite,7.0; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.0; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.0
+
+#
+26; 10; 3; 7; lizardman,1; lygerfang,1; needle_rabbit,1; battle_boar,2; bugbear,2; firebird,3; poison_vermis,4
+1; titanium,6.0; 41; serpentine,5.45; kyanite,5.81; lapis_lazuli,5.45; obsidian,5.69; turquoise,5.69; titanite,5.45; opal,5.82; diopside,6.0; rhodonite,5.82; sodalite,5.82; andesine,6.21; zoisite,6.21; blizzard_stone,6.33; indraneelam,6.0; jade,6.33; labradorite,6.21; moonstone,6.21; prehnite,6.21; sunstone,6.21; tanzanite,6.21; onyx,6.62; agate,6.62; garnet,6.69; aventurine,6.5; hessonite,6.69; jasper,6.62; kunzite,6.62; peridot,6.62; petalite,6.5; spectrolite,6.5; danburite,7.04; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.04; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.04
+
+#
+27; 10; 3; 7; arachne,1; dungeon_fly,1; lizardman,1; mad_beetle,1; bloody_hive,2; deadly_hornet,2; firebird,3
+1; titanium,6.0; 41; serpentine,5.59; kyanite,5.93; lapis_lazuli,5.5; obsidian,5.77; turquoise,5.77; titanite,5.5; opal,5.86; diopside,6.07; rhodonite,5.86; sodalite,5.86; andesine,6.25; zoisite,6.25; blizzard_stone,6.4; indraneelam,6.0; jade,6.4; labradorite,6.25; moonstone,6.25; prehnite,6.25; sunstone,6.25; tanzanite,6.25; onyx,6.65; agate,6.65; garnet,6.75; aventurine,6.5; hessonite,6.75; jasper,6.65; kunzite,6.65; peridot,6.65; petalite,6.5; spectrolite,6.5; danburite,7.07; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.07; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.07
+
+#
+28; 10; 3; 7; lizardman,1; mad_beetle,1; arachne,2; metal_rabbit,2; firebird,3; mammoth_fool,3; vouivre,5
+2; titanium,6.0; tungsten,7.5; 48; serpentine,5.73; kyanite,6.05; obsidian,5.85; turquoise,5.85; opal,5.91; diopside,6.14; rhodonite,5.91; sodalite,5.91; andesine,6.29; zoisite,6.29; blizzard_stone,6.47; indraneelam,6.0; jade,6.47; labradorite,6.29; moonstone,6.29; prehnite,6.29; sunstone,6.29; tanzanite,6.29; onyx,6.69; agate,6.69; garnet,6.81; aventurine,6.5; hessonite,6.81; jasper,6.69; kunzite,6.69; peridot,6.69; petalite,6.5; spectrolite,6.5; danburite,7.11; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.11; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.11; spinel,7.5; emerald,7.5; zircon,7.5; aquamarine,7.5; beryl,7.5; bixbite,7.5; goshenite,7.5; heliodor,7.5; morganite,7.5
+
+#
+29; 10; 3; 7; lizardman,1; mad_beetle,1; arachne,2; metal_rabbit,2; firebird,3; mammoth_fool,3; vouivre,5
+2; titanium,6.0; tungsten,7.5; 48; serpentine,5.86; kyanite,6.17; obsidian,5.92; turquoise,5.92; opal,5.95; diopside,6.21; rhodonite,5.95; sodalite,5.95; andesine,6.33; zoisite,6.33; blizzard_stone,6.53; indraneelam,6.0; jade,6.53; labradorite,6.33; moonstone,6.33; prehnite,6.33; sunstone,6.33; tanzanite,6.33; onyx,6.73; agate,6.73; garnet,6.88; aventurine,6.5; hessonite,6.88; jasper,6.73; kunzite,6.73; peridot,6.73; petalite,6.5; spectrolite,6.5; danburite,7.14; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.14; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.14; spinel,7.54; emerald,7.54; zircon,7.5; aquamarine,7.54; beryl,7.54; bixbite,7.54; goshenite,7.54; heliodor,7.54; morganite,7.54
+
+#
+30; 10; 3; 7; dark_fungus,1; mad_beetle,1; mammoth_fool,1; arachne,2; dungeon_fly,2; green_dragon,3; vouivre,5
+2; titanium,6.0; tungsten,7.5; 48; serpentine,6.0; kyanite,6.29; obsidian,6.0; turquoise,6.0; opal,6.0; diopside,6.29; rhodonite,6.0; sodalite,6.0; andesine,6.38; zoisite,6.38; blizzard_stone,6.6; indraneelam,6.0; jade,6.6; labradorite,6.38; moonstone,6.38; prehnite,6.38; sunstone,6.38; tanzanite,6.38; onyx,6.77; agate,6.77; garnet,6.94; aventurine,6.5; hessonite,6.94; jasper,6.77; kunzite,6.77; peridot,6.77; petalite,6.5; spectrolite,6.5; danburite,7.18; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.18; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.18; spinel,7.57; emerald,7.57; zircon,7.5; aquamarine,7.57; beryl,7.57; bixbite,7.57; goshenite,7.57; heliodor,7.57; morganite,7.57
+
+#
+31; 10; 3; 7; mad_beetle,1; mammoth_fool,1; bloody_hive,2; dark_fungus,2; deadly_hornet,2; dungeon_fly,2; arachne,3
+1; tungsten,7.5; 42; kyanite,6.4; diopside,6.36; andesine,6.42; zoisite,6.42; blizzard_stone,6.67; jade,6.67; labradorite,6.42; moonstone,6.42; prehnite,6.42; sunstone,6.42; tanzanite,6.42; onyx,6.81; agate,6.81; garnet,7.0; aventurine,6.5; hessonite,7.0; jasper,6.81; kunzite,6.81; peridot,6.81; petalite,6.5; spectrolite,6.5; danburite,7.21; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.21; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.21; spinel,7.61; emerald,7.61; zircon,7.5; aquamarine,7.61; beryl,7.61; bixbite,7.61; goshenite,7.61; heliodor,7.61; morganite,7.61; topaz,8.0
+
+#
+32; 10; 3; 7; dark_fungus,1; mammoth_fool,1; bloody_hive,2; deadly_hornet,2; mad_beetle,2; gryphon,4; unicorn,5
+1; tungsten,7.5; 42; kyanite,6.52; diopside,6.43; andesine,6.46; zoisite,6.46; blizzard_stone,6.73; jade,6.73; labradorite,6.46; moonstone,6.46; prehnite,6.46; sunstone,6.46; tanzanite,6.46; onyx,6.85; agate,6.85; garnet,7.06; aventurine,6.5; hessonite,7.06; jasper,6.85; kunzite,6.85; peridot,6.85; petalite,6.5; spectrolite,6.5; danburite,7.25; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.25; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.25; spinel,7.64; emerald,7.64; zircon,7.5; aquamarine,7.64; beryl,7.64; bixbite,7.64; goshenite,7.64; heliodor,7.64; morganite,7.64; topaz,8.0
+
+#
+33; 10; 3; 7; dark_fungus,1; mammoth_fool,1; gun_libellula,2; bloody_hive,3; deadly_hornet,3; gryphon,4; unicorn,5
+1; tungsten,7.5; 42; kyanite,6.64; diopside,6.5; andesine,6.5; zoisite,6.5; blizzard_stone,6.8; jade,6.8; labradorite,6.5; moonstone,6.5; prehnite,6.5; sunstone,6.5; tanzanite,6.5; onyx,6.88; agate,6.88; garnet,7.12; aventurine,6.5; hessonite,7.12; jasper,6.88; kunzite,6.88; peridot,6.88; petalite,6.5; spectrolite,6.5; danburite,7.29; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.29; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.29; spinel,7.68; emerald,7.68; zircon,7.5; aquamarine,7.68; beryl,7.68; bixbite,7.68; goshenite,7.68; heliodor,7.68; morganite,7.68; topaz,8.0
+
+#
+34; 10; 3; 7; dark_fungus,1; gun_libellula,1; mammoth_fool,1; bloody_hive,3; deadly_hornet,3; gryphon,3; unicorn,5
+1; tungsten,7.5; 33; kyanite,6.76; blizzard_stone,6.87; jade,6.87; onyx,6.92; agate,6.92; garnet,7.19; hessonite,7.19; jasper,6.92; kunzite,6.92; peridot,6.92; danburite,7.32; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.32; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.32; spinel,7.71; emerald,7.71; zircon,7.5; aquamarine,7.71; beryl,7.71; bixbite,7.71; goshenite,7.71; heliodor,7.71; morganite,7.71; topaz,8.0; chrysoberyl,8.5; taaffeite,8.5
+
+#
+35; 10; 3; 7; gun_libellula,1; dark_fungus,2; hobgoblin,2; sword_stag,2; green_dragon,3; ogre,3; unicorn,5
+1; tungsten,7.5; 33; kyanite,6.88; blizzard_stone,6.93; jade,6.93; onyx,6.96; agate,6.96; garnet,7.25; hessonite,7.25; jasper,6.96; kunzite,6.96; peridot,6.96; danburite,7.36; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.36; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.36; spinel,7.75; emerald,7.75; zircon,7.5; aquamarine,7.75; beryl,7.75; bixbite,7.75; goshenite,7.75; heliodor,7.75; morganite,7.75; topaz,8.0; chrysoberyl,8.5; taaffeite,8.5
+
+#
+36; 10; 3; 7; gun_libellula,1; dark_fungus,2; dungeon_fly,2; hobgoblin,2; sword_stag,2; ogre,3; green_dragon,4
+1; tungsten,7.5; 33; kyanite,7.0; blizzard_stone,7.0; jade,7.0; onyx,7.0; agate,7.0; garnet,7.31; hessonite,7.31; jasper,7.0; kunzite,7.0; peridot,7.0; danburite,7.39; citrine,7.0; amethyst,7.0; ametrine,7.0; bloodstone,7.0; iolite,7.39; quartz,7.0; rutilated_quartz,7.0; spessartite,7.0; tiger_eye,7.0; tsavorite,7.39; spinel,7.79; emerald,7.79; zircon,7.5; aquamarine,7.79; beryl,7.79; bixbite,7.79; goshenite,7.79; heliodor,7.79; morganite,7.79; topaz,8.0; chrysoberyl,8.5; taaffeite,8.5
+
+#
+37; 10; 3; 7; metal_rabbit,1; sword_stag,1; gun_libellula,2; moss_huge,2; green_dragon,3; viscum,3; unicorn,5
+1; tungsten,7.5; 22; garnet,7.38; hessonite,7.38; danburite,7.43; iolite,7.43; tsavorite,7.43; spinel,7.82; emerald,7.82; zircon,7.5; aquamarine,7.82; beryl,7.82; bixbite,7.82; goshenite,7.82; heliodor,7.82; morganite,7.82; topaz,8.0; chrysoberyl,8.5; taaffeite,8.5; sang-e-maryam,8.6; sapphire,9.0; ruby,9.0; neelam,9.0; padparadscha,9.0
+
+#
+38; 10; 3; 7; gun_libellula,1; hobgoblin,1; sword_stag,1; moss_huge,2; ogre,2; green_dragon,3; viscum,3
+1; tungsten,7.5; 22; garnet,7.44; hessonite,7.44; danburite,7.46; iolite,7.46; tsavorite,7.46; spinel,7.86; emerald,7.86; zircon,7.5; aquamarine,7.86; beryl,7.86; bixbite,7.86; goshenite,7.86; heliodor,7.86; morganite,7.86; topaz,8.0; chrysoberyl,8.5; taaffeite,8.5; sang-e-maryam,8.6; sapphire,9.0; ruby,9.0; neelam,9.0; padparadscha,9.0
+
+#
+39; 10; 3; 7; hobgoblin,1; metal_rabbit,1; green_dragon,2; moss_huge,2; poison_vermis,3; viscum,3; unicorn,4
+1; tungsten,7.5; 22; garnet,7.5; hessonite,7.5; danburite,7.5; iolite,7.5; tsavorite,7.5; spinel,7.89; emerald,7.89; zircon,7.5; aquamarine,7.89; beryl,7.89; bixbite,7.89; goshenite,7.89; heliodor,7.89; morganite,7.89; topaz,8.0; chrysoberyl,8.5; taaffeite,8.5; sang-e-maryam,8.6; sapphire,9.0; ruby,9.0; neelam,9.0; padparadscha,9.0
+
+#
+40; 10; 3; 8; blue_crab,1; raider_fish,1; devil_mosquito,2; lamia,2; troll,2; afanc,3; crystaroth_urchin,3; vulture,3
+0; 16; spinel,7.93; emerald,7.93; aquamarine,7.93; beryl,7.93; bixbite,7.93; goshenite,7.93; heliodor,7.93; morganite,7.93; topaz,8.0; chrysoberyl,8.5; taaffeite,8.5; sang-e-maryam,8.6; sapphire,9.0; ruby,9.0; neelam,9.0; padparadscha,9.0
+
+#
+41; 10; 3; 9; blue_crab,1; raider_fish,1; aqua_serpent,2; crystaroth_urchin,2; lamia,2; afanc,3; crystal_turtle,3; troll,3; vulture,3
+0; 16; spinel,7.96; emerald,7.96; aquamarine,7.96; beryl,7.96; bixbite,7.96; goshenite,7.96; heliodor,7.96; morganite,7.96; topaz,8.0; chrysoberyl,8.5; taaffeite,8.5; sang-e-maryam,8.6; sapphire,9.0; ruby,9.0; neelam,9.0; padparadscha,9.0
+
+#
+42; 10; 3; 9; raider_fish,1; aqua_serpent,2; blue_crab,2; lamia,2; troll,2; afanc,3; crystaroth_urchin,3; vulture,3; harpy,4
+0; 16; spinel,8.0; emerald,8.0; aquamarine,8.0; beryl,8.0; bixbite,8.0; goshenite,8.0; heliodor,8.0; morganite,8.0; topaz,8.0; chrysoberyl,8.5; taaffeite,8.5; sang-e-maryam,8.6; sapphire,9.0; ruby,9.0; neelam,9.0; padparadscha,9.0
+
+#
+43; 10; 3; 10; aqua_serpent,1; blue_crab,1; lamia,1; raider_fish,1; afanc,2; crystaroth_urchin,3; harpy,3; kelpie,3; voltimeria,3; vulture,3
+0; 8; chrysoberyl,8.5; taaffeite,8.5; sang-e-maryam,8.6; sapphire,9.0; ruby,9.0; neelam,9.0; padparadscha,9.0; diamond,10.0
+
+#
+44; 10; 3; 10; blue_crab,1; raider_fish,1; devil_mosquito,2; harpy,2; iguazu,3; kelpie,3; voltimeria,3; dodora,4; siren,4; mermaid,5
+1; meteoric_iron,10.5; 5; sapphire,9.0; ruby,9.0; neelam,9.0; padparadscha,9.0; diamond,10.0
+
+#
+45; 10; 3; 11; blue_crab,1; raider_fish,1; devil_mosquito,2; harpy,2; iguazu,3; kelpie,3; siren,3; voltimeria,3; dodora,4; merman,4; mermaid,5
+1; meteoric_iron,10.62; 1; diamond,10.0
+
+#
+46; 10; 3; 11; blue_crab,1; raider_fish,1; iguazu,2; voltimeria,2; devil_mosquito,3; kelpie,3; siren,3; crystal_turtle,4; dodora,4; mermaid,4; merman,4
+1; meteoric_iron,10.75; 1; diamond,10.0
+
+#
+47; 10; 3; 9; aqua_serpent,1; blue_crab,1; iguazu,2; siren,2; voltimeria,2; dodora,3; light_quartz,3; mermaid,4; merman,4
+1; meteoric_iron,10.88; 0; 
+
+#
+48; 10; 3; 9; aqua_serpent,1; iguazu,2; siren,2; voltimeria,2; dodora,3; light_quartz,3; mermaid,3; merman,3; crystal_turtle,4
+1; meteoric_iron,11.0; 0; 
+
+#
+49; 10; 3; 11; black_rhino,1; bloodsaurus,1; loup_garou,1; spartoi,1; ape,2; grand_treant,2; titan_alm,3; venom_scorpion,3; armarosaurus,4; gargoyle,4; worm_well,5
+1; golanthium,13.0; 0; 
+
+#
+50; 10; 3; 11; black_rhino,1; bloodsaurus,1; loup_garou,1; spartoi,1; ape,2; grand_treant,2; titan_alm,3; venom_scorpion,3; armarosaurus,4; gargoyle,4; worm_well,5
+1; golanthium,13.18; 0; 
+
+#
+51; 10; 3; 11; ape,1; bloodsaurus,1; loup_garou,1; spartoi,1; black_rhino,2; skull_sheep,2; flame_rock,3; gargoyle,3; ill_wyvern,3; titan_alm,3; worm_well,5
+1; golanthium,13.36; 0; 
+
+#
+52; 10; 3; 11; ape,1; barbarian,1; power_bull,1; spartoi,1; black_rhino,2; skull_sheep,2; flame_rock,3; ill_wyvern,3; titan_alm,3; armarosaurus,4; worm_well,4
+1; golanthium,13.55; 0; 
+
+#
+53; 10; 3; 11; ape,1; barbarian,1; old_bison,1; power_bull,1; skull_sheep,2; spartoi,2; venom_scorpion,2; flame_rock,3; gargoyle,3; ill_wyvern,3; worm_well,4
+1; golanthium,13.73; 0; 
+
+#
+54; 10; 3; 10; barbarian,1; lizardman_elite,1; old_bison,1; power_bull,1; ape,2; fomoire,2; venom_scorpion,2; peluda,3; worm_well,4; valgang_dragon,5
+1; golanthium,13.91; 0; 
+
+#
+55; 10; 3; 11; barbarian,1; deformis_spider,1; grand_treant,1; lizardman_elite,1; ape,2; fomoire,2; old_bison,2; peluda,2; gryphon,3; valgang_dragon,4; worm_well,4
+1; golanthium,14.09; 0; 
+
+#
+56; 10; 3; 11; deformis_spider,1; grand_treant,1; lizardman_elite,1; ape,2; barbarian,2; fomoire,2; old_bison,2; peluda,2; gryphon,3; worm_well,3; valgang_dragon,4
+1; golanthium,14.27; 0; 
+
+#
+57; 10; 3; 10; deformis_spider,1; fomoire,1; lizardman_elite,1; barbarian,2; obsidian_soldier,2; ape,3; cadmus,3; hippogriff,3; silver_worm,3; worm_well,4
+1; golanthium,14.45; 0; 
+
+#
+58; 10; 3; 10; fomoire,1; lizardman_elite,1; obsidian_soldier,2; ape,3; cadmus,3; hippogriff,3; silver_worm,3; thunder_snake,3; valgang_dragon,3; worm_well,4
+1; golanthium,14.64; 0; 
+
+#
+59; 10; 3; 10; fomoire,1; lizardman_elite,1; obsidian_soldier,2; thunder_snake,2; ape,3; cadmus,3; hippogriff,3; silver_worm,3; valgang_dragon,3; worm_well,4
+1; golanthium,14.82; 0; 
+
+#
+60; 10; 3; 9; lizardman_elite,1; obsidian_soldier,1; ape,2; silver_worm,2; thunder_snake,2; valgang_dragon,2; cadmus,3; hippogriff,3; worm_well,4
+1; golanthium,15.0; 0; 
+

@@ -21,7 +21,7 @@ def get_screen(console, screen_data):
                 continue
             meets_requirements &= character.has_perk(requirement)
 
-        for char_perk_id in character.get_perks():
+        for char_perk_id in character.get_all_perks():
             meets_requirements &= Refs.gc['perks'][char_perk_id].get_tree() == perk.get_tree()
 
         if meets_requirements:
@@ -45,7 +45,7 @@ def handle_action(console, action):
     perk = Refs.gc['perks'][perk_id]
     character = Refs.gc.get_char_by_id(character_id)
 
-    character.bestow_perk(perk)
+    character.bestow_perk(perk.get_id())
     Refs.gc.unlock_perk(perk)
 
     console.set_screen(f'{PERK_INFO}:{perk_id}', True)

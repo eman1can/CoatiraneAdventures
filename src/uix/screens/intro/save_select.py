@@ -2,7 +2,7 @@
 # Kivy Imports
 from kivy.properties import StringProperty
 
-from game.save_load import load_save_info
+from game.save_load import load_save_info, delete_save
 from kivy.uix.buttonversions import HoverPathButton
 # KV Import
 from loading.kv_loader import load_kv
@@ -20,36 +20,59 @@ class SaveSelect(Screen):
         self.saves = [False, False, False]
         super(SaveSelect, self).__init__(**kwargs)
 
+    def reload(self, is_new_game=True):
+        self.is_new_game = is_new_game
+        self.saves = [False, False, False]
+        Refs.log(f'Reload: {is_new_game}')
+
     def on_pre_enter(self, *args):
         # Load saves to slots
-        Refs.log('Check Saves')
+        Refs.log(f'Check Saves - {self.is_new_game}')
 
         # On new game, set all but top empty slot to disabled
         # On load game, set only loaded to disabled
 
         found_empty = True
         for save_slot in range(1, 4):
-            Refs.log('Check save slot 1')
+            Refs.log(f'Check save slot {save_slot}')
             info = load_save_info(save_slot)
+
             if info is not None:
                 self.saves[0] = True
                 self.ids[f'save_slot_{save_slot}'].has_game = True
                 self.ids[f'save_slot_{save_slot}'].put_save_info(info)
+                self.ids[f'save_trash_{save_slot}'].disabled = False
+                self.ids[f'save_trash_{save_slot}'].opacity = 1
+                self.set_save(save_slot, True)
             else:
-                if not self.is_new_game or self.is_new_game and not found_empty:
-                    self.ids[f'save_slot_{save_slot}'].disabled = True
-                    self.ids[f'save_slot_{save_slot}'].opacity = 0
-                else:
+                self.ids[f'save_trash_{save_slot}'].disabled = True
+                self.ids[f'save_trash_{save_slot}'].opacity = 0
+                if self.is_new_game and found_empty:
+                    self.set_save(save_slot, True)
                     found_empty = False
+
+                else:
+                    self.set_save(save_slot, False)
+
+    def set_save(self, save_slot, enabled):
+        self.ids[f'save_slot_{save_slot}'].disabled = not enabled
+        self.ids[f'save_slot_{save_slot}'].opacity = 1 if enabled else 0
 
     def load_save(self, save_num):
         if self.is_new_game:
-            Refs.gs.display_screen('intro_start', True, True, save_num)
+            self.manager.display_screen('intro_start', True, True, save_num)
         else:
             self.manager.app.start_loading(save_num, 'town_main')
         self.ids.save_slot_1.disabled = True
         self.ids.save_slot_2.disabled = True
         self.ids.save_slot_3.disabled = True
+
+    def delete_save(self, save_num):
+        Refs.gp.display_popup(self, 'confirm', title_text='Are you sure?', description_text='This action is irreversible', on_confirm=lambda instance, num=save_num: self.do_delete_save(num))
+
+    def do_delete_save(self, save_num):
+        delete_save(save_num)
+        self.on_pre_enter()
 
 
 class SaveSlot(HoverPathButton):
@@ -64,7 +87,7 @@ class SaveSlot(HoverPathButton):
         self.ids.time.text = info.get('last_save_time')
         self.ids.gender_symbol.source = 'family/' + info.get('gender') + '.png'
         self.ids.domain_symbol.source = 'family/domains/' + info.get('domain') + '.png'
-        self.ids.symbol.source = 'family/symbols/' + info.get('symbol')[-1] + '.png'
+        self.ids.symbol.source = 'family/symbols/' + info.get('symbol').split('_')[1] + '.png'
         self.ids.name.text = info.get('save_name')
         self.ids.domain_name.text = info.get('domain')
         self.ids.rank.text = f"Family Renown - {info.get('rank')}"

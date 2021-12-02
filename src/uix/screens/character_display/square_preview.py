@@ -29,8 +29,8 @@ class SquareCharacterPreview(RelativeLayout):
     stat_text = StringProperty('Str: ')
     stat_number = NumericProperty(19.99)
 
-    character = ObjectProperty(None)
-    support = ObjectProperty(None)
+    character = NumericProperty(-1)
+    support = NumericProperty(-1)
 
     char_button_source = StringProperty('buttons/char_button_square')
     char_button_collide_image = StringProperty('')

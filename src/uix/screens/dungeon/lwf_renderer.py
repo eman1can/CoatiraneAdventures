@@ -67,6 +67,8 @@ class LWFRenderer:
                 lwf.exec(dt)
                 lwf.render()
         for lwf_name in self._destroy:
+            if lwf_name not in self._lwfs:
+                continue
             lwf = self._lwfs.pop(lwf_name)
             self._paths.pop(lwf_name)
             if self._debug:

@@ -421,5 +421,8 @@ class StatusBoardManager(Screen):
 
     def goto_status_board(self, direction):
         next_char_index = Refs.gc.get_next_char(self.char, direction)
+        print(f'Goto {next_char_index}')
         next_char = Refs.gc.get_char_by_index(next_char_index)
-        Refs.gs.display_screen('status_board_' + next_char.get_id(), True, False, next_char)
+        if next_char is None:
+            return
+        Refs.gs.display_screen('status_board_' + next_char.get_id(), True, False, next_char_index)

@@ -134,6 +134,7 @@ class Character(Entity):
         self._outfit = Outfit()
 
         self._abilities = []
+        self._perks = []
 
         # Load kwargs
         for kwarg, value in kwargs.items():
@@ -151,9 +152,13 @@ class Character(Entity):
         if not self._is_support:
             skills[7].set_special()
 
+        self._base_stats = {'Health': hp, 'Mana': mp, 'Strength': s, 'Magic': m, 'Endurance': e, 'Agility': a, 'Dexterity': d}
+
         super().__init__(identifier, name, skel_path, hp, mp, s, m, e, s, m, e, a, d, element, skills)
 
         self.refresh_stats()
+
+        print(self.get_full_name(), self._attack_type, hp, mp, s, m, e, a, d)
 
     # Refresh and calculation functions
 
@@ -219,6 +224,9 @@ class Character(Entity):
         # 0 Basic 1 Move1 2 Move1 Mana 3 Move2 4 Move2 Mana 5 Move3 6 Move3 Mana 7 Special
         return self._moves[:2] + self._moves[3:4] + self._moves[5:6] + self._moves[7:8]
 
+    def get_all_skills(self):
+        return self._moves
+
     def get_mana_cost(self, skill):
         index = self._moves.index(skill)
         if index in (0, 7, 8, 9):
@@ -242,6 +250,9 @@ class Character(Entity):
             return self._moves[1]
         else:
             return self._moves[0]
+
+    def get_base_stats(self):
+        return self._base_stats
 
     def get_image(self, image_type):
         if image_type == 'slide':
@@ -324,10 +335,6 @@ class Character(Entity):
             return ''
         return ELEMENTS[self._element]
 
-
-
-
-
     # Rank and ability management functions
 
     def get_current_rank(self):
@@ -356,30 +363,30 @@ class Character(Entity):
         self.get_rank().max_stats()
         self.refresh_stats()
 
-    # TODO: Make ability class
-    # - Ability class is in Skill file
+    # Abilities are given in status_boards and will change based on requirements
     def get_ability(self, index):
-        print(self._abilities)
-        if index < len(self._abilities):
-            return self._abilities[index]
-        return None
+        if index >= len(self._abilities):
+            return None
+        return self._abilities[index]
 
-    def has_perk(self, perk_id):
-        return perk_id in self._abilities
-
-    def bestow_perk(self, perk):
-        self._abilities.append(perk.get_id())
-
-    def get_perks(self):
+    def get_all_abilities(self):
         return self._abilities
 
-    # def get_ability_options(self, abilities):
-    #     return abilities[:3]
+    def get_ability_options(self, abilities):
+        return []
+
     def add_ability(self, ability):
         self._abilities.append(ability)
 
-    def get_abilities(self):
-        return self._abilities
+    # Perks are bestowed by the player in skill trees
+    def has_perk(self, perk_id):
+        return perk_id in self._perks
+
+    def bestow_perk(self, perk_id):
+        self._perks.append(perk_id)
+
+    def get_all_perks(self):
+        return self._perks
 
     # HMPMD & SMEAD Functions
     def get_physical_attack(self, rank=0):

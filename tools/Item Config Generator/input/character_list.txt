@@ -1,0 +1,117 @@
+Ais Wallenstein - A Whisper of Wind - A
+Skeleton Number: 1041002011
+Race: Human
+Gender: Female
+Age: 20
+Description: A Young adventurer who loves slicing things and doesn't show much emotion.
+HMSMEAD: 175, 60, 15, 10, 15, 10, 12
+Attack Type: Physical
+Element: Wind
+Weapon Type: Rapier
+Sub-Weapon Type: None
+Recruitment Items:
+	varenth, 20000
+	bronze/rapier, 1
+	tin/chestplate, 1
+
+Bell Cranel - Hero - A
+Skeleton Number: 1041001011
+Race: Human
+Gender: Male
+Age: 18
+Description: An upcoming adventuer that slays his enemies with emotion and pure unbridled power.
+HMSMEAD: 200, 40, 25, 10, 15, 8, 7
+Attack Type: Physical
+Element: Fire
+Weapon Type: Longsword
+Sub-Weapon Type: None
+Recruitment Items:
+	varenth, 20000
+	bronze/longsword, 1
+	tin/boots, 1
+	tin/chestplate, 1
+
+Cassandra Ilion - Clumsy - A
+Skeleton Number: 1041092001
+Race: Human
+Gender: Female
+Age: 19
+Description: A young, clumsy, and scatterbrained adventurer who is often shunned for her reliance on water spells and her addiction with shiny gems.
+HMSMEAD: 100, 120, 5, 30, 6, 8, 9
+Attack Type: Healing
+Element: Water
+Weapon Type: Staff
+Sub-Weapon Type: None
+Recruitment Items:
+	serpentine_processed, 5
+	chrysocolla_processed, 5
+	varenth, 15000
+	padded/robe, 1
+
+Daphne Lauros - Commander - A
+Skeleton Number: 1041091001
+Race: Human
+Gender: Female
+Age: 19
+Description: The best friend of Cassandra, she is the only one that is experienced enough to deal with her clumsiness. A strong commander with a firm grasp on strategy.
+HMSMEAD: 200, 73, 25, 10, 8, 12, 13
+Attack Type: Physical
+Element: Dark
+Weapon Type: Short Sword
+Sub-Weapon Type: None
+Recruitment Items:
+	steel/short_sword, 1
+	serpentine/necklace, 1
+
+Valeria Felmon - Electroshock - A
+Skeleton Number: 1041086001
+Race: Elf
+Gender: Female
+Age: 23
+Description: Everybody is terrified of Valeria, as she has scary eyes and absolute control over thunder magic.
+HMSMEAD: 180, 100, 20, 20, 9, 7, 7
+Attack Type: Hybrid
+Element: Thunder
+Weapon Type: Short Sword
+Sub-Weapon Type: Short Staff
+Recruitment Items:
+	padded/coat, 1
+
+Alicia Forestlight - Motherly - A
+Skeleton Number: 1041098001
+Race: Elf
+Gender: Female
+Age: 25
+Description: Generally referred to as motherly by those she parties with, Alicia gives her best at supporting her teammates.
+HMSMEAD: 150, 90, 15, 15, 11, 9, 10
+Attack Type: Hybrid
+Element: Light
+Weapon Type: Dagger
+Sub-Weapon Type: Short Staff
+Recruitment Items:
+	chrysocolla_processed, 15
+	varenth, 30000
+
+Misha Frot - Town Gossip - S
+Skeleton Number: -
+Race: Human
+Gender: Female
+Age: 20
+Description: Loves to Gossip about scandalous adventurer romance. Great at cheering up any adventurer.
+HMSMEAD: 60, 40, 5, 8, 5, 6, 6
+Recruitment Items:
+	serpentine_processed, 10
+	chrysocolla_processed, 15
+	serpentine/necklace, 1
+
+Hestia - Divine Blessing - S
+Skeleton Number: -
+Race: Human
+Gender: Female
+Age: Unknown
+Description: A flighty goddess who loves all of her children and freely bestows divine blessings on those that she deems worthy. As the eldest member of the parthenon, Hestia's blessings are much more powerful than others.
+HMSMEAD: 50, 20, 9, 5, 9, 5, 5
+Recruitment Items:
+	serpentine_processed, 15
+	chrysocolla_processed, 1
+	serpentine/necklace, 1

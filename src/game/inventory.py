@@ -1,8 +1,9 @@
 from game.equipment import CAN_DUAL_WIELD, OFF_HAND_WEAPON, WEAPON
+from refs import Refs
 
 
 class Inventory:
-    def __init__(self, items, drop_items, equipment, metadata):
+    def __init__(self, items, equipment, metadata):
         self._items = {}
         self._has_metadata = {}
 
@@ -16,15 +17,15 @@ class Inventory:
             self._items[item_id]['class'] = item
             self._has_metadata[item_id] = False
 
-        for item_id, drop_item in drop_items.items():
-            self._items[item_id] = {}
-
-            if item_id in metadata:
-                self._items[item_id]['count'] = metadata[item_id]['count']
-            else:
-                self._items[item_id]['count'] = 0
-            self._items[item_id]['class'] = drop_item
-            self._has_metadata[item_id] = False
+        # for item_id, drop_item in drop_items.items():
+        #     self._items[item_id] = {}
+        #
+        #     if item_id in metadata:
+        #         self._items[item_id]['count'] = metadata[item_id]['count']
+        #     else:
+        #         self._items[item_id]['count'] = 0
+        #     self._items[item_id]['class'] = drop_item
+        #     self._has_metadata[item_id] = False
 
         for item_id, equipment in equipment.items():
             self._items[item_id] = {}
@@ -77,6 +78,7 @@ class Inventory:
         return output
 
     def add_item(self, item_id, count, metadata=None):
+        Refs.log(f'Add {count} {item_id} to inventory.')
         if not self._has_metadata[item_id]:
             self._items[item_id]['count'] += count
         else:
@@ -84,8 +86,10 @@ class Inventory:
             for _ in range(count):
                 item = self._items[item_id]['class'].new_instance(metadata)
                 self._items[item_id]['items'][item.get_hash()] = item
+        return self._items[item_id]['count']
 
     def remove_item(self, item_id, count, hash=None):
+        Refs.log(f'Remove {count} {item_id} to inventory.')
         if self._has_metadata[item_id]:
             if hash is None:
                 raise Exception('Can\'t remove metadataed item with no hash')

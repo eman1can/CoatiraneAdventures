@@ -1,6 +1,7 @@
 from os import mkdir
 from os.path import exists, expanduser
 from random import randint
+from shutil import rmtree
 from time import strftime, localtime, time
 
 from kivy.storage.jsonstore import JsonStore
@@ -29,6 +30,12 @@ SAVE_PATHS = [SAVE_SLOT_1_PATH, SAVE_SLOT_2_PATH, SAVE_SLOT_3_PATH]
 
 SECONDS_IN_WEEK = 60 * 60 * 24 * 7
 
+# uniform(1000000000, 9000000000)
+VERSION_440856 = 8166431662
+VERSION_2484264 = 2647992870
+LATEST_VERSION = VERSION_2484264
+
+
 def get_info_and_path(save_slot):
     if save_slot == 1:
         return SAVE_SLOT_1_INFO, SAVE_SLOT_1
@@ -43,6 +50,10 @@ def load_save_info(save_slot):
     if exists(save_info):
         return JsonStore(save_info)
     return None
+
+
+def delete_save(save_slot):
+    rmtree(SAVE_PATHS[save_slot - 1])
 
 
 def create_new_save(save_slot, name, gender, symbol, domain, choice):
@@ -61,15 +72,18 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_header(save_info, name, gender, domain, symbol, starting_rank, starting_varenth, starting_chars, starting_quests, starting_floor, starting_score, perks_unlocked)
 
     save_file = JsonStore(save_path)
+    save_file['file_version'] = LATEST_VERSION
     save_file['family'] = {
-        'name': name,
+        'name':   name,
         'gender': gender,
         'domain': domain,
         'symbol': symbol,
-        'rank': starting_rank,
-        'chars': starting_chars,
+        'rank':   starting_rank,
+        'rank_index': 0,
+        'rank_points': 0,
+        'chars':  starting_chars,
         'quests': starting_quests,
-        'score': starting_score
+        'score':  starting_score
     }
     save_file['time'] = 824316914
     save_file['housing'] = {}
@@ -79,20 +93,19 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_file['housing']['bill_due'] = 824370914
     save_file['housing']['bill_count'] = 1
     save_file['lowest_floor'] = starting_floor
-    save_file['obtained_characters'] = [x for x in range(8)]
-    save_file['obtained_characters_a'] = [x for x in range(6)]
-    save_file['obtained_characters_s'] = [6, 7]
-    if choice == 0:
-        char_id = 'a_whisper_of_wind_ais'
-    else:
-        char_id = 'hero_bell'
-    char_develop = {}
-    for char_id in ['a_whisper_of_wind_ais', 'hero_bell', 'clumsy_cassandra', 'electroshock_valeria', 'motherly_alicia', 'commander_daphne', 'divine_protection_hestia', 'town_gossip_misha']:
-        char_develop[char_id] = {
-            'ranks': {
+
+    save_file['obtained_characters'] = [choice]
+    save_file['obtained_characters_a'] = [choice]
+    save_file['obtained_characters_s'] = []
+
+    starting_char_ids = ['a_whisper_of_wind_ais', 'hero_bell']
+    chosen_char_id = starting_char_ids[choice]
+    char_develop = {
+        chosen_char_id: {
+            'ranks':          {
                 'unlocked': [True, False, False, False, False, False, False, False, False, False],
-                'broken': [False, False, False, False, False, False, False, False, False, False],
-                'boards': [
+                'broken':   [False, False, False, False, False, False, False, False, False, False],
+                'boards':   [
                     [False for _ in range(9)],
                     [False for _ in range(9)],
                     [False for _ in range(16)],
@@ -104,21 +117,23 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
                     [False for _ in range(42)],
                     [False for _ in range(42)],
                 ],
-                'growth': [[0 for _ in range(7)] for _ in range(10)]
+                'growth':   [[0 for _ in range(7)] for _ in range(10)]
             },
-            'family': name,
-            'high_damage': 0,
-            'floor_depth': 0,
+            'family':         name,
+            'high_damage':    0,
+            'floor_depth':    0,
             'monsters_slain': 0,
-            'people_slain': 0,
-            'equipment': [None, None, None, None, None, None, None, None, None, None],
-            'abilities': [],
-            'familiarities': {}
+            'people_slain':   0,
+            'equipment':      [None, None, None, None, None, None, None, None, None, None],
+            'abilities':      [],
+            'perks':      [],
+            'familiarities':  {}
         }
+    }
     save_file['character_development'] = char_develop
     save_file['inventory'] = {
-        'current_pickaxe_hash': None,
-        'current_shovel_hash': None,
+        'current_pickaxe_hash':          None,
+        'current_shovel_hash':           None,
         'current_harvesting_knife_hash': None
     }
     save_file['map_data'] = {}
@@ -127,25 +142,27 @@ def create_new_save(save_slot, name, gender, symbol, domain, choice):
     save_file['map_data'] = {}
     save_file['map_node_data'] = {}
     save_file['map_node_counters'] = {}
-    for floor in range(1, 61):
+    save_file['boss_defeated'] = {}
+    save_file['boss_respawn_time'] = {}
+    for floor in range(1, 9):
         save_file['map_data'][str(floor)] = {}
         save_file['map_node_data'][str(floor)] = {}
         save_file['map_node_counters'][str(floor)] = {}
+        save_file['boss_defeated'][str(floor)] = False
+        save_file['boss_respawn_time'][str(floor)] = 0
     save_file['perk_points'] = 1
     save_file['perks'] = []
-    # - Obtained Characters (all, s, & a)
-    # - Character Rank Info and Growth, Grid Progress
-    # - Character Abilities & Skills
-    # - Character Familiarity Info
-    # - Character Stats
-    # - Character Equipped Items
-    # - Character
-    # - Equipment
-    # - Inventory/Items/Money
-    # - Family Info
-    # - Family Stats
-    # - Any Floor Info (Not yet a thing)
-    # - Family Skill Tree - Not yet a thing
+    save_file['crafting_queue'] = {
+        'unassigned_chars': [choice],
+        'queue': []
+    }
+    save_file['quest_data'] = {
+        'timestamp':       973148400.0,
+        'daily_quests':    [],
+        'weekly_quests':   [],
+        'monthly_quests':  [],
+        'campaign_quests': []
+    }
 
 
 def save_header(info_slot, name, gender, domain, symbol, rank, varenth, chars_collected, quest_count, lowest_floor, total_score, perks_unlocked):
@@ -165,6 +182,20 @@ def save_header(info_slot, name, gender, domain, symbol, rank, varenth, chars_co
     info['skill_level'] = perks_unlocked
 
 
+def migrate_save_version(current_version, save_file):
+    if current_version == VERSION_440856:
+        # VERSION_440856 → VERSION_2484264
+        # This version added boss_defeated and boss_respawn_time
+        save_file['boss_defeated'] = {}
+        save_file['boss_respawn_time'] = {}
+        for floor in range(1, 9):
+            save_file['boss_defeated'][str(floor)] = False
+            save_file['boss_respawn_time'][str(floor)] = 0
+        save_file['file_version'] = VERSION_2484264
+        return VERSION_2484264, save_file
+    raise Exception(f'Unknown Save File Version. Cannot migrate!')
+
+
 def save_game(save_slot, game_content):
     save_info, save_path = get_info_and_path(save_slot)
 
@@ -176,6 +207,8 @@ def save_game(save_slot, game_content):
     domain = game_content.get_domain()
     symbol = game_content.get_symbol()
     rank = game_content.get_renown()
+    rank_index = game_content.get_renown_as_index()
+    rank_points = game_content.get_renown_points()
     varenth = game_content.get_varenth()
     char_count = len(game_content.get_all_obtained_character_indexes())
     quest_count = game_content.get_quests()
@@ -186,15 +219,23 @@ def save_game(save_slot, game_content):
     save_header(save_info, name, gender, domain, symbol, rank, varenth, char_count, quest_count, lowest_floor, score, perks_unlocked)
 
     save_file = JsonStore(save_path)
+
+    if save_file['file_version'] != LATEST_VERSION:
+        current_version = save_file['file_version']
+        while current_version != LATEST_VERSION:
+            current_version, save_file = migrate_save_version(current_version, save_file)
+
     save_file['family'] = {
-        'name':   name,
-        'gender': gender,
-        'domain': domain,
-        'symbol': symbol,
-        'rank':   rank,
-        'chars':  char_count,
-        'quests': quest_count,
-        'score':  score
+        'name':        name,
+        'gender':      gender,
+        'domain':      domain,
+        'symbol':      symbol,
+        'rank':        rank,
+        'rank_index':  rank_index,
+        'rank_points': rank_points,
+        'chars':       char_count,
+        'quests':      quest_count,
+        'score':       score
     }
     save_file['time'] = game_content.get_calendar().get_int_time()
     save_file['housing'] = {}
@@ -211,7 +252,7 @@ def save_game(save_slot, game_content):
     save_file['obtained_characters_a'] = game_content.get_obtained_character_indexes(False)
     save_file['obtained_characters_s'] = game_content.get_obtained_character_indexes(True)
     character_development = {}
-    for character in game_content['chars'].values():
+    for character in game_content.get_all_obtained_characters():
         char_develop = {'ranks': {}, 'equipment': [], 'abilities': [], 'familiarities': {}}
         char_develop['ranks']['unlocked'] = [rank.is_unlocked() for rank in character.get_ranks()]
         char_develop['ranks']['broken'] = [rank.is_broken() for rank in character.get_ranks()]
@@ -230,7 +271,8 @@ def save_game(save_slot, game_content):
             else:
                 equipment.append(item.get_full_id())
         char_develop['equipment'] = equipment
-        char_develop['abilities'] = character.get_abilities()
+        char_develop['abilities'] = character.get_all_abilities()
+        char_develop['perks'] = character.get_all_perks()
         character_development[character.get_id()] = char_develop
     save_file['character_development'] = character_development
 
@@ -238,6 +280,8 @@ def save_game(save_slot, game_content):
     save_file['map_data'] = {}
     save_file['map_node_data'] = {}
     save_file['map_node_counters'] = {}
+    save_file['boss_defeated'] = {}
+    save_file['boss_respawn_time'] = {}
     for floor in game_content['floors'].values():
         explored_array = {}
         for node, discovered in floor.get_map().get_explored().items():
@@ -254,6 +298,8 @@ def save_game(save_slot, game_content):
                 explored_counter_array[str(node)] = explored_node_counters[node]
         save_file['map_node_data'][str(floor.get_id())] = explored_array
         save_file['map_node_counters'][str(floor.get_id())] = explored_counter_array
+        save_file['boss_defeated'][str(floor.get_id())] = floor.is_boss_defeated()
+        save_file['boss_respawn_time'][str(floor.get_id())] = floor.boss_spawn_time()
 
     save_file['perk_points'] = game_content.get_perk_points()
     save_file['perks'] = game_content.get_unlocked_perks()
@@ -278,6 +324,8 @@ def save_game(save_slot, game_content):
     # - Family Stats
     # - Any Floor Info (Not yet a thing)
     # - Family Skill Tree - Not yet a thing
+    # - Quests
+    save_file['quest_data'] = game_content.get_quest_manager().get_data_to_save()
 
 
 def load_game(save_slot):
@@ -286,11 +334,17 @@ def load_game(save_slot):
     if not exists(save_info) or not exists(save_path):
         return None
 
-    return JsonStore(save_path)
+    save_data = JsonStore(save_path)
+
+    if save_data['file_version'] != LATEST_VERSION:
+        current_version = save_data['file_version']
+        while current_version != LATEST_VERSION:
+            current_version, save_data = migrate_save_version(current_version, save_data)
+    return save_data
 
 
 def get_random_node(size):
-    return randint(0, size-1), randint(0, size-1)
+    return randint(0, size - 1), randint(0, size - 1)
 
 
 def get_arrays(json_data):

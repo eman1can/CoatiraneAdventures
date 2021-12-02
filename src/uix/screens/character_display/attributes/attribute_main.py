@@ -60,6 +60,7 @@ class CharacterAttributeScreen(Screen):
         super().__init__(**kwargs)
         self.update_stars()
         self.update_info()
+        self.update_skills()
         self.ids.total_abilities_box.reload()
         self.ids.rank_abilities_box.reload()
 
@@ -91,8 +92,8 @@ class CharacterAttributeScreen(Screen):
             self.skills_switch_text = 'Skills'
         self.ids.normal_layout.opacity = int(not bool(int(self.ids.normal_layout.opacity)))
         self.ids.skill_layout.opacity = int(not bool(int(self.ids.skill_layout.opacity)))
-        self.ids.skillslist.scroll_y = 1
-        self.ids.skillslist.update_from_scroll()
+        self.ids.skills_list.scroll_y = 1
+        self.ids.skills_list.update_from_scroll()
 
     def on_change_equip(self):
         char = Refs.gc.get_char_by_index(self.char)
@@ -101,7 +102,7 @@ class CharacterAttributeScreen(Screen):
     def goto_char_attr(self, direction):
         next_char_index = Refs.gc.get_next_char(self.char, direction)
         next_char = Refs.gc.get_char_by_index(next_char_index)
-        Refs.gs.display_screen('char_attr_' + next_char.get_id(), True, False, next_char, self.preview)
+        Refs.gs.display_screen('char_attr_' + next_char.get_id(), True, False, next_char_index, self.preview)
 
     def update_stars(self):
         if self.char != -1:
@@ -147,6 +148,15 @@ class CharacterAttributeScreen(Screen):
         self.gender = "Gender: " + str(char.get_gender())
         self.high_dmg = "High Dmg.: " + str(char.get_high_damage())
         self.people_slain = "People Slain: " + str(char.get_people_killed())
+
+    def update_skills(self):
+        char = Refs.gc.get_char_by_index(self.char)
+        if char.is_support():
+            skills = [char.get_support_skill()]
+        else:
+            skills = char.get_all_skills()
+
+        self.ids.skills_list.set_combat_skills(char.is_support(), skills)
 
     def update_items(self):
         if self.char is None:

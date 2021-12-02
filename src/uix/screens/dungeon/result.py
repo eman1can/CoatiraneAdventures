@@ -75,12 +75,13 @@ class StatHud(RelativeLayout):
         self.characters = 0
         increases, fam_bonus_increases = Refs.gc.get_floor_data().get_increases()
         party = Refs.gc.get_current_party()[8:] if supports else Refs.gc.get_current_party()[:8]
+        print(increases, fam_bonus_increases)
         for index, char_index in enumerate(party):
             character = Refs.gc.get_char_by_index(char_index)
             if character is None:
                 continue
             self.characters += 1
-            self.add_widget(CharacterStatPreview(character, increases[character.get_id()], fam_bonus_increases[character.get_id()], size_hint=(0.109, 0.75), pos_hint={'x': 0.0142 + index * 0.1232, 'y': 0.125}))
+            self.add_widget(CharacterStatPreview(character, increases[char_index], fam_bonus_increases[char_index], size_hint=(0.109, 0.75), pos_hint={'x': 0.0142 + index * 0.1232, 'y': 0.125}))
 
 
 class CharacterStatPreview(RelativeLayout):

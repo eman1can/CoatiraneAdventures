@@ -1,0 +1,142 @@
+#:import Gradient src.modules.gradient.Gradient
+
+<StyledToggleButton@ToggleButton>:
+    font_name: 'Gabriola'
+    font_size: '40sp'
+    color: 0, 0, 0, 1
+    path: 'buttons/quest_display'
+
+<QuestsMain>:
+    name: 'quests_main'
+    background_source: 'guild.png'
+    title_source: 'screen_title/quests.png'
+
+    BoxLayout:
+        id: selection_buttons
+        size_hint: 0.5, 0.05
+        pos_hint: {'x': 0.333, 'top': 0.9}
+        StyledToggleButton:
+            id: all
+            group: 'quest_group'
+            text: 'All'
+            state: 'down'
+            on_release: root.display_quests('all')
+        StyledToggleButton:
+            id: all
+            group: 'quest_group'
+            text: 'Daily'
+            on_release: root.display_quests('daily')
+        StyledToggleButton:
+            id: all
+            group: 'quest_group'
+            text: 'Weekly'
+            on_release: root.display_quests('weekly')
+        StyledToggleButton:
+            id: all
+            group: 'quest_group'
+            text: 'Monthly'
+            on_release: root.display_quests('monthly')
+        StyledToggleButton:
+            id: all
+            group: 'quest_group'
+            text: 'Campaign'
+            font_name: 'Gabriola'
+            font_size: '40sp'
+            color: 0, 0, 0, 1
+            on_release: root.display_quests('campaign')
+    Button:
+        id: rewards
+        size_hint: 0.1, 0.05
+        pos_hint: {'right': 0.966, 'top': 0.9}
+        text: 'Rewards'
+        font_name: 'Gabriola'
+        font_size: '32sp'
+        color: 0, 0, 0, 1
+        on_release: root.claim_rewards()
+    ScrollView:
+        size_hint: 0.633, 0.8
+        pos_hint: {'x': 0.333, 'y': 0.025}
+        do_scroll_x: False
+        effect_cls: 'ScrollEffect'
+        always_overscroll: False
+        StackLayout:
+            id: view
+            size_hint: 1, None
+            height: self.minimum_height
+            orientation: 'lr-tb'
+            spacing: root.height * 0.0125
+    SpineDisplay:
+        id: spine_display
+        skeleton_path: 'res/characters/real_spines/eina/1112030000.skel'
+
+<QuestDisplay>:
+    Image:
+        source: 'quest_display_stack.png' if root.stack else 'quest_display.png'
+    RelativeLayout:
+        id: content
+        size_hint: 1, 0.8 if root.stack else 1
+        pos_hint: {'top': 1}
+        RelativeLayout:
+            id: icon
+            size_hint: None, 0.8
+            width: self.height
+            pos_hint: {'x': 0.03626, 'y': 0.1}
+            Image:
+                id: icon_background
+                source: 'items/item_frame.png'
+    #        Image:
+    #            id: icon
+    #            source: root.image_source
+            Image:
+                id: icon_frame
+                source: 'items/frame_top_1.png'
+
+        Label:
+            id: title_string
+            size_hint: 0.7, 0.35
+            pos_hint: {'x': 0.15, 'y': 0.55}
+            text_size: self.size
+            text: root.title
+            valign: 'top'
+            halign: 'left'
+            font_name: 'Gabriola'
+            font_size: '32sp'
+            color: 0, 0, 0, 1
+        Label:
+            id: description_string
+            size_hint: 0.7, 0.35
+            pos_hint: {'x': 0.15, 'y': 0.25}
+            text_size: self.size
+            text: root.description
+            valign: 'top'
+            halign: 'left'
+            font_name: 'Gabriola'
+            font_size: '24sp'
+            color: 0, 0, 0, 1
+        RelativeLayout:
+            id: progress
+            size_hint: 0.65, 0.2
+            pos_hint: {'x': 0.15, 'y': 0.05}
+            canvas:
+                Color:
+                    rgba: 0.1, 0.1, 0.1, 1
+                Rectangle:
+                    size: self.size
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    size: self.width * root.progress / root.goal, self.height
+                    texture: Gradient.horizontal(self.width * root.progress / root.goal, self.width, self.height, (0, 250, 249, 255), (0, 251, 159, 255))
+            Label:
+                id: progress_string
+                text: str(root.progress) + '/' + str(root.goal)
+                font_name: 'Gabriola'
+                font_size: '32sp'
+        Button:
+            size_hint: 0.125, 0.5
+            pos_hint: {'right': 0.96374, 'center_y': 0.5}
+            text: 'Rewards'
+            font_name: 'Gabriola'
+            font_size: '32sp'
+            color: 0, 0, 0, 1
+            on_release: root.claim_rewards()

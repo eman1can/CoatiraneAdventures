@@ -92,7 +92,8 @@ class WindowObject(RelativeLayout):
         self.factory = RendererFactory(self.ids.display, '', self.load_texture)
 
         self.files = []
-        for file in listdir('../res/lwf/test/'):
+        self.lwf_path = 'C:\\Users\\Zoe\\Code Projects\\PycharmProjects\\CoatiraneAdventures Development\\LWF\\test'
+        for file in listdir(self.lwf_path):
             if file.startswith('812') and file > '812200100':
                 continue
             item = {'text': file, 'on_release': lambda name=file: self.select_item(name), 'font_name': 'Gabriola', 'font_size': '15pt'}
@@ -158,7 +159,7 @@ class WindowObject(RelativeLayout):
 
     def display_lwf(self, name):
         self.lwfs.clear()
-        data = Data(f'../res/lwf/test/{name}/{name}.lwf')
+        data = Data(f'{self.lwf_path}/{name}/{name}.lwf')
         lwf = LWF(data, self.factory, name)
         for event_id, event in enumerate(lwf.data.events):
             lwf.add_event_handler(event_id, lambda button, movie, e=event: print(str(e)))
@@ -174,18 +175,18 @@ class WindowObject(RelativeLayout):
 
     def load_texture(self, filename, lwf_name):
         if filename == 'lwf_img_replace_chara.png':
-            filename = f'../res/lwf/test/{lwf_name}/all_rectangle.png'
+            filename = f'{self.lwf_path}/{lwf_name}/all_rectangle.png'
         elif filename == 'lwf_img_replace_chara_w.png':
-            filename = f'../res/lwf/test/{lwf_name}/white.png'
+            filename = f'{self.lwf_path}/{lwf_name}/white.png'
         elif filename == 'lwf_img_replace_combo.png':
-            filename = f'../res/lwf/test/{lwf_name}/2.png'
+            filename = f'{self.lwf_path}/{lwf_name}/2.png'
         elif filename == 'lwf_img_replace_skill_name.png':
-            filename = f'../res/lwf/test/{lwf_name}/109200201.png'
+            filename = f'{self.lwf_path}/{lwf_name}/109200201.png'
         # elif 'replace' in filename:
         #     print(filename, 'Needs to be replaced')
         #     filename = f'../res/lwf/test/{lwf_name}/109200201.png'
         else:
-            filename = f'../res/lwf/test/{lwf_name}/{filename}'
+            filename = f'{self.lwf_path}/{lwf_name}/{filename}'
 
         texture = CoreImage(filename).texture
         return texture

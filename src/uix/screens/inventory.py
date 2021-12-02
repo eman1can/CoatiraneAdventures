@@ -8,6 +8,7 @@ from loading.kv_loader import load_kv
 from refs import Refs
 from uix.modules.headers import time_header
 from uix.modules.screen import Screen
+from uix.screens.header_screen import HeaderScreen
 
 load_kv(__name__)
 
@@ -35,25 +36,17 @@ class InventoryItemList(RecycleView):
     pass
 
 
-class InventoryMain(Screen):
+class InventoryMain(HeaderScreen):
     def on_enter(self):
         Clock.schedule_interval(self.update_time_header, 5)
         inventory_items = Refs.gc.get_inventory().get_items()
         items = []
         for item in inventory_items:
-            if item.is_single():
-                name, desc, price = item.get_display()
-                items.append({'name': name, 'description': desc, 'is_single': True})
-            else:
-                name, desc, min_price, max_price = item.get_display()
+            name, description = item.get_display()
+            if item.get_own_multiple():
                 count = Refs.gc.get_inventory().get_item_count(item.get_id())
-                items.append({'name': name, 'description': desc, 'is_single': False, 'count': count})
+                items.append({'name': name, 'description': description, 'is_single': False, 'count': count})
+            else:
+                items.append({'name': name, 'description': description, 'is_single': True})
+
         self.ids.inventory_items.data = items
-
-    def on_leave(self):
-        Clock.unschedule(self.update_time_header)
-
-    def update_time_header(self, dt):
-        self.ids.time_header.text = time_header()
-
-

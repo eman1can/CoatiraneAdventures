@@ -11,6 +11,7 @@
 
 <IntroStart>:
     name: 'intro_start'
+    title_hidden: True
     Label:
         id: title
         text: 'Who Are You?'
@@ -65,20 +66,12 @@
         pos_hint: {'right': 0.875, 'y': 0.2}
         text: 'Goddex'
         font_name: 'Gabriola'
-    Button:
-        id: cancel
-        size_hint: 0.2, 0.1
-        pos_hint: {'right': 0.45, 'y': 0.05}
-        text: 'Cancel'
-        font_name: 'Gabriola'
-        on_release: root.on_back_press()
+
     Button:
         id: next
-        size_hint: 0.2, 0.1
-        pos_hint: {'x': 0.55, 'y': 0.05}
+        size_hint: 0.4, 0.1
+        pos_hint: {'center_x': 0.5, 'y': 0.05}
         text: 'Next'
         font_name: 'Gabriola'
-        # TODO: Fix changes
-#        disabled: True
         on_release: root.goto_next()
 

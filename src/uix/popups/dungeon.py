@@ -10,11 +10,12 @@ from uix.popups.view import View
 load_kv(__name__)
 
 
-class Confirm(View):
-    current_floor = StringProperty(None, allownone=True)
-    next_floor = StringProperty(None, allownone=True)
+class DungeonConfirm(View):
+    current_floor = NumericProperty(0)
+    next_floor = NumericProperty(0)
     rec_score = NumericProperty(-1)
     act_score = NumericProperty(-1)
+    floor_text = StringProperty('')
 
     def __init__(self, **kwargs):
         self.register_event_type('on_confirm')
@@ -32,6 +33,15 @@ class Confirm(View):
             self.ids.rec_score_info.opacity = 0
         if self.act_score == -1:
             self.ids.act_score_info.opacity = 0
+
+        prefix = self.floor_to_string(self.current_floor)
+        suffix = self.floor_to_string(self.next_floor)
+        self.floor_text = f'{prefix} -> {suffix}'
+
+    def floor_to_string(self, floor):
+        if floor == 0:
+            return 'Surface'
+        return f'Floor {floor}'
 
     def confirm(self):
         self.manager.goto_previous()

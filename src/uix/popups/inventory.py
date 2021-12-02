@@ -70,7 +70,8 @@ class Inventory(View):
         self.ids.inventory_items.data = items
 
     def on_pre_dismiss(self):
-        self.manager.previous.refresh_harvest()
+        if self.manager.previous.name == 'dungeon_battle':
+            self.manager.previous.refresh_harvest()
 
     def on_change_pickaxe(self, instance):
         if self.selected_item == 'pickaxe':

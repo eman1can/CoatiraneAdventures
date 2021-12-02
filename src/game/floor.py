@@ -1,5 +1,8 @@
 # Standard Library Imports
-from random import randint, choices
+from math import sqrt
+from random import randint, choices, uniform
+
+from refs import Refs
 
 N, S, E, W = 1, 2, 4, 8  # 0001 0010 0100 1000
 COORDS = {W: (-1, 0), N: (0, -1), E: (1, 0), S: (0, 1)}
@@ -55,16 +58,23 @@ class Floor:
 
     """
 
-    def __init__(self, floor_id, hardness, max_enemies, boss_type, enemies, metals, gems, floor_data, path_data, floor_map, save_zone_data):
+    def __init__(self, floor_id, hardness, max_enemies, boss_type, respawn_time, enemies, metals, gems, floor_data, path_data, floor_map, save_zone_data):
         self._floor_id = floor_id
         self._max_enemies = max_enemies
         self._boss_type = boss_type
         self._enemies = enemies
         self._hardness = hardness
+        self._boss_defeated = False
+        self._boss_spawn_timer = 0
+        self._respawn_time = respawn_time
 
         self._resources = {'metals': metals, 'gems': gems}
 
         self._map = Map(floor_map, floor_data, path_data, {SAFE_ZONES: save_zone_data, ENTRANCE: [path_data[0]], EXIT: [path_data[-1]]})
+
+    def set_boss_status(self, defeated, time):
+        self._boss_defeated = defeated
+        self._boss_spawn_timer = time
 
     def get_id(self):
         return self._floor_id
@@ -90,6 +100,26 @@ class Floor:
 
     def get_boss_type(self):
         return self._boss_type
+
+    def is_boss_defeated(self):
+        return self._boss_defeated
+
+    def boss_spawn_time(self):
+        return self._boss_spawn_timer
+
+    def defeat_boss(self):
+        self._boss_defeated = True
+
+    def generate_respawn_time(self):
+        self._boss_spawn_timer = uniform(self._respawn_time * 0.9, self._respawn_time * 1.1)
+        calendar = Refs.gc.get_calendar()
+        Refs.log(f'Floor {self._floor_id} boss will respawn in {calendar.get_int_time() + self._boss_spawn_timer} minutes (in-game)')
+        calendar.schedule_event(calendar.get_int_time() + self._boss_spawn_timer, self.respawn_boss)
+
+    def respawn_boss(self):
+        Refs.log(f'Floor {self._floor_id} boss has respawned')
+        self._boss_spawn_timer = 0
+        self._boss_defeated = False
 
     def generate_boss(self):
         if self._boss_type == INDIVIDUAL_BOSS:
@@ -504,6 +534,14 @@ class Map:
 
     def is_marker(self, marker_type):
         return self._current_node in self._markers[marker_type]
+
+    def exit_distance(self, px, py, w, h):
+        x, y = self._current_node
+        cx, cy = (x - 1) * w + px, (y - 1) * h + (h - py)
+        x, y = self._path_nodes[-1]
+        ex, ey = (x - 1) * w + w / 2, (y - 1) * h + h / 2
+        d = sqrt(pow(ex - cx, 2) + pow(ey - cy, 2))
+        return d
 
     # Check markers for a specific node
     def _check_marker_color(self, node):

@@ -1,0 +1,1095 @@
+D, tiny_strength_falna, Strength Falna, multi, 0, 0
+A gem found in monsters that can be used to grow strength in an adventurer.
+D, tiny_magic_falna, Magic Falna, multi, 0, 0
+A gem found in monsters that can be used to grow magic in an adventurer.
+D, tiny_endurance_falna, Endurance Falna, multi, 0, 0
+A gem found in monsters that can be used to grow endurance in an adventurer.
+D, tiny_agility_falna, Agility Falna, multi, 0, 0
+A gem found in monsters that can be used to grow agility in an adventurer.
+D, tiny_dexterity_falna, Dexterity Falna, multi, 0, 0
+A gem found in monsters that can be used to grow dexterity in an adventurer.
+D, small_strength_falna, Strength Falna, multi, 0, 0
+A gem found in monsters that can be used to grow strength in an adventurer.
+D, small_magic_falna, Magic Falna, multi, 0, 0
+A gem found in monsters that can be used to grow magic in an adventurer.
+D, small_endurance_falna, Endurance Falna, multi, 0, 0
+A gem found in monsters that can be used to grow endurance in an adventurer.
+D, small_agility_falna, Agility Falna, multi, 0, 0
+A gem found in monsters that can be used to grow agility in an adventurer.
+D, small_dexterity_falna, Dexterity Falna, multi, 0, 0
+A gem found in monsters that can be used to grow dexterity in an adventurer.
+D, medium_strength_falna, Strength Falna, multi, 0, 0
+A gem found in monsters that can be used to grow strength in an adventurer.
+D, medium_magic_falna, Magic Falna, multi, 0, 0
+A gem found in monsters that can be used to grow magic in an adventurer.
+D, medium_endurance_falna, Endurance Falna, multi, 0, 0
+A gem found in monsters that can be used to grow endurance in an adventurer.
+D, medium_agility_falna, Agility Falna, multi, 0, 0
+A gem found in monsters that can be used to grow agility in an adventurer.
+D, medium_dexterity_falna, Dexterity Falna, multi, 0, 0
+A gem found in monsters that can be used to grow dexterity in an adventurer.
+D, regular_strength_falna, Strength Falna, multi, 0, 0
+A gem found in monsters that can be used to grow strength in an adventurer.
+D, regular_magic_falna, Magic Falna, multi, 0, 0
+A gem found in monsters that can be used to grow magic in an adventurer.
+D, regular_endurance_falna, Endurance Falna, multi, 0, 0
+A gem found in monsters that can be used to grow endurance in an adventurer.
+D, regular_agility_falna, Agility Falna, multi, 0, 0
+A gem found in monsters that can be used to grow agility in an adventurer.
+D, regular_dexterity_falna, Dexterity Falna, multi, 0, 0
+A gem found in monsters that can be used to grow dexterity in an adventurer.
+D, large_strength_falna, Strength Falna, multi, 0, 0
+A gem found in monsters that can be used to grow strength in an adventurer.
+D, large_magic_falna, Magic Falna, multi, 0, 0
+A gem found in monsters that can be used to grow magic in an adventurer.
+D, large_endurance_falna, Endurance Falna, multi, 0, 0
+A gem found in monsters that can be used to grow endurance in an adventurer.
+D, large_agility_falna, Agility Falna, multi, 0, 0
+A gem found in monsters that can be used to grow agility in an adventurer.
+D, large_dexterity_falna, Dexterity Falna, multi, 0, 0
+A gem found in monsters that can be used to grow dexterity in an adventurer.
+D, huge_strength_falna, Strength Falna, multi, 0, 0
+A gem found in monsters that can be used to grow strength in an adventurer.
+D, huge_magic_falna, Magic Falna, multi, 0, 0
+A gem found in monsters that can be used to grow magic in an adventurer.
+D, huge_endurance_falna, Endurance Falna, multi, 0, 0
+A gem found in monsters that can be used to grow endurance in an adventurer.
+D, huge_agility_falna, Agility Falna, multi, 0, 0
+A gem found in monsters that can be used to grow agility in an adventurer.
+D, huge_dexterity_falna, Dexterity Falna, multi, 0, 0
+A gem found in monsters that can be used to grow dexterity in an adventurer.
+D, dungeon_lizard_tongue, Dungeon Lizard Tongue, multi, 100, 250
+A Dungeon Lizard Tongue.
+
+D, infant_dragon_meat, Infant Dragon Meat, multi, 100, 250
+A Infant Dragon Meat.
+
+D, infant_dragon_blood, Infant Dragon Blood, multi, 100, 250
+A Infant Dragon Blood.
+
+D, vouivre_egg, Vouivre Egg, multi, 100, 250
+A Vouivre Egg.
+
+D, harpy_wing, Harpy Wing, multi, 100, 250
+A Harpy Wing.
+
+D, siren_wing, Siren Wing, multi, 100, 250
+A Siren Wing.
+
+D, blue_crab_meat, Blue Crab Meat, multi, 100, 250
+A Blue Crab Meat.
+
+D, afanc_meat, Afanc Meat, multi, 100, 250
+A Afanc Meat.
+
+D, dodora_venom, Dodora Venom, multi, 100, 250
+A Dodora Venom.
+
+D, deformis_spider_blood, Deformis Spider Blood, multi, 100, 250
+A Deformis Spider Blood.
+
+D, black_wyvern_venom, Black Wyvern Venom, multi, 100, 250
+A Black Wyvern Venom.
+
+D, dungeon_worm_venom, Dungeon Worm Venom, multi, 100, 250
+A Dungeon Worm Venom.
+
+D, devil_mosquito_wing, Devil Mosquito Wing, multi, 100, 250
+A Devil Mosquito Wing.
+
+D, crystaroth_urchin_venom, Crystaroth Urchin Venom, multi, 100, 250
+A Crystaroth Urchin Venom.
+
+D, bloodsaurus_meat, Bloodsaurus Meat, multi, 100, 250
+A Bloodsaurus Meat.
+
+D, worm_well_venom, Worm Well Venom, multi, 100, 250
+A Worm Well Venom.
+
+D, vulture_tongue, Vulture Tongue, multi, 100, 250
+A Vulture Tongue.
+
+D, jack_bird_egg, Jack Bird Egg, multi, 100, 250
+A Jack Bird Egg.
+
+D, jack_bird_meat, Jack Bird Meat, multi, 100, 250
+A Jack Bird Meat.
+
+D, flame_rock_egg, Flame Rock Egg, multi, 100, 250
+A Flame Rock Egg.
+
+D, needle_rabbit_meat, Needle Rabbit Meat, multi, 100, 250
+A Needle Rabbit Meat.
+
+D, kelpie_wing, Kelpie Wing, multi, 100, 250
+A Kelpie Wing.
+
+D, barbarian_meat, Barbarian Meat, multi, 100, 250
+A Barbarian Meat.
+
+D, titan_alm_meat, Titan Alm Meat, multi, 100, 250
+A Titan Alm Meat.
+
+D, unicorn_blood, Unicorn Blood, multi, 100, 250
+A Unicorn Blood.
+
+D, ogre_meat, Ogre Meat, multi, 100, 250
+A Ogre Meat.
+
+D, arachne_venom, Arachne Venom, multi, 100, 250
+A Arachne Venom.
+
+D, frog_shooter_tongue, Frog Shooter Tongue, multi, 100, 250
+A Frog Shooter Tongue.
+
+D, killer_ant_blood, Killer Ant Blood, multi, 100, 250
+A Killer Ant Blood.
+
+D, mad_beetle_wing, Mad Beetle Wing, multi, 100, 250
+A Mad Beetle Wing.
+
+D, deadly_hornet_wing, Deadly Hornet Wing, multi, 100, 250
+A Deadly Hornet Wing.
+
+D, deadly_hornet_venom, Deadly Hornet Venom, multi, 100, 250
+A Deadly Hornet Venom.
+
+D, aqua_serpent_wing, Aqua Serpent Wing, multi, 100, 250
+A Aqua Serpent Wing.
+
+D, mermaid_blood, Mermaid Blood, multi, 100, 250
+A Mermaid Blood.
+
+D, peluda_venom, Peluda Venom, multi, 100, 250
+A Peluda Venom.
+
+D, venom_scorpion_venom, Venom Scorpion Venom, multi, 100, 250
+A Venom Scorpion Venom.
+
+D, ill_wyvern_wing, Ill Wyvern Wing, multi, 100, 250
+A Ill Wyvern Wing.
+
+D, purple_moth_wing, Purple Moth Wing, multi, 100, 250
+A Purple Moth Wing.
+
+D, purple_moth_venom, Purple Moth Venom, multi, 100, 250
+A Purple Moth Venom.
+
+D, blue_papilio_wing, Blue Papilio Wing, multi, 100, 250
+A Blue Papilio Wing.
+
+D, blue_papilio_venom, Blue Papilio Venom, multi, 100, 250
+A Blue Papilio Venom.
+
+D, bad_bat_wing, Bad Bat Wing, multi, 100, 250
+A Bad Bat Wing.
+
+D, crystal_mantis_wing, Crystal Mantis Wing, multi, 100, 250
+A Crystal Mantis Wing.
+
+D, firebird_wing, Firebird Wing, multi, 100, 250
+A Firebird Wing.
+
+D, gun_libellula_wing, Gun Libellula Wing, multi, 100, 250
+A Gun Libellula Wing.
+
+D, iguazu_wing, Iguazu Wing, multi, 100, 250
+A Iguazu Wing.
+
+D, dungeon_fly_wing, Dungeon Fly Wing, multi, 100, 250
+A Dungeon Fly Wing.
+
+D, light_quartz_meat, Light Quartz Meat, multi, 100, 250
+A Light Quartz Meat.
+
+D, bloody_hive_blood, Bloody Hive Blood, multi, 100, 250
+A Bloody Hive Blood.
+
+D, bloody_hive_venom, Bloody Hive Venom, multi, 100, 250
+A Bloody Hive Venom.
+
+D, dark_fungus_venom, Dark Fungus Venom, multi, 100, 250
+A Dark Fungus Venom.
+
+D, viscum_venom, Viscum Venom, multi, 100, 250
+A Viscum Venom.
+
+D, poison_vermis_venom, Poison Vermis Venom, multi, 100, 250
+A Poison Vermis Venom.
+
+I, raw_cloth, Raw Cloth, multi, 100, 250
+Raw Cloth.
+
+I, cloth_processed, Processed Cloth, multi, 100, 250
+Processed Cloth.
+
+I, raw_padded, Raw Padded, multi, 100, 250
+Raw Padded.
+
+I, padded_processed, Processed Padded, multi, 100, 250
+Processed Padded.
+
+I, raw_leather, Raw Leather, multi, 100, 250
+Raw Leather.
+
+I, leather_processed, Processed Leather, multi, 100, 250
+Processed Leather.
+
+I, raw_hardened_leather, Raw Hardened Leather, multi, 100, 250
+Raw Hardened Leather.
+
+I, hardened_leather_processed, Processed Hardened Leather, multi, 100, 250
+Processed Hardened Leather.
+
+I, tin_ore, Tin Ore, multi, 100, 250
+A piece of Tin Ore.
+
+I, tin_ingot, Tin Ingot, multi, 100, 250
+A Tin Ingot.
+
+I, cadmium_ore, Cadmium Ore, multi, 100, 250
+A piece of Cadmium Ore.
+
+I, cadmium_ingot, Cadmium Ingot, multi, 100, 250
+A Cadmium Ingot.
+
+I, coal_ore, Coal Ore, multi, 100, 250
+A piece of Coal Ore.
+
+I, coal_ingot, Coal Ingot, multi, 100, 250
+A Coal Ingot.
+
+I, zinc_ore, Zinc Ore, multi, 100, 250
+A piece of Zinc Ore.
+
+I, zinc_ingot, Zinc Ingot, multi, 100, 250
+A Zinc Ingot.
+
+I, silver_ore, Silver Ore, multi, 100, 250
+A piece of Silver Ore.
+
+I, silver_ingot, Silver Ingot, multi, 100, 250
+A Silver Ingot.
+
+I, copper_ore, Copper Ore, multi, 100, 250
+A piece of Copper Ore.
+
+I, copper_ingot, Copper Ingot, multi, 100, 250
+A Copper Ingot.
+
+I, platinum_ore, Platinum Ore, multi, 100, 250
+A piece of Platinum Ore.
+
+I, platinum_ingot, Platinum Ingot, multi, 100, 250
+A Platinum Ingot.
+
+I, iron_ore, Iron Ore, multi, 100, 250
+A piece of Iron Ore.
+
+I, iron_ingot, Iron Ingot, multi, 100, 250
+A Iron Ingot.
+
+I, titanium_ore, Titanium Ore, multi, 100, 250
+A piece of Titanium Ore.
+
+I, titanium_ingot, Titanium Ingot, multi, 100, 250
+A Titanium Ingot.
+
+I, tungsten_ore, Tungsten Ore, multi, 100, 250
+A piece of Tungsten Ore.
+
+I, tungsten_ingot, Tungsten Ingot, multi, 100, 250
+A Tungsten Ingot.
+
+I, meteoric_iron_ore, Meteoric Iron Ore, multi, 100, 250
+A piece of Meteoric Iron Ore.
+
+I, meteoric_iron_ingot, Meteoric Iron Ingot, multi, 100, 250
+A Meteoric Iron Ingot.
+
+I, golanthium_ore, Golanthium Ore, multi, 100, 250
+A piece of Golanthium Ore.
+
+I, golanthium_ingot, Golanthium Ingot, multi, 100, 250
+A Golanthium Ingot.
+
+I, bronze_ingot, Bronze Ingot, multi, 100, 250
+A Bronze Ingot.
+
+I, steel_ingot, Steel Ingot, multi, 100, 250
+A Steel Ingot.
+
+I, hardened_steel_ingot, Hardened Steel Ingot, multi, 100, 250
+A Hardened Steel Ingot.
+
+I, tungsten_carbide_ingot, Tungsten Carbide Ingot, multi, 100, 250
+A Tungsten Carbide Ingot.
+
+I, dark_steel_ingot, Dark Steel Ingot, multi, 100, 250
+A Dark Steel Ingot.
+
+I, mithril_ingot, Mithril Ingot, multi, 100, 250
+A Mithril Ingot.
+
+I, adamantite_ingot, Adamantite Ingot, multi, 100, 250
+A Adamantite Ingot.
+
+I, trinium_ingot, Trinium Ingot, multi, 100, 250
+A Trinium Ingot.
+
+I, raw_chrysocolla, Raw Chrysocolla, multi, 100, 250
+A Raw Chrysocolla Gem.
+
+I, processed_chrysocolla, Processed Chrysocolla, multi, 100, 250
+A Processed Chrysocolla Gem.
+
+I, raw_serpentine, Raw Serpentine, multi, 100, 250
+A Raw Serpentine Gem.
+
+I, processed_serpentine, Processed Serpentine, multi, 100, 250
+A Processed Serpentine Gem.
+
+I, raw_ammolite, Raw Ammolite, multi, 100, 250
+A Raw Ammolite Gem.
+
+I, processed_ammolite, Processed Ammolite, multi, 100, 250
+A Processed Ammolite Gem.
+
+I, raw_azurite, Raw Azurite, multi, 100, 250
+A Raw Azurite Gem.
+
+I, processed_azurite, Processed Azurite, multi, 100, 250
+A Processed Azurite Gem.
+
+I, raw_malachite, Raw Malachite, multi, 100, 250
+A Raw Malachite Gem.
+
+I, processed_malachite, Processed Malachite, multi, 100, 250
+A Processed Malachite Gem.
+
+I, raw_rhodochrosite, Raw Rhodochrosite, multi, 100, 250
+A Raw Rhodochrosite Gem.
+
+I, processed_rhodochrosite, Processed Rhodochrosite, multi, 100, 250
+A Processed Rhodochrosite Gem.
+
+I, raw_fluorite, Raw Fluorite, multi, 100, 250
+A Raw Fluorite Gem.
+
+I, processed_fluorite, Processed Fluorite, multi, 100, 250
+A Processed Fluorite Gem.
+
+I, raw_kyanite, Raw Kyanite, multi, 100, 250
+A Raw Kyanite Gem.
+
+I, processed_kyanite, Processed Kyanite, multi, 100, 250
+A Processed Kyanite Gem.
+
+I, raw_apatite, Raw Apatite, multi, 100, 250
+A Raw Apatite Gem.
+
+I, processed_apatite, Processed Apatite, multi, 100, 250
+A Processed Apatite Gem.
+
+I, raw_lapis_lazuli, Raw Lapis Lazuli, multi, 100, 250
+A Raw Lapis Lazuli Gem.
+
+I, processed_lapis_lazuli, Processed Lapis Lazuli, multi, 100, 250
+A Processed Lapis Lazuli Gem.
+
+I, raw_obsidian, Raw Obsidian, multi, 100, 250
+A Raw Obsidian Gem.
+
+I, processed_obsidian, Processed Obsidian, multi, 100, 250
+A Processed Obsidian Gem.
+
+I, raw_turquoise, Raw Turquoise, multi, 100, 250
+A Raw Turquoise Gem.
+
+I, processed_turquoise, Processed Turquoise, multi, 100, 250
+A Processed Turquoise Gem.
+
+I, raw_titanite, Raw Titanite, multi, 100, 250
+A Raw Titanite Gem.
+
+I, processed_titanite, Processed Titanite, multi, 100, 250
+A Processed Titanite Gem.
+
+I, raw_opal, Raw Opal, multi, 100, 250
+A Raw Opal Gem.
+
+I, processed_opal, Processed Opal, multi, 100, 250
+A Processed Opal Gem.
+
+I, raw_diopside, Raw Diopside, multi, 100, 250
+A Raw Diopside Gem.
+
+I, processed_diopside, Processed Diopside, multi, 100, 250
+A Processed Diopside Gem.
+
+I, raw_rhodonite, Raw Rhodonite, multi, 100, 250
+A Raw Rhodonite Gem.
+
+I, processed_rhodonite, Processed Rhodonite, multi, 100, 250
+A Processed Rhodonite Gem.
+
+I, raw_sodalite, Raw Sodalite, multi, 100, 250
+A Raw Sodalite Gem.
+
+I, processed_sodalite, Processed Sodalite, multi, 100, 250
+A Processed Sodalite Gem.
+
+I, raw_andesine, Raw Andesine, multi, 100, 250
+A Raw Andesine Gem.
+
+I, processed_andesine, Processed Andesine, multi, 100, 250
+A Processed Andesine Gem.
+
+I, raw_zoisite, Raw Zoisite, multi, 100, 250
+A Raw Zoisite Gem.
+
+I, processed_zoisite, Processed Zoisite, multi, 100, 250
+A Processed Zoisite Gem.
+
+I, raw_blizzard_stone, Raw Blizzard Stone, multi, 100, 250
+A Raw Blizzard Stone Gem.
+
+I, processed_blizzard_stone, Processed Blizzard Stone, multi, 100, 250
+A Processed Blizzard Stone Gem.
+
+I, raw_indraneelam, Raw Indraneelam, multi, 100, 250
+A Raw Indraneelam Gem.
+
+I, processed_indraneelam, Processed Indraneelam, multi, 100, 250
+A Processed Indraneelam Gem.
+
+I, raw_jade, Raw Jade, multi, 100, 250
+A Raw Jade Gem.
+
+I, processed_jade, Processed Jade, multi, 100, 250
+A Processed Jade Gem.
+
+I, raw_labradorite, Raw Labradorite, multi, 100, 250
+A Raw Labradorite Gem.
+
+I, processed_labradorite, Processed Labradorite, multi, 100, 250
+A Processed Labradorite Gem.
+
+I, raw_moonstone, Raw Moonstone, multi, 100, 250
+A Raw Moonstone Gem.
+
+I, processed_moonstone, Processed Moonstone, multi, 100, 250
+A Processed Moonstone Gem.
+
+I, raw_prehnite, Raw Prehnite, multi, 100, 250
+A Raw Prehnite Gem.
+
+I, processed_prehnite, Processed Prehnite, multi, 100, 250
+A Processed Prehnite Gem.
+
+I, raw_sunstone, Raw Sunstone, multi, 100, 250
+A Raw Sunstone Gem.
+
+I, processed_sunstone, Processed Sunstone, multi, 100, 250
+A Processed Sunstone Gem.
+
+I, raw_tanzanite, Raw Tanzanite, multi, 100, 250
+A Raw Tanzanite Gem.
+
+I, processed_tanzanite, Processed Tanzanite, multi, 100, 250
+A Processed Tanzanite Gem.
+
+I, raw_zoisite, Raw Zoisite, multi, 100, 250
+A Raw Zoisite Gem.
+
+I, processed_zoisite, Processed Zoisite, multi, 100, 250
+A Processed Zoisite Gem.
+
+I, raw_onyx, Raw Onyx, multi, 100, 250
+A Raw Onyx Gem.
+
+I, processed_onyx, Processed Onyx, multi, 100, 250
+A Processed Onyx Gem.
+
+I, raw_agate, Raw Agate, multi, 100, 250
+A Raw Agate Gem.
+
+I, processed_agate, Processed Agate, multi, 100, 250
+A Processed Agate Gem.
+
+I, raw_garnet, Raw Garnet, multi, 100, 250
+A Raw Garnet Gem.
+
+I, processed_garnet, Processed Garnet, multi, 100, 250
+A Processed Garnet Gem.
+
+I, raw_garnet, Raw Garnet, multi, 100, 250
+A Raw Garnet Gem.
+
+I, processed_garnet, Processed Garnet, multi, 100, 250
+A Processed Garnet Gem.
+
+I, raw_aventurine, Raw Aventurine, multi, 100, 250
+A Raw Aventurine Gem.
+
+I, processed_aventurine, Processed Aventurine, multi, 100, 250
+A Processed Aventurine Gem.
+
+I, raw_hessonite, Raw Hessonite, multi, 100, 250
+A Raw Hessonite Gem.
+
+I, processed_hessonite, Processed Hessonite, multi, 100, 250
+A Processed Hessonite Gem.
+
+I, raw_jasper, Raw Jasper, multi, 100, 250
+A Raw Jasper Gem.
+
+I, processed_jasper, Processed Jasper, multi, 100, 250
+A Processed Jasper Gem.
+
+I, raw_kunzite, Raw Kunzite, multi, 100, 250
+A Raw Kunzite Gem.
+
+I, processed_kunzite, Processed Kunzite, multi, 100, 250
+A Processed Kunzite Gem.
+
+I, raw_peridot, Raw Peridot, multi, 100, 250
+A Raw Peridot Gem.
+
+I, processed_peridot, Processed Peridot, multi, 100, 250
+A Processed Peridot Gem.
+
+I, raw_petalite, Raw Petalite, multi, 100, 250
+A Raw Petalite Gem.
+
+I, processed_petalite, Processed Petalite, multi, 100, 250
+A Processed Petalite Gem.
+
+I, raw_spectrolite, Raw Spectrolite, multi, 100, 250
+A Raw Spectrolite Gem.
+
+I, processed_spectrolite, Processed Spectrolite, multi, 100, 250
+A Processed Spectrolite Gem.
+
+I, raw_danburite, Raw Danburite, multi, 100, 250
+A Raw Danburite Gem.
+
+I, processed_danburite, Processed Danburite, multi, 100, 250
+A Processed Danburite Gem.
+
+I, raw_citrine, Raw Citrine, multi, 100, 250
+A Raw Citrine Gem.
+
+I, processed_citrine, Processed Citrine, multi, 100, 250
+A Processed Citrine Gem.
+
+I, raw_amethyst, Raw Amethyst, multi, 100, 250
+A Raw Amethyst Gem.
+
+I, processed_amethyst, Processed Amethyst, multi, 100, 250
+A Processed Amethyst Gem.
+
+I, raw_ametrine, Raw Ametrine, multi, 100, 250
+A Raw Ametrine Gem.
+
+I, processed_ametrine, Processed Ametrine, multi, 100, 250
+A Processed Ametrine Gem.
+
+I, raw_bloodstone, Raw Bloodstone, multi, 100, 250
+A Raw Bloodstone Gem.
+
+I, processed_bloodstone, Processed Bloodstone, multi, 100, 250
+A Processed Bloodstone Gem.
+
+I, raw_iolite, Raw Iolite, multi, 100, 250
+A Raw Iolite Gem.
+
+I, processed_iolite, Processed Iolite, multi, 100, 250
+A Processed Iolite Gem.
+
+I, raw_quartz, Raw Quartz, multi, 100, 250
+A Raw Quartz Gem.
+
+I, processed_quartz, Processed Quartz, multi, 100, 250
+A Processed Quartz Gem.
+
+I, raw_rutilated_quartz, Raw Rutilated Quartz, multi, 100, 250
+A Raw Rutilated Quartz Gem.
+
+I, processed_rutilated_quartz, Processed Rutilated Quartz, multi, 100, 250
+A Processed Rutilated Quartz Gem.
+
+I, raw_spessartite, Raw Spessartite, multi, 100, 250
+A Raw Spessartite Gem.
+
+I, processed_spessartite, Processed Spessartite, multi, 100, 250
+A Processed Spessartite Gem.
+
+I, raw_tiger_eye, Raw Tiger eye, multi, 100, 250
+A Raw Tiger eye Gem.
+
+I, processed_tiger_eye, Processed Tiger eye, multi, 100, 250
+A Processed Tiger eye Gem.
+
+I, raw_tsavorite, Raw Tsavorite, multi, 100, 250
+A Raw Tsavorite Gem.
+
+I, processed_tsavorite, Processed Tsavorite, multi, 100, 250
+A Processed Tsavorite Gem.
+
+I, raw_spinel, Raw Spinel, multi, 100, 250
+A Raw Spinel Gem.
+
+I, processed_spinel, Processed Spinel, multi, 100, 250
+A Processed Spinel Gem.
+
+I, raw_emerald, Raw Emerald, multi, 100, 250
+A Raw Emerald Gem.
+
+I, processed_emerald, Processed Emerald, multi, 100, 250
+A Processed Emerald Gem.
+
+I, raw_zircon, Raw Zircon, multi, 100, 250
+A Raw Zircon Gem.
+
+I, processed_zircon, Processed Zircon, multi, 100, 250
+A Processed Zircon Gem.
+
+I, raw_aquamarine, Raw Aquamarine, multi, 100, 250
+A Raw Aquamarine Gem.
+
+I, processed_aquamarine, Processed Aquamarine, multi, 100, 250
+A Processed Aquamarine Gem.
+
+I, raw_beryl, Raw Beryl, multi, 100, 250
+A Raw Beryl Gem.
+
+I, processed_beryl, Processed Beryl, multi, 100, 250
+A Processed Beryl Gem.
+
+I, raw_bixbite, Raw Bixbite, multi, 100, 250
+A Raw Bixbite Gem.
+
+I, processed_bixbite, Processed Bixbite, multi, 100, 250
+A Processed Bixbite Gem.
+
+I, raw_goshenite, Raw Goshenite, multi, 100, 250
+A Raw Goshenite Gem.
+
+I, processed_goshenite, Processed Goshenite, multi, 100, 250
+A Processed Goshenite Gem.
+
+I, raw_heliodor, Raw Heliodor, multi, 100, 250
+A Raw Heliodor Gem.
+
+I, processed_heliodor, Processed Heliodor, multi, 100, 250
+A Processed Heliodor Gem.
+
+I, raw_morganite, Raw Morganite, multi, 100, 250
+A Raw Morganite Gem.
+
+I, processed_morganite, Processed Morganite, multi, 100, 250
+A Processed Morganite Gem.
+
+I, raw_topaz, Raw Topaz, multi, 100, 250
+A Raw Topaz Gem.
+
+I, processed_topaz, Processed Topaz, multi, 100, 250
+A Processed Topaz Gem.
+
+I, raw_chrysoberyl, Raw Chrysoberyl, multi, 100, 250
+A Raw Chrysoberyl Gem.
+
+I, processed_chrysoberyl, Processed Chrysoberyl, multi, 100, 250
+A Processed Chrysoberyl Gem.
+
+I, raw_taaffeite, Raw Taaffeite, multi, 100, 250
+A Raw Taaffeite Gem.
+
+I, processed_taaffeite, Processed Taaffeite, multi, 100, 250
+A Processed Taaffeite Gem.
+
+I, raw_sang-e-maryam, Raw Sang-E-Maryam, multi, 100, 250
+A Raw Sang-E-Maryam Gem.
+
+I, processed_sang-e-maryam, Processed Sang-E-Maryam, multi, 100, 250
+A Processed Sang-E-Maryam Gem.
+
+I, raw_sapphire, Raw Sapphire, multi, 100, 250
+A Raw Sapphire Gem.
+
+I, processed_sapphire, Processed Sapphire, multi, 100, 250
+A Processed Sapphire Gem.
+
+I, raw_ruby, Raw Ruby, multi, 100, 250
+A Raw Ruby Gem.
+
+I, processed_ruby, Processed Ruby, multi, 100, 250
+A Processed Ruby Gem.
+
+I, raw_neelam, Raw Neelam, multi, 100, 250
+A Raw Neelam Gem.
+
+I, processed_neelam, Processed Neelam, multi, 100, 250
+A Processed Neelam Gem.
+
+I, raw_padparadscha, Raw Padparadscha, multi, 100, 250
+A Raw Padparadscha Gem.
+
+I, processed_padparadscha, Processed Padparadscha, multi, 100, 250
+A Processed Padparadscha Gem.
+
+I, raw_diamond, Raw Diamond, multi, 100, 250
+A Raw Diamond Gem.
+
+I, processed_diamond, Processed Diamond, multi, 100, 250
+A Processed Diamond Gem.
+
+S, tin_harvesting_knife, Tin Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, tin_pickaxe, Tin Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, tin_shovel, Tin Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, cadmium_harvesting_knife, Cadmium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, cadmium_pickaxe, Cadmium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, cadmium_shovel, Cadmium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, coal_harvesting_knife, Coal Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, coal_pickaxe, Coal Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, coal_shovel, Coal Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, zinc_harvesting_knife, Zinc Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, zinc_pickaxe, Zinc Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, zinc_shovel, Zinc Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, silver_harvesting_knife, Silver Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, silver_pickaxe, Silver Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, silver_shovel, Silver Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, copper_harvesting_knife, Copper Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, copper_pickaxe, Copper Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, copper_shovel, Copper Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, platinum_harvesting_knife, Platinum Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, platinum_pickaxe, Platinum Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, platinum_shovel, Platinum Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, iron_harvesting_knife, Iron Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, iron_pickaxe, Iron Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, iron_shovel, Iron Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, titanium_harvesting_knife, Titanium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, titanium_pickaxe, Titanium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, titanium_shovel, Titanium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, tungsten_harvesting_knife, Tungsten Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, tungsten_pickaxe, Tungsten Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, tungsten_shovel, Tungsten Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, meteoric_iron_harvesting_knife, Meteoric Iron Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, meteoric_iron_pickaxe, Meteoric Iron Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, meteoric_iron_shovel, Meteoric Iron Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, golanthium_harvesting_knife, Golanthium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, golanthium_pickaxe, Golanthium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, golanthium_shovel, Golanthium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, bronze_harvesting_knife, Bronze Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, bronze_pickaxe, Bronze Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, bronze_shovel, Bronze Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, steel_harvesting_knife, Steel Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, steel_pickaxe, Steel Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, steel_shovel, Steel Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, hardened_steel_harvesting_knife, Hardened Steel Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, hardened_steel_pickaxe, Hardened Steel Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, hardened_steel_shovel, Hardened Steel Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, tungsten_carbide_harvesting_knife, Tungsten Carbide Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, tungsten_carbide_pickaxe, Tungsten Carbide Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, tungsten_carbide_shovel, Tungsten Carbide Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, dark_steel_harvesting_knife, Dark Steel Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, dark_steel_pickaxe, Dark Steel Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, dark_steel_shovel, Dark Steel Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, mithril_harvesting_knife, Mithril Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, mithril_pickaxe, Mithril Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, mithril_shovel, Mithril Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, adamantite_harvesting_knife, Adamantite Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, adamantite_pickaxe, Adamantite Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, adamantite_shovel, Adamantite Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+S, trinium_harvesting_knife, Trinium Harvesting Knife, equipment, single, 500
+none
+An essential tool for collecting all manner of items in the dungeon!
+
+S, trinium_pickaxe, Trinium Pickaxe, equipment, single, 500
+none
+An essential tool for hacking away at the dungeon!
+
+S, trinium_shovel, Trinium Shovel, equipment, single, 500
+none
+An essential tool for moving everything from one side to the other.
+
+D, tiny_tiny_magic_stone, Tiny Magic Stone sliver, multi, 100, 200
+A tiny sliver of a magic stone.
+
+D, tiny_small_magic_stone, Small Magic Stone sliver, multi, 100, 200
+A small sliver of a magic stone.
+
+D, tiny_medium_magic_stone, Medium Magic Stone sliver, multi, 100, 200
+A medium sliver of a magic stone.
+
+D, tiny_regular_magic_stone, Regular Magic Stone sliver, multi, 100, 200
+A regular sliver of a magic stone.
+
+D, tiny_large_magic_stone, Large Magic Stone sliver, multi, 100, 200
+A large sliver of a magic stone.
+
+D, tiny_huge_magic_stone, Huge Magic Stone sliver, multi, 100, 200
+A huge sliver of a magic stone.
+
+D, small_tiny_magic_stone, Tiny Magic Stone fragment, multi, 100, 200
+A tiny fragment of a magic stone.
+
+D, small_small_magic_stone, Small Magic Stone fragment, multi, 100, 200
+A small fragment of a magic stone.
+
+D, small_medium_magic_stone, Medium Magic Stone fragment, multi, 100, 200
+A medium fragment of a magic stone.
+
+D, small_regular_magic_stone, Regular Magic Stone fragment, multi, 100, 200
+A regular fragment of a magic stone.
+
+D, small_large_magic_stone, Large Magic Stone fragment, multi, 100, 200
+A large fragment of a magic stone.
+
+D, small_huge_magic_stone, Huge Magic Stone fragment, multi, 100, 200
+A huge fragment of a magic stone.
+
+D, medium_tiny_magic_stone, Tiny Magic Stone chunk, multi, 100, 200
+A tiny chunk of a magic stone.
+
+D, medium_small_magic_stone, Small Magic Stone chunk, multi, 100, 200
+A small chunk of a magic stone.
+
+D, medium_medium_magic_stone, Medium Magic Stone chunk, multi, 100, 200
+A medium chunk of a magic stone.
+
+D, medium_regular_magic_stone, Regular Magic Stone chunk, multi, 100, 200
+A regular chunk of a magic stone.
+
+D, medium_large_magic_stone, Large Magic Stone chunk, multi, 100, 200
+A large chunk of a magic stone.
+
+D, medium_huge_magic_stone, Huge Magic Stone chunk, multi, 100, 200
+A huge chunk of a magic stone.
+
+D, regular_tiny_magic_stone, Tiny Magic Stone , multi, 100, 200
+A tiny magic stone.
+
+D, regular_small_magic_stone, Small Magic Stone , multi, 100, 200
+A small magic stone.
+
+D, regular_medium_magic_stone, Medium Magic Stone , multi, 100, 200
+A medium magic stone.
+
+D, regular_regular_magic_stone, Regular Magic Stone , multi, 100, 200
+A regular magic stone.
+
+D, regular_large_magic_stone, Large Magic Stone , multi, 100, 200
+A large magic stone.
+
+D, regular_huge_magic_stone, Huge Magic Stone , multi, 100, 200
+A huge magic stone.
+
+D, large_tiny_magic_stone, Tiny Magic Stone crystal, multi, 100, 200
+A tiny magic stone crystal.
+
+D, large_small_magic_stone, Small Magic Stone crystal, multi, 100, 200
+A small magic stone crystal.
+
+D, large_medium_magic_stone, Medium Magic Stone crystal, multi, 100, 200
+A medium magic stone crystal.
+
+D, large_regular_magic_stone, Regular Magic Stone crystal, multi, 100, 200
+A regular magic stone crystal.
+
+D, large_large_magic_stone, Large Magic Stone crystal, multi, 100, 200
+A large magic stone crystal.
+
+D, large_huge_magic_stone, Huge Magic Stone crystal, multi, 100, 200
+A huge magic stone crystal.
+
+D, huge_tiny_magic_stone, Tiny Magic Stone cluster, multi, 100, 200
+A tiny cluster of magic stones.
+
+D, huge_small_magic_stone, Small Magic Stone cluster, multi, 100, 200
+A small cluster of magic stones.
+
+D, huge_medium_magic_stone, Medium Magic Stone cluster, multi, 100, 200
+A medium cluster of magic stones.
+
+D, huge_regular_magic_stone, Regular Magic Stone cluster, multi, 100, 200
+A regular cluster of magic stones.
+
+D, huge_large_magic_stone, Large Magic Stone cluster, multi, 100, 200
+A large cluster of magic stones.
+
+D, huge_huge_magic_stone, Huge Magic Stone cluster, multi, 100, 200
+A huge cluster of magic stones.
+

@@ -2,28 +2,30 @@ from refs import Refs
 
 
 class Item:
-    def __init__(self, item_id, name, description, visible_after_floor, shop_category, purchase_type, price):
+    def __init__(self, item_id, name, description, visible_after_floor):
         self._id = item_id
         self._name = name
-        self._purchase_type = purchase_type
+        if 'floor' in item_id:
+            map_type, floor = item_id.split('_floor_')
+            self._image = f'items/{map_type}.png'
+        elif 'ingot' in item_id:
+            type = item_id.split('_ingot')[0]
+            self._image = f'items/{type}/ingot.png'
+        else:
+            self._image = f'items/{item_id}.png'
         self._description = description
         self._visible_after_floor = visible_after_floor
-        self._category = shop_category
-        self._price = int(price)
         self._unlock_type = None
         self._unlock_requirement = None
+
+    def __str__(self):
+        return f'{self._id} - {self._name}'
 
     def get_id(self):
         return self._id
 
     def get_name(self):
         return self._name
-
-    def is_single(self):
-        return self._purchase_type == 'single'
-
-    def is_multi(self):
-        return self._purchase_type == 'multi'
 
     def is_equipment(self):
         return False
@@ -34,10 +36,16 @@ class Item:
     def is_drop_item(self):
         return False
 
+    def is_shop_item(self):
+        return False
+
     def is_ingredient(self):
         return False
 
     def is_potion(self):
+        return False
+
+    def is_floor_map(self):
         return False
 
     def set_unlock_requirement(self, unlock_requirement):
@@ -62,54 +70,63 @@ class Item:
             return Refs.gc.get_inventory().has_item(self._unlock_requirement)
 
     def get_display(self):
-        return self._name, self._description, self._price
+        return self._name, self._description
 
-    def get_price(self):
-        return self._price
+    def get_description(self):
+        return self._description
 
-    def get_min_price(self):
-        return self._price
+    def get_image(self):
+        return self._image
 
-    def get_max_price(self):
-        return self._price
+
+class ShopItem(Item):
+    def __init__(self, item_id, name, description, visible_after_floor, shop_category, can_own_multiple=True):
+        super().__init__(item_id, name, description, visible_after_floor)
+        self._category = shop_category
+        self._can_own_multiple = can_own_multiple
 
     def get_category(self):
         return self._category
 
+    def get_own_multiple(self):
+        return self._can_own_multiple
 
-class MultiItem(Item):
-    def __init__(self, item_id, name, description, visible_after_floor, shop_category, purchase_type, min_price, max_price):
-        super().__init__(item_id, name, description, visible_after_floor, shop_category, purchase_type, int(max_price))
-        self._min_price = int(min_price)
-        self._max_price = int(max_price)
-
-    def get_display(self):
-        return self._name, self._description, self._min_price, self._max_price
-
-    def get_min_price(self):
-        return self._min_price
-
-    def get_max_price(self):
-        return self._max_price
+    def is_shop_item(self):
+        return True
 
 
-class DropItem(MultiItem):
-    def __init__(self, item_id, name, description, visible_after_floor, purchase_type, min_price, max_price):
-        super().__init__(item_id, name, description, visible_after_floor, 'drop_items', purchase_type, min_price, max_price)
-
-    def is_item(self):
-        return False
+class DropItem(ShopItem):
+    def __init__(self, item_id, name, description, visible_after_floor):
+        super().__init__(item_id, name, description, visible_after_floor, 'drop_items')
 
     def is_drop_item(self):
         return True
 
 
-class Ingredient(MultiItem):
-    def __init__(self, item_id, name, description, visible_after_floor, purchase_type, min_price, max_price):
-        super().__init__(item_id, name, description, visible_after_floor, 'ingredients', purchase_type, min_price, max_price)
-
-    def is_item(self):
-        return False
+class Ingredient(ShopItem):
+    def __init__(self, item_id, name, description, visible_after_floor):
+        super().__init__(item_id, name, description, visible_after_floor, 'ingredients')
+        if 'raw' in item_id:
+            name, type = item_id.split('_', 1)
+        else:
+            type, name = item_id.rsplit('_', 1)
+        self._image = f'items/{type}/{name}.png'
 
     def is_ingredient(self):
+        return True
+
+
+class Potion(ShopItem):
+    def __init__(self, item_id, name, description, visible_after_floor):
+        super().__init__(item_id, name, description, visible_after_floor, 'potions')
+
+    def is_potion(self):
+        return True
+
+
+class FloorMap(ShopItem):
+    def __init__(self, item_id, name, description, visible_after_floor, shop_category):
+        super().__init__(item_id, name, description, visible_after_floor, shop_category, False)
+
+    def is_floor_map(self):
         return True

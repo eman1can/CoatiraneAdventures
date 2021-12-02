@@ -1,6 +1,6 @@
 from math import floor
 
-from kivy.properties import BooleanProperty, ListProperty, NumericProperty, StringProperty
+from kivy.properties import BooleanProperty, StringProperty
 
 from kivy.uix.image import Image
 from kivy.uix.label import Label
@@ -14,6 +14,7 @@ load_kv(__name__)
 
 class ProfileMain(Screen):
     name_string = StringProperty('')
+    symbol_source = StringProperty('')
     gender_source = StringProperty('')
     domain_source = StringProperty('')
     domain_desc = StringProperty('')
@@ -29,6 +30,7 @@ class ProfileMain(Screen):
 
     def on_kv_post(self, base_widget):
         self.name_string = Refs.gc.get_name()
+        self.symbol_source = f'family/symbols/{Refs.gc.get_symbol().split("_")[1]}.png'
         self.gender_source = f'family/{Refs.gc.get_gender()}.png'
         self.domain_source = f'family/domains/{Refs.gc.get_domain()}.png'
 
@@ -40,6 +42,9 @@ class ProfileMain(Screen):
             domain_desc.replace('diety', 'god')
 
         self.domain_desc, self.domain_stats = domain_desc.split('\n\n')
+        self.display_dynamic_info()
+
+    def display_dynamic_info(self):
         about_desc = f'Renown - {Refs.gc.get_renown()}'
         about_desc += f'\nCurrent Perk Points - {Refs.gc.get_perk_points()}'
         about_desc += f'\nPerks Unlocked {Refs.gc.get_skill_level()}'
@@ -52,9 +57,11 @@ class ProfileMain(Screen):
         self.perks_visible = Refs.gc.get_skill_level() > 0
         if self.perks_visible:
             indexes = Refs.gc.get_all_obtained_character_indexes()
+
+            self.perks = {}
             for index in indexes:
                 char = Refs.gc.get_char_by_index(index)
-                for perk_id in char.get_perks():
+                for perk_id in char.get_all_perks():
                     tree = Refs.gc['perks'][perk_id].get_tree()
                     if tree not in self.perks:
                         self.perks[tree] = {}
@@ -62,6 +69,7 @@ class ProfileMain(Screen):
                         self.perks[tree][perk_id] = []
                     self.perks[tree][perk_id].append(char)
 
+            self.ids.scroll.clear_widgets()
             for tree, perk_list in self.perks.items():
                 tree_title = TreeLabel(text=tree.title())
                 self.ids.scroll.add_widget(tree_title)
@@ -72,6 +80,9 @@ class ProfileMain(Screen):
                     perk_display = CharacterList(char_list)
                     perk_display.height = self.height * 0.05
                     self.ids.scroll.add_widget(perk_display)
+
+    def reload(self, *args):
+        self.display_dynamic_info()
 
     def on_height(self, instance, new_height):
         for child in self.ids.scroll.children:

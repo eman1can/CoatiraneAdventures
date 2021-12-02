@@ -4,7 +4,7 @@ __all__ = ('Root',)
 from kivy.cache import Cache
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 # Project Imports
-from lists import SCREEN_LIST, SCREEN_NON_WHITELIST, SCREEN_WHITELIST
+from lists import SCREEN_LIST, SCREEN_NON_WHITELIST, SCREEN_BLACKLIST
 
 
 class Root(ScreenManager):
@@ -21,12 +21,11 @@ class Root(ScreenManager):
 
         self._create_screen('start_game')
         self.current = 'start_game'
+
         self._initialized = True
 
     def make_screens(self):
         pass
-        # for screen in self.whitelist:
-        #     self._create_screen(screen)
 
     def clean_whitelist(self):
         remove = []
@@ -56,24 +55,29 @@ class Root(ScreenManager):
             screen = Cache.get('screens', next_screen)
             if screen is None:
                 screen = self._create_screen(next_screen, *args, **kwargs)
+            else:
+                screen.reload(*args, **kwargs)
             next_screen = screen
         if len(self.children) > 0:
             old_screen = self.children[0]
         if not direction:
             if len(self.list) > 0:
                 next_screen = self.list.pop()
-                next_screen.reload(*args)
+                next_screen.reload(*args, **kwargs)
             else:
                 print("No more screens to backtrack.")
                 return
         if next_screen not in self.screens:
             self.add_widget(next_screen)
-        print(next_screen, next_screen.name)
         self.current = next_screen.name
         if old_screen is not None:
+            if old_screen.name == 'dungeon_battle' and old_screen.boss_encounter:
+                return
             self.remove_widget(old_screen)
-            if track:
+            if track and old_screen.name not in SCREEN_BLACKLIST:
                 self.list.append(old_screen)
+            if old_screen.name in SCREEN_BLACKLIST:
+                Cache.remove('screens', old_screen)
 
     def _create_screen(self, screen_name, *args, **kwargs):
         found = False

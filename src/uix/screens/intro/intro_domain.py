@@ -22,5 +22,8 @@ class IntroDomain(Screen):
         self.ids.domain_wheel.data = data
         self.ids.large_display.domain = data[0]['domain']
 
+    def on_home_press(self):
+        self.manager.display_screen('save_select', True, False)
+
     def goto_next(self):
-        Refs.gs.display_screen('intro_select', True, True, self.save_slot, self.god_name, self.gender, self.symbol_id, self.ids.domain_wheel.widgets[0].domain.get_title())
+        self.manager.display_screen('intro_select', True, True, self.save_slot, self.god_name, self.gender, self.symbol_id, self.ids.domain_wheel.widgets[0].domain.get_title())

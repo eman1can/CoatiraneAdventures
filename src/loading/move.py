@@ -1,5 +1,5 @@
-from game.effect import COUNTER, DURATION, Effect, SPECIFIC_TARGET, STAT, STATUS_EFFECT
-from game.skill import AILMENT_CURE, ATTACK, Boost, HEAL, NORMAL, Skill
+from game.effect import COUNTER, DURATION, Effect, SPECIFIC_TARGET, STAT, STATUS_EFFECT, parse_effect
+from game.skill import AILMENT_CURE, ATTACK, Boost, HEAL, NONE, NORMAL, Skill
 
 ID          = 0
 NAME        = 1
@@ -28,7 +28,7 @@ def load_skill_chunk(line, loader, program_type, callbacks):
     attack_speed = NORMAL
     attack_power = None
     attack_type = None
-    element = None
+    element = NONE
 
     boost_index = TARGET + 1
     if skill_type == ATTACK:
@@ -57,36 +57,8 @@ def load_skill_chunk(line, loader, program_type, callbacks):
     effects = []
     effect_index += 1
     for index in range(effect_count):
-        effect_type = int(values[effect_index])
-        effect_sub_type = None
-        effect_target = None
-        effect_amount = None
-        effect_duration = None
-
-        if effect_type == STAT:
-            effect_sub_type = int(values[effect_index + 1])
-            effect_target = int(values[effect_index + 2])
-            effect_amount = float(values[effect_index + 3]) / 100
-            effect_duration = int(values[effect_index + 4])
-            effect_index += 5
-        elif effect_type == COUNTER:
-            effect_sub_type = int(values[effect_index + 1])
-            effect_target = int(values[effect_index + 2])
-            effect_amount = float(values[effect_index + 3])
-            effect_index += 4
-        elif effect_type == DURATION:
-            effect_sub_type = int(values[effect_index + 1])
-            effect_target = int(values[effect_index + 2])
-            effect_duration = int(values[effect_index + 3])
-            effect_index += 4
-        elif effect_type == SPECIFIC_TARGET:
-            pass
-        elif effect_type == STATUS_EFFECT:
-            effect_sub_type = int(values[effect_index + 1])  # Type of effect
-            effect_amount = float(values[effect_index + 2])  # Level of effect
-            effect_duration = int(values[effect_index + 3])  # Chance to inflict
-            effect_index += 3
-        effects.append(Effect(effect_type, effect_sub_type, effect_target, effect_amount, effect_duration))
+        effect, effect_index = parse_effect(effect_index, values)
+        effects.append(effect)
     skill = Skill(skill_id, name, description, anim_id, anim_name, skill_type, target, attack_speed, attack_power, attack_type, element, boosts, effects)
     loader.append('skills', skill_id, skill)
     for callback in callbacks:

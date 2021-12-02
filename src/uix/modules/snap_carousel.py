@@ -14,19 +14,20 @@ class SnapCarousel(Carousel):
         self.register_event_type('on_index_update')
         super().__init__(**kwargs)
 
-    def on_locked(self, locked):
-        self.current_slide.locked = locked
+    def reload(self, **kwargs):
+        self.load_kwargs(kwargs)
+        if self.current_slide is not None:
+            self.current_slide.reload(locked=self.locked)
+
+    def on_locked(self, *args):
+        self.current_slide.locked = self.locked
 
     def close_hints(self):
         self.current_slide.close_hints()
 
-    def reload(self):
-        if self.current_slide is None:
-            return
-        self.current_slide.reload()
-
     def on_current_slide(self, *args):
         self.current_slide.current = True
+        self.current_slide.locked = self.locked
 
     def on_index(self, instance, index):
         super().on_index(instance, index)
@@ -38,14 +39,19 @@ class SnapCarousel(Carousel):
     def on_touch_down(self, touch):
         if self.locked or self.disabled:
             return False
-
         return super().on_touch_down(touch)
 
+    def on_touch_move(self, touch):
+        if self.locked or self.disabled:
+            return False
+        return super().on_touch_move(touch)
+
     def on_touch_up(self, touch):
+        if self.locked or self.disabled:
+            return False
         if touch.button == 'scrollup':
             self.load_next()
             return True
-
         if touch.button == 'scrolldown':
             self.load_next('prev')
             return True
@@ -80,5 +86,3 @@ class SnapCarousel(Carousel):
         container.add_widget(widget)
         self.slides[index] = widget
         return True
-
-

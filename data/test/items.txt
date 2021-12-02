@@ -1,1732 +1,505 @@
-S, compass, 0, Compass, general, single, 375
+# General Items
+
+G, varenth, 1, Varenth
+The currency of Coatirane Adventures
+
+# Shop Items
+
+S, compass, 0, Compass, general, single
 none
 Have trouble getting lost? Buy a compass and never get lost again!
 
-S, pocket_watch, 0, Pocket Watch, general, single, 375
+S, pocket_watch, 0, Pocket Watch, general, single
 none
 Keep losing track of time? Buy a watch and always know the time!
 
-S, path_map_floor_1, 1, Main Path, floor_1, single, 500
+# Floor Map Types
+
+F, path_map, Main Path
 none
-A detailed map to get you to the second floor.
+A detailed map to get you to the {0} floor.
 
-S, full_map_floor_1, 1, Full Map, floor_1, single, 1500
+F, full_map, Full Map
 none
-A detailed map of the entire first floor!
+A detailed map of the entire {0} floor!
 
-S, resource_map_floor_1, 1, Resource Map, floor_1, single, 2500
-map_data, full_map_floor_1
-Shows the most common resource locations on the first floor from the past week.
+F, resource_map, Resource Map
+map_data, full_map
+Shows the most common resource locations on the {0} floor from the past week.
 
-S, path_map_floor_2, 2, Main Path, floor_2, single, 500
-none
-A detailed map to get you to the third floor.
+# Material Bases
 
-S, full_map_floor_2, 2, Full Map, floor_2, single, 1500
-none
-A detailed map of the entire second floor!
+I, coal_ore, 0, Coal Ore
+Coal Ore
 
-S, resource_map_floor_2, 2, Resource Map, floor_2, single, 2500
-map_data, full_map_floor_2
-Shows the most common resource locations on the second floor from the past week.
+# Monster Material Bases
 
-S, path_map_floor_3, 3, Main Path, floor_3, single, 500
-none
-A detailed map to get you to the fourth floor.
+T, D, 3
+raw, claw,
+Raw,
+A raw {0} Claw
 
-S, full_map_floor_3, 3, Full Map, floor_3, single, 1500
-none
-A detailed map of the entire third floor!
+T, P, 3
+, claw, ingot
+, Ingot
+A {0} ingot
 
-S, resource_map_floor_3, 3, Resource Map, floor_3, single, 2500
-map_data, full_map_floor_3
-Shows the most common resource locations on the third floor from the past week.
+T, D, 3
+raw, fang,
+Raw,
+A raw {0} fang
 
-I, oak_wood_planks, 1, Oak Wood Planks, multi, 500, 750
-Planks harvested in the forests surrounding Coatirane.
+T, P, 3
+, fang, ingot
+, Ingot
+A {0} ingot
 
-D, raw_goblin_claw, 1, Raw Goblin Claw, multi, 30, 60
-A raw Goblin Claw.
+T, D, 3
+raw, horn,
+Raw,
+A raw {0} horn
 
-D, goblin_claw_ingot, 1, Goblin Claw Ingot, multi, 60, 100
-A Goblin Claw Ingot.
+T, P, 3
+, horn, ingot
+, Ingot
+A {0} ingot
 
-D, raw_goblin_fang, 1, Raw Goblin Fang, multi, 30, 60
-A raw Goblin Fang.
+T, D, 3
+raw, scale,
+Raw,
+A {0} scale
 
-D, goblin_fang_ingot, 1, Goblin Fang Ingot, multi, 60, 100
-A Goblin Fang Ingot.
+T, P, 3
+, scale, ingot
+, Ingot
+A {0} ingot
 
-D, raw_kobold_claw, 1, Raw Kobold Claw, multi, 40, 75
-A raw Kobold Claw.
+T, D, 4
+raw, hide,
+Raw,
+Raw {0} hide
 
-D, kobold_claw_ingot, 1, Kobold Claw Ingot, multi, 80, 115
-A Kobold Claw Ingot.
+T, P, 4
+, hide, processed
+, Leather
+{0} leather
 
-D, raw_kobold_fang, 1, Raw Kobold Fang, multi, 40, 75
-A raw Kobold Fang.
+# Gem Bases
 
-D, kobold_fang_ingot, 1, Kobold Fang Ingot, multi, 80, 115
-A Kobold Fang Ingot.
+T, I, 5
+raw, ,
+Raw,
+Raw {0} gem
 
-D, raw_kobold_hide, 1, Raw Kobold Hide, multi, 55, 76
-A raw Kobold Hide.
+T, I, 5
+, , processed
+ , Gem
+A cut {0} gem
 
-D, kobold_hide_processed, 1, Processed Kobold Hide, multi, 90, 126
-A processed Kobold Hide.
+# Natural Hard Material Bases
 
-D, raw_dungeon_lizard_claw, 5, Raw Dungeon Lizard Claw, multi, 80, 100
-A raw Dungeon Lizard Claw.
+T, I, 0
+, , ore
+ , ore
+{0} ore
 
-D, dungeon_lizard_claw_ingot, 5, Dungeon Lizard Claw Ingot, multi, 120, 150
-A Dungeon Lizard Claw Ingot.
+T, I, 0
+, , ingot
+ , ingot
+A {0} ingot
 
-D, raw_dungeon_lizard_fang, 5, Raw Dungeon Lizard Fang, multi, 80, 100
-A raw Dungeon Lizard Fang.
+T, I, 2
+, , ingot
+ , ingot
+A {0} ingot
 
-D, dungeon_lizard_fang_ingot, 5, Dungeon Lizard Fang Ingot, multi, 120, 150
-A Dungeon Lizard Fang Ingot.
+# Ingredients
 
-D, raw_dungeon_lizard_scale, 5, Raw Dungeon Lizard Scale, multi, 115, 150
-A raw Dungeon Lizard Scale.
+I, oak_wood_planks, 1, Oak Wood Planks
+Planks harvested in the forests surrounding Coatirane
 
-D, dungeon_lizard_scale_ingot, 5, Dungeon Lizard Scale Ingot, multi, 150, 180
-A Dungeon Lizard Scale Ingot.
+# Dungeon Monster Materials - Other
 
-D, dungeon_lizard_tongue, 5, Dungeon Lizard Tongue, multi, 250, 300
+D, dungeon_lizard_tongue, 1, Dungeon Lizard Tongue
 A Dungeon Lizard Tongue.
 
-D, raw_war_shadow_claw, 8, Raw War Shadow Claw, multi, 100, 250
-A raw War Shadow Claw.
+D, infant_dragon_meat, 1, Infant Dragon Meat
+A Infant Dragon Meat.
 
-D, war_shadow_claw_ingot, 8, War Shadow Claw Ingot, multi, 100, 250
-A War Shadow Claw Ingot.
+D, infant_dragon_blood, 1, Infant Dragon Blood
+A Infant Dragon Blood.
 
-D, raw_imp_claw, 9, Raw Imp Claw, multi, 100, 250
-A raw Imp Claw.
+D, vouivre_egg, 1, Vouivre Egg
+A Vouivre Egg.
 
-D, imp_claw_ingot, 9, Imp Claw Ingot, multi, 100, 250
-A Imp Claw Ingot.
-
-D, raw_imp_fang, 9, Raw Imp Fang, multi, 100, 250
-A raw Imp Fang.
-
-D, imp_fang_ingot, 9, Imp Fang Ingot, multi, 100, 250
-A Imp Fang Ingot.
-
-D, raw_imp_hide, 9, Raw Imp Hide, multi, 100, 250
-A raw Imp Hide.
-
-D, imp_hide_processed, 9, Processed Imp Hide, multi, 100, 250
-A processed Imp Hide.
-
-D, raw_hard_armored_claw, 11, Raw Hard Armored Claw, multi, 100, 250
-A raw Hard Armored Claw.
-
-D, hard_armored_claw_ingot, 11, Hard Armored Claw Ingot, multi, 100, 250
-A Hard Armored Claw Ingot.
-
-D, raw_hard_armored_scale, 11, Raw Hard Armored Scale, multi, 100, 250
-A raw Hard Armored Scale.
-
-D, hard_armored_scale_ingot, 11, Hard Armored Scale Ingot, multi, 100, 250
-A Hard Armored Scale Ingot.
-
-D, raw_infant_dragon_claw, 13, Raw Infant Dragon Claw, multi, 100, 250
-A raw Infant Dragon Claw.
-
-D, infant_dragon_claw_ingot, 13, Infant Dragon Claw Ingot, multi, 100, 250
-A Infant Dragon Claw Ingot.
-
-D, raw_infant_dragon_fang, 13, Raw Infant Dragon Fang, multi, 100, 250
-A raw Infant Dragon Fang.
-
-D, infant_dragon_fang_ingot, 13, Infant Dragon Fang Ingot, multi, 100, 250
-A Infant Dragon Fang Ingot.
-
-D, raw_infant_dragon_scale, 13, Raw Infant Dragon Scale, multi, 100, 250
-A raw Infant Dragon Scale.
-
-D, infant_dragon_scale_ingot, 13, Infant Dragon Scale Ingot, multi, 100, 250
-A Infant Dragon Scale Ingot.
-
-D, infant_dragon_meat, 13, Infant Dragon Meat, multi, 100, 250
-A piece of Infant Dragon Meat.
-
-D, infant_dragon_blood, 13, Infant Dragon Blood, multi, 100, 250
-Infant Dragon Blood.
-
-D, raw_wyvern_claw, 15, Raw Wyvern Claw, multi, 100, 250
-A raw Wyvern Claw.
-
-D, wyvern_claw_ingot, 15, Wyvern Claw Ingot, multi, 100, 250
-A Wyvern Claw Ingot.
-
-D, raw_wyvern_fang, 15, Raw Wyvern Fang, multi, 100, 250
-A raw Wyvern Fang.
-
-D, wyvern_fang_ingot, 15, Wyvern Fang Ingot, multi, 100, 250
-A Wyvern Fang Ingot.
-
-D, raw_wyvern_scale, 15, Raw Wyvern Scale, multi, 100, 250
-A raw Wyvern Scale.
-
-D, wyvern_scale_ingot, 15, Wyvern Scale Ingot, multi, 100, 250
-A Wyvern Scale Ingot.
-
-D, raw_lamia mormos_claw, 18, Raw Lamia Mormos Claw, multi, 100, 250
-A raw Lamia Mormos Claw.
-
-D, lamia mormos_claw_ingot, 18, Lamia Mormos Claw Ingot, multi, 100, 250
-A Lamia Mormos Claw Ingot.
-
-D, raw_lamia mormos_scale, 18, Raw Lamia Mormos Scale, multi, 100, 250
-A raw Lamia Mormos Scale.
-
-D, lamia mormos_scale_ingot, 18, Lamia Mormos Scale Ingot, multi, 100, 250
-A Lamia Mormos Scale Ingot.
-
-D, raw_minotaur_claw, 21, Raw Minotaur Claw, multi, 100, 250
-A raw Minotaur Claw.
-
-D, minotaur_claw_ingot, 21, Minotaur Claw Ingot, multi, 100, 250
-A Minotaur Claw Ingot.
-
-D, raw_minotaur_fang, 21, Raw Minotaur Fang, multi, 100, 250
-A raw Minotaur Fang.
-
-D, minotaur_fang_ingot, 21, Minotaur Fang Ingot, multi, 100, 250
-A Minotaur Fang Ingot.
-
-D, raw_minotaur_hide, 21, Raw Minotaur Hide, multi, 100, 250
-A raw Minotaur Hide.
-
-D, minotaur_hide_processed, 21, Processed Minotaur Hide, multi, 100, 250
-A processed Minotaur Hide.
-
-D, raw_bugbear_claw, 22, Raw Bugbear Claw, multi, 100, 250
-A raw Bugbear Claw.
-
-D, bugbear_claw_ingot, 22, Bugbear Claw Ingot, multi, 100, 250
-A Bugbear Claw Ingot.
-
-D, raw_bugbear_hide, 22, Raw Bugbear Hide, multi, 100, 250
-A raw Bugbear Hide.
-
-D, bugbear_hide_processed, 22, Processed Bugbear Hide, multi, 100, 250
-A processed Bugbear Hide.
-
-D, raw_battle_boar_claw, 25, Raw Battle Boar Claw, multi, 100, 250
-A raw Battle Boar Claw.
-
-D, battle_boar_claw_ingot, 25, Battle Boar Claw Ingot, multi, 100, 250
-A Battle Boar Claw Ingot.
-
-D, raw_battle_boar_fang, 25, Raw Battle Boar Fang, multi, 100, 250
-A raw Battle Boar Fang.
-
-D, battle_boar_fang_ingot, 25, Battle Boar Fang Ingot, multi, 100, 250
-A Battle Boar Fang Ingot.
-
-D, raw_battle_boar_hide, 25, Raw Battle Boar Hide, multi, 100, 250
-A raw Battle Boar Hide.
-
-D, battle_boar_hide_processed, 25, Processed Battle Boar Hide, multi, 100, 250
-A processed Battle Boar Hide.
-
-D, raw_lizardman_claw, 24, Raw Lizardman Claw, multi, 100, 250
-A raw Lizardman Claw.
-
-D, lizardman_claw_ingot, 24, Lizardman Claw Ingot, multi, 100, 250
-A Lizardman Claw Ingot.
-
-D, raw_lizardman_scale, 24, Raw Lizardman Scale, multi, 100, 250
-A raw Lizardman Scale.
-
-D, lizardman_scale_ingot, 24, Lizardman Scale Ingot, multi, 100, 250
-A Lizardman Scale Ingot.
-
-D, raw_vouivre_claw, 29, Raw Vouivre Claw, multi, 100, 250
-A raw Vouivre Claw.
-
-D, vouivre_claw_ingot, 29, Vouivre Claw Ingot, multi, 100, 250
-A Vouivre Claw Ingot.
-
-D, raw_vouivre_fang, 29, Raw Vouivre Fang, multi, 100, 250
-A raw Vouivre Fang.
-
-D, vouivre_fang_ingot, 29, Vouivre Fang Ingot, multi, 100, 250
-A Vouivre Fang Ingot.
-
-D, vouivre_egg, 29, Vouivre Egg, multi, 100, 250
-A Vouivre's Tear.
-
-D, raw_vouivre_scale, 29, Raw Vouivre Scale, multi, 100, 250
-A raw Vouivre Scale.
-
-D, vouivre_scale_ingot, 29, Vouivre Scale Ingot, multi, 100, 250
-A Vouivre Scale Ingot.
-
-D, raw_green_dragon_claw, 31, Raw Green Dragon Claw, multi, 100, 250
-A raw Green Dragon Claw.
-
-D, green_dragon_claw_ingot, 31, Green Dragon Claw Ingot, multi, 100, 250
-A Green Dragon Claw Ingot.
-
-D, raw_green_dragon_fang, 31, Raw Green Dragon Fang, multi, 100, 250
-A raw Green Dragon Fang.
-
-D, green_dragon_fang_ingot, 31, Green Dragon Fang Ingot, multi, 100, 250
-A Green Dragon Fang Ingot.
-
-D, raw_green_dragon_scale, 31, Raw Green Dragon Scale, multi, 100, 250
-A raw Green Dragon Scale.
-
-D, green_dragon_scale_ingot, 31, Green Dragon Scale Ingot, multi, 100, 250
-A Green Dragon Scale Ingot.
-
-D, raw_hobgoblin_claw, 22, Raw Hobgoblin Claw, multi, 100, 250
-A raw Hobgoblin Claw.
-
-D, hobgoblin_claw_ingot, 22, Hobgoblin Claw Ingot, multi, 100, 250
-A Hobgoblin Claw Ingot.
-
-D, raw_hobgoblin_fang, 22, Raw Hobgoblin Fang, multi, 100, 250
-A raw Hobgoblin Fang.
-
-D, hobgoblin_fang_ingot, 22, Hobgoblin Fang Ingot, multi, 100, 250
-A Hobgoblin Fang Ingot.
-
-D, raw_moss huge_claw, 38, Raw Moss Huge Claw, multi, 100, 250
-A raw Moss Huge Claw.
-
-D, moss huge_claw_ingot, 38, Moss Huge Claw Ingot, multi, 100, 250
-A Moss Huge Claw Ingot.
-
-D, raw_moss huge_hide, 38, Raw Moss Huge Hide, multi, 100, 250
-A raw Moss Huge Hide.
-
-D, moss huge_hide_processed, 38, Processed Moss Huge Hide, multi, 100, 250
-A processed Moss Huge Hide.
-
-D, raw_harpy_claw, 43, Raw Harpy Claw, multi, 100, 250
-A raw Harpy Claw.
-
-D, harpy_claw_ingot, 43, Harpy Claw Ingot, multi, 100, 250
-A Harpy Claw Ingot.
-
-D, harpy_wing, 43, Harpy Wing, multi, 100, 250
+D, harpy_wing, 1, Harpy Wing
 A Harpy Wing.
 
-D, raw_siren_claw, 45, Raw Siren Claw, multi, 100, 250
-A raw Siren Claw.
-
-D, siren_claw_ingot, 45, Siren Claw Ingot, multi, 100, 250
-A Siren Claw Ingot.
-
-D, raw_siren_fang, 45, Raw Siren Fang, multi, 100, 250
-A raw Siren Fang.
-
-D, siren_fang_ingot, 45, Siren Fang Ingot, multi, 100, 250
-A Siren Fang Ingot.
-
-D, siren_wing, 45, Siren Wing, multi, 100, 250
+D, siren_wing, 1, Siren Wing
 A Siren Wing.
 
-D, raw_blue_crab_claw, 41, Raw Blue Crab Claw, multi, 100, 250
-A raw Blue Crab Claw.
+D, blue_crab_meat, 1, Blue Crab Meat
+A Blue Crab Meat.
 
-D, blue_crab_claw_ingot, 41, Blue Crab Claw Ingot, multi, 100, 250
-A Blue Crab Claw Ingot.
+D, afanc_meat, 1, Afanc Meat
+A Afanc Meat.
 
-D, raw_blue_crab_scale, 41, Raw Blue Crab Scale, multi, 100, 250
-A raw Blue Crab Scale.
+D, dodora_venom, 1, Dodora Venom
+A Dodora Venom.
 
-D, blue_crab_scale_ingot, 41, Blue Crab Scale Ingot, multi, 100, 250
-A Blue Crab Scale Ingot.
+D, deformis_spider_blood, 1, Deformis Spider Blood
+A Deformis Spider Blood.
 
-D, blue_crab_meat, 41, Blue Crab Meat, multi, 100, 250
-A piece of Blue Crab Meat.
+D, black_wyvern_venom, 1, Black Wyvern Venom
+A Black Wyvern Venom.
 
-D, raw_afanc_claw, 41, Raw Afanc Claw, multi, 100, 250
-A raw Afanc Claw.
+D, dungeon_worm_venom, 1, Dungeon Worm Venom
+A Dungeon Worm Venom.
 
-D, afanc_claw_ingot, 41, Afanc Claw Ingot, multi, 100, 250
-A Afanc Claw Ingot.
-
-D, raw_afanc_fang, 41, Raw Afanc Fang, multi, 100, 250
-A raw Afanc Fang.
-
-D, afanc_fang_ingot, 41, Afanc Fang Ingot, multi, 100, 250
-A Afanc Fang Ingot.
-
-D, afanc_meat, 41, Afanc Meat, multi, 100, 250
-A piece of Afanc Meat.
-
-D, raw_dodora_claw, 45, Raw Dodora Claw, multi, 100, 250
-A raw Dodora Claw.
-
-D, dodora_claw_ingot, 45, Dodora Claw Ingot, multi, 100, 250
-A Dodora Claw Ingot.
-
-D, raw_dodora_scale, 45, Raw Dodora Scale, multi, 100, 250
-A raw Dodora Scale.
-
-D, dodora_scale_ingot, 45, Dodora Scale Ingot, multi, 100, 250
-A Dodora Scale Ingot.
-
-D, dodora_venom, 45, Dodora Venom, multi, 100, 250
-Dodora Venom.
-
-D, raw_lamia_claw, 41, Raw Lamia Claw, multi, 100, 250
-A raw Lamia Claw.
-
-D, lamia_claw_ingot, 41, Lamia Claw Ingot, multi, 100, 250
-A Lamia Claw Ingot.
-
-D, raw_lamia_scale, 41, Raw Lamia Scale, multi, 100, 250
-A raw Lamia Scale.
-
-D, lamia_scale_ingot, 41, Lamia Scale Ingot, multi, 100, 250
-A Lamia Scale Ingot.
-
-D, raw_spartoi_claw, 50, Raw Spartoi Claw, multi, 100, 250
-A raw Spartoi Claw.
-
-D, spartoi_claw_ingot, 50, Spartoi Claw Ingot, multi, 100, 250
-A Spartoi Claw Ingot.
-
-D, raw_lizardman_elite_claw, 55, Raw Lizardman Elite Claw, multi, 100, 250
-A raw Lizardman Elite Claw.
-
-D, lizardman_elite_claw_ingot, 55, Lizardman Elite Claw Ingot, multi, 100, 250
-A Lizardman Elite Claw Ingot.
-
-D, raw_lizardman_elite_scale, 55, Raw Lizardman Elite Scale, multi, 100, 250
-A raw Lizardman Elite Scale.
-
-D, lizardman_elite_scale_ingot, 55, Lizardman Elite Scale Ingot, multi, 100, 250
-A Lizardman Elite Scale Ingot.
-
-D, raw_deformis_spider_claw, 56, Raw Deformis Spider Claw, multi, 100, 250
-A raw Deformis Spider Claw.
-
-D, deformis_spider_claw_ingot, 56, Deformis Spider Claw Ingot, multi, 100, 250
-A Deformis Spider Claw Ingot.
-
-D, raw_deformis_spider_hide, 56, Raw Deformis Spider Hide, multi, 100, 250
-A raw Deformis Spider Hide.
-
-D, deformis_spider_hide_processed, 56, Processed Deformis Spider Hide, multi, 100, 250
-A processed Deformis Spider Hide.
-
-D, deformis_spider_blood, 56, Deformis Spider Blood, multi, 100, 250
-Deformis Spider Blood.
-
-D, raw_black_wyvern_fang, 14, Raw Black Wyvern Fang, multi, 100, 250
-A raw Black Wyvern Fang.
-
-D, black_wyvern_fang_ingot, 14, Black Wyvern Fang Ingot, multi, 100, 250
-A Black Wyvern Fang Ingot.
-
-D, raw_black_wyvern_scale, 14, Raw Black Wyvern Scale, multi, 100, 250
-A raw Black Wyvern Scale.
-
-D, black_wyvern_scale_ingot, 14, Black Wyvern Scale Ingot, multi, 100, 250
-A Black Wyvern Scale Ingot.
-
-D, black_wyvern_venom, 14, Black Wyvern Venom, multi, 100, 250
-Black Wyvern Venom.
-
-D, raw_hellhound_fang, 16, Raw Hellhound Fang, multi, 100, 250
-A raw Hellhound Fang.
-
-D, hellhound_fang_ingot, 16, Hellhound Fang Ingot, multi, 100, 250
-A Hellhound Fang Ingot.
-
-D, raw_hellhound_hide, 16, Raw Hellhound Hide, multi, 100, 250
-A raw Hellhound Hide.
-
-D, hellhound_hide_processed, 16, Processed Hellhound Hide, multi, 100, 250
-A processed Hellhound Hide.
-
-D, raw_almiraj_fang, 18, Raw Almiraj Fang, multi, 100, 250
-A raw Almiraj Fang.
-
-D, almiraj_fang_ingot, 18, Almiraj Fang Ingot, multi, 100, 250
-A Almiraj Fang Ingot.
-
-D, raw_almiraj_hide, 18, Raw Almiraj Hide, multi, 100, 250
-A raw Almiraj Hide.
-
-D, almiraj_hide_processed, 18, Processed Almiraj Hide, multi, 100, 250
-A processed Almiraj Hide.
-
-D, raw_dungeon_worm_fang, 22, Raw Dungeon Worm Fang, multi, 100, 250
-A raw Dungeon Worm Fang.
-
-D, dungeon_worm_fang_ingot, 22, Dungeon Worm Fang Ingot, multi, 100, 250
-A Dungeon Worm Fang Ingot.
-
-D, dungeon_worm_venom, 22, Dungeon Worm Venom, multi, 100, 250
-Dungeon Worm Venom.
-
-D, raw_lygerfang_fang, 22, Raw Lygerfang Fang, multi, 100, 250
-A raw Lygerfang Fang.
-
-D, lygerfang_fang_ingot, 22, Lygerfang Fang Ingot, multi, 100, 250
-A Lygerfang Fang Ingot.
-
-D, raw_lygerfang_hide, 22, Raw Lygerfang Hide, multi, 100, 250
-A raw Lygerfang Hide.
-
-D, lygerfang_hide_processed, 22, Processed Lygerfang Hide, multi, 100, 250
-A processed Lygerfang Hide.
-
-D, raw_mammoth_fool_fang, 29, Raw Mammoth Fool Fang, multi, 100, 250
-A raw Mammoth Fool Fang.
-
-D, mammoth_fool_fang_ingot, 29, Mammoth Fool Fang Ingot, multi, 100, 250
-A Mammoth Fool Fang Ingot.
-
-D, raw_mammoth_fool_hide, 29, Raw Mammoth Fool Hide, multi, 100, 250
-A raw Mammoth Fool Hide.
-
-D, mammoth_fool_hide_processed, 29, Processed Mammoth Fool Hide, multi, 100, 250
-A processed Mammoth Fool Hide.
-
-D, raw_raider_fish_fang, 41, Raw Raider Fish Fang, multi, 100, 250
-A raw Raider Fish Fang.
-
-D, raider_fish_fang_ingot, 41, Raider Fish Fang Ingot, multi, 100, 250
-A Raider Fish Fang Ingot.
-
-D, raw_raider_fish_scale, 41, Raw Raider Fish Scale, multi, 100, 250
-A raw Raider Fish Scale.
-
-D, raider_fish_scale_ingot, 41, Raider Fish Scale Ingot, multi, 100, 250
-A Raider Fish Scale Ingot.
-
-D, raw_devil_mosquito_fang, 41, Raw Devil Mosquito Fang, multi, 100, 250
-A raw Devil Mosquito Fang.
-
-D, devil_mosquito_fang_ingot, 41, Devil Mosquito Fang Ingot, multi, 100, 250
-A Devil Mosquito Fang Ingot.
-
-D, devil_mosquito_wing, 41, Devil Mosquito Wing, multi, 100, 250
+D, devil_mosquito_wing, 1, Devil Mosquito Wing
 A Devil Mosquito Wing.
 
-D, raw_crystaroth_urchin_fang, 41, Raw Crystaroth Urchin Fang, multi, 100, 250
-A raw Crystaroth Urchin Fang.
+D, crystaroth_urchin_venom, 1, Crystaroth Urchin Venom
+A Crystaroth Urchin Venom.
 
-D, crystaroth_urchin_fang_ingot, 41, Crystaroth Urchin Fang Ingot, multi, 100, 250
-A Crystaroth Urchin Fang Ingot.
+D, bloodsaurus_meat, 1, Bloodsaurus Meat
+A Bloodsaurus Meat.
 
-D, raw_crystaroth_urchin_horn, 41, Raw Crystaroth Urchin Horn, multi, 100, 250
-A raw Crystaroth Urchin Horn.
+D, worm_well_venom, 1, Worm Well Venom
+A Worm Well Venom.
 
-D, crystaroth_urchin_horn_ingot, 41, Crystaroth Urchin Horn Ingot, multi, 100, 250
-A Crystaroth Urchin Horn Ingot.
-
-D, crystaroth_urchin_venom, 41, Crystaroth Urchin Venom, multi, 100, 250
-Crystaroth Urchin Venom.
-
-D, raw_bloodsaurus_fang, 50, Raw Bloodsaurus Fang, multi, 100, 250
-A raw Bloodsaurus Fang.
-
-D, bloodsaurus_fang_ingot, 50, Bloodsaurus Fang Ingot, multi, 100, 250
-A Bloodsaurus Fang Ingot.
-
-D, raw_bloodsaurus_scale, 50, Raw Bloodsaurus Scale, multi, 100, 250
-A raw Bloodsaurus Scale.
-
-D, bloodsaurus_scale_ingot, 50, Bloodsaurus Scale Ingot, multi, 100, 250
-A Bloodsaurus Scale Ingot.
-
-D, bloodsaurus_meat, 50, Bloodsaurus Meat, multi, 100, 250
-A piece of Bloodsaurus Meat.
-
-D, raw_worm_well_fang, 50, Raw Worm Well Fang, multi, 100, 250
-A raw Worm Well Fang.
-
-D, worm_well_fang_ingot, 50, Worm Well Fang Ingot, multi, 100, 250
-A Worm Well Fang Ingot.
-
-D, raw_worm_well_scale, 50, Raw Worm Well Scale, multi, 100, 250
-A raw Worm Well Scale.
-
-D, worm_well_scale_ingot, 50, Worm Well Scale Ingot, multi, 100, 250
-A Worm Well Scale Ingot.
-
-D, worm_well_venom, 50, Worm Well Venom, multi, 100, 250
-Worm Well Venom.
-
-D, raw_loup_garou_fang, 50, Raw Loup Garou Fang, multi, 100, 250
-A raw Loup Garou Fang.
-
-D, loup_garou_fang_ingot, 50, Loup Garou Fang Ingot, multi, 100, 250
-A Loup Garou Fang Ingot.
-
-D, raw_loup_garou_hide, 50, Raw Loup Garou Hide, multi, 100, 250
-A raw Loup Garou Hide.
-
-D, loup_garou_hide_processed, 50, Processed Loup Garou Hide, multi, 100, 250
-A processed Loup Garou Hide.
-
-D, raw_thunder_snake_fang, 59, Raw Thunder Snake Fang, multi, 100, 250
-A raw Thunder Snake Fang.
-
-D, thunder_snake_fang_ingot, 59, Thunder Snake Fang Ingot, multi, 100, 250
-A Thunder Snake Fang Ingot.
-
-D, raw_thunder_snake_scale, 59, Raw Thunder Snake Scale, multi, 100, 250
-A raw Thunder Snake Scale.
-
-D, thunder_snake_scale_ingot, 59, Thunder Snake Scale Ingot, multi, 100, 250
-A Thunder Snake Scale Ingot.
-
-D, raw_silver_worm_fang, 50, Raw Silver Worm Fang, multi, 100, 250
-A raw Silver Worm Fang.
-
-D, silver_worm_fang_ingot, 50, Silver Worm Fang Ingot, multi, 100, 250
-A Silver Worm Fang Ingot.
-
-D, raw_silver_worm_scale, 50, Raw Silver Worm Scale, multi, 100, 250
-A raw Silver Worm Scale.
-
-D, silver_worm_scale_ingot, 50, Silver Worm Scale Ingot, multi, 100, 250
-A Silver Worm Scale Ingot.
-
-D, raw_valgang_dragon_fang, 50, Raw Valgang Dragon Fang, multi, 100, 250
-A raw Valgang Dragon Fang.
-
-D, valgang_dragon_fang_ingot, 50, Valgang Dragon Fang Ingot, multi, 100, 250
-A Valgang Dragon Fang Ingot.
-
-D, raw_valgang_dragon_scale, 50, Raw Valgang Dragon Scale, multi, 100, 250
-A raw Valgang Dragon Scale.
-
-D, valgang_dragon_scale_ingot, 50, Valgang Dragon Scale Ingot, multi, 100, 250
-A Valgang Dragon Scale Ingot.
-
-D, raw_vulture_fang, 50, Raw Vulture Fang, multi, 100, 250
-A raw Vulture Fang.
-
-D, vulture_fang_ingot, 50, Vulture Fang Ingot, multi, 100, 250
-A Vulture Fang Ingot.
-
-D, vulture_tongue, 50, Vulture Tongue, multi, 100, 250
+D, vulture_tongue, 1, Vulture Tongue
 A Vulture Tongue.
 
-D, jack_bird_egg, 1, Jack Bird Egg, multi, 200000, 250000
+D, jack_bird_egg, 1, Jack Bird Egg
 A Jack Bird Egg.
 
-D, raw_jack_bird_hide, 1, Raw Jack Bird Hide, multi, 1500, 2750
-A raw Jack Bird Hide.
+D, jack_bird_meat, 1, Jack Bird Meat
+A Jack Bird Meat.
 
-D, jack_bird_hide_processed, 1, Processed Jack Bird Hide, multi, 3500, 4000
-A processed Jack Bird Hide.
-
-D, jack_bird_meat, 1, Jack Bird Meat, multi, 90000, 95000
-A piece of Jack Bird Meat.
-
-D, flame_rock_egg, 50, Flame Rock Egg, multi, 100, 250
+D, flame_rock_egg, 1, Flame Rock Egg
 A Flame Rock Egg.
 
-D, raw_needle_rabbit_hide, 50, Raw Needle Rabbit Hide, multi, 100, 250
-A raw Needle Rabbit Hide.
+D, needle_rabbit_meat, 1, Needle Rabbit Meat
+A Needle Rabbit Meat.
 
-D, needle_rabbit_hide_processed, 50, Processed Needle Rabbit Hide, multi, 100, 250
-A processed Needle Rabbit Hide.
-
-D, needle_rabbit_meat, 50, Needle Rabbit Meat, multi, 100, 250
-A piece of Needle Rabbit Meat.
-
-D, raw_needle_rabbit_horn, 50, Raw Needle Rabbit Horn, multi, 100, 250
-A raw Needle Rabbit Horn.
-
-D, needle_rabbit_horn_ingot, 50, Needle Rabbit Horn Ingot, multi, 100, 250
-A Needle Rabbit Horn Ingot.
-
-D, raw_orc_hide, 50, Raw Orc Hide, multi, 100, 250
-A raw Orc Hide.
-
-D, orc_hide_processed, 50, Processed Orc Hide, multi, 100, 250
-A processed Orc Hide.
-
-D, raw_silverback_hide, 50, Raw Silverback Hide, multi, 100, 250
-A raw Silverback Hide.
-
-D, silverback_hide_processed, 50, Processed Silverback Hide, multi, 100, 250
-A processed Silverback Hide.
-
-D, raw_battle boar_hide, 50, Raw Battle Boar Hide, multi, 100, 250
-A raw Battle Boar Hide.
-
-D, battle boar_hide_processed, 50, Processed Battle Boar Hide, multi, 100, 250
-A processed Battle Boar Hide.
-
-D, raw_sword_stag_hide, 50, Raw Sword Stag Hide, multi, 100, 250
-A raw Sword Stag Hide.
-
-D, sword_stag_hide_processed, 50, Processed Sword Stag Hide, multi, 100, 250
-A processed Sword Stag Hide.
-
-D, raw_sword_stag_horn, 50, Raw Sword Stag Horn, multi, 100, 250
-A raw Sword Stag Horn.
-
-D, sword_stag_horn_ingot, 50, Sword Stag Horn Ingot, multi, 100, 250
-A Sword Stag Horn Ingot.
-
-D, raw_troll_hide, 50, Raw Troll Hide, multi, 100, 250
-A raw Troll Hide.
-
-D, troll_hide_processed, 50, Processed Troll Hide, multi, 100, 250
-A processed Troll Hide.
-
-D, raw_metal_rabbit_hide, 50, Raw Metal Rabbit Hide, multi, 100, 250
-A raw Metal Rabbit Hide.
-
-D, metal_rabbit_hide_processed, 50, Processed Metal Rabbit Hide, multi, 100, 250
-A processed Metal Rabbit Hide.
-
-D, raw_kelpie_hide, 50, Raw Kelpie Hide, multi, 100, 250
-A raw Kelpie Hide.
-
-D, kelpie_hide_processed, 50, Processed Kelpie Hide, multi, 100, 250
-A processed Kelpie Hide.
-
-D, kelpie_wing, 50, Kelpie Wing, multi, 100, 250
+D, kelpie_wing, 1, Kelpie Wing
 A Kelpie Wing.
 
-D, raw_power_bull_hide, 50, Raw Power Bull Hide, multi, 100, 250
-A raw Power Bull Hide.
+D, barbarian_meat, 1, Barbarian Meat
+A Barbarian Meat.
 
-D, power_bull_hide_processed, 50, Processed Power Bull Hide, multi, 100, 250
-A processed Power Bull Hide.
+D, titan_alm_meat, 1, Titan Alm Meat
+A Titan Alm Meat.
 
-D, raw_power_bull_horn, 50, Raw Power Bull Horn, multi, 100, 250
-A raw Power Bull Horn.
+D, unicorn_blood, 1, Unicorn Blood
+A Unicorn Blood.
 
-D, power_bull_horn_ingot, 50, Power Bull Horn Ingot, multi, 100, 250
-A Power Bull Horn Ingot.
+D, ogre_meat, 1, Ogre Meat
+A Ogre Meat.
 
-D, raw_grand_treant_hide, 50, Raw Grand Treant Hide, multi, 100, 250
-A raw Grand Treant Hide.
+D, arachne_venom, 1, Arachne Venom
+A Arachne Venom.
 
-D, grand_treant_hide_processed, 50, Processed Grand Treant Hide, multi, 100, 250
-A processed Grand Treant Hide.
-
-D, raw_barbarian_hide, 50, Raw Barbarian Hide, multi, 100, 250
-A raw Barbarian Hide.
-
-D, barbarian_hide_processed, 50, Processed Barbarian Hide, multi, 100, 250
-A processed Barbarian Hide.
-
-D, barbarian_meat, 50, Barbarian Meat, multi, 100, 250
-A piece of Barbarian Meat.
-
-D, raw_skull_sheep_hide, 50, Raw Skull Sheep Hide, multi, 100, 250
-A raw Skull Sheep Hide.
-
-D, skull_sheep_hide_processed, 50, Processed Skull Sheep Hide, multi, 100, 250
-A processed Skull Sheep Hide.
-
-D, raw_skull_sheep_horn, 50, Raw Skull Sheep Horn, multi, 100, 250
-A raw Skull Sheep Horn.
-
-D, skull_sheep_horn_ingot, 50, Skull Sheep Horn Ingot, multi, 100, 250
-A Skull Sheep Horn Ingot.
-
-D, raw_fomoire_hide, 50, Raw Fomoire Hide, multi, 100, 250
-A raw Fomoire Hide.
-
-D, fomoire_hide_processed, 50, Processed Fomoire Hide, multi, 100, 250
-A processed Fomoire Hide.
-
-D, raw_fomoire_horn, 50, Raw Fomoire Horn, multi, 100, 250
-A raw Fomoire Horn.
-
-D, fomoire_horn_ingot, 50, Fomoire Horn Ingot, multi, 100, 250
-A Fomoire Horn Ingot.
-
-D, raw_black_rhino_hide, 50, Raw Black Rhino Hide, multi, 100, 250
-A raw Black Rhino Hide.
-
-D, black_rhino_hide_processed, 50, Processed Black Rhino Hide, multi, 100, 250
-A processed Black Rhino Hide.
-
-D, raw_black_rhino_horn, 50, Raw Black Rhino Horn, multi, 100, 250
-A raw Black Rhino Horn.
-
-D, black_rhino_horn_ingot, 50, Black Rhino Horn Ingot, multi, 100, 250
-A Black Rhino Horn Ingot.
-
-D, raw_titan_alm_hide, 50, Raw Titan Alm Hide, multi, 100, 250
-A raw Titan Alm Hide.
-
-D, titan_alm_hide_processed, 50, Processed Titan Alm Hide, multi, 100, 250
-A processed Titan Alm Hide.
-
-D, titan_alm_meat, 50, Titan Alm Meat, multi, 100, 250
-A piece of Titan Alm Bark.
-
-D, raw_unicorn_hide, 50, Raw Unicorn Hide, multi, 100, 250
-A raw Unicorn Hide.
-
-D, unicorn_hide_processed, 50, Processed Unicorn Hide, multi, 100, 250
-A processed Unicorn Hide.
-
-D, unicorn_blood, 50, Unicorn Blood, multi, 100, 250
-Unicorn Blood.
-
-D, raw_unicorn_horn, 50, Raw Unicorn Horn, multi, 100, 250
-A raw Unicorn Horn.
-
-D, unicorn_horn_ingot, 50, Unicorn Horn Ingot, multi, 100, 250
-A Unicorn Horn Ingot.
-
-D, raw_ogre_hide, 50, Raw Ogre Hide, multi, 100, 250
-A raw Ogre Hide.
-
-D, ogre_hide_processed, 50, Processed Ogre Hide, multi, 100, 250
-A processed Ogre Hide.
-
-D, ogre_meat, 50, Ogre Meat, multi, 100, 250
-A piece of Ogre Meat.
-
-D, raw_gryphon_hide, 50, Raw Gryphon Hide, multi, 100, 250
-A raw Gryphon Hide.
-
-D, gryphon_hide_processed, 50, Processed Gryphon Hide, multi, 100, 250
-A processed Gryphon Hide.
-
-D, raw_arachne_hide, 50, Raw Arachne Hide, multi, 100, 250
-A raw Arachne Hide.
-
-D, arachne_hide_processed, 50, Processed Arachne Hide, multi, 100, 250
-A processed Arachne Hide.
-
-D, arachne_venom, 50, Arachne Venom, multi, 100, 250
-Arachne Venom.
-
-D, raw_hippogriff_hide, 50, Raw Hippogriff Hide, multi, 100, 250
-A raw Hippogriff Hide.
-
-D, hippogriff_hide_processed, 50, Processed Hippogriff Hide, multi, 100, 250
-A processed Hippogriff Hide.
-
-D, raw_old_bison_hide, 50, Raw Old Bison Hide, multi, 100, 250
-A raw Old Bison Hide.
-
-D, old_bison_hide_processed, 50, Processed Old Bison Hide, multi, 100, 250
-A processed Old Bison Hide.
-
-D, raw_ape_hide, 50, Raw Ape Hide, multi, 100, 250
-A raw Ape Hide.
-
-D, ape_hide_processed, 50, Processed Ape Hide, multi, 100, 250
-A processed Ape Hide.
-
-D, raw_frog_shooter_scale, 50, Raw Frog Shooter Scale, multi, 100, 250
-A raw Frog Shooter Scale.
-
-D, frog_shooter_scale_ingot, 50, Frog Shooter Scale Ingot, multi, 100, 250
-A Frog Shooter Scale Ingot.
-
-D, frog_shooter_tongue, 50, Frog Shooter Tongue, multi, 100, 250
+D, frog_shooter_tongue, 1, Frog Shooter Tongue
 A Frog Shooter Tongue.
 
-D, raw_killer_ant_scale, 50, Raw Killer Ant Scale, multi, 100, 250
-A raw Killer Ant Scale.
+D, killer_ant_blood, 1, Killer Ant Blood
+A Killer Ant Blood.
 
-D, killer_ant_scale_ingot, 50, Killer Ant Scale Ingot, multi, 100, 250
-A Killer Ant Scale Ingot.
-
-D, killer_ant_blood, 50, Killer Ant Blood, multi, 100, 250
-Killer Ant Blood.
-
-D, raw_mad_beetle_scale, 50, Raw Mad Beetle Scale, multi, 100, 250
-A raw Mad Beetle Scale.
-
-D, mad_beetle_scale_ingot, 50, Mad Beetle Scale Ingot, multi, 100, 250
-A Mad Beetle Scale Ingot.
-
-D, mad_beetle_wing, 50, Mad Beetle Wing, multi, 100, 250
+D, mad_beetle_wing, 1, Mad Beetle Wing
 A Mad Beetle Wing.
 
-D, raw_deadly_hornet_scale, 50, Raw Deadly Hornet Scale, multi, 100, 250
-A raw Deadly Hornet Scale.
-
-D, deadly_hornet_scale_ingot, 50, Deadly Hornet Scale Ingot, multi, 100, 250
-A Deadly Hornet Scale Ingot.
-
-D, deadly_hornet_wing, 50, Deadly Hornet Wing, multi, 100, 250
+D, deadly_hornet_wing, 1, Deadly Hornet Wing
 A Deadly Hornet Wing.
 
-D, deadly_hornet_venom, 50, Deadly Hornet Venom, multi, 100, 250
-Deadly Hornet Venom.
+D, deadly_hornet_venom, 1, Deadly Hornet Venom
+A Deadly Hornet Venom.
 
-D, raw_aqua_serpent_scale, 50, Raw Aqua Serpent Scale, multi, 100, 250
-A raw Aqua Serpent Scale.
-
-D, aqua_serpent_scale_ingot, 50, Aqua Serpent Scale Ingot, multi, 100, 250
-A Aqua Serpent Scale Ingot.
-
-D, aqua_serpent_wing, 50, Aqua Serpent Wing, multi, 100, 250
+D, aqua_serpent_wing, 1, Aqua Serpent Wing
 A Aqua Serpent Wing.
 
-D, raw_crystal_turtle_scale, 50, Raw Crystal Turtle Scale, multi, 100, 250
-A raw Crystal Turtle Scale.
+D, mermaid_blood, 1, Mermaid Blood
+A Mermaid Blood.
 
-D, crystal_turtle_scale_ingot, 50, Crystal Turtle Scale Ingot, multi, 100, 250
-A Crystal Turtle Scale Ingot.
+D, peluda_venom, 1, Peluda Venom
+A Peluda Venom.
 
-D, raw_mermaid_scale, 50, Raw Mermaid Scale, multi, 100, 250
-A raw Mermaid Scale.
+D, venom_scorpion_venom, 1, Venom Scorpion Venom
+A Venom Scorpion Venom.
 
-D, mermaid_scale_ingot, 50, Mermaid Scale Ingot, multi, 100, 250
-A Mermaid Scale Ingot.
-
-D, mermaid_blood, 50, Mermaid Blood, multi, 100, 250
-Mermaid Blood.
-
-D, raw_merman_scale, 50, Raw Merman Scale, multi, 100, 250
-A raw Merman Scale.
-
-D, merman_scale_ingot, 50, Merman Scale Ingot, multi, 100, 250
-A Merman Scale Ingot.
-
-D, raw_voltimeria_scale, 50, Raw Voltimeria Scale, multi, 100, 250
-A raw Voltimeria Scale.
-
-D, voltimeria_scale_ingot, 50, Voltimeria Scale Ingot, multi, 100, 250
-A Voltimeria Scale Ingot.
-
-D, raw_obsidian_soldier_scale, 50, Raw Obsidian Soldier Scale, multi, 100, 250
-A raw Obsidian Soldier Scale.
-
-D, obsidian_soldier_scale_ingot, 50, Obsidian Soldier Scale Ingot, multi, 100, 250
-A Obsidian Soldier Scale Ingot.
-
-D, raw_peluda_scale, 50, Raw Peluda Scale, multi, 100, 250
-A raw Peluda Scale.
-
-D, peluda_scale_ingot, 50, Peluda Scale Ingot, multi, 100, 250
-A Peluda Scale Ingot.
-
-D, raw_peluda_horn, 50, Raw Peluda Horn, multi, 100, 250
-A raw Peluda Horn.
-
-D, peluda_horn_ingot, 50, Peluda Horn Ingot, multi, 100, 250
-A Peluda Horn Ingot.
-
-D, peluda_venom, 50, Peluda Venom, multi, 100, 250
-Peluda Venom.
-
-D, raw_cadmus_scale, 50, Raw Cadmus Scale, multi, 100, 250
-A raw Cadmus Scale.
-
-D, cadmus_scale_ingot, 50, Cadmus Scale Ingot, multi, 100, 250
-A Cadmus Scale Ingot.
-
-D, raw_venom_scorpion_scale, 50, Raw Venom Scorpion Scale, multi, 100, 250
-A raw Venom Scorpion Scale.
-
-D, venom_scorpion_scale_ingot, 50, Venom Scorpion Scale Ingot, multi, 100, 250
-A Venom Scorpion Scale Ingot.
-
-D, venom_scorpion_venom, 50, Venom Scorpion Venom, multi, 100, 250
-Venom Scorpion Venom.
-
-D, raw_ill_wyvern_scale, 50, Raw Ill Wyvern Scale, multi, 100, 250
-A raw Ill Wyvern Scale.
-
-D, ill_wyvern_scale_ingot, 50, Ill Wyvern Scale Ingot, multi, 100, 250
-A Ill Wyvern Scale Ingot.
-
-D, ill_wyvern_wing, 50, Ill Wyvern Wing, multi, 100, 250
+D, ill_wyvern_wing, 1, Ill Wyvern Wing
 A Ill Wyvern Wing.
 
-D, raw_gargoyle_scale, 50, Raw Gargoyle Scale, multi, 100, 250
-A raw Gargoyle Scale.
-
-D, gargoyle_scale_ingot, 50, Gargoyle Scale Ingot, multi, 100, 250
-A Gargoyle Scale Ingot.
-
-D, raw_armarosaurus_scale, 50, Raw Armarosaurus Scale, multi, 100, 250
-A raw Armarosaurus Scale.
-
-D, armarosaurus_scale_ingot, 50, Armarosaurus Scale Ingot, multi, 100, 250
-A Armarosaurus Scale Ingot.
-
-D, purple_moth_wing, 50, Purple Moth Wing, multi, 100, 250
+D, purple_moth_wing, 1, Purple Moth Wing
 A Purple Moth Wing.
 
-D, purple_moth_venom, 50, Purple Moth Venom, multi, 100, 250
-Purple Moth Venom.
+D, purple_moth_venom, 1, Purple Moth Venom
+A Purple Moth Venom.
 
-D, blue_papilio_wing, 50, Blue Papilio Wing, multi, 100, 250
+D, blue_papilio_wing, 1, Blue Papilio Wing
 A Blue Papilio Wing.
 
-D, blue_papilio_venom, 50, Blue Papilio Venom, multi, 100, 250
-Blue Papilio Venom.
+D, blue_papilio_venom, 1, Blue Papilio Venom
+A Blue Papilio Venom.
 
-D, bad_bat_wing, 50, Bad Bat Wing, multi, 100, 250
+D, bad_bat_wing, 1, Bad Bat Wing
 A Bad Bat Wing.
 
-D, crystal_mantis_wing, 50, Crystal Mantis Wing, multi, 100, 250
+D, crystal_mantis_wing, 1, Crystal Mantis Wing
 A Crystal Mantis Wing.
 
-D, firebird_wing, 50, Firebird Wing, multi, 100, 250
+D, firebird_wing, 1, Firebird Wing
 A Firebird Wing.
 
-D, gun_libellula_wing, 50, Gun Libellula Wing, multi, 100, 250
+D, gun_libellula_wing, 1, Gun Libellula Wing
 A Gun Libellula Wing.
 
-D, iguazu_wing, 50, Iguazu Wing, multi, 100, 250
+D, iguazu_wing, 1, Iguazu Wing
 A Iguazu Wing.
 
-D, raw_iguazu_horn, 50, Raw Iguazu Horn, multi, 100, 250
-A raw Iguazu Horn.
-
-D, iguazu_horn_ingot, 50, Iguazu Horn Ingot, multi, 100, 250
-A Iguazu Horn Ingot.
-
-D, dungeon_fly_wing, 50, Dungeon Fly Wing, multi, 100, 250
+D, dungeon_fly_wing, 1, Dungeon Fly Wing
 A Dungeon Fly Wing.
 
-D, light_quartz_meat, 50, Light Quartz Meat, multi, 100, 250
-A chunk of Light Quartz.
+D, light_quartz_meat, 1, Light Quartz Meat
+A Light Quartz Meat.
 
-D, bloody_hive_blood, 50, Bloody Hive Blood, multi, 100, 250
-Bloody Hive Blood.
+D, bloody_hive_blood, 1, Bloody Hive Blood
+A Bloody Hive Blood.
 
-D, bloody_hive_venom, 50, Bloody Hive Venom, multi, 100, 250
-Bloody Hive Venom.
+D, bloody_hive_venom, 1, Bloody Hive Venom
+A Bloody Hive Venom.
 
-D, dark_fungus_venom, 50, Dark Fungus Venom, multi, 100, 250
-Dark Fungus Venom.
+D, dark_fungus_venom, 1, Dark Fungus Venom
+A Dark Fungus Venom.
 
-D, viscum_venom, 50, Viscum Venom, multi, 100, 250
-Viscum Venom.
+D, viscum_venom, 1, Viscum Venom
+A Viscum Venom.
 
-D, poison_vermis_venom, 50, Poison Vermis Venom, multi, 100, 250
-Poison Vermis Venom.
+D, poison_vermis_venom, 1, Poison Vermis Venom
+A Poison Vermis Venom.
 
-I, raw_cloth, 0, Raw Cloth, multi, 100, 250
-Raw Cloth.
+# Natural Materials and Items
 
-I, cloth_processed, 0, Processed Cloth, multi, 500, 750
-Processed Cloth.
+I, cotton_thread, 0, Cotton Thread
+Cotton thread
 
-I, raw_padded, 2, Raw Padded, multi, 100, 250
-Raw Padded.
+I, cotton_cloth, 0, Cotton Cloth
+Cotton cloth
 
-I, padded_processed, 2, Processed Padded, multi, 100, 250
-Processed Padded.
+I, leather_pads, 2, Leather Pads
+Leather pads for padded armor
 
-I, raw_leather, 3, Raw Leather, multi, 100, 250
-Raw Leather.
+I, padded_cotton_cloth, 2, Padded Cloth
+Cotton cloth padded with leather
 
-I, leather_processed, 3, Processed Leather, multi, 100, 250
-Processed Leather.
+I, raw_leather, 3, Raw Leather
+Raw leather for use in leather armor and pads
 
-I, raw_hardened_leather, 5, Raw Hardened Leather, multi, 100, 250
-Raw Hardened Leather.
+I, leather_processed, 3, Processed Leather
+Processed leather for use in leather armor
 
-I, hardened_leather_processed, 5, Processed Hardened Leather, multi, 100, 250
-Processed Hardened Leather.
+I, hardened_leather, 5, Hardened Leather
+Leather hardened with iron
 
-I, tin_ore, 3, Tin Ore, multi, 335, 362
-A piece of Tin Ore.
+# Magic Stones
 
-I, tin_ingot, 3, Tin Ingot, multi, 100, 250
-A Tin Ingot.
-
-I, cadmium_ore, 5, Cadmium Ore, multi, 100, 260
-A piece of Cadmium Ore.
-
-I, cadmium_ingot, 5, Cadmium Ingot, multi, 100, 260
-A Cadmium Ingot.
-
-I, coal_ore, 5, Coal Ore, multi, 100, 270
-A piece of Coal Ore.
-
-I, zinc_ore, 7, Zinc Ore, multi, 100, 260
-A piece of Zinc Ore.
-
-I, zinc_ingot, 7, Zinc Ingot, multi, 100, 260
-A Zinc Ingot.
-
-I, silver_ore, 7, Silver Ore, multi, 100, 260
-A piece of Silver Ore.
-
-I, silver_ingot, 7, Silver Ingot, multi, 100, 260
-A Silver Ingot
-
-I, copper_ore, 8, Copper Ore, multi, 100, 250
-A piece of Copper Ore.
-
-I, copper_ingot, 8, Copper Ingot, multi, 100, 250
-A Copper Ingot.
-
-I, platinum_ore, 14, Platinum Ore, multi, 100, 250
-A piece of Platinum Ore.
-
-I, platinum_ingot, 14, Platinum Ingot, multi, 100, 250
-A Platinum Ingot.
-
-I, iron_ore, 15, Iron Ore, multi, 100, 250
-A piece of Iron Ore.
-
-I, iron_ingot, 15, Iron Ingot, multi, 100, 250
-A Iron Ingot.
-
-I, titanium_ore, 28, Titanium Ore, multi, 100, 250
-A piece of Titanium Ore.
-
-I, titanium_ingot, 28, Titanium Ingot, multi, 100, 250
-A Titanium Ingot.
-
-I, tungsten_ore, 28, Tungsten Ore, multi, 100, 250
-A piece of Tungsten Ore.
-
-I, tungsten_ingot, 28, Tungsten Ingot, multi, 100, 250
-A Tungsten Ingot.
-
-I, meteoric_iron_ore, 28, Meteoric Iron Ore, multi, 100, 250
-A piece of Meteoric Iron Ore.
-
-I, meteoric_iron_ingot, 28, Meteoric Iron Ingot, multi, 100, 250
-A Meteoric Iron Ingot.
-
-I, golanthium_ore, 28, Golanthium Ore, multi, 100, 250
-A piece of Golanthium Ore.
-
-I, golanthium_ingot, 28, Golanthium Ingot, multi, 100, 250
-A Golanthium Ingot.
-
-I, bronze_ingot, 28, Bronze Ingot, multi, 100, 250
-A Bronze Ingot.
-
-I, steel_ingot, 28, Steel Ingot, multi, 100, 250
-A Steel Ingot.
-
-I, hardened_steel_ingot, 28, Hardened Steel Ingot, multi, 100, 250
-A Hardened Steel Ingot.
-
-I, tungsten_carbide_ingot, 28, Tungsten Carbide Ingot, multi, 100, 250
-A Tungsten Carbide Ingot.
-
-I, dark_steel_ingot, 28, Dark Steel Ingot, multi, 100, 250
-A Dark Steel Ingot.
-
-I, mithril_ingot, 28, Mithril Ingot, multi, 100, 250
-A Mithril Ingot.
-
-I, adamantite_ingot, 28, Adamantite Ingot, multi, 100, 250
-A Adamantite Ingot.
-
-I, trinium_ingot, 28, Trinium Ingot, multi, 100, 250
-A Trinium Ingot.
-
-I, raw_chrysocolla, 7, Raw Chrysocolla, multi, 100, 250
-A Raw Chrysocolla Gem.
-
-I, processed_chrysocolla, 7, Processed Chrysocolla, multi, 100, 250
-A Processed Chrysocolla Gem.
-
-I, raw_serpentine, 28, Raw Serpentine, multi, 100, 250
-A Raw Serpentine Gem.
-
-I, processed_serpentine, 28, Processed Serpentine, multi, 100, 250
-A Processed Serpentine Gem.
-
-I, raw_ammolite, 28, Raw Ammolite, multi, 100, 250
-A Raw Ammolite Gem.
-
-I, processed_ammolite, 28, Processed Ammolite, multi, 100, 250
-A Processed Ammolite Gem.
-
-I, raw_azurite, 28, Raw Azurite, multi, 100, 250
-A Raw Azurite Gem.
-
-I, processed_azurite, 28, Processed Azurite, multi, 100, 250
-A Processed Azurite Gem.
-
-I, raw_malachite, 28, Raw Malachite, multi, 100, 250
-A Raw Malachite Gem.
-
-I, processed_malachite, 28, Processed Malachite, multi, 100, 250
-A Processed Malachite Gem.
-
-I, raw_rhodochrosite, 28, Raw Rhodochrosite, multi, 100, 250
-A Raw Rhodochrosite Gem.
-
-I, processed_rhodochrosite, 28, Processed Rhodochrosite, multi, 100, 250
-A Processed Rhodochrosite Gem.
-
-I, raw_fluorite, 28, Raw Fluorite, multi, 100, 250
-A Raw Fluorite Gem.
-
-I, processed_fluorite, 28, Processed Fluorite, multi, 100, 250
-A Processed Fluorite Gem.
-
-I, raw_kyanite, 28, Raw Kyanite, multi, 100, 250
-A Raw Kyanite Gem.
-
-I, processed_kyanite, 28, Processed Kyanite, multi, 100, 250
-A Processed Kyanite Gem.
-
-I, raw_apatite, 28, Raw Apatite, multi, 100, 250
-A Raw Apatite Gem.
-
-I, processed_apatite, 28, Processed Apatite, multi, 100, 250
-A Processed Apatite Gem.
-
-I, raw_lapis_lazuli, 28, Raw Lapis Lazuli, multi, 100, 250
-A Raw Lapis Lazuli Gem.
-
-I, processed_lapis_lazuli, 28, Processed Lapis Lazuli, multi, 100, 250
-A Processed Lapis Lazuli Gem.
-
-I, raw_obsidian, 28, Raw Obsidian, multi, 100, 250
-A Raw Obsidian Gem.
-
-I, processed_obsidian, 28, Processed Obsidian, multi, 100, 250
-A Processed Obsidian Gem.
-
-I, raw_turquoise, 28, Raw Turquoise, multi, 100, 250
-A Raw Turquoise Gem.
-
-I, processed_turquoise, 28, Processed Turquoise, multi, 100, 250
-A Processed Turquoise Gem.
-
-I, raw_titanite, 28, Raw Titanite, multi, 100, 250
-A Raw Titanite Gem.
-
-I, processed_titanite, 28, Processed Titanite, multi, 100, 250
-A Processed Titanite Gem.
-
-I, raw_opal, 28, Raw Opal, multi, 100, 250
-A Raw Opal Gem.
-
-I, processed_opal, 28, Processed Opal, multi, 100, 250
-A Processed Opal Gem.
-
-I, raw_diopside, 28, Raw Diopside, multi, 100, 250
-A Raw Diopside Gem.
-
-I, processed_diopside, 28, Processed Diopside, multi, 100, 250
-A Processed Diopside Gem.
-
-I, raw_rhodonite, 28, Raw Rhodonite, multi, 100, 250
-A Raw Rhodonite Gem.
-
-I, processed_rhodonite, 28, Processed Rhodonite, multi, 100, 250
-A Processed Rhodonite Gem.
-
-I, raw_sodalite, 28, Raw Sodalite, multi, 100, 250
-A Raw Sodalite Gem.
-
-I, processed_sodalite, 28, Processed Sodalite, multi, 100, 250
-A Processed Sodalite Gem.
-
-I, raw_andesine, 28, Raw Andesine, multi, 100, 250
-A Raw Andesine Gem.
-
-I, processed_andesine, 28, Processed Andesine, multi, 100, 250
-A Processed Andesine Gem.
-
-I, raw_zoisite, 28, Raw Zoisite, multi, 100, 250
-A Raw Zoisite Gem.
-
-I, processed_zoisite, 28, Processed Zoisite, multi, 100, 250
-A Processed Zoisite Gem.
-
-I, raw_blizzard_stone, 28, Raw Blizzard Stone, multi, 100, 250
-A Raw Blizzard Stone Gem.
-
-I, processed_blizzard_stone, 28, Processed Blizzard Stone, multi, 100, 250
-A Processed Blizzard Stone Gem.
-
-I, raw_indraneelam, 28, Raw Indraneelam, multi, 100, 250
-A Raw Indraneelam Gem.
-
-I, processed_indraneelam, 28, Processed Indraneelam, multi, 100, 250
-A Processed Indraneelam Gem.
-
-I, raw_jade, 28, Raw Jade, multi, 100, 250
-A Raw Jade Gem.
-
-I, processed_jade, 28, Processed Jade, multi, 100, 250
-A Processed Jade Gem.
-
-I, raw_labradorite, 28, Raw Labradorite, multi, 100, 250
-A Raw Labradorite Gem.
-
-I, processed_labradorite, 28, Processed Labradorite, multi, 100, 250
-A Processed Labradorite Gem.
-
-I, raw_moonstone, 28, Raw Moonstone, multi, 100, 250
-A Raw Moonstone Gem.
-
-I, processed_moonstone, 28, Processed Moonstone, multi, 100, 250
-A Processed Moonstone Gem.
-
-I, raw_prehnite, 28, Raw Prehnite, multi, 100, 250
-A Raw Prehnite Gem.
-
-I, processed_prehnite, 28, Processed Prehnite, multi, 100, 250
-A Processed Prehnite Gem.
-
-I, raw_sunstone, 28, Raw Sunstone, multi, 100, 250
-A Raw Sunstone Gem.
-
-I, processed_sunstone, 28, Processed Sunstone, multi, 100, 250
-A Processed Sunstone Gem.
-
-I, raw_tanzanite, 28, Raw Tanzanite, multi, 100, 250
-A Raw Tanzanite Gem.
-
-I, processed_tanzanite, 28, Processed Tanzanite, multi, 100, 250
-A Processed Tanzanite Gem.
-
-I, raw_zoisite, 28, Raw Zoisite, multi, 100, 250
-A Raw Zoisite Gem.
-
-I, processed_zoisite, 28, Processed Zoisite, multi, 100, 250
-A Processed Zoisite Gem.
-
-I, raw_onyx, 28, Raw Onyx, multi, 100, 250
-A Raw Onyx Gem.
-
-I, processed_onyx, 28, Processed Onyx, multi, 100, 250
-A Processed Onyx Gem.
-
-I, raw_agate, 28, Raw Agate, multi, 100, 250
-A Raw Agate Gem.
-
-I, processed_agate, 28, Processed Agate, multi, 100, 250
-A Processed Agate Gem.
-
-I, raw_garnet, 28, Raw Garnet, multi, 100, 250
-A Raw Garnet Gem.
-
-I, processed_garnet, 28, Processed Garnet, multi, 100, 250
-A Processed Garnet Gem.
-
-I, raw_garnet, 28, Raw Garnet, multi, 100, 250
-A Raw Garnet Gem.
-
-I, processed_garnet, 28, Processed Garnet, multi, 100, 250
-A Processed Garnet Gem.
-
-I, raw_aventurine, 28, Raw Aventurine, multi, 100, 250
-A Raw Aventurine Gem.
-
-I, processed_aventurine, 28, Processed Aventurine, multi, 100, 250
-A Processed Aventurine Gem.
-
-I, raw_hessonite, 28, Raw Hessonite, multi, 100, 250
-A Raw Hessonite Gem.
-
-I, processed_hessonite, 28, Processed Hessonite, multi, 100, 250
-A Processed Hessonite Gem.
-
-I, raw_jasper, 28, Raw Jasper, multi, 100, 250
-A Raw Jasper Gem.
-
-I, processed_jasper, 28, Processed Jasper, multi, 100, 250
-A Processed Jasper Gem.
-
-I, raw_kunzite, 28, Raw Kunzite, multi, 100, 250
-A Raw Kunzite Gem.
-
-I, processed_kunzite, 28, Processed Kunzite, multi, 100, 250
-A Processed Kunzite Gem.
-
-I, raw_peridot, 28, Raw Peridot, multi, 100, 250
-A Raw Peridot Gem.
-
-I, processed_peridot, 28, Processed Peridot, multi, 100, 250
-A Processed Peridot Gem.
-
-I, raw_petalite, 28, Raw Petalite, multi, 100, 250
-A Raw Petalite Gem.
-
-I, processed_petalite, 28, Processed Petalite, multi, 100, 250
-A Processed Petalite Gem.
-
-I, raw_spectrolite, 28, Raw Spectrolite, multi, 100, 250
-A Raw Spectrolite Gem.
-
-I, processed_spectrolite, 28, Processed Spectrolite, multi, 100, 250
-A Processed Spectrolite Gem.
-
-I, raw_danburite, 28, Raw Danburite, multi, 100, 250
-A Raw Danburite Gem.
-
-I, processed_danburite, 28, Processed Danburite, multi, 100, 250
-A Processed Danburite Gem.
-
-I, raw_citrine, 28, Raw Citrine, multi, 100, 250
-A Raw Citrine Gem.
-
-I, processed_citrine, 28, Processed Citrine, multi, 100, 250
-A Processed Citrine Gem.
-
-I, raw_amethyst, 28, Raw Amethyst, multi, 100, 250
-A Raw Amethyst Gem.
-
-I, processed_amethyst, 28, Processed Amethyst, multi, 100, 250
-A Processed Amethyst Gem.
-
-I, raw_ametrine, 28, Raw Ametrine, multi, 100, 250
-A Raw Ametrine Gem.
-
-I, processed_ametrine, 28, Processed Ametrine, multi, 100, 250
-A Processed Ametrine Gem.
-
-I, raw_bloodstone, 28, Raw Bloodstone, multi, 100, 250
-A Raw Bloodstone Gem.
-
-I, processed_bloodstone, 28, Processed Bloodstone, multi, 100, 250
-A Processed Bloodstone Gem.
-
-I, raw_iolite, 28, Raw Iolite, multi, 100, 250
-A Raw Iolite Gem.
-
-I, processed_iolite, 28, Processed Iolite, multi, 100, 250
-A Processed Iolite Gem.
-
-I, raw_quartz, 28, Raw Quartz, multi, 100, 250
-A Raw Quartz Gem.
-
-I, processed_quartz, 28, Processed Quartz, multi, 100, 250
-A Processed Quartz Gem.
-
-I, raw_rutilated_quartz, 28, Raw Rutilated Quartz, multi, 100, 250
-A Raw Rutilated Quartz Gem.
-
-I, processed_rutilated_quartz, 28, Processed Rutilated Quartz, multi, 100, 250
-A Processed Rutilated Quartz Gem.
-
-I, raw_spessartite, 28, Raw Spessartite, multi, 100, 250
-A Raw Spessartite Gem.
-
-I, processed_spessartite, 28, Processed Spessartite, multi, 100, 250
-A Processed Spessartite Gem.
-
-I, raw_tiger_eye, 28, Raw Tiger eye, multi, 100, 250
-A Raw Tiger eye Gem.
-
-I, processed_tiger_eye, 28, Processed Tiger eye, multi, 100, 250
-A Processed Tiger eye Gem.
-
-I, raw_tsavorite, 28, Raw Tsavorite, multi, 100, 250
-A Raw Tsavorite Gem.
-
-I, processed_tsavorite, 28, Processed Tsavorite, multi, 100, 250
-A Processed Tsavorite Gem.
-
-I, raw_spinel, 28, Raw Spinel, multi, 100, 250
-A Raw Spinel Gem.
-
-I, processed_spinel, 28, Processed Spinel, multi, 100, 250
-A Processed Spinel Gem.
-
-I, raw_emerald, 28, Raw Emerald, multi, 100, 250
-A Raw Emerald Gem.
-
-I, processed_emerald, 28, Processed Emerald, multi, 100, 250
-A Processed Emerald Gem.
-
-I, raw_zircon, 28, Raw Zircon, multi, 100, 250
-A Raw Zircon Gem.
-
-I, processed_zircon, 28, Processed Zircon, multi, 100, 250
-A Processed Zircon Gem.
-
-I, raw_aquamarine, 28, Raw Aquamarine, multi, 100, 250
-A Raw Aquamarine Gem.
-
-I, processed_aquamarine, 28, Processed Aquamarine, multi, 100, 250
-A Processed Aquamarine Gem.
-
-I, raw_beryl, 28, Raw Beryl, multi, 100, 250
-A Raw Beryl Gem.
-
-I, processed_beryl, 28, Processed Beryl, multi, 100, 250
-A Processed Beryl Gem.
-
-I, raw_bixbite, 28, Raw Bixbite, multi, 100, 250
-A Raw Bixbite Gem.
-
-I, processed_bixbite, 28, Processed Bixbite, multi, 100, 250
-A Processed Bixbite Gem.
-
-I, raw_goshenite, 28, Raw Goshenite, multi, 100, 250
-A Raw Goshenite Gem.
-
-I, processed_goshenite, 28, Processed Goshenite, multi, 100, 250
-A Processed Goshenite Gem.
-
-I, raw_heliodor, 28, Raw Heliodor, multi, 100, 250
-A Raw Heliodor Gem.
-
-I, processed_heliodor, 28, Processed Heliodor, multi, 100, 250
-A Processed Heliodor Gem.
-
-I, raw_morganite, 28, Raw Morganite, multi, 100, 250
-A Raw Morganite Gem.
-
-I, processed_morganite, 28, Processed Morganite, multi, 100, 250
-A Processed Morganite Gem.
-
-I, raw_topaz, 28, Raw Topaz, multi, 100, 250
-A Raw Topaz Gem.
-
-I, processed_topaz, 28, Processed Topaz, multi, 100, 250
-A Processed Topaz Gem.
-
-I, raw_chrysoberyl, 28, Raw Chrysoberyl, multi, 100, 250
-A Raw Chrysoberyl Gem.
-
-I, processed_chrysoberyl, 28, Processed Chrysoberyl, multi, 100, 250
-A Processed Chrysoberyl Gem.
-
-I, raw_taaffeite, 28, Raw Taaffeite, multi, 100, 250
-A Raw Taaffeite Gem.
-
-I, processed_taaffeite, 28, Processed Taaffeite, multi, 100, 250
-A Processed Taaffeite Gem.
-
-I, raw_sang-e-maryam, 28, Raw Sang-E-Maryam, multi, 100, 250
-A Raw Sang-E-Maryam Gem.
-
-I, processed_sang-e-maryam, 28, Processed Sang-E-Maryam, multi, 100, 250
-A Processed Sang-E-Maryam Gem.
-
-I, raw_sapphire, 28, Raw Sapphire, multi, 100, 250
-A Raw Sapphire Gem.
-
-I, processed_sapphire, 28, Processed Sapphire, multi, 100, 250
-A Processed Sapphire Gem.
-
-I, raw_ruby, 28, Raw Ruby, multi, 100, 250
-A Raw Ruby Gem.
-
-I, processed_ruby, 28, Processed Ruby, multi, 100, 250
-A Processed Ruby Gem.
-
-I, raw_neelam, 28, Raw Neelam, multi, 100, 250
-A Raw Neelam Gem.
-
-I, processed_neelam, 28, Processed Neelam, multi, 100, 250
-A Processed Neelam Gem.
-
-I, raw_padparadscha, 28, Raw Padparadscha, multi, 100, 250
-A Raw Padparadscha Gem.
-
-I, processed_padparadscha, 28, Processed Padparadscha, multi, 100, 250
-A Processed Padparadscha Gem.
-
-D, tiny_tiny_magic_stone, 1, Tiny Magic Stone Sliver, multi, 100, 200
+D, tiny_tiny_magic_stone, 1, Tiny Magic Stone Sliver
 A tiny sliver of a magic stone.
 
-D, tiny_small_magic_stone, 1, Small Magic Stone Sliver, multi, 100, 200
+D, tiny_small_magic_stone, 1, Small Magic Stone Sliver
 A small sliver of a magic stone.
 
-D, tiny_medium_magic_stone, 1, Medium Magic Stone Sliver, multi, 100, 200
+D, tiny_medium_magic_stone, 1, Medium Magic Stone Sliver
 A medium sliver of a magic stone.
 
-D, tiny_regular_magic_stone, 1, Magic Stone Sliver, multi, 100, 200
+D, tiny_regular_magic_stone, 1, Magic Stone Sliver
 A regular sliver of a magic stone.
 
-D, tiny_large_magic_stone, 1, Large Magic Stone Sliver, multi, 100, 200
+D, tiny_large_magic_stone, 1, Large Magic Stone Sliver
 A large sliver of a magic stone.
 
-D, tiny_huge_magic_stone, 1, Huge Magic Stone Sliver, multi, 100, 200
+D, tiny_huge_magic_stone, 1, Huge Magic Stone Sliver
 A huge sliver of a magic stone.
 
-D, small_tiny_magic_stone, 3, Tiny Magic Stone Fragment, multi, 100, 200
+D, small_tiny_magic_stone, 3, Tiny Magic Stone Fragment
 A tiny fragment of a magic stone.
 
-D, small_small_magic_stone, 3, Small Magic Stone Fragment, multi, 100, 200
+D, small_small_magic_stone, 3, Small Magic Stone Fragment
 A small fragment of a magic stone.
 
-D, small_medium_magic_stone, 3, Medium Magic Stone Fragment, multi, 100, 200
+D, small_medium_magic_stone, 3, Medium Magic Stone Fragment
 A medium fragment of a magic stone.
 
-D, small_regular_magic_stone, 3, Magic Stone Fragment, multi, 100, 200
+D, small_regular_magic_stone, 3, Magic Stone Fragment
 A regular fragment of a magic stone.
 
-D, small_large_magic_stone, 3, Large Magic Stone Fragment, multi, 100, 200
+D, small_large_magic_stone, 3, Large Magic Stone Fragment
 A large fragment of a magic stone.
 
-D, small_huge_magic_stone, 3, Huge Magic Stone Fragment, multi, 100, 200
+D, small_huge_magic_stone, 3, Huge Magic Stone Fragment
 A huge fragment of a magic stone.
 
-D, medium_tiny_magic_stone, 5, Tiny Magic Stone Chunk, multi, 100, 200
+D, medium_tiny_magic_stone, 5, Tiny Magic Stone Chunk
 A tiny chunk of a magic stone.
 
-D, medium_small_magic_stone, 5, Small Magic Stone Chunk, multi, 100, 200
+D, medium_small_magic_stone, 5, Small Magic Stone Chunk
 A small chunk of a magic stone.
 
-D, medium_medium_magic_stone, 5, Medium Magic Stone Chunk, multi, 100, 200
+D, medium_medium_magic_stone, 5, Medium Magic Stone Chunk
 A medium chunk of a magic stone.
 
-D, medium_regular_magic_stone, 5, Magic Stone Chunk, multi, 100, 200
+D, medium_regular_magic_stone, 5, Magic Stone Chunk
 A regular chunk of a magic stone.
 
-D, medium_large_magic_stone, 5, Large Magic Stone Chunk, multi, 100, 200
+D, medium_large_magic_stone, 5, Large Magic Stone Chunk
 A large chunk of a magic stone.
 
-D, medium_huge_magic_stone, 5, Huge Magic Stone Chunk, multi, 100, 200
+D, medium_huge_magic_stone, 5, Huge Magic Stone Chunk
 A huge chunk of a magic stone.
 
-D, regular_tiny_magic_stone, 5, Tiny Magic Stone , multi, 100, 200
+D, regular_tiny_magic_stone, 5, Tiny Magic Stone
 A tiny magic stone.
 
-D, regular_small_magic_stone, 5, Small Magic Stone , multi, 100, 200
+D, regular_small_magic_stone, 5, Small Magic Stone
 A small magic stone.
 
-D, regular_medium_magic_stone, 5, Medium Magic Stone , multi, 100, 200
+D, regular_medium_magic_stone, 5, Medium Magic Stone
 A medium magic stone.
 
-D, regular_regular_magic_stone, 5, Magic Stone , multi, 100, 200
+D, regular_regular_magic_stone, 5, Magic Stone
 A regular magic stone.
 
-D, regular_large_magic_stone, 5, Large Magic Stone , multi, 100, 200
+D, regular_large_magic_stone, 5, Large Magic Stone
 A large magic stone.
 
-D, regular_huge_magic_stone, 5, Huge Magic Stone , multi, 100, 200
+D, regular_huge_magic_stone, 5, Huge Magic Stone
 A huge magic stone.
 
-D, large_tiny_magic_stone, 5, Tiny Magic Stone Crystal, multi, 100, 200
+D, large_tiny_magic_stone, 5, Tiny Magic Stone Crystal
 A tiny magic stone crystal.
 
-D, large_small_magic_stone, 5, Small Magic Stone Crystal, multi, 100, 200
+D, large_small_magic_stone, 5, Small Magic Stone Crystal
 A small magic stone crystal.
 
-D, large_medium_magic_stone, 5, Medium Magic Stone Crystal, multi, 100, 200
+D, large_medium_magic_stone, 5, Medium Magic Stone Crystal
 A medium magic stone crystal.
 
-D, large_regular_magic_stone, 5, Magic Stone Crystal, multi, 100, 200
+D, large_regular_magic_stone, 5, Magic Stone Crystal
 A regular magic stone crystal.
 
-D, large_large_magic_stone, 5, Large Magic Stone Crystal, multi, 100, 200
+D, large_large_magic_stone, 5, Large Magic Stone Crystal
 A large magic stone crystal.
 
-D, large_huge_magic_stone, 5, Huge Magic Stone Crystal, multi, 100, 200
+D, large_huge_magic_stone, 5, Huge Magic Stone Crystal
 A huge magic stone crystal.
 
-D, huge_tiny_magic_stone, 5, Tiny Magic Stone Cluster, multi, 100, 200
+D, huge_tiny_magic_stone, 5, Tiny Magic Stone Cluster
 A tiny cluster of magic stones.
 
-D, huge_small_magic_stone, 5, Small Magic Stone Cluster, multi, 100, 200
+D, huge_small_magic_stone, 5, Small Magic Stone Cluster
 A small cluster of magic stones.
 
-D, huge_medium_magic_stone, 5, Medium Magic Stone Cluster, multi, 100, 200
+D, huge_medium_magic_stone, 5, Medium Magic Stone Cluster
 A medium cluster of magic stones.
 
-D, huge_regular_magic_stone, 5, Magic Stone Cluster, multi, 100, 200
+D, huge_regular_magic_stone, 5, Magic Stone Cluster
 A regular cluster of magic stones.
 
-D, huge_large_magic_stone, 5, Large Magic Stone Cluster, multi, 100, 200
+D, huge_large_magic_stone, 5, Large Magic Stone Cluster
 A large cluster of magic stones.
 
-D, huge_huge_magic_stone, 5, Huge Magic Stone Cluster, multi, 100, 200
+D, huge_huge_magic_stone, 5, Huge Magic Stone Cluster
 A huge cluster of magic stones.
 
-D, tiny_strength_falna, 5, Tiny Strength Falna, multi, 0, 0
+# Falna
+
+D, tiny_strength_falna, 5, Tiny Strength Falna
 A gem found in monsters that can be used to grow strength in an adventurer.
 
-D, tiny_magic_falna, 5, Tiny Magic Falna, multi, 0, 0
+D, tiny_magic_falna, 5, Tiny Magic Falna
 A gem found in monsters that can be used to grow magic in an adventurer.
 
-D, tiny_endurance_falna, 5, Tiny Endurance Falna, multi, 0, 0
+D, tiny_endurance_falna, 5, Tiny Endurance Falna
 A gem found in monsters that can be used to grow endurance in an adventurer.
 
-D, tiny_dexterity_falna, 5, Tiny Dexterity Falna, multi, 0, 0
+D, tiny_dexterity_falna, 5, Tiny Dexterity Falna
 A gem found in monsters that can be used to grow dexterity in an adventurer.
 
-D, tiny_agility_falna, 5, Tiny Agility Falna, multi, 0, 0
+D, tiny_agility_falna, 5, Tiny Agility Falna
 A gem found in monsters that can be used to grow agility in an adventurer.
 
-D, small_strength_falna, 5, Small Strength Falna, multi, 0, 0
+D, small_strength_falna, 5, Small Strength Falna
 A gem found in monsters that can be used to grow strength in an adventurer.
 
-D, small_magic_falna, 5, Small Magic Falna, multi, 0, 0
+D, small_magic_falna, 5, Small Magic Falna
 A gem found in monsters that can be used to grow magic in an adventurer.
 
-D, small_endurance_falna, 5, Small Endurance Falna, multi, 0, 0
+D, small_endurance_falna, 5, Small Endurance Falna
 A gem found in monsters that can be used to grow endurance in an adventurer.
 
-D, small_dexterity_falna, 5, Small Dexterity Falna, multi, 0, 0
+D, small_dexterity_falna, 5, Small Dexterity Falna
 A gem found in monsters that can be used to grow dexterity in an adventurer.
 
-D, small_agility_falna, 5, Small Agility Falna, multi, 0, 0
+D, small_agility_falna, 5, Small Agility Falna
 A gem found in monsters that can be used to grow agility in an adventurer.
 
-D, medium_strength_falna, 5, Medium Strength Falna, multi, 0, 0
+D, medium_strength_falna, 5, Medium Strength Falna
 A gem found in monsters that can be used to grow strength in an adventurer.
 
-D, medium_magic_falna, 5, Medium Magic Falna, multi, 0, 0
+D, medium_magic_falna, 5, Medium Magic Falna
 A gem found in monsters that can be used to grow magic in an adventurer.
 
-D, medium_endurance_falna, 5, Medium Endurance Falna, multi, 0, 0
+D, medium_endurance_falna, 5, Medium Endurance Falna
 A gem found in monsters that can be used to grow endurance in an adventurer.
 
-D, medium_dexterity_falna, 5, Medium Dexterity Falna, multi, 0, 0
+D, medium_dexterity_falna, 5, Medium Dexterity Falna
 A gem found in monsters that can be used to grow dexterity in an adventurer.
 
-D, medium_agility_falna, 5, Medium Agility Falna, multi, 0, 0
+D, medium_agility_falna, 5, Medium Agility Falna
 A gem found in monsters that can be used to grow agility in an adventurer.
 
-D, regular_strength_falna, 5, Regular Strength Falna, multi, 0, 0
+D, regular_strength_falna, 5, Regular Strength Falna
 A gem found in monsters that can be used to grow strength in an adventurer.
 
-D, regular_magic_falna, 5, Regular Magic Falna, multi, 0, 0
+D, regular_magic_falna, 5, Regular Magic Falna
 A gem found in monsters that can be used to grow magic in an adventurer.
 
-D, regular_endurance_falna, 5, Regular Endurance Falna, multi, 0, 0
+D, regular_endurance_falna, 5, Regular Endurance Falna
 A gem found in monsters that can be used to grow endurance in an adventurer.
 
-D, regular_dexterity_falna, 5, Regular Dexterity Falna, multi, 0, 0
+D, regular_dexterity_falna, 5, Regular Dexterity Falna
 A gem found in monsters that can be used to grow dexterity in an adventurer.
 
-D, regular_agility_falna, 5, Regular Agility Falna, multi, 0, 0
+D, regular_agility_falna, 5, Regular Agility Falna
 A gem found in monsters that can be used to grow agility in an adventurer.
 
-D, large_strength_falna, 5, Large Strength Falna, multi, 0, 0
+D, large_strength_falna, 5, Large Strength Falna
 A gem found in monsters that can be used to grow strength in an adventurer.
 
-D, large_magic_falna, 5, Large Magic Falna, multi, 0, 0
+D, large_magic_falna, 5, Large Magic Falna
 A gem found in monsters that can be used to grow magic in an adventurer.
 
-D, large_endurance_falna, 5, Large Endurance Falna, multi, 0, 0
+D, large_endurance_falna, 5, Large Endurance Falna
 A gem found in monsters that can be used to grow endurance in an adventurer.
 
-D, large_dexterity_falna, 5, Large Dexterity Falna, multi, 0, 0
+D, large_dexterity_falna, 5, Large Dexterity Falna
 A gem found in monsters that can be used to grow dexterity in an adventurer.
 
-D, large_agility_falna, 5, Large Agility Falna, multi, 0, 0
+D, large_agility_falna, 5, Large Agility Falna
 A gem found in monsters that can be used to grow agility in an adventurer.
 
-D, huge_strength_falna, 5, Huge Strength Falna, multi, 0, 0
+D, huge_strength_falna, 5, Huge Strength Falna
 A gem found in monsters that can be used to grow strength in an adventurer.
 
-D, huge_magic_falna, 5, Huge Magic Falna, multi, 0, 0
+D, huge_magic_falna, 5, Huge Magic Falna
 A gem found in monsters that can be used to grow magic in an adventurer.
 
-D, huge_endurance_falna, 5, Huge Endurance Falna, multi, 0, 0
+D, huge_endurance_falna, 5, Huge Endurance Falna
 A gem found in monsters that can be used to grow endurance in an adventurer.
 
-D, huge_dexterity_falna, 5, Huge Dexterity Falna, multi, 0, 0
+D, huge_dexterity_falna, 5, Huge Dexterity Falna
 A gem found in monsters that can be used to grow dexterity in an adventurer.
 
-D, huge_agility_falna, 5, Huge Agility Falna, multi, 0, 0
+D, huge_agility_falna, 5, Huge Agility Falna
 A gem found in monsters that can be used to grow agility in an adventurer.

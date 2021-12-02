@@ -2,8 +2,18 @@ from itertools import chain
 
 from kivy.graphics.texture import Texture
 
+from modules.image_util import ImageUtils
+
 
 class Gradient:
+    @staticmethod
+    def interpolate_color(percent, r, g, b, a, re, ge, be, ae):
+        ra = r + (re - r) * percent
+        ga = g + (ge - g) * percent
+        ba = b + (be - b) * percent
+        aa = a + (ae - a) * percent
+        return ra, ga, ba, aa
+
     @staticmethod
     def interpolate(size, max_size, colors):
         section = int(max_size / (len(colors) - 1))
@@ -39,11 +49,30 @@ class Gradient:
         return Gradient.create_texture(gradient, width, height)
 
     @staticmethod
-    def vertical(width, height, max_height, *colors):
+    def horizontal_time(width, max_width, height, *colors):
+        width, max_width, height = int(width), int(max_width), int(height)
+
         if width <= 0 or height <= 0:
             return None
 
+        percent = width / max_width
+        section_width = 100 / len(colors)
+        section_index = 0
+        while percent > section_width:
+            section_index += 1
+            percent -= section_width
+        r, g, b, a = Gradient.interpolate_color(percent, *colors[section_index], *colors[section_index + 1])
+        gradient = [v for v in chain(*[[r, g, b, a] for _ in range(width)])] + [v for v in chain(*[[0, 0, 0, 0] for _ in range(max_width - width)])]
+        gradient *= height
+        gradient = ImageUtils.add_border(gradient, max_width, height, 2)
+        return Gradient.create_texture(gradient, max_width, height)
+
+    @staticmethod
+    def vertical(width, height, max_height, *colors):
         width, height, max_height = int(width), int(height), int(max_height)
+
+        if width <= 0 or height <= 0:
+            return None
 
         gradient_horizontal = Gradient.interpolate(height, max_height, colors)
 

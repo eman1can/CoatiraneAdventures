@@ -1,11 +1,16 @@
 import math
 import os
 from math import sqrt
+from os.path import exists
 from random import choices, randint
 from time import time
 
 from pandas import DataFrame, ExcelWriter
 import numpy as np
+
+from game.character import GENDERS, RACES
+from game.effect import COUNTER_TYPES, DURATION_TYPES, EFFECT_TYPES, STAT_TYPES
+from game.equipment import WEAPON_TYPES
 
 compass = 'S, compass, Compass, general, single, 375\nnone\nHave trouble getting lost? Buy a compass and never get lost again!'
 pocket_watch = 'S, pocket_watch, Pocket Watch, general, single, 375\nnone\nKeep losing track of time? Buy a watch and always know the time!'
@@ -459,7 +464,7 @@ non_natural_hard_materials = []
 non_natural_soft_materials = []
 monster_types = {}
 
-file = open('monster_list.txt', 'r', encoding='utf-8')
+file = open('input/monster_list.txt', 'r', encoding='utf-8')
 monster_list = file.read().split('\n\n')
 file.close()
 
@@ -475,35 +480,63 @@ element_counts = {
 }
 total_elements = 0
 
+element_string_to_int = {
+    'None': 0,
+    'Water': 1,
+    'Fire': 2,
+    'Thunder': 3,
+    'Wind': 4,
+    'Earth': 5,
+    'Light': 6,
+    'Dark': 7
+}
+
+attack_type_to_int = {
+    'Physical': 0,
+    'Magical': 1,
+    'Hybrid': 2,
+    'Defensive': 3,
+    'Healing': 4
+}
+
 materials_found = {}
 monsters_found = {}
 
+missing_monster_skeletons = []
+missing_character_skeletons = []
+missing_lwf_animations = []
 monster_harvest_hardnesses = {}
 
+implemented_monsters = {}
 for monster in monster_list:
     lines = monster.split('\n')
-    name = lines[0]
-    found = lines[1]
-    found_list = found[len('Found on Floor '):].strip().split(', ')
-    if name == 'Frog Shooter':
-        print(found_list, found)
-    int_found_list = []
-    for index in range(len(found_list)):
-        if ' and' in found_list[index]:
-            first, second = found_list[index].split(' and ')
-            found_list[index] = second
-            found_list.insert(index, first)
-        elif 'and' in found_list[index]:
-            found_list[index] = found_list[index][4:]
-        int_found_list.append(int(found_list[index]))
-    monsters_found[name] = int_found_list
-    description = lines[2]
-    elements_string = lines[3][len('Type: '):]
+
+    elements_string = lines[4][len('Type: '):]
+
+    monster_id = lines[0].lower().replace(' ', '_')
+    skeleton_number = lines[1][len('Skeleton Number: '):].strip()
+    if not exists(f'../../res/enemies/{monster_id}/{skeleton_number}.skel'):
+        missing_monster_skeletons.append(f'{monster_id}/{skeleton_number}.skel')
+    monster_data = {
+        'name': lines[0],
+        'id': monster_id,
+        'skeleton': skeleton_number,
+        'found': [x for x in lines[2][len('Found on Floors: '):].strip().split(', ')],
+        'description': lines[3],
+        'element': element_string_to_int[elements_string.split(', ')[0] if ',' in elements_string else elements_string],
+        'sub_element': element_string_to_int[elements_string.split(', ')[1]] if ',' in elements_string else 0,
+        'attack_type': attack_type_to_int[lines[-3][len('Attack Type: '):]],
+        'base_stats': [int(x) for x in lines[-2][len('Base Stats: '):].split(',')],
+        'skills': [float(x) for x in lines[-1][len('Skills: '):].split(', ')]
+    }
+    implemented_monsters[monster_id] = monster_data
+
+    monsters_found[lines[0]] = [int(x) for x in monster_data['found']]
     if ',' in elements_string:
         elements = elements_string.split(', ')
     else:
         elements = [elements_string, None]
-    monster_types[name] = elements
+    monster_types[monster_data['name']] = elements
     for element in elements:
         if element is None:
             continue
@@ -511,23 +544,23 @@ for monster in monster_list:
         total_elements += 1
     hard, soft = None, None
     for material_type, monster_list in drop_types.items():
-        if name.lower().replace(' ', '_') in monster_list:
+        if monster_data['id'] in monster_list:
             if material_type in ['hide']:
-                if floor_hardnesses[found_list[0]] == floor_hardnesses[found_list[-1]]:
-                    soft = f'{floor_hardnesses[found_list[0]] * 2 / 3}'
+                if floor_hardnesses[str(monster_data['found'][0])] == floor_hardnesses[str(monster_data['found'][-1])]:
+                    soft = f'{floor_hardnesses[str(monster_data["found"][0])] * 2 / 3}'
                 else:
-                    soft = f'{floor_hardnesses[found_list[0]] * 2 / 3}-{floor_hardnesses[found_list[-1]] * 2 / 3}'
-                materials_found[f'{name} {material_type.title()}'] = found_list
-                non_natural_soft_materials.append(f'{name} {material_type.title()} {soft}')
+                    soft = f'{floor_hardnesses[str(monster_data["found"][0])] * 2 / 3}-{floor_hardnesses[str(monster_data["found"][-1])] * 2 / 3}'
+                materials_found[f'{monster_data["name"]} {material_type.title()}'] = [str(x) for x in monster_data["found"]]
+                non_natural_soft_materials.append(f'{monster_data["name"]} {material_type.title()} {soft}')
             elif material_type in ['fang', 'claw', 'scale', 'horn']:
-                materials_found[f'{name} {material_type.title()}'] = found_list
-                if floor_hardnesses[found_list[0]] == floor_hardnesses[found_list[-1]]:
-                    hard = f'{floor_hardnesses[found_list[0]]}'
+                materials_found[f'{monster_data["name"]} {material_type.title()}'] = [str(x) for x in monster_data["found"]]
+                if floor_hardnesses[str(monster_data["found"][0])] == floor_hardnesses[str(monster_data["found"][-1])]:
+                    hard = f'{floor_hardnesses[str(monster_data["found"][0])]}'
                 else:
-                    hard = f'{floor_hardnesses[found_list[0]]}-{floor_hardnesses[found_list[-1]]}'
-                non_natural_hard_materials.append(f'{name} {material_type.title()} {hard}')
+                    hard = f'{floor_hardnesses[str(monster_data["found"][0])]}-{floor_hardnesses[str(monster_data["found"][-1])]}'
+                non_natural_hard_materials.append(f'{monster_data["name"]} {material_type.title()} {hard}')
             if hard is None and soft is None:
-                hardness = floor_hardnesses[found_list[0]]
+                hardness = floor_hardnesses[str(monster_data["found"][0])]
             else:
                 if hard is not None:
                     hardness = hard
@@ -536,106 +569,671 @@ for monster in monster_list:
             if '-' in str(hardness):
                 hardness = hardness.split('-')[-1]
             hardness = float(hardness)
-            monster_harvest_hardnesses[name] = hardness
-    for line in lines[8:]:
+            monster_harvest_hardnesses[monster_data['name']] = hardness
+    for line in lines[10:]:
         if '→' not in line:
             continue
         raw_data, unit_data = line.split(' → ')
         raw_amount, raw_type = raw_data.split(' ')
         unit_amount = unit_data.split(' ')[0]
 
+monster_skills = {monster_data['name']: [] for monster_data in implemented_monsters.values()}
+skills = None
+with open('input/monster_skills.txt', 'r') as file:
+    skills = file.read().split('\n')
+skill_index = 0
+for skill in skills:
+    skill_parts = [x.strip() for x in skill.split(', ', 4)]
+    print(skill_parts)
+    skill_data = {
+        'id': skill_index,
+        'name': skill_parts[1],
+        'skeleton_animation_id': skill_parts[2],
+        'definition': skill_parts[4],
+        'lwf_animation_id': skill_parts[3],
+        'reference': False,
+        'support': False
+    }
+    monster_skills[skill_parts[0]].append(skill_data)
+    skill_index += 1
+
+implemented_characters = {}
+all_character_data = None
+with open('input/character_list.txt', 'r') as file:
+    all_character_data = file.read().split('\n\n')
+for chunk in all_character_data:
+    parts = [x.strip() for x in chunk.split('\n')]
+    name, display_name, designation = parts[0].split(' - ')
+    if ' ' in name:
+        char_id = display_name.lower().replace(' ', '_') + '_' + name.lower().split(' ')[0]
+    else:
+        char_id = display_name.lower().replace(' ', '_') + '_' + name.lower().split(' ')[0]
+
+    skeleton_number = parts[1][len('Skeleton Number: '):]
+    if skeleton_number != '-':
+        if not exists(f'../../res/characters/{char_id}/{skeleton_number}.skel'):
+            missing_character_skeletons.append(f'{char_id}/{skeleton_number}.skel')
+    race_string = parts[2][len('Race: '):]
+    race = list(RACES.values()).index(race_string)
+    gender_string = parts[3][len('Gender: '):]
+    gender = list(GENDERS.values()).index(gender_string)
+    age = parts[4][len('Age: '):]
+    description = parts[5][len('Description: '):]
+    hmsmead_string = parts[6][len('HMSMEAD: '):]
+    hmsmead = [int(x) for x in hmsmead_string.split(', ')]
+    if designation == 'A':
+        attack_type_string = parts[7][len('Attack Type: '):]
+        attack_type = attack_type_to_int[attack_type_string]
+        element_string = parts[8][len('Element: '):]
+        element = element_string_to_int[element_string]
+        weapon_type_string = parts[9][len('Weapon Type: '):]
+        weapon_type = list(WEAPON_TYPES.values()).index(weapon_type_string)
+        sub_weapon_type_string = parts[10][len('Sub-Weapon Type: '):]
+        if sub_weapon_type_string == 'None':
+            sub_weapon_type = -1
+        else:
+            sub_weapon_type = list(WEAPON_TYPES.values()).index(sub_weapon_type_string)
+        recruitment_item_strings = [x.strip() for x in parts[12:]]
+    else:
+        attack_type = -1
+        element = -1
+        weapon_type = -1
+        sub_weapon_type = -1
+        recruitment_item_strings = [x.strip() for x in parts[8:]]
+
+    recruitment_items = []
+    for recruitment_item_string in recruitment_item_strings:
+        item_id, count = recruitment_item_string.split(', ')
+        recruitment_items.append(f'{item_id}#{count}')
+    character_data = {
+        'id': char_id,
+        'name': name,
+        'display_name': display_name,
+        'support': designation == 'S',
+        'skeleton_number': skeleton_number,
+        'race': race,
+        'age': age,
+        'gender': gender,
+        'description': description,
+        'hmsmead': hmsmead,
+        'attack_type': attack_type,
+        'element': element,
+        'weapon_type': weapon_type,
+        'sub_weapon_type': sub_weapon_type,
+        'recruitment_count': len(recruitment_items),
+        'recruitment_items': recruitment_items
+    }
+    implemented_characters[(name, display_name)] = character_data
+
+character_skills = {}
+character_skill_data = None
+with open('input/character_skills.txt', 'r') as file:
+    character_skill_data = file.read().split('\n\n')
+for chunk in character_skill_data:
+    designation, full_skill_data = chunk.split('\n', 1)
+    name, display_name, type = designation.split(' - ')
+    character_skills[(name, display_name)] = []
+    if type == 'A':
+        skill_list_data, counter_data, block_data = full_skill_data.rsplit('\n', 2)
+        skill_list = skill_list_data.split('\n')
+        skill_id_by_name = {}
+        skill_definition_by_name = {}
+        for skill in skill_list:
+            skill_parts = [x.strip() for x in skill.split(', ', 4)]
+            print(skill_parts)
+            skill_data = {
+                'id':   skill_index,
+                'name': skill_parts[0],
+                'skeleton_animation_id': skill_parts[1],
+                'lwf_animation_id': skill_parts[2],
+                'mana_amount': int(skill_parts[3]),
+                'definition': skill_parts[4],
+                'reference': False,
+                'support': False
+            }
+            skill_id_by_name[skill_parts[0]] = skill_index
+            skill_definition_by_name[skill_parts[0]] = skill_parts[4]
+            character_skills[(name, display_name)].append(skill_data)
+            skill_index += 1
+        counter_parts = [x.strip() for x in counter_data.split(', ', 3)]
+        if counter_parts[2] == '-':
+            counter_skill_data = {
+                'reference': True,
+                'id': skill_id_by_name[counter_parts[3]],
+                'name': counter_parts[3],
+                'definition': skill_definition_by_name[counter_parts[3]],
+                    'support': False
+            }
+        else:
+            counter_skill_data = {
+                'id':   skill_index,
+                'name': counter_parts[0],
+                'skeleton_animation_id': counter_parts[1],
+                'lwf_animation_id': counter_parts[2],
+                'mana_amount': 0,
+                'definition': counter_parts[3],
+                'reference': False,
+                    'support': False
+            }
+            skill_index += 1
+        character_skills[(name, display_name)].append(counter_skill_data)
+        block_parts = [x.strip() for x in block_data.split(', ', 3)]
+        if block_parts[3] == 'None':
+            block_skill_data = None
+        else:
+            if block_parts[2] == '-':
+                block_skill_data = {
+                    'reference': True,
+                    'id': skill_id_by_name[block_parts[3]],
+                    'name': block_parts[3],
+                    'definition': skill_definition_by_name[block_parts[3]],
+                    'support': False
+                }
+            else:
+                block_skill_data = {
+                    'id':                    skill_index,
+                    'name':                  block_parts[0],
+                    'skeleton_animation_id': block_parts[1],
+                    'lwf_animation_id':      block_parts[2],
+                    'mana_amount':           0,
+                    'definition':            block_parts[3],
+                    'reference':             False,
+                    'support': False
+                }
+                skill_index += 1
+        character_skills[(name, display_name)].append(block_skill_data)
+    elif type == 'S':
+        skill_list = full_skill_data.split('\n')
+        for skill in skill_list:
+            skill_parts = [x.strip() for x in skill.split(', ')]
+            skill_data = {
+                'id': skill_index,
+                'name': skill_parts[0],
+                'definition': skill_parts[1],
+                'reference': False,
+                'support': True
+            }
+            character_skills[(name, display_name)].append(skill_data)
+            skill_index += 1
+
+
+def check_status_effect(effect_string):
+    for effect_type, status_effect_type in EFFECT_TYPES.items():
+        for effect_level, status_effect_name in status_effect_type.items():
+            if status_effect_name in effect_string:
+                return effect_type, effect_level
+    return False
+
+def check_duration_type(effect_string):
+    for duration_type, duration_string in DURATION_TYPES.items():
+        if duration_string in effect_string:
+            return duration_type
+    return False
+
+def check_counter_type(effect_string):
+    for counter_type, counter_string in COUNTER_TYPES.items():
+        if counter_string in effect_string:
+            return counter_type
+    return False
+
+def check_stat_type(effect_string):
+    for stat_type, stat_string in STAT_TYPES.items():
+        if stat_string in effect_string:
+            return stat_type
+    return False
+
+def parse_effect(target, effect_string, support):
+    # Stat, Counter, Duration, Specific Tartet, Status Effect
+    # Type, Sub-Type, Target, Amount, Duration
+
+    if '%' not in effect_string and 'x' in effect_string:
+        pindex = effect_string.index('x')
+        if ' ' in effect_string[pindex + 1:]:
+            count = int(effect_string[pindex + 1:effect_string.index(' ', pindex)])
+        else:
+            count = int(effect_string[pindex + 1:])
+        stat_string = effect_string[:pindex].strip()
+        counter_type = check_counter_type(stat_string)
+        if counter_type is not False:
+            return 1, [1, counter_type, target, count]
+
+    pindex = effect_string.index('%')
+    status_effect = check_status_effect(effect_string)
+    if status_effect:
+        chance = int(effect_string[:pindex])
+        type, level = status_effect
+        return 1, [4, type, level, chance]
+
+    nindex = effect_string.index(' ', pindex - 5) + 1
+    if '&' in effect_string:
+        stat_strings = effect_string[:nindex - 1].split(' & ')
+    elif ',' in effect_string:
+        stat_strings = effect_string[:nindex - 1].split(', ')
+    else:
+        stat_strings = [effect_string[:nindex - 1]]
+
+    effect_count = 0
+    output = []
+    for stat_string in stat_strings:
+        effect_count += 1
+        duration_type = check_duration_type(stat_string)
+        if duration_type is not False:
+            output.append(2)
+            output.append(duration_type)
+        stat_type = check_stat_type(stat_string)
+        if stat_type is not False:
+            output.append(0)
+            output.append(stat_type)
+            if effect_string[nindex] == '+':
+                try:
+                    amount = int(effect_string[nindex + 1:pindex])
+                except ValueError:
+                    amount = float(effect_string[nindex + 1:pindex])
+            else:
+                try:
+                    amount = int(effect_string[nindex:pindex])
+                except ValueError:
+                    amount = float(effect_string[nindex:pindex])
+            if support:
+                duration = -1
+            else:
+                duration = int(effect_string[effect_string.index('for') + 4:effect_string.index('turn') - 1])
+            output.append(target)
+            output.append(amount)
+            output.append(duration)
+    return effect_count, output
+
+
+def parse_boost(boost_string):
+    if 'Great Boost' in boost_string:
+        boost_type = 1
+        stat_string = boost_string[len('with Temp.'):-len(' Great Boost')].strip()
+    else:
+        boost_type = 0
+        stat_string = boost_string[len('with Temp.'):-len(' Boost')].strip()
+
+    if '&' in stat_string:
+        stat_strings = stat_string.split(' & ')
+    elif ',' in stat_string:
+        stat_strings = stat_string.split(', ')
+    else:
+        stat_strings = [stat_string]
+
+    boost_count = 0
+    output = []
+    for stat_string in stat_strings:
+        boost_count += 1
+        stat_type = check_stat_type(stat_string)
+        output.append(boost_type)
+        output.append(stat_type)
+    return boost_count, output
+
+def parse_boost_and_effect(parts, boost_and_effect_string, support):
+    boost_index = len(parts)
+    parts.append(0)
+    effect_index = len(parts)
+
+    if 'Boost' in boost_and_effect_string:
+        boost_string = boost_and_effect_string[:boost_and_effect_string.index('Boost') + 5].strip()
+        boost_and_effect_string = boost_and_effect_string[boost_and_effect_string.index('Boost') + 5:].strip()
+        count, boost = parse_boost(boost_string)
+        parts[boost_index] += count
+        for part in boost:
+            parts.append(part)
+            effect_index += 1
+    parts.append(0)
+    if boost_and_effect_string != '':
+        if boost_and_effect_string.startswith('with'):
+            boost_and_effect_string = boost_and_effect_string[len('with '):].strip()
+        if boost_and_effect_string.startswith('and'):
+            boost_and_effect_string = boost_and_effect_string[len('and '):].strip()
+        for effect_string in [x.strip() for x in boost_and_effect_string.split(' and ')]:
+            if effect_string.startswith('['):
+                right_brace_index = effect_string.index(']')
+                effect_target_string = effect_string[1:right_brace_index]
+                effect_string = effect_string[right_brace_index + 1:].strip()
+                effect_target = ['Foe', 'Foes', 'Self', 'Ally', 'Allies'].index(effect_target_string)
+            else:
+                effect_target = parts[1]
+            count, effect = parse_effect(effect_target, effect_string, support)
+            parts[effect_index] += count
+            for part in effect:
+                parts.append(part)
+    return parts
+
+
+def skill_definition_to_config(skill_name, definition, support):
+    # Type, Target
+    target_string = definition[1:definition.index(']')]
+    target = ['Foe', 'Foes', 'Self', 'Ally', 'Allies'].index(target_string)
+    element, speed, power, attack_type = 0, 1, 0, 0
+
+    if 'Atk.' in definition and 'Null' not in definition:
+        # Attack Speed, Attack Power, Attack Type, Element
+        skill_type = 0
+        attack_string = definition[definition.index(']') + 2: definition.index('Atk.') + 4]
+        attack_type_string = attack_string[-7:]
+        attack_type = ['P. Atk.', 'M. Atk.', 'H. Atk.'].index(attack_type_string)
+        attack_string_parts = attack_string[:-8].split(' ')
+        if len(attack_string_parts) == 1:
+            power = ['Low', 'Mid', 'High', 'Super', 'Ultra'].index(attack_string_parts[0])
+        elif len(attack_string_parts) == 3:
+            speed = ['Slow', '', 'Fast'].index(attack_string_parts[0])
+            power = ['Low', 'Mid', 'High', 'Super', 'Ultra'].index(attack_string_parts[1])
+            element = ['', 'Water', 'Fire', 'Thunder', 'Wind', 'Earth', 'Light', 'Dark'].index(attack_string_parts[2])
+        else:
+            if 'Slow' in attack_string_parts or 'Fast' in attack_string_parts:
+                speed = ['Slow', '', 'Fast'].index(attack_string_parts[0])
+                power = ['Low', 'Mid', 'High', 'Super', 'Ultra'].index(attack_string_parts[1])
+            else:
+                power = ['Low', 'Mid', 'High', 'Super', 'Ultra'].index(attack_string_parts[0])
+                element = ['', 'Water', 'Fire', 'Thunder', 'Wind', 'Earth', 'Light', 'Dark'].index(attack_string_parts[1])
+
+        boost_and_effect_string = definition[definition.index('Atk.') + 4:].strip()
+
+        parts = parse_boost_and_effect([skill_type, target, speed, power, attack_type, element], boost_and_effect_string, support)
+
+        print('A - ' + skill_name.ljust(20) + str(parts))
+    elif 'Ailment Cure' in definition:
+        skill_type = 3
+        heal_string = definition[definition.index(']') + 2: definition.index('Ailment Cure') - 1]
+        heal_string_parts = heal_string.split(' ')
+
+        speed = 1
+        if len(heal_string_parts) == 1:
+            speed = ['Slow', '', 'Fast'].index(heal_string_parts[0])
+
+        boost_and_effect_string = definition[definition.index('Ailment Cure') + len('Ailment Cure'):].strip()
+        parts = parse_boost_and_effect([skill_type, target, speed], boost_and_effect_string, support)
+        print('AC - ' + skill_name.ljust(20) + str(parts))
+    elif 'Heal' in definition:
+        # Attack Speed, Attack Power
+        skill_type = 2
+        heal_string = definition[definition.index(']') + 2: definition.index('Heal') - 1]
+        heal_string_parts = heal_string.split(' ')
+
+        speed = 1
+        if len(heal_string_parts) == 1:
+            power = ['Low', 'Mid', 'High', 'Super', 'Ultra'].index(heal_string_parts[0])
+        else:
+            speed = ['Slow', '', 'Fast'].index(heal_string_parts[0])
+            power = ['Low', 'Mid', 'High', 'Super', 'Ultra'].index(heal_string_parts[1])
+
+        boost_and_effect_string = definition[definition.index('Heal') + len('Heal'):].strip()
+        parts = parse_boost_and_effect([skill_type, target, speed, power], boost_and_effect_string, support)
+        print('H - ' + skill_name.ljust(20) + str(parts))
+    else:
+        skill_type = 1
+        boost_and_effect_string = definition[definition.index(']') + 1:].strip()
+        parts = parse_boost_and_effect([skill_type, target], boost_and_effect_string, support)
+        print(f'E - ' + skill_name.ljust(20) + str(parts))
+
+    return parts
+    # ATTACK = 0
+    # CAUSE_EFFECT = 1
+    # HEAL = 2
+    # AILMENT_CURE = 3
+
+skill_parts = []
+max_length = 0
+for monster_name, monster_skill_data in monster_skills.items():
+    for skill in monster_skill_data:
+        print(skill['id'], end=' - ')
+        parts = skill_definition_to_config(skill['name'], skill['definition'], skill['support'])
+        parts.insert(0, skill['skeleton_animation_id'])
+        parts.insert(0, skill['lwf_animation_id'])
+        if skill["lwf_animation_id"] != '-' and  skill["lwf_animation_id"] not in missing_lwf_animations:
+            if not exists(f'../../res/lwf/{skill["lwf_animation_id"]}'):
+                missing_lwf_animations.append(f'{skill["lwf_animation_id"]}')
+        parts.insert(0, skill['definition'])
+        parts.insert(0, skill['name'])
+        skill_parts.append(parts)
+        max_length = max(max_length, len(parts))
+
+for (character_name, character_display_name), character_skill_data in character_skills.items():
+    for skill in character_skill_data:
+        if skill is None or skill['reference']:
+            continue
+        print(skill['id'], end=' - ')
+        parts = skill_definition_to_config(skill['name'], skill['definition'], skill['support'])
+        if skill['support']:
+            parts.insert(0, '-')
+            parts.insert(0, '-')
+            parts.insert(0, skill['definition'])
+            parts.insert(0, skill['name'])
+        else:
+            parts.insert(0, skill['skeleton_animation_id'])
+            parts.insert(0, skill['lwf_animation_id'])
+            if skill["lwf_animation_id"] != '-' and  skill["lwf_animation_id"] not in missing_lwf_animations:
+                if not exists(f'../../res/lwf/{skill["lwf_animation_id"]}'):
+                    missing_lwf_animations.append(f'{skill["lwf_animation_id"]}')
+            parts.insert(0, skill['definition'])
+            parts.insert(0, skill['name'])
+        skill_parts.append(parts)
+        max_length = max(max_length, len(parts))
+
+if len(missing_monster_skeletons) > 0:
+    print('Missing Monster Skeletons:')
+    for skeleton in missing_monster_skeletons:
+        print(f'\t{skeleton}')
+if len(missing_character_skeletons) > 0:
+    print('Missing Character Skeletons:')
+    for skeleton in missing_character_skeletons:
+        print(f'\t{skeleton}')
+if len(missing_lwf_animations) > 0:
+    print('Missing LWF Animations:')
+    for animation in sorted(missing_lwf_animations):
+        print(f'\t{animation}')
+
+skill_lengths = [0 for _ in range(max_length)]
+for parts in skill_parts:
+    for x, part in enumerate(parts):
+        skill_lengths[x] = max(skill_lengths[x], len(str(part)))
+
+with open('output/SkillConfigOutput.txt', 'w') as file:
+    for x, parts in enumerate(skill_parts):
+        file.write(f'{x}'.ljust(3) + '* ')
+        for y, part in enumerate(parts):
+            if y == len(parts) - 1:
+                file.write(f'{part}'.ljust(skill_lengths[y]))
+            else:
+                file.write(f'{part}'.ljust(skill_lengths[y]) + '* ')
+        file.write('\n')
+
 print('Total Elements:', total_elements)
 for element, element_count in element_counts.items():
     print(element, element_count, '-', str(round(element_count / total_elements * 100, 2)) + '%')
 
-if True:
-    with open('output.txt', 'w', encoding='utf-8') as file:
-        for enemy, drop_list in enemy_drops.items():
-            file.write(enemy + ', ')
-            name = enemy.replace('_', ' ').title()
-            file.write(name + ', ')
-            skeleton = '-'
-            file.write(skeleton + ', ')
-            element = monster_types[name][0]
-            sub_element = monster_types[name][1]
-            file.write(element + ', ' + str(sub_element) + ', ')
-            attack_type = 0
-            min_hsmead = [40, 8, 8, 6, 4, 4]
-            max_hsmead = [120, 20, 20, 14, 10, 10]
-            file.write(str(attack_type))
-            for x in range(6):
-                file.write(', ')
-                file.write(str(min_hsmead[x]))
-                file.write(', ')
-                file.write(str(max_hsmead[x]))
-            basic_move = 14
-            file.write(', ')
-            file.write('0')
-            file.write(', ')
+first_line_data = []
+line_items = 0
+for monster_data in implemented_monsters.values():
+    first_line_parts = [str(x) for x in [monster_data['id'], monster_data['name'], monster_data['skeleton'], monster_data['element'], monster_data['sub_element'], monster_data['attack_type'], *monster_data['base_stats']]]
+    # Skill Count, Base Skill, Chance, Skill X, Skill X Chance, Counter, Block
+    name = monster_data['name']
+    first_line_parts.append(str(len(monster_skills[name]) - 1))
+    for x, skill in enumerate(monster_skills[name]):
+        first_line_parts.append(str(skill['id']))
+        first_line_parts.append(str(monster_data['skills'][x]))
+    first_line_parts.append(str(monster_skills[name][0]['id']))
+    first_line_parts.append('-')
+    first_line_data.append(first_line_parts)
+    line_items = max(line_items, len(first_line_parts))
 
-            file.write(str(basic_move))  # Basic
-            file.write(', ')
+line_lengths = [0 for x in range(line_items)]
+for line_data in first_line_data:
+    for x in range(len(line_data)):
+        line_lengths[x] = max(line_lengths[x], len(line_data[x]))
 
-            file.write('1')
-            file.write(', ')
+new_first_lines = []
+for line_data in first_line_data:
+    first_line = ''
+    for x in range(len(line_data)):
+        first_line += f'{line_data[x]}'.ljust(line_lengths[x])
+        first_line += ', '
+    first_line = first_line[:-2]
+    new_first_lines.append(first_line)
 
-            file.write(str(basic_move))  # Counter
-            file.write(', ')
-            file.write('-')  # Block
-            file.write('\n')
 
-            file.write(str(monster_harvest_hardnesses[name] - 1.0) + ';')
+with open('output/EnemyConfigOutput.txt', 'w', encoding='utf-8') as file:
+    for enemy, drop_list in enemy_drops.items():
+        try:
+            index = list(implemented_monsters.keys()).index(enemy)
+        except ValueError:
+            continue
+        monster_data = implemented_monsters[enemy]
+        first_line = new_first_lines[index]
+        file.write(first_line + '\n')
+        file.write(monster_data['description'] + '\n')
+        name = monster_data['name']
+        file.write(str(monster_harvest_hardnesses[name] - 1.0) + ';')
 
-            guaranteed_drops = []
-            drops = []
-            for drop, rarity in drop_list.items():
-                if rarity == 0:
-                    guaranteed_drops.append(f'{enemy}_{drop}')
+        guaranteed_drops = []
+        drops = []
+        for drop, rarity in drop_list.items():
+            if rarity == 0:
+                guaranteed_drops.append(f'{enemy}_{drop}')
+            else:
+                if drop in ['claw', 'fang', 'horn', 'hide', 'scale']:
+                    drops.append((f'raw_{enemy}_{drop}', rarity))
                 else:
-                    if drop in ['claw', 'fang', 'horn', 'hide', 'scale']:
-                        drops.append((f'raw_{enemy}_{drop}', rarity))
-                    else:
-                        drops.append((f'{enemy}_{drop}', rarity))
-            for index, drop in enumerate(guaranteed_drops):
-                file.write(drop + '/')
-                if index < len(guaranteed_drops) - 1:
-                    file.write(',')
-            file.write(';')
-            # Crystals
-            minimum, maximum = min(monsters_found[name]), max(monsters_found[name])
-            crystal_min, crystal_max = math.floor(minimum / 60 * 36), min(math.ceil(maximum / 60 * 36), 35)
-            falna_min, falna_max = math.floor(minimum / 60 * 6), min(math.ceil(maximum / 60 * 6), 5)
-            crystal_count = max(crystal_max - crystal_min + 1, 1)
-            falna_count = max(falna_max - falna_min + 1, 1)
+                    drops.append((f'{enemy}_{drop}', rarity))
+        for index, drop in enumerate(guaranteed_drops):
+            file.write(drop + '/')
+            if index < len(guaranteed_drops) - 1:
+                file.write(',')
+        file.write(';')
+        # Crystals
+        minimum, maximum = min(monsters_found[name]), max(monsters_found[name])
+        crystal_min, crystal_max = math.floor(minimum / 60 * 36), min(math.ceil(maximum / 60 * 36), 35)
+        falna_min, falna_max = math.floor(minimum / 60 * 6), min(math.ceil(maximum / 60 * 6), 5)
+        crystal_count = max(crystal_max - crystal_min + 1, 1)
+        falna_count = max(falna_max - falna_min + 1, 1)
 
-            count = 0
-            for rarity in range(min(crystal_count, 5), 0, -1):
-                if count < crystal_count:
-                    index_count = max(math.ceil((crystal_count - count) / rarity), 1.0)
-                    for index in range(index_count):
-                        file.write(magic_stone_names[crystal_max - count - index] + '/' + str(min(crystal_count + 1, 6) - rarity))
-                        if count + index != crystal_count - 1:
+        count = 0
+        for rarity in range(min(crystal_count, 5), 0, -1):
+            if count < crystal_count:
+                index_count = max(math.ceil((crystal_count - count) / rarity), 1.0)
+                for index in range(index_count):
+                    file.write(magic_stone_names[crystal_max - count - index] + '/' + str(min(crystal_count + 1, 6) - rarity))
+                    if count + index != crystal_count - 1:
+                        file.write(',')
+                count += index_count
+        file.write(';')
+        count = 0
+        for rarity in range(min(falna_count, 5), 0, -1):
+            if count < falna_count:
+                index_count = max(math.ceil((falna_count - count) / rarity), 1.0)
+                for index in range(index_count):
+                    # The index is for a falna TYPE; We want all SMEAD to drop
+                    type_index = falna_min + count + index
+                    for sub_index in range(type_index * 5, (type_index + 1) * 5):
+                        file.write(falna_names[sub_index] + '/' + str(min(falna_count + 1, 6) - rarity))
+                        if count + index != falna_count - 1 or sub_index != (type_index + 1) * 5 - 1:
                             file.write(',')
-                    count += index_count
-            file.write(';')
-            count = 0
-            for rarity in range(min(falna_count, 5), 0, -1):
-                if count < falna_count:
-                    index_count = max(math.ceil((falna_count - count) / rarity), 1.0)
-                    for index in range(index_count):
-                        # The index is for a falna TYPE; We want all SMEAD to drop
-                        type_index = falna_min + count + index
-                        for sub_index in range(type_index * 5, (type_index + 1) * 5):
-                            file.write(falna_names[sub_index] + '/' + str(min(falna_count + 1, 6) - rarity))
-                            if count + index != falna_count - 1 or sub_index != (type_index + 1) * 5 - 1:
-                                file.write(',')
-                    count += index_count
-            file.write(';')
-            for index, (drop, rarity) in enumerate(drops):
-                file.write(drop + '/' + str(rarity))
-                if index < len(drops) - 1:
-                    file.write(',')
-            file.write('\n#\n')
+                count += index_count
+        file.write(';')
+        for index, (drop, rarity) in enumerate(drops):
+            file.write(drop + '/' + str(rarity))
+            if index < len(drops) - 1:
+                file.write(',')
+        file.write('\n#\n')
+
+
+adventurer_max_length = 0
+supporter_max_length = 0
+adventurer_data_parts_array = []
+supporter_data_parts_array = []
+for x, ((name, display_name), character_data) in enumerate(implemented_characters.items()):
+    character_data_parts = []
+    if not character_data['support']:
+        character_data_parts.append('A')
+    else:
+        character_data_parts.append('S')
+
+    character_data_parts.append(character_data['id'])
+    character_data_parts.append(character_data['name'])
+    character_data_parts.append(character_data['display_name'])
+    character_data_parts.append(character_data['skeleton_number'])
+    character_data_parts.append(character_data['race'])
+    character_data_parts.append(character_data['gender'])
+    character_data_parts.append(character_data['age'])
+
+    for stat in character_data['hmsmead']:
+        character_data_parts.append(stat)
+
+    skills = character_skills[(name, display_name)]
+
+    if not character_data['support']:
+        character_data_parts.append(character_data['attack_type'])
+        character_data_parts.append(character_data['element'])
+        character_data_parts.append(character_data['weapon_type'])
+        character_data_parts.append(character_data['sub_weapon_type'])
+
+        # Base
+        character_data_parts.append(skills[0]['id'])
+        # Skill 1
+        character_data_parts.append(skills[1]['id'])
+        character_data_parts.append(skills[1]['mana_amount'])
+        # Skill 2
+        character_data_parts.append(skills[2]['id'])
+        character_data_parts.append(skills[2]['mana_amount'])
+        # Skill 3
+        character_data_parts.append(skills[3]['id'])
+        character_data_parts.append(skills[3]['mana_amount'])
+        # Special
+        character_data_parts.append(skills[4]['id'])
+        # Counter
+        character_data_parts.append(skills[5]['id'])
+        # Block
+        if skills[6] is None:
+            character_data_parts.append('-')
+        else:
+            character_data_parts.append(skills[6]['id'])
+        # Combos!
+        character_data_parts.append(0)
+    else:
+        for skill in skills:
+            character_data_parts.append(skill['id'])
+
+    for item in character_data['recruitment_items']:
+        character_data_parts.append(item)
+    character_data_parts.append(character_data['recruitment_count'])
+    character_data_parts.append(character_data['description'])
+    if character_data['support']:
+        supporter_data_parts_array.append(character_data_parts)
+        supporter_max_length = max(supporter_max_length, len(character_data_parts) - 1)
+    else:
+        adventurer_data_parts_array.append(character_data_parts)
+        adventurer_max_length = max(adventurer_max_length, len(character_data_parts) - 1)
+
+adventurer_parts_lengths = [0 for _ in range(adventurer_max_length)]
+supporter_parts_lengths = [0 for _ in range(supporter_max_length)]
+
+for character_data_parts in adventurer_data_parts_array:
+    for x, character_part in enumerate(character_data_parts[:-1]):
+        adventurer_parts_lengths[x] = max(adventurer_parts_lengths[x], len(str(character_part)))
+for character_data_parts in supporter_data_parts_array:
+    for x, character_part in enumerate(character_data_parts[:-1]):
+        supporter_parts_lengths[x] = max(supporter_parts_lengths[x], len(str(character_part)))
+
+adventurer_data_parts_array = [[str(character_part) for character_part in character_data_parts] for character_data_parts in adventurer_data_parts_array]
+supporter_data_parts_array = [[str(character_part) for character_part in character_data_parts] for character_data_parts in supporter_data_parts_array]
+
+with open('output/CharacterConfigOutput.txt', 'w') as file:
+    for character_data_parts in adventurer_data_parts_array:
+        for x, character_part in enumerate(character_data_parts[:-1]):
+            if x == len(character_data_parts) - 2:
+                file.write(f'{character_part}'.ljust(adventurer_parts_lengths[x]) + '\n')
+            else:
+                file.write(f'{character_part}'.ljust(adventurer_parts_lengths[x]) + ', ')
+        file.write(character_data_parts[-1] + '\n\n')
+    for character_data_parts in supporter_data_parts_array:
+        for x, character_part in enumerate(character_data_parts[:-1]):
+            if x == len(character_data_parts) - 2:
+                file.write(f'{character_part}'.ljust(supporter_parts_lengths[x]) + '\n')
+            else:
+                file.write(f'{character_part}'.ljust(supporter_parts_lengths[x]) + ', ')
+        file.write(character_data_parts[-1] + '\n\n')
 
 
 class Material:
@@ -743,8 +1341,8 @@ materials_found.update(natural_hard_materials_found)
 materials_found.update(gems_found)
 
 # Write material list to output
-if False:
-    with open('output.txt', 'w', encoding='utf-8') as file:
+if True:
+    with open('output/MaterialConfigOutput.txt', 'w', encoding='utf-8') as file:
         def write_material(material_type, material, preraw, has_raw, sufraw, prepro, sufpro):
             material_name = material.full_string
             material_id = material.full_string.replace(' ', '_').lower()
@@ -756,11 +1354,11 @@ if False:
                 file.write(f'none#{prepro}{material_id}{sufpro}\n')
             file.write(f'none\nnone\n#\n')
         # Natural Soft Materials
-        for material in natural_soft_materials_by_hardness:
-            write_material('soft', material, 'raw_', True, '', '', '_processed')
+        # for material in natural_soft_materials_by_hardness:
+        #     write_material('soft', material, 'raw_', True, '', '', '_processed')
         # Monster Soft Materials
-        for material in monster_soft_materials_by_hardness:
-            write_material('soft', material, 'raw_', True, '', '', '_processed')
+        # for material in monster_soft_materials_by_hardness:
+        #     write_material('soft', material, 'raw_', True, '', '', '_processed')
         # Natural Hard Materials
         for material in natural_hard_materials_by_hardness:
             write_material('hard', material, '', True, '_ore', '', '_ingot')
@@ -768,70 +1366,71 @@ if False:
         for material in alloy_hard_materials_by_hardness:
             write_material('hard', material, '', False, '', '', '_ingot')
         # Monster Hard Materials
-        for material in monster_hard_materials_by_hardness:
-            write_material('hard', material, 'raw_', True, '', '', '_ingot')
+        # for material in monster_hard_materials_by_hardness:
+        #     write_material('hard', material, 'raw_', True, '', '', '_ingot')
         # Gems
-        for material in gems_by_hardness:
-            write_material('hard', material, 'raw_', True, '', 'processed_', '')
+        # for material in gems_by_hardness:
+        #     write_material('hard', material, 'raw_', True, '_gem', 'processed_', '_gem')
 
 # Write drops and materials to item output
-if False:
-    with open('output.txt', 'w', encoding='utf-8') as file:
-        def write_item(type, id, name, min_price, max_price, description, sell_type='multi'):
-            if type == 'drop':
-                file.write(f'D, {id}, {name}, {sell_type}, {min_price}, {max_price}\n')
+with open('output/ItemConfigOutput.txt', 'w', encoding='utf-8') as file:
+    def write_item(type, id, name, min_price, max_price, description, sell_type='multi'):
+        if type == 'drop':
+            file.write(f'D, {id}, {name}, {sell_type}, {min_price}, {max_price}\n')
+        else:
+            file.write(f'I, {id}, {name}, {sell_type}, {min_price}, {max_price}\n')
+        file.write(f'{description}\n')
+        file.write(f'\n')
+    # Write Falna
+    for falna in falnas:
+        file.write(falna + '\n')
+    # Write Hard, Soft Monster Drops & Other Monster Items
+    for enemy, drop_list in enemy_drops.items():
+        for drop in drop_list:
+            name = enemy.replace('_', ' ').title()
+            if drop in ['hide']:
+                pass
+                # write_item('drop', f'raw_{enemy}_{drop}', f'Raw {name} {drop.title()}', 100, 250, f'A raw {name} {drop.title()}.')  # Soft
+                # write_item('drop', f'{enemy}_{drop}_processed', f'Processed {name} {drop.title()}', 100, 250, f'A processed {name} {drop.title()}.')  # Soft
+            elif drop in ['fang', 'claw', 'scale', 'horn']:
+                pass
+                # write_item('drop', f'raw_{enemy}_{drop}', f'Raw {name} {drop.title()}', 100, 250, f'A raw {name} {drop.title()}.')  # Hard
+                # write_item('drop', f'{enemy}_{drop}_ingot', f'{name} {drop.title()} Ingot', 100, 250, f'A {name} {drop.title()} Ingot.')  # Hard
             else:
-                file.write(f'I, {id}, {name}, {sell_type}, {min_price}, {max_price}\n')
+                write_item('drop', f'{enemy}_{drop}', f'{name} {drop.title()}', 100, 250, f'A {name} {drop.title()}.')  # Other
+    # Write Natural Soft, Hard, Alloys
+    for material in natural_soft_materials_by_hardness:
+        identifier = material.full_string.replace(' ', '_').lower()
+        write_item('item', f'raw_{identifier}', f'Raw {material.full_string}', 100, 250, f'Raw {material.full_string}.')
+        write_item('item', f'{identifier}_processed', f'Processed {material.full_string}', 100, 250, f'Processed {material.full_string}.')
+    for material in natural_hard_materials_by_hardness:
+        identifier = material.full_string.replace(' ', '_').lower()
+        write_item('item', f'{identifier}_ore', f'{material.full_string} Ore', 100, 250, f'A piece of {material.full_string} Ore.')
+        write_item('item', f'{identifier}_ingot', f'{material.full_string} Ingot', 100, 250, f'A {material.full_string} Ingot.')
+    for material in alloy_hard_materials_by_hardness:
+        identifier = material.full_string.replace(' ', '_').lower()
+        write_item('item', f'{identifier}_ingot', f'{material.full_string} Ingot', 100, 250, f'A {material.full_string} Ingot.')
+    for material in gems_by_hardness:
+        identifier = material.full_string.replace(' ', '_').lower()
+        write_item('item', f'raw_{identifier}', f'Raw {material.full_string}', 100, 250, f'A Raw {material.full_string} Gem.')
+        write_item('item', f'processed_{identifier}', f'Processed {material.full_string}', 100, 250, f'A Processed {material.full_string} Gem.')
+    # Write Exploration equipment w/ Natural & Alloys
+    for material in natural_hard_materials_by_hardness + alloy_hard_materials_by_hardness:
+        for item_type in ['harvesting_knife', 'pickaxe', 'shovel']:
+            description = {
+                'harvesting_knife': 'An essential tool for collecting all manner of items in the dungeon!',
+                'pickaxe': 'An essential tool for hacking away at the dungeon!',
+                'shovel': 'An essential tool for moving everything from one side to the other.'
+            }[item_type]
+            identifier = material.full_string.replace(' ', '_').lower()
+            item_name = item_type.replace('_', ' ').title()
+            file.write(f'S, {identifier}_{item_type}, {material.full_string} {item_name}, equipment, single, 500\n')
+            file.write('none\n')
             file.write(f'{description}\n')
             file.write(f'\n')
-        # Write Falna
-        for falna in falnas:
-            file.write(falna + '\n')
-        # Write Hard, Soft Monster Drops & Other Monster Items
-        for enemy, drop_list in enemy_drops.items():
-            for drop in drop_list:
-                name = enemy.replace('_', ' ').title()
-                if drop in ['hide']:
-                    write_item('drop', f'raw_{enemy}_{drop}', f'Raw {name} {drop.title()}', 100, 250, f'A raw {name} {drop.title()}.')  # Soft
-                    write_item('drop', f'{enemy}_{drop}_processed', f'Processed {name} {drop.title()}', 100, 250, f'A processed {name} {drop.title()}.')  # Soft
-                elif drop in ['fang', 'claw', 'scale', 'horn']:
-                    write_item('drop', f'raw_{enemy}_{drop}', f'Raw {name} {drop.title()}', 100, 250, f'A raw {name} {drop.title()}.')  # Hard
-                    write_item('drop', f'{enemy}_{drop}_ingot', f'{name} {drop.title()} Ingot', 100, 250, f'A {name} {drop.title()} Ingot.')  # Hard
-                else:
-                    write_item('drop', f'{enemy}_{drop}', f'{name} {drop.title()}', 100, 250, f'A {name} {drop.title()}.')  # Other
-        # Write Natural Soft, Hard, Alloys
-        for material in natural_soft_materials_by_hardness:
-            identifier = material.full_string.replace(' ', '_').lower()
-            write_item('item', f'raw_{identifier}', f'Raw {material.full_string}', 100, 250, f'Raw {material.full_string}.')
-            write_item('item', f'{identifier}_processed', f'Processed {material.full_string}', 100, 250, f'Processed {material.full_string}.')
-        for material in natural_hard_materials_by_hardness:
-            identifier = material.full_string.replace(' ', '_').lower()
-            write_item('item', f'{identifier}_ore', f'{material.full_string} Ore', 100, 250, f'A piece of {material.full_string} Ore.')
-            write_item('item', f'{identifier}_ingot', f'{material.full_string} Ingot', 100, 250, f'A {material.full_string} Ingot.')
-        for material in alloy_hard_materials_by_hardness:
-            identifier = material.full_string.replace(' ', '_').lower()
-            write_item('item', f'{identifier}_ingot', f'{material.full_string} Ingot', 100, 250, f'A {material.full_string} Ingot.')
-        for material in gems_by_hardness:
-            identifier = material.full_string.replace(' ', '_').lower()
-            write_item('item', f'raw_{identifier}', f'Raw {material.full_string}', 100, 250, f'A Raw {material.full_string} Gem.')
-            write_item('item', f'processed_{identifier}', f'Processed {material.full_string}', 100, 250, f'A Processed {material.full_string} Gem.')
-        # Write Exploration equipment w/ Natural & Alloys
-        for material in natural_hard_materials_by_hardness + alloy_hard_materials_by_hardness:
-            for item_type in ['harvesting_knife', 'pickaxe', 'shovel']:
-                description = {
-                    'harvesting_knife': 'An essential tool for collecting all manner of items in the dungeon!',
-                    'pickaxe': 'An essential tool for hacking away at the dungeon!',
-                    'shovel': 'An essential tool for moving everything from one side to the other.'
-                }[item_type]
-                identifier = material.full_string.replace(' ', '_').lower()
-                item_name = item_type.replace('_', ' ').title()
-                file.write(f'S, {identifier}_{item_type}, {material.full_string} {item_name}, equipment, single, 500\n')
-                file.write('none\n')
-                file.write(f'{description}\n')
-                file.write(f'\n')
-        # Write magic stones!
-        for magic_stone in magic_stones:
-            file.write(magic_stone + '\n')
+    # Write magic stones!
+    for magic_stone in magic_stones:
+        file.write(magic_stone + '\n')
 
 def get_hardness(start, x, y, minimum, maximum):
     return round(minimum + (maximum - minimum) / (y - 1) * (x - start), 2)
@@ -858,38 +1457,37 @@ for floor in floor_spawns.keys():
             gems_by_floors[fid][material.full_string] = hard
 
 # Floor Definitions for each floor
-if False:
-    with open('output.txt', 'w', encoding='utf-8') as file:
-        for floor, spawns in floor_spawns.items():
-            fid = int(floor.split('_')[1])
-            file.write(f'#\n{fid}; 10; 3; ')
-            monsters = []
-            for id, rarity in spawns.items():
-                monsters.append(f'{rarity} {id}')
-            monsters.sort()
-            file.write(f'{len(monsters)}; ')
-            for index, monster in enumerate(monsters):
-                rarity, name = monster.split(' ')
-                file.write(f'{name},{rarity}')
-                if index != len(monsters) - 1:
-                    file.write('; ')
-            file.write('\n')
-            metals_array = []
-            for metal, hard in metals_by_floors[fid].items():
-                metals_array.append(f'{metal},{hard}')
-            file.write(f'{len(metals_array)}; ')
-            for index, material in enumerate(metals_array):
-                file.write(f'{material.lower().replace(" ", "_")}')
+with open('output/FloorConfigOutput.txt', 'w', encoding='utf-8') as file:
+    for floor, spawns in floor_spawns.items():
+        fid = int(floor.split('_')[1])
+        file.write(f'#\n{fid}; 10; 3; ')
+        monsters = []
+        for id, rarity in spawns.items():
+            monsters.append(f'{rarity} {id}')
+        monsters.sort()
+        file.write(f'{len(monsters)}; ')
+        for index, monster in enumerate(monsters):
+            rarity, name = monster.split(' ')
+            file.write(f'{name},{rarity}')
+            if index != len(monsters) - 1:
                 file.write('; ')
-            gems_array = []
-            for gem, hard in gems_by_floors[fid].items():
-                gems_array.append(f'{gem},{hard}')
-            file.write(f'{len(gems_array)}; ')
-            for index, material in enumerate(gems_array):
-                file.write(f'{material.lower().replace(" ", "_")}')
-                if index != len(gems_array) - 1:
-                    file.write('; ')
-            file.write('\n\n')
+        file.write('\n')
+        metals_array = []
+        for metal, hard in metals_by_floors[fid].items():
+            metals_array.append(f'{metal},{hard}')
+        file.write(f'{len(metals_array)}; ')
+        for index, material in enumerate(metals_array):
+            file.write(f'{material.lower().replace(" ", "_")}')
+            file.write('; ')
+        gems_array = []
+        for gem, hard in gems_by_floors[fid].items():
+            gems_array.append(f'{gem},{hard}')
+        file.write(f'{len(gems_array)}; ')
+        for index, material in enumerate(gems_array):
+            file.write(f'{material.lower().replace(" ", "_")}')
+            if index != len(gems_array) - 1:
+                file.write('; ')
+        file.write('\n\n')
 
 
 

@@ -12,37 +12,44 @@ from uix.screens.character_display.filled_preview import FilledCharacterPreviewS
 
 class CharacterPreview(ScreenManager):
     is_select = BooleanProperty(False)
-    displayed = BooleanProperty(True)
     locked = BooleanProperty(False)
     index = NumericProperty(-1)
 
-    character = NumericProperty(-1)
-    support = NumericProperty(-1)
+    displayed = BooleanProperty(True)
+    support_displayed = BooleanProperty(True)
 
     def __init__(self, **kwargs):
         self.register_event_type('on_party_change')
         self.register_event_type('on_resolve')
         self._old_slides = []
+        self._displayed_character = -1
+        self._displayed_support = -1
         super().__init__(**kwargs)
+        self.transition = NoTransition()
+        self.set_empty()
+        self.transition = SlideTransition()
         self.transition.direction = 'left'
 
-    def on_kv_post(self, base_widget):
-        if self.character == -1:
-            self.set_empty()
-        else:
-            self.set_char_screen(self.character, self.support, False)
-
-    def on_locked(self, instance, locked):
+    def reload(self, **kwargs):
+        self.load_kwargs(kwargs)
         if self.current_screen is not None:
-            self.current_screen.update_lock()
+            self.current_screen.reload(locked=self.locked, displayed=self.displayed, support_displayed=self.support_displayed)
+
+    def on_locked(self, *args):
+        if self.current_screen is not None:
+            self.current_screen.locked = self.locked
 
     def close_hints(self):
         if self.current_screen is not None:
             self.current_screen.close_hints()
 
-    def on_displayed(self, instance, displayed):
+    def on_displayed(self, *args):
         if self.current_screen is not None:
-            self.current_screen.current = displayed
+            self.current_screen.displayed = self.displayed
+
+    def on_support_displayed(self, *args):
+        if self.current_screen is not None:
+            self.current_screen.support_displayed = self.support_displayed
 
     def on_size(self, instance, size):
         if self.current_screen is not None:
@@ -53,31 +60,34 @@ class CharacterPreview(ScreenManager):
 
     def on_attr_screen(self, preview, is_support):
         if is_support:
-            character = Refs.gc.get_char_by_index(self.support)
+            character = Refs.gc.get_char_by_index(self._displayed_support)
         else:
-            character = Refs.gc.get_char_by_index(self.character)
+            character = Refs.gc.get_char_by_index(self._displayed_character)
         Refs.gs.display_screen('char_attr_' + character.get_id(), True, True, character.get_index(), self)
 
     def on_remove(self, preview, is_support):
         if is_support:
-            self.set_char_screen(self.character, -1, False)
+            self.set_char_screen(self._displayed_character, -1, False)
         else:
             self.set_empty()
 
-    def reload(self):
-        if self.current_screen is not None and self.current_screen != 'empty':
-            self.current_screen.reload()
+    def on_current(self, instance, value):
+        super().on_current(instance, value)
+        if self.current_screen is not None:
+            self.current_screen.locked = self.locked
+            self.current_screen.displayed = self.displayed
+            self.current_screen.support_displayed = self.support_displayed
+
+    def get_character(self):
+        return self._displayed_character
+
+    def get_support(self):
+        return self._displayed_support
 
     def set_empty(self, direction='left'):
-        self.character = self.support = -1
-
+        self._displayed_character = self._displayed_support = -1
         if not self.is_select:
             self.dispatch('on_party_change', -1, -1)
-
-        # if skip_transition:
-        #     self.transition = NoTransition()
-        # else:
-        #     self.transition = SlideTransition()
 
         self.transition.direction = direction
 
@@ -94,14 +104,15 @@ class CharacterPreview(ScreenManager):
             self.remove_widget(old_screen)
 
     def set_char_screen(self, character, support, resolve, direction='right'):
-        if character == self.character and support == self.support:
+        if character == self._displayed_character and support == self._displayed_support:
             return
 
         if resolve:
             self.dispatch('on_resolve', character, support)
             return
 
-        self.character, self.support = character, support
+        self._displayed_character, self._displayed_support = character, support
+
         if not self.is_select:
             self.dispatch('on_party_change', character, support)
 
@@ -128,6 +139,10 @@ class CharacterPreview(ScreenManager):
             screen.size = self.size
             if not in_cache:
                 Cache.append('preview.slides', name, screen)
+
+        screen.locked = self.locked
+        screen.displayed = self.displayed
+        screen.support_displayed = self.support_displayed
 
         if direction is None:
             self.transition = NoTransition()

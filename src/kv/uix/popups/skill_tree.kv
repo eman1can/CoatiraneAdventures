@@ -35,3 +35,60 @@
         text: 'Bestow upon an adventurer'
         font_name: 'Precious'
         font_size: '24sp'
+        on_release: root.on_bestow()
+
+
+<PerkBestow>:
+    Label:
+        id: title
+        size_hint: 1, 0.15
+        pos_hint: {'top': 1, 'center_x': 0.5}
+        font_name: 'Gabriola'
+        font_size: '48sp'
+        color: 0, 0, 0, 1
+        text: 'Select Adventurer'
+    Label:
+        id: perk_info
+        size_hint: 1, 0.1
+        pos_hint: {'top': 0.85, 'center_x': 0.5}
+        font_name: 'Gabriola'
+        font_size: '36sp'
+        color: 0, 0, 0, 1
+        text: root.perk_info
+    RecycleView:
+        id: characters
+        size_hint: 1, 0.75
+        viewclass: 'SquarePerkCharacterPreview'
+        RecycleGridLayout:
+            cols: 8
+            size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            default_size_hint: 0.1247, None
+            default_size: None, root.width * 0.1247
+            col_default_width: root.width * 0.1247
+            col_force_default: True
+            #row_force_default: True
+            orientation: 'lr-tb'
+            padding: root.width * 0.005
+            spacing: root.width * 0.005
+
+<SquarePerkCharacterPreview>:
+    Image:
+        id: background
+        allow_stretch: True
+        source: root.background_source
+    AsyncImage:
+        id: char_image
+        allow_stretch: True
+        source: root.char_image_source
+    Image:
+        id: overlay
+        allow_stretch: True
+        source: 'preview_overlay_square_empty.png'
+    PreviewButton:
+        id: char_button
+        path: root.char_button_source
+        # collision_source: root.char_button_collide_image
+        on_left_click: root.handle_preview_click()
+        on_right_click: root.handle_preview_click()

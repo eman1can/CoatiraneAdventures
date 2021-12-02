@@ -4,7 +4,7 @@ from text.screens.town import get_town_header
 
 """
 Process Materials - Requires Basic Tailor or Apprentice Blacksmith
-Craft Alloys - Requires Apprentice Blacksmith
+Craft Alloys - Requires Basic Tailor or Apprentice Blacksmith
 Craft Items - Requires Daedalus' Protégé
 Craft Equipment - Requires Basic Tailor or Apprentice Blacksmith
 Craft Potions - Required Fledgling Alchemist

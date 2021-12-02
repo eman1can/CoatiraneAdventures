@@ -61,9 +61,9 @@ class RecyclePreview(RecycleView, Filterable, Sortable):
 
     def update_preview(self, character, preview):
         if self.is_support:
-            preview.set_char_screen(preview.character, character, True)
+            preview.set_char_screen(preview.get_character(), character, True)
         else:
-            preview.set_char_screen(character, preview.support, True)
+            preview.set_char_screen(character, preview.get_support(), True)
         Refs.gs.display_screen(None, False, False)
 
     def change_hover(self, new_hover):

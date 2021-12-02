@@ -10,7 +10,7 @@ def get_screen(console, screen_data):
 
     screen_data_options = screen_data.split('#')
     recipe = Refs.gc['recipes'][screen_data_options[0]]
-    equipment = Refs.gc['equipment'][recipe.get_item_id()]
+    equipment = Refs.gc['equipment'][recipe.get_output_id()]
     material_index = int(screen_data_options[-1])
     current_material_id = screen_data_options[material_index + 1]
     current_material = None

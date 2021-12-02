@@ -1,4 +1,4 @@
-<Confirm>:
+<DungeonConfirm>:
     auto_dismiss: False
     background: 'sort_background.png'
     size_hint: 0.45, 0.8
@@ -12,7 +12,7 @@
             size_hint: 1, 0.15
             pos_hint: {'center_x': 0.5, 'top': 0.8}
             font_name: 'Gabriola.ttf'
-            text: '' if root.current_floor is None else 'Floor ' + root.current_floor + ' -> Floor ' + root.next_floor
+            text: root.floor_text
         Label:
             id: rec_score_info
             font_size: root.height * 0.1

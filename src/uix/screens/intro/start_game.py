@@ -33,25 +33,21 @@ class StartGame(Screen):
 
 
 class BossWarning(RelativeLayout):
-    fade_interval = NumericProperty(1)
+
 
     def __init__(self, **kwargs):
-        self._fade_in = True
-        self._fade_time = 0
+
         super().__init__(**kwargs)
 
-        Clock.schedule_once(self.start_animation, 1)
+        # Clock.schedule_once(self.start_animation, 1)
 
-    def start_animation(self, dt):
+    def start_boss_warning_animation(self, dt):
         Clock.schedule_interval(self.update, 1 / 30)
         anim = Animation(fade_interval=0.25, duration=5, t='in_quad') + Animation(fade_interval=1, duration=5, t='in_quad')
         anim.start(self)
 
     def stop_animation(self, dt):
         Clock.unschedule(self.update)
-
-    def lerp(self, a, b, f):
-        return (a * (1.0 - f)) + (b * f)
 
     def update(self, dt):
         self._fade_time = min(self._fade_time + dt, self.fade_interval)

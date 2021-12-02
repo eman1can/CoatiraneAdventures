@@ -16,6 +16,9 @@ class IntroSelect(Screen):
         self.domain = domain
         super().__init__(**kwargs)
 
+    def on_home_press(self):
+        self.manager.display_screen('save_select', True, False)
+
     def choose_character(self, choice):
         create_new_save(self.save_slot, self.god_name, self.gender, self.symbol_id, self.domain, choice)
         self.manager.app.start_loading(self.save_slot, 'intro_news')

@@ -53,6 +53,9 @@ class IntroStart(Screen):
         self.save_slot = save_slot
         self.symbol_options = 26
 
+    def on_home_press(self):
+        self.manager.display_screen('save_select', True, False)
+
     def on_symbol_options(self, *args):
         path = 'family/symbols/'
         self.ids.symbol_list.data = [{'id': f'symbol_{index}', 'source': f'{path}{index}.png'} for index in range(1, self.symbol_options+1)]
@@ -74,4 +77,4 @@ class IntroStart(Screen):
             gender = 'female'
         else:
             gender = 'neither'
-        Refs.gs.display_screen('intro_domain', True, True, self.save_slot, name, gender, symbol)
+        self.manager.display_screen('intro_domain', True, True, self.save_slot, name, gender, symbol)

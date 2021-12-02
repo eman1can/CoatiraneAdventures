@@ -1,0 +1,74 @@
+0  * Basic Attack         * [Foe] Low Dark P. Atk.                                                                             * 812103420* attack          * 0* 0* 1* 0* 0* 7 * 0* 0  
+1  * Slash                * [Foe] Mid Dark P. Atk. with 15% Weak Sickness                                                      * 812103410* skill1          * 0* 0* 1* 1* 0* 7 * 0* 1  * 4 * 28* 0 * 15 
+2  * Swipe                * [Foes] Low Dark P. Atk.                                                                            * 812103440* skill2          * 0* 1* 1* 0* 0* 7 * 0* 0  
+3  * Basic Attack         * [Foes] Mid Earth P. Atk.                                                                           * 812103240* attack          * 0* 1* 1* 1* 0* 5 * 0* 0  
+4  * Swipe                * [Foe] Mid P. Atk. with 15% Weak Bleed                                                              * 812103220* skill1          * 0* 0* 1* 1* 0* 0 * 0* 1  * 4 * 29* 0 * 15 
+5  * Growl                * [Foes] Phy. Resist -50% for 2 turns                                                                * 812104500* skill2          * 1* 1* 0* 1* 0* 12* 1* -50* 2 
+6  * Basic Attack         * [Foe] Low Earth P. Atk.                                                                            * 812103220* attack          * 0* 0* 1* 0* 0* 5 * 0* 0  
+7  * Tounge Shot          * [Foe] Mid Earth P. Atk. and [Self] Penetration +50% for 2 turns                                    * 812103210* skill1          * 0* 0* 1* 1* 0* 5 * 0* 1  * 0 * 23* 2 * 50 * 2  
+8  * Pierce               * [Foe] High Earth P. Atk. with Temp. Str. Boost                                                     * 812103230* skill2          * 0* 0* 1* 2* 0* 5 * 1* 0  * 0 * 0 
+9  * Basic Attack         * [Foe] Low Earth P. Atk.                                                                            * 812103220* attack          * 0* 0* 1* 0* 0* 5 * 0* 0  
+10 * Splash               * [Foes] Dex., Agi., End. -25% for 4 turns                                                           * 812104501* skill1          * 1* 1* 0* 3* 0* 4 * 1* -25* 4 * 0 * 3 * 1  * -25* 4 * 0 * 2 * 1 * -25* 4 
+11 * Tounge Shot          * [Foe] High Water P. Atk.                                                                           * 812103630* skill2          * 0* 0* 1* 2* 0* 1 * 0* 0  
+12 * Basic Attack         * [Foe] Low Dark P. Atk.                                                                             * 812103420* attack          * 0* 0* 1* 0* 0* 7 * 0* 0  
+13 * War Cry              * [Allies] Dex., Agi., End. +25% for 4 turns                                                         * 812104302* skill1          * 1* 4* 0* 3* 0* 4 * 4* 25 * 4 * 0 * 3 * 4  * 25 * 4 * 0 * 2 * 4 * 25 * 4 
+14 * Shadow Slash         * [Foes] High Dark H. Atk. with Temp Str. Boost                                                      * 812103430* skill2          * 0* 1* 1* 2* 2* 7 * 1* 0  * 0 * 0 
+15 * Basic Attack         * [Foe] Low Earth P. Atk.                                                                            * 812103220* attack          * 0* 0* 1* 0* 0* 5 * 0* 0  
+16 * Pinch                * [Foe] Mid Dark P. Atk. with 10% Weak Bleed                                                         * 812103410* skill1          * 0* 0* 1* 1* 0* 7 * 0* 1  * 4 * 29* 0 * 10 
+17 * Desperate Strike     * [Foe] High Dark P. Atk. with End. -25% for 2 turns and [Allies] Str. +25% for 3 turns              * 812103430* skill2          * 0* 0* 1* 2* 0* 7 * 0* 2  * 0 * 2 * 0 * -25* 2  * 0 * 0 * 4 * 25* 3  
+18 * Basic Attack         * [Foe] Low Wind P. Atk.                                                                             * 812103020* attack          * 0* 0* 1* 0* 0* 4 * 0* 0  
+19 * Spore Wind           * [Foes] High Wind P. Atk. with 60% Strong Poison                                                    * 812103000* skill1          * 0* 1* 1* 2* 0* 4 * 0* 1  * 4 * 27* 2 * 60 
+20 * Bite                 * [Foe] High Wind P. Atk. with 90% Strong Poison                                                     * 812103030* skill2          * 0* 0* 1* 2* 0* 4 * 0* 1  * 4 * 27* 2 * 90 
+21 * Basic Attack         * [Foe] Mid Earth P. Atk.                                                                            * 812103210* attack          * 0* 0* 1* 1* 0* 5 * 0* 0  
+22 * Bellow               * [Foes] Str. & Mag. -20% for 3 turns                                                                * 812104501* skill1          * 1* 1* 0* 2* 0* 0 * 1* -20* 3 * 0 * 1 * 1  * -20* 3 
+23 * Smash                * [Foes] High Earth P. Atk. with Temp Str. Boost                                                     * 812103230* skill2          * 0* 1* 1* 2* 0* 5 * 1* 0  * 0 * 0 
+24 * Basic Attack         * [Foes] Low Dark H. Atk.                                                                            * 812103440* attack          * 0* 1* 1* 0* 2* 7 * 0* 0  
+25 * Fireball             * [Foe] High Fire H. Atk.                                                                            * 812103800* skill1          * 0* 0* 1* 2* 2* 2 * 0* 0  
+26 * Disfigure            * [Foes] High Dark H. Atk. with 10% Weak Bleed                                                       * 812103430* skill2          * 0* 1* 1* 2* 2* 7 * 0* 1  * 4 * 29* 0 * 10 
+27 * Basic Attack         * [Foe] Fast Low Wind P. Atk.                                                                        * 812103020* attack          * 0* 0* 2* 0* 0* 4 * 0* 0  
+28 * Zephyrus             * [Self] Str. & Agi. +30% for 4 turns                                                                * 812104402* variable_chant  * 1* 2* 0* 2* 0* 0 * 2* 30 * 4 * 0 * 3 * 2  * 30 * 4 
+29 * Pinpoint             * [Foe] Fast Mid Wind P. Atk. with Temp. Str. Boost                                                  * 812103010* attack          * 0* 0* 2* 1* 0* 4 * 1* 0  * 0 * 0 
+30 * Homewrecker          * [Foes] High Wind P. Atk.                                                                           * 812103000* attack          * 0* 1* 1* 2* 0* 4 * 0* 0  
+31 * Whirlwind            * [Foes] Ultra P. Atk. and [Allies] Str. & Agi. +50% for 3 turns                                     * -        * special_attack_1* 0* 1* 1* 4* 0* 0 * 0* 2  * 0 * 0 * 4 * 50 * 3  * 0 * 3 * 4 * 50* 3  
+32 * Basic Attack         * [Foes] Low P. Atk.                                                                                 * 812100600* attack          * 0* 1* 1* 0* 0* 0 * 0* 0  
+33 * Ifrit                * [Foe] Slow Super Fire H. Atk.                                                                      * 812102503* attack          * 0* 0* 0* 3* 2* 2 * 0* 0  
+34 * Guard                * [Allies] End. +25% for 5 turns                                                                     * 812104300* variable_chant  * 1* 4* 0* 1* 0* 2 * 4* 25 * 5 
+35 * Envision             * [Self] Str., Agi., Dex. +30% for 2 turns                                                           * 812104402* variable_chant  * 1* 2* 0* 3* 0* 0 * 2* 30 * 2 * 0 * 3 * 2  * 30 * 2 * 0 * 4 * 2 * 30 * 2 
+36 * Sea of Fire          * [Foes] Ultra Fire H. Atk. with Temp. Mag. Boost                                                    * -        * special_attack_1* 0* 1* 1* 4* 2* 2 * 1* 0  * 1 * 0 
+37 * Counter              * [Foe] Low P. Atk.                                                                                  * 812100400* attack          * 0* 0* 1* 0* 0* 0 * 0* 0  
+38 * Basic Attack         * [Foe] Low M. Atk.                                                                                  * 812101100* attack          * 0* 0* 1* 0* 1* 0 * 0* 0  
+39 * Episkey              * [Allies] Low Heal with HP Regen +10% for 2 turns                                                   * 812104000* variable_chant  * 2* 4* 1* 0* 0* 1 * 0* 5  * 4 * 10* 2 
+40 * Super Soaker         * [Foes] Mid Water M. Atk. with Temp. Mag. Boost                                                     * 812102201* attack          * 0* 1* 1* 1* 1* 1 * 1* 0  * 1 * 0 
+41 * Purify               * [Allies] Ailment Cure with Mag. +25% for 2 turns                                                   * 812104313* variable_chant  * 3* 4* 1* 0* 1* 0 * 1* 4  * 25* 2 
+42 * Revitalization       * [Allies] High Heal with Str., Mag., Agi., Dex. +25% for 2 turns                                    * -        * special_attack_1* 2* 4* 1* 2* 0* 4 * 0* 0  * 4 * 25* 2 * 0  * 1  * 4 * 25* 2 * 0 * 3  * 4 * 25* 2 * 0* 4 * 4* 25* 2 
+43 * Basic Attack         * [Foes] Low P. Atk.                                                                                 * 812100600* attack          * 0* 1* 1* 0* 0* 0 * 0* 0  
+44 * Shadow Swipe         * [Foe] Mid Dark P. Atk.                                                                             * 812103410* attack          * 0* 0* 1* 1* 0* 7 * 0* 0  
+45 * Command              * [Allies] Str., Mag., End., Agi., Dex. +15% for 4 turns                                             * 812104301* variable_chant  * 1* 4* 0* 5* 0* 0 * 4* 15 * 4 * 0 * 1 * 4  * 15 * 4 * 0 * 2 * 4 * 15 * 4 * 0 * 3 * 4* 15* 4* 0 * 4 * 4* 15* 4
+46 * Warn                 * [Allies] Phy. Resist, Mag. Resist, Hyb. Resist, Block, Counter +25% for 3 turns ,                  * 812104302* variable_chant  * 1* 4* 0* 5* 0* 12* 4* 25 * 3 * 0 * 13* 4  * 25 * 3 * 0 * 14* 4 * 25 * 3 * 0 * 25* 4* 25* 3* 0 * 22* 4* 25* 3
+47 * Declaration of War   * [Foes] Ultra Dark P. Atk. with Temp. Str. Boost and [Allies] Str. & Mag. +50% for 3 turns          * -        * special_attack_1* 0* 1* 1* 4* 0* 7 * 1* 0  * 0 * 2 * 0 * 0  * 4  * 50* 3 * 0 * 1 * 4  * 50* 3 
+48 * Counter              * [Foe] Low Dark P. Atk.                                                                             * 812103420* attack          * 0* 0* 1* 0* 0* 7 * 0* 0  
+49 * Basic Attack         * [Foe] Mid Thunder M. Atk.                                                                          * 812101401* attack          * 0* 0* 1* 1* 1* 3 * 0* 0  
+50 * Flash Slice          * [Foes] Mid Thunder H. Atk.                                                                         * 812101501* attack          * 0* 1* 1* 1* 2* 3 * 0* 0  
+51 * Electroshock         * [Foe] Super Thunder H. Atk.                                                                        * 812101403* attack          * 0* 0* 1* 3* 2* 3 * 0* 0  
+52 * Energize             * [Allies] Agi. & Dex. +30% for 4 turns                                                              * 812104300* variable_chant  * 1* 4* 0* 2* 0* 3 * 4* 30 * 4 * 0 * 4 * 4  * 30 * 4 
+53 * Rain of Thunder      * [Foes] Ultra Thunder H. Atk. with Temp. Str. & Mag. Boost and [Allies] Agi. & Dex. +50% for 2 turns* -        * special_attack_1* 0* 1* 1* 4* 2* 3 * 2* 0  * 0 * 0 * 1 * 2  * 0  * 3 * 4 * 50* 2 * 0  * 4 * 4 * 50* 2
+54 * Basic Attack         * [Foes] Mid H. Atk.                                                                                 * 812101001* attack          * 0* 1* 1* 1* 2* 0 * 0* 0  
+55 * Flash                * [Foes] Agi. & Dex. -30% for 3 turns                                                                * 812104500* attack          * 1* 1* 0* 2* 0* 3 * 1* -30* 3 * 0 * 4 * 1  * -30* 3 
+56 * Barrier              * [Allies] Null Atk. x2                                                                              * 810000032* variable_chant  * 1* 4* 0* 1* 1* 37* 4* 2  
+57 * Wishe Fragment       * [Allies] MP Regen 15% for 3 turns                                                                  * 812104302* variable_chant  * 1* 4* 0* 1* 0* 7 * 4* 15 * 3 
+58 * Starbeam             * [Foe] Ultra Light M. Atk. with Temp. Mag. Boost and [Allies] End. +50% for 5 turns                 * -        * special_attack_1* 0* 0* 1* 4* 1* 6 * 1* 0  * 1 * 1 * 0 * 2  * 4  * 50* 5 
+59 * Counter              * [Foe] Mid H. Atk.                                                                                  * 812101101* attack          * 0* 0* 1* 1* 2* 0 * 0* 0  
+60 * Smile D              * [Allies] HP Regen 4% per turn                                                                      * -        * -               * 1* 4* 0* 1* 0* 5 * 4* 4  * -1
+61 * Smile C              * [Allies] HP Regen 6% per turn                                                                      * -        * -               * 1* 4* 0* 1* 0* 5 * 4* 6  * -1
+62 * Smile B              * [Allies] HP Regen 8% per turn                                                                      * -        * -               * 1* 4* 0* 1* 0* 5 * 4* 8  * -1
+63 * Smile A              * [Allies] HP Regen 10% per turn                                                                     * -        * -               * 1* 4* 0* 1* 0* 5 * 4* 10 * -1
+64 * Smile S              * [Allies] HP Regen 15% per turn and Str. & Mag. +10%                                                * -        * -               * 1* 4* 0* 3* 0* 5 * 4* 15 * -1* 0 * 0 * 4  * 10 * -1* 0 * 1 * 4 * 10 * -1
+65 * Smile SS             * [Allies] HP Regen 20% per turn and Str. & Mag. +15%                                                * -        * -               * 1* 4* 0* 3* 0* 5 * 4* 20 * -1* 0 * 0 * 4  * 15 * -1* 0 * 1 * 4 * 15 * -1
+66 * Smile SSS            * [Allies] HP Regen 25% per turn and Str. & Mag. +15%                                                * -        * -               * 1* 4* 0* 3* 0* 5 * 4* 25 * -1* 0 * 0 * 4  * 15 * -1* 0 * 1 * 4 * 15 * -1
+67 * Divine Protection D  * [Allies] Dex. & End. +5%                                                                           * -        * -               * 1* 4* 0* 2* 0* 4 * 4* 5  * -1* 0 * 2 * 4  * 5  * -1
+68 * Divine Protection C  * [Allies] Dex. & End. +7.5%                                                                         * -        * -               * 1* 4* 0* 2* 0* 4 * 4* 7.5* -1* 0 * 2 * 4  * 7.5* -1
+69 * Divine Protection B  * [Allies] Dex. & End. +10%                                                                          * -        * -               * 1* 4* 0* 2* 0* 4 * 4* 10 * -1* 0 * 2 * 4  * 10 * -1
+70 * Divine Protection A  * [Allies] Dex. & End. +15%                                                                          * -        * -               * 1* 4* 0* 2* 0* 4 * 4* 15 * -1* 0 * 2 * 4  * 15 * -1
+71 * Divine Protection S  * [Allies] Dex. & End. +25%                                                                          * -        * -               * 1* 4* 0* 2* 0* 4 * 4* 25 * -1* 0 * 2 * 4  * 25 * -1
+72 * Divine Protection SS * [Allies] Dex. & End. +50%                                                                          * -        * -               * 1* 4* 0* 2* 0* 4 * 4* 50 * -1* 0 * 2 * 4  * 50 * -1
+73 * Divine Protection SSS* [Allies] Dex. & End. +75%                                                                          * -        * -               * 1* 4* 0* 2* 0* 4 * 4* 75 * -1* 0 * 2 * 4  * 75 * -1

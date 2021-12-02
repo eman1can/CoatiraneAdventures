@@ -97,7 +97,7 @@ class FloorData:
                 self._increases[support_index] = [0 for _ in range(7)]
                 self._fam_bonus_increases[support_index] = {}
             self._adventurers.append(create_battle_character(character, support))
-            self._party_perks += character.get_perks()
+            self._party_perks += character.get_all_perks()
             self._supporters.append(support)
             self._get_supporters[char_index] = support_index
 
@@ -509,6 +509,7 @@ class FloorData:
 
     def generate_boss_encounter(self):
         self._is_boss_fight = True
+        self._in_encounter = True
         self._encounter_count += 1
         self._battle_data = BattleData(self, *self._generate_battle_characters(), True)
         self._battle_data.set_state('battle')

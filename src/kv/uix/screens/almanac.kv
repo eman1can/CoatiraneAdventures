@@ -1,0 +1,339 @@
+#:import SkillsList uix.screens.character_display.attributes.skills_list.SkillsList
+
+<Almanac>:
+    name: 'almanac_main'
+    ScrollView:
+        size_hint: 0.3, 0.9
+        pos_hint: {'x': 0.033}
+        y: self.x
+        orientation: 'vertical'
+        effect_cls: 'ScrollEffect'
+        always_overscroll: False
+        do_scroll_x: False
+        StackLayout:
+            id: browser
+            orientation: 'lr-tb'
+            # spacing: root.height * 0.0125
+            # padding: root.height * 0.025
+            size_hint_y: None
+            height: self.minimum_height
+    Image:
+        id: almanac_image
+        allow_stretch: True
+        size_hint: 0.6, 0.933
+        pos_hint: {'right': 0.966, 'y': 0.033}
+        source: 'almanac_background_black.png'
+    RelativeLayout:
+        id: panel_parent
+        size_hint: 0.6, 0.933
+        pos_hint: {'right': 0.966, 'y': 0.033}
+
+
+<AlmanacHeader>:
+    size_hint: 1, None
+    height: base_content.height + child_layout.height
+    panel_height: child_layout.minimum_height
+    RelativeLayout:
+        id: base_content
+        size_hint: 1, None
+        height: root.base_height
+        pos_hint: {'top': 1}
+        PPCHoverPathButton:
+            path: 'buttons/shop_display'
+            on_release: root.do_callback()
+        Label:
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {'x': 0.1, 'center_y': 0.5}
+            font_name: 'Precious'
+            font_size: '26sp'
+            text: root.header
+            color: 0, 0, 0, 1
+        Image:
+            id: icon
+            size_hint: None, 0.9
+            width: self.height
+            pos_hint: {'center_y': 0.5}
+            right: root.width - self.y
+            source: root.image_source
+            allow_stretch: True
+            opacity: 0 if root.image_source == '' else 1
+    StackLayout:
+        id: child_layout
+        orientation: 'lr-tb'
+        size_hint: 0.951, None
+        pos_hint: {'x': 0.049}
+
+<AlmanacObject>:
+    size_hint: 1, None
+    PPCHoverPathButton:
+        path: 'buttons/shop_display'
+        on_release: root.do_callback()
+    Label:
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'x': 0.1, 'center_y': 0.5}
+        font_name: 'Precious'
+        font_size: '26sp'
+        text: root.header
+        color: 0, 0, 0, 1
+    Image:
+        id: icon
+        size_hint: None, 0.9
+        width: self.height
+        pos_hint: {'center_y': 0.5}
+        right: root.width - self.y
+        source: root.image_source
+        allow_stretch: True
+        opacity: 0 if root.image_source == '' else 1
+
+<AlmanacCharacterPanel>:
+    Image:
+        source: 'almanac_panel_background.png'
+        allow_stretch: True
+        keep_ratio: False
+    ScrollView:
+        size_hint: None, None
+        size: root.width - 10, root.height - 10
+        pos: 5, 5
+        do_scroll_x: False
+        orientation: 'vertical'
+        effect_cls: 'ScrollEffect'
+        always_overscroll: False
+        FloatLayout:
+            size_hint: 1, None
+            height: root.height * 3
+            pos_hint: {'top': 1}
+            Image:
+                id: character_preview
+                size_hint: 1, None
+                height: self.width / self.image_ratio
+                pos_hint: {'top': 1}
+                allow_stretch: True
+                source: root.character_source
+            TypeFlag:
+                id: type_flag
+                size_hint: 0.2, None
+                height: self.width * 150 / 575
+                pos_hint: {'right': 1}
+                top: char_flag.y + self.height * 0.17
+                type: root.attack_type
+
+            CharFlag:
+                id: char_flag
+                height: self.width * 150 / 575
+                size_hint: 0.2, None
+                pos_hint: {'top': 1, 'right': 1}
+                type: root.char_type
+                opacity: 0 if root.char_type == '' else 1
+            ElementFlag:
+                id: element_flag
+                size_hint: 0.06, None
+                height: self.width * 475 / 150
+                x: type_flag.x + (type_flag.width - self.width) / 2
+                top: type_flag.y + type_flag.height * 0.17
+                type: root.element
+                opacity: 0 if root.element == '' else 1
+
+            RelativeLayout:
+                size_hint: None, None
+                size: display_name.width + 40, display_name.height + 25
+                pos_hint: {'top': 1}
+                Image:
+                    allow_stretch: True
+                    keep_ratio: False
+                    source: 'almanac_name_background.png'
+                Label:
+                    id: display_name
+                    size_hint: None, None
+                    size: self.texture_size
+                    font_name: 'Precious'
+                    font_size: '90sp'
+                    color: 0, 0, 0, 1
+                    text: root.display_name
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+            RelativeLayout:
+                size_hint: None, None
+                size: full_name.width + 40, full_name.height + 25
+                pos_hint: {'right': 1}
+                y: character_preview.y
+                Image:
+                    allow_stretch: True
+                    keep_ratio: False
+                    source: 'almanac_name_background.png'
+                Label:
+                    id: full_name
+                    size_hint: None, None
+                    size: self.texture_size
+                    font_name: 'Precious'
+                    font_size: '90sp'
+                    color: 0, 0, 0, 1
+                    text: root.full_name
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            RelativeLayout:
+                id: general_info
+                size_hint: None, None
+                size: root.width * 0.95, character_preview.height * 0.3
+                pos_hint: {'center_x': 0.5}
+                top: character_preview.y - root.width * 0.025
+                Label:
+                    id: race
+                    size_hint: 0.3, 0.33
+                    font_name: 'Precious'
+                    font_size: '48sp'
+                    color: 0, 0, 0, 1
+                    text: root.race
+                    pos_hint: {'top': 1}
+                Label:
+                    id: gender
+                    size_hint: 0.3, 0.33
+                    font_name: 'Precious'
+                    font_size: '48sp'
+                    color: 0, 0, 0, 1
+                    text: root.gender
+                    pos_hint: {'center_y': 0.5}
+                Label:
+                    id: age
+                    size_hint: 0.3, 0.33
+                    font_name: 'Precious'
+                    font_size: '48sp'
+                    color: 0, 0, 0, 1
+                    text: root.age
+                Label:
+                    id: description
+                    size_hint: 0.7, 1
+                    text_size: self.width, self.height
+                    pos_hint: {'right': 1}
+                    font_name: 'Precious'
+                    font_size: '36sp'
+                    valign: 'middle'
+                    color: 0, 0, 0, 1
+                    text: root.description
+            Label:
+                id: favorite_weapon
+                size_hint: 1, None
+                height: self.texture_size[1] if self.opacity > 0 else 0
+                opacity: 0 if root.favorite_weapon == '' else 1
+                top: general_info.y
+                font_name: 'Precious'
+                font_size: '36sp'
+                color: 0, 0, 0, 1
+                text: root.favorite_weapon
+            Label:
+                id: favorite_sub_weapon
+                size_hint: 1, None
+                height: self.texture_size[1] if self.opacity > 0 else 0
+                opacity: 0 if root.favorite_sub_weapon == '' else 1
+                top: favorite_weapon.y
+                font_name: 'Precious'
+                font_size: '36sp'
+                color: 0, 0, 0, 1
+                text: root.favorite_sub_weapon
+            RelativeLayout:
+                id: starting_info
+                size_hint: None, None
+                size: root.width * 0.95, character_preview.height * 0.5
+                pos_hint: {'center_x': 0.5}
+                top: favorite_sub_weapon.y - root.width * 0.025
+                Label:
+                    id: title
+                    size_hint: 0.5, 0.1
+                    pos_hint: {'top': 1}
+                    text: 'Recruitment Cost'
+                    font_size: '36sp'
+                    font_name: 'Gabriola'
+                    color: 0, 0, 0, 1
+                RecycleView:
+                    size_hint: 0.4, 0.9
+                    pos_hint: {'center_x': 0.25}
+                    viewclass: 'RecruitmentItem'
+                    data: root.recruitment_items
+                    RecycleBoxLayout:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+                        default_size_hint: 1, None
+                        default_size: None, dp(50)
+                Label:
+                    id: title
+                    size_hint: 0.5, 0.1
+                    pos_hint: {'top': 1, 'x': 0.5}
+                    text: 'Starting Stats'
+                    font_size: '36sp'
+                    font_name: 'Gabriola'
+                    color: 0, 0, 0, 1
+                RecycleView:
+                    size_hint: 0.4, 0.9
+                    pos_hint: {'center_x': 0.75}
+                    viewclass: 'StatItem'
+                    data: root.starting_stats
+                    RecycleBoxLayout:
+                        size_hint: 1, None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+                        default_size_hint: 1, None
+                        default_size: None, dp(50)
+            SkillsList:
+                id: skills_list
+                size_hint: 0.75, None
+                height: starting_info.y
+                pos_hint: {'center_x': 0.5}
+                height_unit: self.height * 0.75
+<RecruitmentItem>:
+    Image:
+        id: image
+        size_hint: None, 1
+        width: self.height
+        source: root.image_source
+    Label:
+        id: title
+        size_hint: None, 1
+        width: count.x - image.right
+        x: image.right * 1.125
+        text: root.title
+        font_size: '30sp'
+        font_name: 'Gabriola'
+        color: 0, 0, 0, 1
+    Label:
+        id: count
+        size_hint: None, 1
+        width: self.texture_size[0]
+        pos_hint: {'right': 1}
+        text: root.count
+        font_size: '30sp'
+        font_name: 'Gabriola'
+        color: 0, 0, 0, 1
+
+<StatItem>:
+    Image:
+        id: background
+        source: 'stat_bar.png'
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: 0.65, 0.903
+        pos_hint: {'x': 0, 'center_y': 0.5}
+    Image:
+        id: image
+        source: root.image_source
+        allow_stretch: True
+        size_hint: 0.1250, 0.8127
+        pos_hint: {'x': 0.0625, 'center_y': 0.5}
+    Label:
+        id: label
+        text: root.title
+        color: 1, 1, 1, 1
+        font_name: 'Gabriola'
+        font_size: image.height
+        height: self.texture_size[1]
+        size_hint: 0.4375, None
+        pos_hint: {'x': 0.2, 'center_y': 0.5}
+    Label:
+        id: number
+        text: str(round(root.value, 2))
+        color: 0, 0, 0, 1
+        font_name: 'Gabriola'
+        font_size: image.height
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'right': 1, 'center_y': 0.5}

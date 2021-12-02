@@ -3,6 +3,7 @@
 
 <IntroDomain>:
     name: 'intro_domain'
+    title_hidden: True
     Label:
         id: title
         text: 'What is your domain?'
@@ -24,16 +25,9 @@
         view_class: 'SmallDomainDisplay'
         on_widget: large_display.domain = args[1].domain
     Button:
-        id: back
-        size_hint: 0.2, 0.1
-        pos_hint: {'x': 0.028, 'y': 0.05}
-        text: 'Back'
-        font_name: 'Gabriola'
-        on_release: root.on_back_press()
-    Button:
         id: next
-        size_hint: 0.2, 0.1
-        pos_hint: {'right': 0.478, 'y': 0.05}
+        size_hint: 0.4, 0.1
+        pos_hint: {'center_x': 0.253, 'y': 0.05}
         text: 'Next'
         font_name: 'Gabriola'
         on_release: root.goto_next()

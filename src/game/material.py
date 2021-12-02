@@ -84,6 +84,9 @@ class Material:
     def is_gem(self):
         return self._type == GEM
 
+    def is_type(self, type):
+        return self._type == type
+
     def get_durability(self):
         return self._weights[DURABILITY]
 

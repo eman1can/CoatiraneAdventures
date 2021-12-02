@@ -9,11 +9,11 @@
 <StartGame>:
     name: 'start_game'
     background_source: 'new_game_background.png'
-    Image:
-        id: background
-        source: root.background_source
-        opacity: 0 if not root.background else 1
-        allow_stretch: True
+    title_hidden: True
+    back_hidden: True
+    back_enabled: False
+    home_hidden: True
+    home_enabled: False
     Image:
         id: title_signs
         size_hint: 1, 1
@@ -37,17 +37,3 @@
         pos_hint: {'x': 0.350, 'y': 0.319}
         path: 'buttons/new_game_quit_game'
         on_release: root.on_exit_game()
-    BossWarning:
-        opacity: 0
-        Image:
-            size_hint: 0.25, 0.25
-            pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-            source: 'warning.png'
-        Label:
-            size_hint: None, 0.125
-            pos_hint: {'center_x': 0.5}
-            width: self.texture_size[0]
-            font_name: 'Precious'
-            font_size: self.height / 2
-            color: 1, 0, 0, 1
-            text: 'Approaching Boss Encounter!'

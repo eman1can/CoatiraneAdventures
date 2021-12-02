@@ -1,0 +1,96 @@
+#:import time_header src.uix.modules.headers.time_header
+#:import profile_header src.uix.modules.headers.profile_header
+
+<HousingMain>:
+    name: 'housing_main'
+    RelativeLayout:
+        id: overlay_background
+        size_hint: 1, 0.05
+        pos_hint: {'top': 1}
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                size: self.size
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                size: self.width * 0.8025, self.height * 0.05
+                pos: self.width * 0.09875, 0
+        Label:
+            id: profile_header
+            size_hint: None, 0.75
+            width: self.texture_size[0] * 1.125
+            pos_hint: {'x': 0.125, 'center_y': 0.5}
+            font_size: '20pt'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: profile_header()
+        Label:
+            id: time_header
+            size_hint: None, 0.75
+            width: self.texture_size[0] * 1.125
+            pos_hint: {'right': 0.875, 'center_y': 0.5}
+            font_size: '20pt'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: time_header()
+    Image:
+        id: image
+        size_hint: 0.25, None
+        pos_hint: {'x': 0.05}
+        y: root.height - self.height - self.x
+        height: self.width
+        source: root.housing_source
+    Label:
+        id: name
+        size_hint: None, None
+        pos_hint: {'x': 0.3125}
+        size: self.texture_size
+        y: root.height - self.height - image.x
+        font_name: 'Precious'
+        font_size: '90sp'
+        color: 0, 0, 0, 1
+        text: root.housing_name
+    Label:
+        id: description
+        size_hint: None, None
+        pos_hint: {'x': 0.3125}
+        width: name.width
+        height: self.texture_size[1]
+        y: name.y - self.height
+        text_size: self.width, None
+        font_name: 'Precious'
+        font_size: '40sp'
+        color: 0, 0, 0, 1
+        text: root.description
+    Label:
+        id: status
+        size_hint: None, None
+        pos_hint: {'x': 0.3125}
+        size: self.texture_size
+        y: timeline.top
+        font_name: 'Precious'
+        font_size: '48sp'
+        color: 0, 0, 0, 1
+        text: 'Renting' if root.renting else 'Mortgage'
+    Label:
+        id: timeline
+        size_hint: None, None
+        pos_hint: {'x': 0.3125}
+        size: self.texture_size
+        y: bill_info.top
+        font_name: 'Precious'
+        font_size: '48sp'
+        color: 0, 0, 0, 1
+        text: root.time
+    Label:
+        id: bill_info
+        size_hint: None, None
+        pos_hint: {'x': 0.3125}
+        size: self.texture_size
+        y: image.y
+        font_name: 'Precious'
+        font_size: '48sp'
+        color: 0, 0, 0, 1
+        text: root.cost

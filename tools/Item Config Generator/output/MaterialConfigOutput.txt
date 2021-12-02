@@ -1,0 +1,100 @@
+hard, tin, Tin, 1.5, 1.5
+tin_ore#tin_ingot
+none
+none
+#
+hard, cadmium, Cadmium, 2.0, 2.0
+cadmium_ore#cadmium_ingot
+none
+none
+#
+hard, coal, Coal, 2.0, 2.5
+coal_ore#coal_ingot
+none
+none
+#
+hard, zinc, Zinc, 2.5, 2.5
+zinc_ore#zinc_ingot
+none
+none
+#
+hard, silver, Silver, 2.5, 3.0
+silver_ore#silver_ingot
+none
+none
+#
+hard, copper, Copper, 3.0, 3.0
+copper_ore#copper_ingot
+none
+none
+#
+hard, platinum, Platinum, 4.0, 4.5
+platinum_ore#platinum_ingot
+none
+none
+#
+hard, iron, Iron, 4.5, 4.5
+iron_ore#iron_ingot
+none
+none
+#
+hard, titanium, Titanium, 6.0, 6.0
+titanium_ore#titanium_ingot
+none
+none
+#
+hard, tungsten, Tungsten, 7.5, 7.5
+tungsten_ore#tungsten_ingot
+none
+none
+#
+hard, meteoric_iron, Meteoric Iron, 10.5, 11.0
+meteoric_iron_ore#meteoric_iron_ingot
+none
+none
+#
+hard, golanthium, Golanthium, 13.0, 15.0
+golanthium_ore#golanthium_ingot
+none
+none
+#
+hard, bronze, Bronze, 3.0, 3.0
+none#bronze_ingot
+none
+none
+#
+hard, steel, Steel, 4.0, 4.5
+none#steel_ingot
+none
+none
+#
+hard, hardened_steel, Hardened Steel, 7.0, 8.0
+none#hardened_steel_ingot
+none
+none
+#
+hard, tungsten_carbide, Tungsten Carbide, 8.5, 9.0
+none#tungsten_carbide_ingot
+none
+none
+#
+hard, dark_steel, Dark Steel, 9.0, 9.5
+none#dark_steel_ingot
+none
+none
+#
+hard, mithril, Mithril, 9.5, 10.5
+none#mithril_ingot
+none
+none
+#
+hard, adamantite, Adamantite, 11.0, 13.0
+none#adamantite_ingot
+none
+none
+#
+hard, trinium, Trinium, 15.0, 16.0
+none#trinium_ingot
+none
+none
+#

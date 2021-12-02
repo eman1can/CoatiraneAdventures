@@ -1,14 +1,19 @@
 __all__ = ('GameContent',)
 
 # Project Imports
-from game.calendar import Calendar
+from game.crafting_queue import CraftingChar, CraftingQueue
+from game.game_calendar import Calendar
 from game.battle_character import create_battle_character
-from game.crafting_recipe import CRAFT_ALLOYS, EQUIPMENT, ITEM, PROCESS_MATERIALS
+from game.crafting_recipe import ALLOY, EQUIPMENT, ITEM, PROCESS
 from game.equipment import NECKLACE, RING, UnGeneratedArmor, UnGeneratedTool, UnGeneratedWeapon
 from game.floor_data import FloorData
 from game.inventory import Inventory
+from game.market import Market, PriceTracker
+from game.quest_manager import QuestManager
 from game.save_load import load_floor_data, save_game
 from kivy.cache import Cache
+from kivy.clock import Clock
+from loading.base import LOADING_LAYERS
 from refs import Refs
 # from src.spine.skeleton.skeletonloader import SkeletonLoader
 
@@ -40,6 +45,18 @@ class GameContent:
 
         self._calendar = None
         self._current_housing = None
+        self._market = None
+        self._quest_manager = None
+        self._crafting_queue = None
+        self._crafting_queue_advance = None
+
+        self._items = None
+        self._general_items = None
+        self._shop_items = None
+        self._drop_items = None
+        self._ingredients = None
+        self._potions = None
+        self._floor_maps = None
 
         self._name = ''
         self._domain = ''
@@ -52,6 +69,8 @@ class GameContent:
         self._inventory = None
         self._varenth = 0
         self._renown = ''
+        self._renown_rank = 0
+        self._renown_points = 0
         self._last_save_time = 0
         self._lowest_floor = 0  # 0 = Surface
 
@@ -69,14 +88,45 @@ class GameContent:
             string = char + string
         return string + end
 
-    def get_item_data(self, item_id):
-        if item_id in self._data['items']:
-            return self._data['items'][item_id]
+    @staticmethod
+    def number_to_name(number, past=True):
+        if past:
+            tens = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth']
+            teens = ['eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth']
+            ends = ['tenth', 'twent', 'thirt', 'fort', 'fift', 'sixt', 'sevent', 'eight', 'ninet']
+        else:  # present
+            tens = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+            teens = ['eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'ninetee']
+            ends = ['twn', 'twent', 'thirt', 'fort', 'fift', 'sixt', 'sevent', 'eight', 'ninet']
+
+        if number <= 9:
+            return tens[number - 1]
+        elif 10 < number <= 19:
+            return teens[number - 11]
+        elif number % 10 == 0:
+            base = ends[int(number / 10) - 1]
+            if number > 10:
+                base += 'ieth' if past else 'y'
+            return base
         else:
-            return self._data['drop_items'][item_id]
+            base = ends[int(number / 10) - 1]
+            suffix = teens[int(number % 10) - 1]
+            base += 'y'
+            base += f'-{suffix}'
+            return base
+
+    def get_item_data(self, item_id):
+        if item_id in self._items:
+            return self._items[item_id]
+        return None
+
+    def get_equipment_data(self, equipment_id):
+        if equipment_id in self._data['equipment']:
+            return self._data['equipment'][equipment_id]
+        return None
 
     def initialize(self, loader):
-        keys = ['skills', 'abilities', 'enemies', 'floors', 'families', 'chars', 'items', 'drop_items', 'housing', 'perks', 'materials', 'equipment', 'recipes', 'save']
+        keys = LOADING_LAYERS
         self._data = {}
         for key in keys:
             self._data[key] = loader.get(key)
@@ -85,8 +135,43 @@ class GameContent:
 
         Cache.register('preview.slides', 25, 60)
 
+        self._market = Market()
+        self._quest_manager = QuestManager()
+        self._crafting_queue = CraftingQueue()
+        self._load_items(self._data['items'])
+
+        self.generate_equipment_market_prices()
+
+        for item_id, price_tracker in self._data['market_prices'].items():
+            self._market.add_item_to_market(item_id, price_tracker)
+
+    def _load_items(self, items):
+        self._items = items
+        self._general_items = {}
+        self._shop_items = {}
+        self._drop_items = {}
+        self._ingredients = {}
+        self._potions = {}
+        self._floor_maps = {}
+        for item_id, item in items.items():
+            if not item.is_item():
+                continue
+            if item.is_floor_map():
+                self._floor_maps[item_id] = item
+            elif item.is_potion():
+                self._potions[item_id] = item
+            elif item.is_ingredient():
+                self._ingredients[item_id] = item
+            elif item.is_drop_item():
+                self._drop_items[item_id] = item
+            elif item.is_shop_item():
+                self._shop_items[item_id] = item
+            else:
+                self._general_items[item_id] = item
+
     def update_data(self, save_data):
-        self._inventory = Inventory(self['items'], self['drop_items'], self['equipment'], save_data['inventory'])
+        self._inventory = Inventory(self['items'], self['equipment'], save_data['inventory'])
+        self._crafting_queue.set_inventory(self._inventory)
         self._lowest_floor = save_data['lowest_floor']
         self._varenth = save_data['varenth']
         self._name = save_data['family']['name']
@@ -94,6 +179,8 @@ class GameContent:
         self._gender = save_data['family']['gender']
         self._domain = save_data['family']['domain']
         self._renown = save_data['family']['rank']
+        self._renown_rank = save_data['family']['rank_index']
+        self._renown_points = save_data['family']['rank_points']
         self._last_save_time = save_data['time']
         self._calendar = Calendar(save_data['time'])
 
@@ -121,6 +208,42 @@ class GameContent:
         self._perk_points = save_data['perk_points']
         for perk_id in save_data['perks']:
             self._unlocked_perks[perk_id] = True
+        self._crafting_queue.load(save_data['crafting_queue'])
+        # Load Market Data into market
+        for index, floor in enumerate(self._data['floors'].values()):
+            defeated = save_data['boss_defeated'][str(floor.get_id())]
+            respawn_time = save_data['boss_respawn_time'][str(floor.get_id())]
+            floor.set_boss_status(defeated, respawn_time)
+
+    # Crafting Queue
+
+    def initialize_crafting_queue(self):
+        for character in self._data['chars'].values():
+            self._crafting_queue.init_char(character.get_full_name(), character)
+
+    def add_recipe_to_crafting_queue(self, output_id, type, time, count):
+        self._crafting_queue.add_recipe_to_queue(output_id, type, time, count)
+        if self._crafting_queue_advance is None:
+            self._crafting_queue_advance = Clock.schedule_interval(self.update_crafting_queue, 0.1)
+
+    def update_crafting_queue(self, delta):
+        if self._crafting_queue.advance(delta):
+            self._crafting_queue_advance.cancel()
+            self._crafting_queue_advance = None
+
+    def attach_crafting_queue_display(self, display, item_displays):
+        self._crafting_queue.set_display(display, item_displays)
+
+    def detach_crafting_queue_display(self):
+        self._crafting_queue.remove_display()
+
+    def get_queue_time(self):
+        return self._crafting_queue.get_queue_time()
+
+    # Quest Manager
+
+    def get_quest_manager(self):
+        return self._quest_manager
 
     def set_current_housing(self, housing):
         self._current_housing = housing
@@ -188,7 +311,7 @@ class GameContent:
 
     def get_score(self):
         score = 0
-        for character in self._data['chars'].values():
+        for character in self.get_all_obtained_characters():
             score += character.get_score()
         return score
 
@@ -215,6 +338,18 @@ class GameContent:
     def get_renown(self):
         return self._renown
 
+    def get_renown_as_index(self):
+        return self._renown_rank
+
+    def get_renown_points(self):
+        return self._renown_points
+
+    def add_renown_points(self, points):
+        self._renown_points += points
+        if self._renown_points > 999:
+            # TODO: Show Renown Proving Quest
+            self._renown_points = 999
+
     def get_program_type(self):
         return self._program_type
 
@@ -240,10 +375,15 @@ class GameContent:
         self._obtained_characters_s = ocs
         if cp is not None:
             self._parties = cp
+        # self.obtain_character(1, False)
+        # self.obtain_character(2, False)
+        # self.obtain_character(3, False)
 
     def load_characters(self, characters):
         self._characters = list(characters.values())
-        ids = characters.values()
+
+    def load_quests(self, quest_data):
+        self._quest_manager.load_from_data(quest_data)
 
     def get_current_party_index(self):
         return self._parties[0]
@@ -289,6 +429,12 @@ class GameContent:
                 chars.append(self._characters[char_index])
         return chars
 
+    def get_all_obtained_characters(self):
+        chars = []
+        for char_index in self._obtained_characters:
+            chars.append(self._characters[char_index])
+        return chars
+
     def get_obtained_character_indexes(self, support):
         if support:
             return self._obtained_characters_s
@@ -306,7 +452,6 @@ class GameContent:
         return chars
 
     def obtain_character(self, char_index, is_support):
-        print('Obtain', char_index, is_support)
         if is_support:
             self._obtained_characters_s.append(char_index)
         else:
@@ -327,7 +472,7 @@ class GameContent:
     def get_char_list(self, current_char):
         party = self.get_current_party()
         if current_char in party and len(party) > 1:
-            return [char for char in party if char is not None]
+            return [char for char in party if char != -1]
         else:
             # TODO: Need to some how incorporate sorting into chars?
             chars = Refs.gs.get_screen('select_char').ids.multi.data
@@ -364,28 +509,45 @@ class GameContent:
         return perks
 
     def find_item(self, item_id):
-        if item_id in self._data['items'].keys():
-            return self._data['items'][item_id]
-        if item_id in self._data['drop_items'].keys():
-            return self._data['drop_items'][item_id]
+        if not '/' in item_id:
+            if item_id in self._items.keys():
+                return self._items[item_id]
+            if item_id in self._data['equipment']:
+                return self._data['equipment'][item_id]
+            return None
+
         material_ids = item_id.split('/')[:-1]
-        material = self._data['materials'][material_ids[0]]
+        if len(material_ids) == 0:
+            return None
+        material_id = material_ids[0]
+        if material_id not in self._data['materials']:
+            return None
+        material = self._data['materials'][material_id]
         sub_material1 = None
         sub_material2 = None
         if len(material_ids) > 1:
-            sub_material1 = self._data['materials'][material_ids[1]]
+            material_id1 = material_ids[1]
+            if material_id1 not in self._data['materials']:
+                return None
+            sub_material1 = self._data['materials'][material_id1]
             if len(material_ids) > 2:
-                sub_material2 = self._data['materials'][material_ids[2]]
-        for equipment_id, equipment_class in self._data['equipment'].items():
-            if item_id.endswith(equipment_id):
-                if equipment_class.is_weapon():
-                    return UnGeneratedWeapon(equipment_class, material, sub_material1, sub_material2)
-                elif equipment_class.is_armor():
-                    return UnGeneratedArmor(equipment_class, material, sub_material1, sub_material2)
-                else:
-                    return UnGeneratedTool(equipment_class, material)
-        if item_id in self._data['equipment']:
-            return self._data['equipment'][item_id]
+                material_id2 = material_ids[2]
+                if material_id2 not in self._data['materials']:
+                    return None
+                sub_material2 = self._data['materials'][material_id2]
+
+        equipment_id = item_id.split('/')[-1]
+        if equipment_id in self._data['equipment']:
+            equipment_class = self._data['equipment'][equipment_id]
+
+            if equipment_class.is_weapon():
+                return UnGeneratedWeapon(equipment_class, material, sub_material1, sub_material2)
+            elif equipment_class.is_armor():
+                return UnGeneratedArmor(equipment_class, material, sub_material1, sub_material2)
+            elif equipment_class.is_tool():
+                return UnGeneratedTool(equipment_class, material)
+            else:
+                raise Exception(f"Unimplemented equipment type: {equipment_class}")
         return None
 
     def find_items(self, item_id_list):
@@ -403,19 +565,28 @@ class GameContent:
             item_list.remove(item)
         return item_list
 
+    def get_market_price(self, item_id):
+        return self._market.get_price(item_id)
+
+    def get_market_sell_price(self, item_id):
+        return self._market.get_sell_price(item_id)
+
+    def get_market_buy_price(self, item_id):
+        return self._market.get_buy_price(item_id)
+
     def get_inventory(self):
         return self._inventory
     
     def get_magic_stone_types(self):
         items = []
-        for drop_item_id, drop_item in self._data['drop_items'].items():
+        for drop_item_id, drop_item in self._drop_items.items():
             if drop_item_id.endswith('magic_stone') and Refs.gc.get_lowest_floor() >= drop_item.get_visible_floor():
                 items.append(drop_item)
         return items
     
     def get_monster_drop_types(self):
         items = []
-        for drop_item_id, drop_item in self._data['drop_items'].items():
+        for drop_item_id, drop_item in self._drop_items.items():
             if drop_item_id.endswith('wing') or drop_item_id.endswith('venom') or drop_item_id.endswith('blood') or drop_item_id.startswith('egg') or drop_item_id.endswith('tongue') or drop_item_id.endswith('meat'):
                 if Refs.gc.get_lowest_floor() >= drop_item.get_visible_floor():
                     items.append(drop_item)
@@ -423,7 +594,7 @@ class GameContent:
 
     def get_raw_materials(self):
         items = self.get_ore_types()
-        for drop_item_id, drop_item in self._data['drop_items'].items():
+        for drop_item_id, drop_item in self._drop_items.items():
             if drop_item_id.endswith('scale') or drop_item_id.endswith('hide') or drop_item_id.endswith('claw') or drop_item_id.endswith('fang') or drop_item_id.endswith('horn'):
                 if drop_item_id.startswith('raw') and Refs.gc.get_lowest_floor() >= drop_item.get_visible_floor():
                     items.append(drop_item)
@@ -431,38 +602,94 @@ class GameContent:
 
     def get_processed_materials(self):
         items = self.get_ingot_types()
-        for drop_item_id, drop_item in self._data['drop_items'].items():
+        for drop_item_id, drop_item in self._drop_items.items():
             if drop_item_id.endswith('processed') or drop_item_id.endswith('ingot'):
                 if Refs.gc.get_lowest_floor() >= drop_item.get_visible_floor():
                     items.append(drop_item)
         return items
 
+    def get_wood_materials(self):
+        materials = []
+        for material_id, material in self._data['materials'].items():
+            if material.is_wood():
+                materials.append(material)
+        return materials
+
+    def get_hard_materials(self):
+        materials = []
+        for material_id, material in self._data['materials'].items():
+            if material.is_hard():
+                materials.append(material)
+        return materials
+
+    def get_soft_materials(self):
+        materials = []
+        for material_id, material in self._data['materials'].items():
+            if material.is_soft():
+                materials.append(material)
+        return materials
+
+    def get_gem_materials(self):
+        materials = []
+        for material_id, material in self._data['materials'].items():
+            if material.is_gem():
+                materials.append(material)
+        return materials
+
     def get_ingredients(self):
         items = []
-        for item_id, item in self._data['items'].items():
-            if item.is_ingredient() and Refs.gc.get_lowest_floor() >= item.get_visible_floor():
+        for item_id, item in self._ingredients.items():
+            if Refs.gc.get_lowest_floor() >= item.get_visible_floor():
                 items.append(item)
         return items
 
     def get_ore_types(self):
         items = []
-        for item_id, item in self._data['items'].items():
+        for item_id, item in self._ingredients.items():
             if item_id.endswith('ore') and Refs.gc.get_lowest_floor() >= item.get_visible_floor():
                 items.append(item)
         return items
 
     def get_ingot_types(self):
         items = []
-        for item_id, item in self._data['items'].items():
+        for item_id, item in self._ingredients.items():
             if item_id.endswith('ingot') and Refs.gc.get_lowest_floor() >= item.get_visible_floor():
                 items.append(item)
         return items
 
+    def get_shop_item(self, item_id):
+        if item_id in self._shop_items:
+            return self._shop_items[item_id]
+        return None
+
     def get_shop_items(self, category):
         items = []
-        for item in self._data['items'].values():
-            if item.get_category() == category and item.is_unlocked():
+        for item_id, item in self._shop_items.items():
+            if item.get_category() == category:
                 items.append(item)
+        return items
+
+    def get_potion(self, item_id):
+        if item_id in self._potions:
+            return self._potions[item_id]
+        return None
+
+    def get_potions(self):
+        return self._potions.values()
+
+    def get_drop_item(self, item_id):
+        if item_id in self._drop_items:
+            return self._drop_items[item_id]
+        return None
+
+    def get_drop_items(self):
+        return self._drop_items.values()
+
+    def get_floor_maps(self, floor_id):
+        items = []
+        for floor_map_id, floor_map in self._floor_maps.items():
+            if floor_map.get_category() == floor_id:
+                items.append(floor_map)
         return items
 
     def get_store_tools(self, item_id):
@@ -485,44 +712,60 @@ class GameContent:
         items = []
         equipment_class = self._data['equipment'][item_id]
         for material_id, material in self._data['materials'].items():
-            if equipment_class.get_sub_type() in [NECKLACE, RING]:
-                if material.is_gem():
-                    items.append(UnGeneratedArmor(equipment_class, material, None, None))
+            if equipment_class.get_sub_type() in [NECKLACE, RING] and material.is_gem():
+                items.append(UnGeneratedArmor(equipment_class, material, None, None))
             elif material.is_natural() and not material.is_gem():
                 items.append(UnGeneratedArmor(equipment_class, material, None, None))
         return items
 
-    def get_shop_item(self, item_id):
-        if item_id in self._data['items']:
-            return self._data['items'][item_id]
-        return None
-
-    def get_potions(self):
-        potions = []
-        for item_id in self._data['items'].keys():
-            if item_id.startswith('potion'):
-                potions.append(self._data['items'][item_id])
-        return potions
-
-    def get_drop_item(self, item_id):
-        if item_id in self._data['drop_items']:
-            return self._data['drop_items'][item_id]
-        return None
+    def generate_equipment_market_prices(self):
+        for item_id, equipment_class in self._data['equipment'].items():
+            for material_id, material in self._data['materials'].items():
+                item = None
+                if equipment_class.is_tool():
+                    if material.is_hard() and material.is_natural() and not material.is_gem():
+                        item = UnGeneratedTool(equipment_class, material)
+                elif equipment_class.is_weapon():
+                    if material.is_hard() and material.is_natural() and not material.is_gem():
+                        item = UnGeneratedTool(equipment_class, material)
+                elif equipment_class.is_armor():
+                    if equipment_class.get_sub_type() in [NECKLACE, RING] and material.is_gem():
+                        item = UnGeneratedTool(equipment_class, material)
+                    elif material.is_natural() and not material.is_gem():
+                        item = UnGeneratedTool(equipment_class, material)
+                if item is not None:
+                    self._data['market_prices'][item.get_id()] = PriceTracker(item.get_category(), 500, 250, 750, 1)
 
     def get_equipment(self, equipment_type):
         return self._inventory.get_equipment(equipment_type)
 
+    def get_craftable_recipes(self):
+        viable_recipes = []
+        viable_recipes += self.get_item_recipes()
+        viable_recipes += self.get_potion_recipes()
+        viable_recipes += self.get_alloy_recipes()
+        viable_recipes += self.get_process_recipes()
+        viable_recipes += self.get_equipment_recipes()
+        return viable_recipes
+
     def get_process_recipes(self):
         viable_recipes = []
         for crafting_recipe in self._data['recipes'].values():
-            if crafting_recipe.get_type() == ITEM and crafting_recipe.get_sub_type() == PROCESS_MATERIALS and self.has_perk(crafting_recipe.get_perk_requirement()):
+            if crafting_recipe.get_type() == PROCESS and self.has_perk(crafting_recipe.get_perk_requirement()):
                 viable_recipes.append(crafting_recipe)
         return viable_recipes
 
     def get_alloy_recipes(self):
         viable_recipes = []
         for crafting_recipe in self._data['recipes'].values():
-            if crafting_recipe.get_type() == ITEM and crafting_recipe.get_sub_type() == CRAFT_ALLOYS and self.has_perk(crafting_recipe.get_perk_requirement()):
+            if crafting_recipe.get_type() == ALLOY and self.has_perk(crafting_recipe.get_perk_requirement()):
+                viable_recipes.append(crafting_recipe)
+        return viable_recipes
+
+    def get_item_recipes(self):
+        viable_recipes = []
+        for crafting_recipe in self._data['recipes'].values():
+            if crafting_recipe.get_type() == ITEM and self.has_perk(crafting_recipe.get_perk_requirement()):
                 viable_recipes.append(crafting_recipe)
         return viable_recipes
 
@@ -531,6 +774,10 @@ class GameContent:
         for crafting_recipe in self._data['recipes'].values():
             if crafting_recipe.get_type() == EQUIPMENT:
                 viable_recipes.append(crafting_recipe)
+        return viable_recipes
+
+    def get_potion_recipes(self):
+        viable_recipes = []
         return viable_recipes
 
     def get_abilities(self):
@@ -545,20 +792,25 @@ class GameContent:
                 stamina_weight += 0.25
         return stamina_weight
 
-    def get_floor_score(self, descend=True):
-        if descend:
-            return self._data['floors'][self._current_floor + 1].get_score()
-        else:
-            return self._data['floors'][self._current_floor - 1].get_score()
+    def get_enemies_to_floor(self, floor_id):
+        enemies = []
+        for floor_index in range(floor_id):
+            enemies += list(self._data['floors'][floor_index + 1].get_enemies().keys())
+        return enemies
+
+    def get_materials_to_floor(self, floor_id):
+        materials = []
+        for floor_index in range(floor_id):
+            floor_materials = self._data['floors'][floor_index + 1].get_resources()
+            materials += list(floor_materials['metals'].keys())
+            materials += list(floor_materials['gems'].keys())
+        return materials
+
+    def get_floor_score(self, floor):
+        return self._data['floors'][floor].get_score()
 
     def set_next_floor(self, descend=True):
-        print('Confirm', descend)
         new_floor = self._current_floor + (1 if descend else -1)
-        # if descend:
-        #     new_floor = self._current_floor + 1
-            # self._floor_data = FloorData(descend, new_floor)
-        # else:
-        #     new_floor = self._current_floor - 1
         self._floor_data = FloorData(descend, new_floor, self._floor_data)
         self._current_floor = new_floor
         return new_floor

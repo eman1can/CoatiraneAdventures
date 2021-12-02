@@ -69,10 +69,11 @@ def load_floor_chunk(chunk, loader, program_type, callbacks):
 
     for metal in metal_data:
         name, hardness = metal.split(',')
-        metals[name] = float(hardness)
+        metals[name.strip()] = float(hardness)
     for gem in gem_data:
         name, hardness = gem.split(',')
-        gems[name] = float(hardness)
+        gems[name.strip()] = float(hardness)
+
     floor_data = load_dict(lines[2])
     path_data = load_array(lines[3])
     safe_zone_data = load_array(lines[4])
@@ -85,7 +86,7 @@ def load_floor_chunk(chunk, loader, program_type, callbacks):
         print('Safe Zone Data:', safe_zone_data)
         print('Floor Map:\n' + floor_map)
 
-    loader.append('floors', floor_id, Floor(floor_id, floor_hardness, max_enemies, boss_type, enemies, metals, gems, floor_data, path_data, floor_map, safe_zone_data))
+    loader.append('floors', floor_id, Floor(floor_id, floor_hardness, max_enemies, boss_type, 0, enemies, metals, gems, floor_data, path_data, floor_map, safe_zone_data))
     for callback in callbacks:
         if callback is not None:
             callback()

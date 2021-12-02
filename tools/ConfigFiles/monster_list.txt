@@ -1,0 +1,898 @@
+
+
+Needle Rabbit
+Found on Floors 16, 17, 21, 22, 23, and 26
+A rabbit monster that has a horn on its head. Don't forget leg protection.
+Type: Light, Wind
+Hardness: 6.0(hard), 3.5(soft)
+Defining Effect (weapon): 50% Chance to inflict bleed
+Defining Effect (armor): Increase Light and bleed resist by 50%
+Sub Effect (weapon): 10% Chance to inflict weak bleed
+Sub Effect (armor): Increase Light and bleed resist by 10%
+Drops: Hide, Meat, and Horn
+40 Hides → 1 unit
+35 Horns → 1 unit
+
+Blue Papilio
+Found on Floors 9, 10, 11, and 12
+A butterfly monster that has four blue see through wings. It is a rare monster. In exchange for being unable to fight, the powder secreted from its wings have the ability to heal others.
+Type: Light, Wind
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Wing and Venom
+
+
+
+Bad Bat
+Found on Floors 10 and 11
+A dark bat monster that has sharp fangs and the ability to create sound waves that disrupt concentration.
+Type: Wind
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Wing
+
+Hard Armored
+Skeleton Number: 350101603
+Found on Floors 10, 11, 12, 13, and 14
+An armadillo monster that has a hard shell but weak inside. It has a high defensive ability.
+Type: Earth
+Hardness: 4.5(hard), None(soft)
+Defining Effect: Increase End. by 15% (Item Only)
+Sub Effect: Increase End. by 5% (Item Only)
+Drops: Claw and Scale
+15 Claws → 1 unit
+15 Scales → 1 unit
+
+Infant Dragon
+Found on Floors 12, and 13
+A small, rare dragon that is four meters in height and has a body temperature of 150 C.
+Type: Earth, Fire
+Hardness: 6.5(hard), None(soft)
+Defining Effect (weapon): Increase Fire Atk. Dmg. by 25%
+Defining Effect (armor): Increase Fire Resist by 50%
+Sub Effect (weapon): Increase Fire Atk. Dmg. by 10%
+Sub Effect (weapon): Increase Fire Resist by 10%
+Drops: Claw, Fang, Scale, Meat, and Blood
+5 Claws → 1 unit
+5 Fangs → 1 unit
+5 Scales → 1 unit
+
+Silverback
+Found on Floors 12, 13, and 14
+A large monkey monster that is covered in white fur with silver fur down the middle. It has great arm strength.
+Type: Light
+Hardness: None(hard), 2.5(soft)
+Defining Effect: Increase Str. by 10% (Item Only)
+Sub Effect: Increase Str. by 2% (Item Only)
+Drops: Hide
+5 Hide → 1 unit
+
+Black Wyvern
+Found on Floors 13, 14, 15, and 16
+A rare version of the wyvern that has red eyes and tough scales.
+Type: Dark
+Hardness: 5.0(hard), None(soft)
+Defining Effect (weapon): Apply Dark element on attack.
+Defining Effect (armor): Increase End. by 15% when equipped on a Dark adventurer
+Defining Effect (weapon): 50% Chance to apply Dark element on attack.
+Defining Effect (armor): Increase End. by 5% when equipped on a Dark adventurer
+Drops: Fang, Scale, and Venom
+5 Fangs → 1 unit
+5 Scales → 1 unit
+
+Wyvern
+Found on Floors 14, 15, 16, 17, 18, and 19
+A pink dragon type monster that measures 5 meters if including the tail.
+Type: Light
+Hardness: 4.5(hard), None(soft)
+Defining Effect (weapon): Increase Light Atk. Dmg. by 50%
+Defining Effect (armor): Increase Light Resist by 50%
+Defining Effect (weapon): Increase Light Atk. Dmg. by 15%
+Defining Effect (armor): Increase Light Resist by 15%
+Drops: Claw, Fang, and Scale
+5 Claws → 1 unit
+5 Fangs → 1 unit
+5 Scales → 1 unit
+
+Crystal Mantis
+Found on Floors 15, 16, 17, and 18
+A mantis monster with a body made of crystal.
+Type: Light
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Wing
+
+Lamia Mormos
+Found on Floors 17, 18, 19, and 20
+A weaker version of the Lamia. Much less scary.
+Type: None
+Hardness: 5.5(hard), None(soft)
+Defining Effect: Increase Dex. and Agi. by 15%
+Sub Effect: Increase Dex. and Agi. by 15%
+Drops: Claw and Scale
+10 Claws → 1 unit
+10 Scales → 1 unit
+
+Hellhound
+Found on Floors 15, 16, 17, 18, 19, and 20
+A dog monster that can fire magic flames from its mouth.
+Type: Dark, Fire
+Hardness: 5.0(hard), 3.0(soft)
+Defining Effect (weapon): Increase Fire and Dark Atk. Dmg. by 15%
+Defining Effect (armor): Increase Fire and Dark Resist by 50%
+Sub Effect (weapon): Increase Fire and Dark Atk. Dmg. by 5%
+Sub Effect (armor): Increase Fire and Dark Resist by 15%
+Drops: Fang and Hide
+10 Fangs → 1 unit
+10 Hides → 1 unit
+
+Almiraj
+Found on Floors 17, 19, and 20
+A rabbit monster with white fur and a horn. Contrary to its cute looks, it likes to battle.
+Type: Light, Dark
+Hardness: 5.5(hard), 3.0(soft)
+Defining Effect (weapon): Increase Light and Dark Atk. Dmg. by 25%
+Defining Effect (armor): Increase Light and Dark Resist by 50%
+Sub Effect (weapon): Increase Light and Dark Atk. Dmg. by 15%
+Sub Effect (armor): Increase Light and Dark Resist by 25%
+Drops: Fang and Hide
+15 Fangs → 1 unit
+15 Hides → 1 unit
+
+Dungeon Worm
+Found on Floors 21, 22, 23, 24, and 25
+A worm monster that attacks with its teeth and tries to inject you with its venom.
+Type: None
+Hardness: 6.5(hard), None(soft)
+Defining Effect: 50% Chance to inflict weak poison
+Sub Effect: 10% Chance to inflict weak poison
+Drops: Fang and Venom
+10 Fangs → 1 unit
+
+Minotaur
+Found on Floors 20, 21, 22, 23, 24, and 25
+A cow headed humanoid monster that is feared among lower level adventurers for both it's intimidating aura and its sheer strength.
+Type: Earth
+Hardness: 6.5(hard), 3.5(soft)
+Defining Effect (weapon): Increase Str. by 50%. (Item Only)
+Defining Effect (armor): Increase Phy. Resist by 50%.
+Sub Effect: Increase Str. by 15% (Item Only)
+Sub Effect (armor): Increase Phy. Resist by 20%.
+Drops: Claw, Fang, and Hide
+10 Fangs → 1 unit
+10 Hides → 1 unit
+
+Lygerfang
+Found on Floors 21, 22, 23, 24, 25, and 26
+A tiger monster with wicked fangs and horrible breath.
+Type: Earth
+Hardness: 6.5(hard), 3.5(soft)
+Defining Effect (weapon): 50% Chance to inflict bleed
+Defining Effect (armor): Bleed Resist +50%
+Sub Effect (weapon): 25% Chance to inflict bleed
+Sub Effect (armor): Bleed Resist +20%
+Drops: Fang and Hide
+10 Fangs → 1 unit
+10 Hides → 1 unit
+
+Bugbear
+Found on Floors 21, 22, and 26
+A bear monster that is faster than it looks. Its strength and defense are on par with a Minotaur but more agile.
+Type: Earth, Wind
+Hardness: 6.5(hard), 3.5(soft)
+Defining Effect: Increase Str. and Agi. by 10%
+Sub Effect: Increase Str. and Agi. by 5%
+Drops: Claw and Hide
+10 Claws → 1 unit
+10 Hides → 1 unit
+
+Battle Boar
+Found on Floors 24, 25, and 26
+A giant boar monster that can reach two meters in height.
+Type: Earth
+Hardness: 6.5(hard), 3.0(soft)
+Defining Effect (weapon): Hyb. At. +15%
+Defining Effect (armor): Mag. Resist+50%
+Sub Effect (weapon): Hyb. At. +5%
+Sub Effect (armor): Mag. Resist+20%
+Drops: Claw, Fang, and Hide
+10 Fangs → 1 unit
+10 Claws → 1 unit
+10 Hides → 1 unit
+
+Lizardman
+Found on Floors 23, 26, 27, 28, and 29
+A humanoid lizard monster with red scales
+Type: Fire, Earth
+Hardness: 7.0(hard), None(soft)
+Defining Effect (weapon): Str+25% when attacking with fire.
+Defining Effect (armor): Fire Resist+50%
+Sub Effect (weapon): Str+10% when attacking with fire.
+Sub Effect (armor): Fire Resist+20%
+Drops: Claw and Scale
+10 Claws → 1 unit
+10 Scales → 1 unit
+
+Firebird
+Found on Floors 26, 27, 28, and 29
+A rare bird type monster that attacks using fire
+Type: Fire
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Wing
+
+Vouivre
+Found on Floors 28, 29, and 30
+A female humanoid dragon monster. It has a red stone in its forehead known as the Vouivre's Tear. They are very rare, on par with unicorns.
+Type: Light, Earth
+Hardness: 8.5(hard), None(soft)
+Defining Effect: Increase Dex. by 50%
+Sub Effect: Increase Dex. by 25%
+Drops: Claw, Fang, Egg, and Scale
+5 Claws → 1 unit
+5 Fangs → 1 unit
+5 Scales → 1 unit
+
+Mad Beetle
+Found on Floors 27, 28, 29, 30, 31, and 32
+A medium sized beetle monster that walks on two legs and has a hard carapace.
+Type: Earth
+Hardness: 8.5(hard), None(soft)
+Defining Effect: Guard Rate +20%
+Sub Effect: Guard Rate +5%
+Drops: Scale and Wing
+10 Scales → 1 unit
+
+Mammoth Fool
+Found on Floors 28, 29, 30, 31, 32, 33, and 34
+A large monster six to seven meters tall with dark red fur and long, curved, spear like tusks.
+Type: Earth, Fire
+Hardness: 8.5(hard), 3.5(soft)
+Defining Effect (weapon): Penetration Rate +20%
+Defining Effect (weapon): Penetration Resist +20%
+Sub Effect (weapon): Penetration Rate +5%
+Sub Effect (weapon): Penetration Resist +5%
+Drops: Fang and Hide
+5 Fangs → 1 unit
+5 Hide → 1 unit
+
+Dark Fungus
+Found on Floors 30, 31, 32, 33, 34, 35, and 36
+A mushroom monster that can scatter poisonous spores	.
+Type: Dark
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Venom
+
+Gun Libellula
+Found on Floors 33, 34, 35, 36, 37, and 38
+A dragonfly monster that shoots projectiles out of its abdomen.
+Type: Wind
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Wing
+
+Sword Stag
+Found on Floors 35, 36, 37, and 38
+A stag monster that can shoot beams of light from its horns.
+Type: Earth, Light
+Hardness: 9.0(hard), 4.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Horn
+5 Hide → 1 unit
+5 Horns → 1 unit
+
+Troll
+Found on Floors 40, 41, and 42
+A humanoid monster with bad breath and strong arms.
+Type: Earth
+Hardness: None(hard), 4.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide
+5 Hide → 1 unit
+
+Deadly Hornet
+Found on Floors 27, 31, 32, 33, and 34
+A large bee monster with a stinger powerful enough to pierce heavy armor and kill unprepared adventurers easily.
+Type: Thunder
+Hardness: 8.5(hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale, Wing, and Venom
+10 Scales → 1 unit
+
+Bloody Hive
+Found on Floors 27, 31, 32, 33, and 34
+A seven meter long rare trap type monster that lives with Deadly Hornets. Its body resembles a pinecone and is blackish purple in color. Normally, they live in holes that Deadly Hornets can pass through, however they will burst from the wall if an adventurers walks by. It mainly attacks enemies by rendering them unable to move with a reddish yellow liquid, then spawns Deadly Hornets at a fast rate to finish them off.
+Type: Dark, Thunder
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Blood and Venom
+
+Green Dragon
+Found on Floors 30, 35, 36, 37, 38, and 39
+A dragon that likes to guard rare treasure and has green scales.
+Type: Thunder, Fire
+Hardness: 9.0(hard), None(soft)
+Defining Effect: Increases Luck
+Sub Effect: Slightly Increases Luck
+Drops: Claw, Fang, and Scale
+5 Claws → 1 unit
+5 Fangs → 1 unit
+5 Scales → 1 unit
+
+Hobgoblin
+Found on Floors 21, 22, 23, 35, 36, 38, and 39
+A stronger version of Goblin that can reach over two meters.
+Type: Dark, Earth
+Hardness: 8.5(hard), None(soft)
+Defining Effect: 50% Chance to inflict strong sickness
+Sub Effect: 15% Chance to inflict sickness
+Drops: Claw and Fang
+10 Claws → 1 unit
+10 Fangs → 1 unit
+
+Viscum
+Found on Floors 37, 38, and 39
+A huge flower monster with big teeth.
+Type: Earth, Wind
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Venom
+
+Moss Huge
+Found on Floors 37, 38, and 39
+A rare monster with a body of moss that it can manipulate for unique skills.
+Type: Earth, Water
+Hardness: 9.0(hard), 4.0(soft)
+Defining Effect: 5% MP regen per turn
+Sub Effect: 2.5% MP regen per turn
+Drops: Claw and Hide
+10 Claws → 1 unit
+10 Hide → 1 unit
+
+Metal Rabbit
+Found on Floors 14, 15, 24, 25, 28, 29, 37, and 39
+A large rabbit that has metal skin.
+Type: Wind, Thunder
+Hardness: None(hard), 7.5(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide
+15 Hide → 1 unit
+
+Poison Vermis
+Found on Floors 19, 20, 26, and 39
+A poisonous bug monster. The body fluid of a Poison Vermis can stop skin from decaying.
+Type: Dark
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Venom
+
+Raider Fish
+Found on Floors 40, 41, 42, 43, 44, 45, and 46
+A fish type monster with sharp teeth.
+Type: Water, Wind
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang and Scale
+10 Fangs → 1 unit
+10 Scales → 1 unit
+
+Harpy
+Found on Floors 42, 43, 44, and 45
+A monster that is a woman from the waist up and has wings the size of shields for arms. The bottom half resembles an eagle or vulture with claws. It can shoot feathery projectiles to attack.
+Type: Water, Wind
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Claw and Wing
+5 Claws → 1 unit
+
+Siren
+Found on Floors 44, 45, 46, 47, and 48
+A monster similar to a Harpy but attacks with sound waves instead which it can also use for echolocation. Has a beautiful voice but sharp fangs.
+Type: Water
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Claw, Fang, and Wing
+5 Claws → 1 unit
+5 Fangs → 1 unit
+
+Blue Crab
+Found on Floors 40, 41, 42, 43, 44, 45, 46, and 47
+A crab monster that's categorized as a metal type monster. One of their claws have abnormally developed, making them a threat in battle, and they are able to move forward. Their defense is stronger than a Deadly Hornet.
+Type: Water
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Claw, Scale, and Meat
+10 Claws → 1 unit
+10 Scales → 1 unit
+
+Aqua Serpent
+Found on Floors 41, 42, 43, 47, and 48
+A ten foot long monster with a snake head and light green scales.
+Type: Water, Thunder
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale and Wing
+10 Scales → 1 unit
+
+Crystal Turtle
+Found on Floors 41, 46, and 48
+A monster that has crystals growing from their shells. It is sometimes mistaken for land so adventurers attack their destination first to make sure it isn't a monster.
+Type: Water, Light
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale
+1 Scales → 1 unit
+
+Devil Mosquito
+Found on Floors 40, 44, 45, and 46
+A monster that attaches itself to adventurers and sucks their blood.
+Type: Water
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang and Wing
+30 Fangs → 1 unit
+
+Light Quartz
+Found on Floors 47 and 48
+A monster that attacks its enemies with beams of light.
+Type: Light
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Meat
+
+Crystaroth Urchin
+Found on Floors 40, 41, 42, and 43
+A blue ball shaped monsters with sharp needles growing from it. It spins toward its target at high speed, destroying its surroundings with its needles, and eat its prey with its round mouth which is full of fangs.
+Type: Water
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang, Horn, and Venom
+5 Fangs → 1 unit
+5 Horns → 1 unit
+
+Iguazu
+Found on Floors 44, 45, 46, 47, and 48
+Crimson swallow monsters that are referred to as an invisible monster because of their astounding speed. They live in the cliff behind the Great Fall. As they travel at high speeds, they die on impact, though they will attack until they destroy the enemy regardless of any losses.
+Type: Water, Wind
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Wing and Horn
+15 Horns → 1 unit
+
+Mermaid
+Found on Floors 44, 45, 46, 47, and 48
+A rare monster that has a bluish white woman's upper body, completely white eyes, green hair, and a fin for a lower body. They attack by charming adventurers with singing.
+Type: Water
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale and Blood
+5 Scales → 1 unit
+
+Merman
+Found on Floors 45, 46, 47, and 48
+A humanoid monster covered in blue scales with webbed hands which they use to wield nature weapons. They travel in groups.
+Type: Water
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale
+5 Scales → 1 unit
+
+Kelpie
+Found on Floors 43, 44, 45, and 46
+A horse monster with blue hair and a blue mane. Its fins allow it to run through water as if it were on land.
+Type: Water, Wind
+Hardness: None(hard), 8.5(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Wing
+5 Hide → 1 unit
+
+Afanc
+Found on Floors 40, 41, 42, and 43
+A lake monster with a beaver tail and sharp teeth.
+Type: Water
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Claw, Fang, and Meat
+5 Claws → 2 unit
+5 Fangs → 1 unit
+
+Dodora
+Found on Floors 44, 45, 46, 47, and 48
+A strong sea dragon with two heads.
+Type: Water, Fire
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Claw, Scale, and Venom
+1 Claw → 2 unit
+1 Scale → 3 unit
+
+Lamia
+Found on Floors 40, 41, 42, and 43
+A female monster with claws and a long snake tail.
+Type: Water
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Claw and Scale
+5 Claws → 1 unit
+5 Scales → 1 unit
+
+Voltimeria
+Found on Floors 43, 44, 45, 46, 47, and 48
+A fish monster with a blackish purple body made of stone. Voltimeria vary from one to two meters in length, have eight fin like organs, and have a single eye on their forehead. They are able to float up to three meters in the air and charge at opponents at high speed. They have incredible endurance due to their stone bodies and are strong enough to destroy heavy armor with their sharp fangs.
+Type: Water, Dark
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale
+10 Scales → 1 unit
+
+Bloodsaurus
+Found on Floors 49, 50, and 51
+A red carnivorous dinosaur monster that is five meters in height.
+Type: Fire
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang, Scale, and Meat
+5 Fang → 1 unit
+1 Scale → 2 unit
+
+Power Bull
+Found on Floors 52, 53, and 54
+A large bull monster with long horns and a deadly speed.
+Type: Earth
+Hardness: (hard), 9.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Horn
+5 Horns → 1 unit
+1 Hide → 2 unit
+
+Grand Treant
+Found on Floors 49, 50, 55, and 56
+An extremely large tree monster with a face, similar to Titan Alms. It is a trap monster unable to move.
+Type: Water, Earth
+Hardness: None(hard), 9.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide
+1 Hide → 5 unit
+
+Worm Well
+Found on Floors 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, and 60
+A large snake monster that detects adventurers using heat organs, and digests them using powerful stomach acid. can be found digging between floors.
+Type: Earth
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang, Scale, and Venom
+1 Hide → 5 unit
+
+Spartoi
+Found on Floors 49, 50, 51, 52, and 53
+A skeleton monster is able to spawn with random weapons that they know how to use, such as swords or lances made of bone and kite shield-like protectors. The monster is stronger than a Lizardman Elite or Loup Garou and more agile than a Barbarian. Their skill and fighting ability is more like an adventurer than a monster.
+Type: Dark
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Claw
+5 Claws → 1 unit
+
+Barbarian
+Found on Floors 52, 53, 54, 55, 56, and 57
+A two meter tall monster similar to the Minotaur with two large and curved horns, black skin, red hair, and yellow eyes.
+Type: Dark
+Hardness: None(hard), 9.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Meat
+5 Hide → 2 unit
+
+Lizardman Elite
+Found on Floors 54, 55, 56, 57, 58, 59, and 60
+A stronger version of Lizardman. Unlike its weaker version, it is blue, with scales that are hard as armor.
+Type: Dark
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Claw and Scale
+5 Claws → 3 unit
+5 Scales → 3 unit
+
+Obsidian Soldier
+Found on Floors 57, 58, 59, and 60
+A monster with a misshapen obsidian body made of solidified lava and a single purple light in its head resembling an eye.
+Type: Dark
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale
+5 Scales → 2 unit
+
+Skull Sheep
+Found on Floors 51, 52, and 53
+A sheep monster made entirely of bones. It has a large dark colored piece of skin that covers its body starting from the back of its head which makes it hard to predict its attacks, makes it appear as if it's a skull floating in empty space, and allows it to camouflage within the natural duskiness of the lower floors.  It can also fire piles at its opponents.
+Type: Dark
+Hardness: (hard), 9.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Horn
+5 Horns → 1 unit
+1 Hide → 2 unit
+
+Loup Garou
+Found on Floors 49, 50, and 51
+A muscular humanoid monster with a wolf head. They use white stone knife or cudgel weapons and their agility to fight. Among the monsters that made it to the surface, groups of them were known to destroy villages on moonlit nights more than any other monster.
+Type: Dark, Earth
+Hardness: (hard), 9.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang and Hide
+10 Fangs → 1 unit
+5 Hide → 1 unit
+
+Peluda
+Found on Floors 54, 55, and 56
+A dark green dragon monster with a long snake-like body and four legs. It has poisonous needles on its back, resembling a porcupine, which it can fire at its enemies. Their poison can overwhelm upper class adventurers with abnormal resistance and it requires a superior detoxification magic or an antidote to remove. They are also able to stand on walls and breathe scorching fire.
+Type: Thunder, Fire
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale, Horn, and Venom
+1 Scale → 5 unit
+1 Horn → 5 unit
+
+Flame Rock
+Found on Floors 21, 22, 23, 51, 52, and 53
+A rock monster who's eggs explode easily.
+Type: Fire
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Egg
+
+Fomoire
+Found on Floors 54, 55, 56, 57, 58, and 59
+A goat monster that can form huge groups.
+Type: Dark, Earth
+Hardness: (hard), 9.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Horn
+1 Hide → 2 unit
+5 Horns → 2 unit
+
+Black Rhino
+Found on Floors 49, 50, 51, and 52
+A rhinoceros monster that walks on two legs.
+Type: Dark
+Hardness: (hard), 9.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Horn
+1 Hide → 5 unit
+1 Horns → 5 unit
+
+Deformis Spider
+Found on Floors 55, 56, and 57
+A large spider monster that is red and purple. It has eight legs and multiple eyes.
+Type: Dark
+Hardness: (hard), 10.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Claw, Hide, and Blood
+5 Claws → 2 unit
+5 Hide → 2 unit
+
+Cadmus
+Found on Floors 57, 58, 59, and 60
+A strong dragon monster that prowls the lower floors.
+Type: Fire
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale
+1 Scale → 5 unit
+
+Venom Scorpion
+Found on Floors 49, 50, 53, and 54
+A huge scorpion that attacks with its large pincer.
+Type: Dark
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale and Venom
+5 Scales → 2 unit
+
+Thunder Snake
+Found on Floors 58, 59, and 60
+A thunderous snake that shocks its enemies to death.
+Type: Thunder
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang and Scale
+5 Fangs → 2 unit
+5 Scales → 2 unit
+
+Silver Worm
+Found on Floors 57, 58, 59, and 60
+A large silver snake.
+Type: Light
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang and Scale
+5 Fangs → 2 unit
+5 Scales → 2 unit
+
+Ill Wyvern
+Found on Floors 51, 52, and 53
+A bluish purple flying dragon that is three meters long counting the tail. It is able to shoot a barrage of fireballs from its mouth.
+Type: Fire
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale and Wing
+1 Scale → 3 unit
+
+Valgang Dragon
+Found on Floors 54, 55, 56, 58, 59, and 60
+A large red dragon that can get up to ten meters when standing on both legs. It blasts adventurers with strong blasts or fire that can melt through walls.
+Type: Fire
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang and Scale
+1 Fang → 2 unit
+1 Scale → 5 unit
+
+Titan Alm
+Found on Floors 49, 50, 51, and 52
+A large plant monster that will eat allies and foes alike.
+Type: Earth, Water
+Hardness: None(hard), 8.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Meat
+3 Hide → 2 unit
+
+Unicorn
+Found on Floors 32, 33, 34, 35, 37, and 39
+An extremely rare monster that is very rarely encountered and has a heautiful horn.
+Type: Light
+Hardness: (hard), 7.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide, Blood, and Horn
+1 Hide → 3 unit
+1 Horns → 1 unit
+
+Dungeon Fly
+Found on Floors 24, 25, 27, 30, 31, and 36
+A bug type monster with no strength. Extremly annoying.
+Type: Earth, Wind
+Hardness: None(hard), None(soft)
+Defining Effect: None
+Sub Effect: None
+Drops: Wing
+
+Ogre
+Found on Floors 35, 36, and 38
+A large demon monster.
+Type: Dark, Earth
+Hardness: None(hard), 7.5(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Meat
+1 Hide → 4 unit
+
+Gargoyle
+Found on Floors 49, 50, 51, and 53
+A monster with huge wings and red eyes whose body is made of ash-colored rock.
+Type: Earth
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale
+1 Scale → 1 unit
+
+Gryphon
+Found on Floors 32, 33, 34, 55, and 56
+A monster with the body, tail and back legs of a lion, and the head, wings, and front legs of an eagle.
+Type: Earth
+Hardness: None(hard), 7.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide
+1 Hide → 2 unit
+
+Arachne
+Found on Floors 27, 28, 29, 30, and 31
+A female monster that has the upper body of a woman and the lower half of a spider. It has fangs and compound eyes. It can spit a highly acidic liquid that can liquefy its targets.
+Type: Dark
+Hardness: None(hard), 7.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide and Venom
+1 Hide → 1 unit
+
+Hippogriff
+Found on Floors 57, 58, 59, and 60
+A flying monster which has the front half of an eagle and the hind half of a horse.
+Type: Wind
+Hardness: None(hard), 8.0(soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide
+1 Hide → 2 unit
+
+Armarosaurus
+Found on Floors 18, 24, 25, 49, 50, and 52
+A three headed monster that has spikes across its body, and a club like tail.
+Type: Earth
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Scale
+1 Scale → 2 units
+
+Old Bison
+Found on Floors 21, 22, 53, 54, 55, and 56
+A large furry animal with large horns and gray hide.
+Type: Earth
+Hardness: None(hard), (soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide
+1 Hide → 2 unit
+
+Ape
+Found on Floors 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, and 60
+A bipedal monster with long arms and covered in orange fur.
+Type: Earth
+Hardness: None(hard), (soft)
+Defining Effect:
+Sub Effect:
+Drops: Hide
+1 Hide → 1 unit
+
+Vulture
+Found on Floors 40, 41, 42, and 43
+A flying bird monster that uses its sharp beak to eat the flesh of its enemies.
+Type: Dark
+Hardness: (hard), None(soft)
+Defining Effect:
+Sub Effect:
+Drops: Fang and Tongue
+5 Fangs → 1 unit

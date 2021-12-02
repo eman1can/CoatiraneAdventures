@@ -1,0 +1,43 @@
+<GeneralConfirm>:
+    auto_dismiss: False
+    background: 'sort_background.png'
+    size_hint: 0.45, 0.8
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    border: [0, 0, 0, 0]
+    RelativeLayout:
+        Label:
+            id: title
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'top': 0.8}
+            font_name: 'Gabriola.ttf'
+            text: root.title_text
+        Label:
+            id: rec_score_info
+            font_size: root.height * 0.1
+            color: 0, 0, 0, 1
+            size_hint: 1, 0.15
+            pos_hint: {'center_x': 0.5, 'top': 0.65}
+            font_name: 'Gabriola.ttf'
+            text: root.description_text
+        PPCHoverPathButton:
+            id: cancel
+            font_name: 'Gabriola.ttf'
+            text: root.cancel_text
+            path: 'buttons/long_stat'
+            on_release: root.dismiss()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.25, 'center_y': 0.075}
+            color: 0, 0, 0, 1
+        PPCHoverPathButton:
+            id: confirm
+            font_name: 'Gabriola.ttf'
+            text: root.confirm_text
+            path: 'buttons/long_stat'
+            on_release: root.confirm()
+            font_size: root.height * 0.075
+            size_hint: 0.40, 0.15
+            pos_hint: {'center_x': 0.75, 'center_y': 0.075}
+            color: 0, 0, 0, 1

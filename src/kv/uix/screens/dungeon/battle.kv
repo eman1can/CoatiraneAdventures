@@ -6,17 +6,28 @@
 <DungeonBattle>:
     name: 'dungeon_battle'
     id: dungeon_screen
+    title_hidden: True
+    back_hidden: True
+    home_hidden: True
+    back_enabled: False
+    home_enabled: False
     EffectWidget:
         id: twirl_widget
         effects: [TwirlEffect()]
         Image:
             id: battle_background
             allow_stretch: True
-            source: 'dungeon/battle.png'
+            source: 'dungeon/battle_background.png'
         RelativeLayout:
-            id: parallax_layer
+            id: parallax_background
         RelativeLayout:
             id: skeleton_layer
+        Image:
+            id: battle_foreground
+            allow_stretch: True
+            source: 'dungeon/battle_foreground.png'
+        RelativeLayout:
+            id: parallax_foreground
         BattleHud:
             id: battle_hud
 #            opacity: 0
@@ -49,6 +60,20 @@
         FloorAnnouncement:
             id: floor_announcement
             name: 'Floor: ' + str(root.level_num)
+        BossWarning:
+            opacity: root.boss_warning_alpha
+            Image:
+                size_hint: 0.25, 0.25
+                pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+                source: 'warning.png'
+            Label:
+                size_hint: None, 0.125
+                pos_hint: {'center_x': 0.5}
+                width: self.texture_size[0]
+                font_name: 'Precious'
+                font_size: self.height / 2
+                color: 1, 0, 0, 1
+                text: 'Approaching Boss Encounter!'
         Label:
             id: map_overlay
             opacity: 0

@@ -19,17 +19,20 @@ class FilledCharacterPreviewScreen(Screen):
     locked = BooleanProperty(False)
     current = BooleanProperty(True)
 
+    displayed = BooleanProperty(False)
+    support_displayed = BooleanProperty(False)
+
     character = NumericProperty(-1)
     support = NumericProperty(-1)
 
     def __init__(self, **kwargs):
-        # self._post_kv = False
         super().__init__(**kwargs)
-    #
-    # def on_kv_post(self, base_widget):
-    #     self._post_kv = True
-    #     self.ids.filled_preview.character = self.character
-    #     self.ids.filled_preview.support = self.support
+
+    def reload(self, **kwargs):
+        self.load_kwargs(kwargs)
+        if 'filled_preview' not in self.ids:
+            return
+        self.ids.filled_preview.reload(locked=self.locked, current=self.current, support_displayed=self.support_displayed)
 
     def get_root(self):
         return self.ids.filled_preview
@@ -40,6 +43,21 @@ class FilledCharacterPreviewScreen(Screen):
     def on_support(self, instance, support):
         self.update_name()
 
+    def on_locked(self, instance, locked):
+        if 'filled_preview' not in self.ids:
+            return
+        self.ids.filled_preview.locked = locked
+
+    def on_current(self, instance, current):
+        if 'filled_preview' not in self.ids:
+            return
+        self.ids.filled_preview.current = current
+
+    def on_support_displayed(self, *args):
+        if 'filled_preview' not in self.ids:
+            return
+        self.ids.filled_preview.support_displayed = self.support_displayed
+
     def update_name(self):
         if self.character == -1:
             return
@@ -49,17 +67,10 @@ class FilledCharacterPreviewScreen(Screen):
         if supt is not None:
             self.name += '_' + supt.get_id()
 
-    def on_locked(self, instance, locked):
-        self.ids.filled_preview.locked = locked
-
-    def on_current(self, instance, current):
-        self.ids.filled_preview.current = current
-
     def close_hints(self):
+        if 'filled_preview' not in self.ids:
+            return
         self.ids.filled_preview.close_hints()
-
-    def reload(self):
-        self.ids.filled_preview.reload()
 
 
 class FilledCharacterPreview(RelativeLayout):
@@ -67,7 +78,7 @@ class FilledCharacterPreview(RelativeLayout):
     is_support = BooleanProperty(False)
     locked = BooleanProperty(False)
     current = BooleanProperty(True)
-    do_hover = BooleanProperty(True)
+    support_displayed = BooleanProperty(True)
 
     character = NumericProperty(-1)
     support = NumericProperty(-1)
@@ -168,7 +179,8 @@ class FilledCharacterPreview(RelativeLayout):
         self.update_stars()
         self.ids.stars.force_reload()
 
-    def reload(self):
+    def reload(self, **kwargs):
+        self.load_kwargs(kwargs)
         self.update_overlay()
         self.update_buttons()
         self.update_labels()
@@ -176,6 +188,9 @@ class FilledCharacterPreview(RelativeLayout):
             self.update_familiarity()
         self.update_stars()
         self.ids.stars.force_reload()
+
+    def on_support_displayed(self, *args):
+        self.update_overlay()
 
     # Update functions for reloading the data based on updates
 
@@ -202,7 +217,7 @@ class FilledCharacterPreview(RelativeLayout):
     def update_overlay(self):
         if self.support != -1:
             self.overlay_source = "preview_overlay_full.png"
-        elif not self.is_select and not self.locked:
+        elif not self.is_select and not self.locked and self.support_displayed:
             self.overlay_source = "preview_overlay_empty_add.png"
         else:
             self.overlay_source = "preview_overlay_empty.png"
@@ -285,7 +300,7 @@ class FilledCharacterPreview(RelativeLayout):
         else:
             self.char_button_source = 'buttons/char_button'
             self.support_button_source = 'buttons/support_button'
-            if self.is_select or self.locked:
+            if self.is_select or self.locked or not self.support_displayed:
                 self.support_button_collide_image = 'buttons/support_button.normal.png'
                 self.char_button_collide_image = 'buttons/char_button_select.collision.png'
             else:

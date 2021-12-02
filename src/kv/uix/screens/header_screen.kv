@@ -1,0 +1,40 @@
+#:import time_header src.uix.modules.headers.time_header
+#:import profile_header src.uix.modules.headers.profile_header
+
+<HeaderScreen>:
+    RelativeLayout:
+        id: overlay_background
+        size_hint: 0.7875, 0.05
+        pos_hint: {'top': 1, 'right': 0.9375}
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                size: self.size
+            Color:
+                rgba: 0, 0, 0, 1
+            Rectangle:
+                size: self.width, self.height * 0.05
+            Rectangle:
+                size: self.height * 0.05, self.height
+            Rectangle:
+                size: self.height * 0.05, self.height
+                pos: self.width - self.height * 0.05, 0
+        Label:
+            id: profile_header
+            size_hint: None, 0.75
+            width: self.texture_size[0] * 1.125
+            pos_hint: {'x': 0.05, 'center_y': 0.5}
+            font_size: '20pt'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: profile_header()
+        Label:
+            id: time_header
+            size_hint: None, 0.75
+            width: self.texture_size[0] * 1.125
+            pos_hint: {'right': 0.95, 'center_y': 0.5}
+            font_size: '20pt'
+            font_name: 'Precious'
+            color: 0, 0, 0, 1
+            text: time_header()

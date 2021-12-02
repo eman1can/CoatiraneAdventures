@@ -25,6 +25,9 @@ class AnimationStateData:
     def getSkeletonData(self):
         return self.skeletonData
 
+    def getAnimations(self):
+        return self.skeletonData.getAnimationNames()
+
     def setMix(self, fromarg, toarg, duration):
         if isinstance(fromarg, str):
             fromName, toName = fromarg, toarg

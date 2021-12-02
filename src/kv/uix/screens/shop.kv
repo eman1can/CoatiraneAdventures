@@ -1,0 +1,211 @@
+#:import floor math.floor
+
+<Shop>:
+    name: 'shop_main'
+    background_source: 'shop.png'
+    Label:
+        id: header
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'x': 0.25, 'top': 0.9375}
+        font_name: 'Precious'
+        font_size: '60sp'
+        color: 0, 0, 0, 1
+        text: root.header
+    Label:
+        id: sub_header
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'x': 0.275}
+        top: header.y
+        font_name: 'Precious'
+        font_size: '48sp'
+        color: 0, 0, 0, 1
+        text: root.sub_header
+    RecycleView:
+        id: page_view
+        size_hint: 0.3, 0.75
+        pos_hint: {'x': 0.333, 'y': 0.025}
+        viewclass: 'ShopDisplay'
+        effect_cls: 'ScrollEffect'
+        always_overscroll: False
+        data: root.page_data
+        RecycleBoxLayout:
+            id: page_layout
+            default_size: None, root.height * 0.0868
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+            spacing: root.height * 0.0125
+    TransactionPanel:
+        id: transaction_panel
+        size_hint: 0.3, self.panel_height
+        pos_hint: {'x': 0.666, 'top': 0.775}
+        opacity: 1 if root.transaction_visible else 0
+    SpineDisplay:
+        id: spine_display
+        skeleton_path: 'res/characters/real_spines/amid/1112043000.skel'
+
+<ShopDisplay>:
+    PPCHoverPathButton:
+        path: 'buttons/shop_display'
+        on_release: root.do_callback()
+        disabled: root.button_disabled
+    Label:
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'x': 0.1, 'center_y': 0.7} if root.mode == 'item' else {'x': 0.1, 'center_y': 0.5}
+        font_name: 'Precious'
+        font_size: '22sp' if root.mode == 'item' else '26sp'
+        text: root.text
+        color: 0, 0, 0, 1
+    Label:
+        size_hint: 0.75, None
+        height: self.texture_size[1]
+        text_size: self.width, None
+        pos_hint: {'x': 0.1, 'center_y': 0.3}
+        font_name: 'Precious'
+        font_size: '18sp'
+        text: root.sub_text
+        color: 0, 0, 0, 1
+    Label:
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_y': 0.7, 'right': 0.75}
+        font_name: 'Precious'
+        font_size: '16sp'
+        text: root.price
+        color: 0, 0, 0, 1
+    Image:
+        id: icon
+        size_hint: None, 0.55 if root.mode == 'item' else 0.9
+        width: self.height
+        pos_hint: {'center_y': 0.675} if root.mode == 'item' else {'center_y': 0.5}
+        right: root.width - self.y
+        source: root.image_source
+        allow_stretch: True
+        opacity: 0 if root.image_source == '' else 1
+    Label:
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_y': 0.15, 'right': 0.975}
+        font_name: 'Precious'
+        font_size: '16sp'
+        text: root.inventory
+        color: 0, 0, 0, 1
+
+<TransactionPanel>:
+    canvas:
+        Color:
+            rgba: 0, 0, 0, 1
+        Rectangle:
+            size: self.size
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            size: self.width - 6, self.height - 6
+            pos: 3, 3
+
+    Label:
+        id: title
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'x': 0.125, 'top': 0.9}
+        font_name: 'Precious'
+        font_size: '40sp'
+        text: root.text
+        color: 0, 0, 0, 1
+    Image:
+        id: icon
+        size_hint: None, None
+        height: title.height * 2
+        width: self.height
+        pos_hint: {'right': 0.875, 'top': 0.9}
+        source: root.image_source
+        allow_stretch: True
+    Label:
+        id: sub_title
+        size_hint: None, 0.2 if root.mode == 'single' else 0.15
+        width: icon.x - title.x
+        text_size: self.size
+        pos_hint: {'x': 0.125}
+        top: title.y
+        font_name: 'Precious'
+        font_size: '24sp'
+        text: root.sub_text
+        color: 0, 0, 0, 1
+    RelativeLayout:
+        size_hint: 1, 0.3
+        top: sub_title.y
+        opacity: 0 if root.mode == 'single' else 1
+        Label:
+            id: count
+            size_hint: 1, 0.33
+            pos_hint: {'top': 1}
+            font_name: 'Gabriola'
+            font_size: '48sp'
+            color: 0, 0, 0, 1
+            text: str(slider.value)
+        RelativeLayout:
+            size_hint: 1, 0.33
+            pos_hint: {'center_y': 0.5}
+            Button:
+                size_hint: None, 0.75
+                width: self.height
+                pos_hint: {'right': 0.1, 'center_y': 0.5}
+                font_name: 'Gabriola'
+                font_size: '30sp'
+                text: '-'
+                on_release: slider.value = max(slider.min, slider.value - 1)
+            Slider:
+                id: slider
+                size_hint: 0.75, 1
+                pos_hint: {'x': 0.125}
+                on_value: root.update_price(self.value)
+                step: 1
+            Button:
+                size_hint: None, 0.75
+                width: self.height
+                pos_hint: {'x': 0.9, 'center_y': 0.5}
+                font_name: 'Gabriola'
+                font_size: '30sp'
+                text: '+'
+                on_release: slider.value = min(slider.max, slider.value + 1)
+        BoxLayout:
+            size_hint: 1, 0.33
+            orientation: 'horizontal'
+            spacing: self.width * 0.125
+            padding: self.width * 0.125, 0
+            Button:
+                font_name: 'Gabriola'
+                font_size: '30sp'
+                text: 'Min'
+                on_release: slider.value = slider.min
+            Button:
+                font_name: 'Gabriola'
+                font_size: '30sp'
+                text: 'Half'
+                on_release: slider.value = floor(slider.min + (slider.max - slider.min) / 2)
+            Button:
+                font_name: 'Gabriola'
+                font_size: '30sp'
+                text: 'Max'
+                on_release: slider.value = slider.max
+    Label:
+        id: price
+        size_hint: None, None
+        size: self.texture_size
+        pos_hint: {'center_y': 0.375, 'x': 0.125} if root.mode == 'single' else {'center_y': 0.25, 'x': 0.125}
+        font_name: 'Precious'
+        font_size: '30sp'
+        text: root.price
+        color: 0, 0, 0, 1
+    Button:
+        id: confirm
+        size_hint: 0.75, 0.15 if root.mode == 'single' else 0.1
+        pos_hint: {'x': 0.125, 'center_y': 0.1}
+        font_name: 'Gabriola'
+        font_size: '30sp'
+        text: 'Purchase'
+        on_release: root.do_transaction()
