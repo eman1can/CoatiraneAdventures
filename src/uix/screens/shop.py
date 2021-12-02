@@ -36,7 +36,7 @@ class Shop(HeaderScreen):
 
         super().__init__(**kwargs)
 
-        floor_cap = min(len(Refs.gc['floors']), Refs.gc.get_lowest_floor()) + 2
+        floor_cap = min(len(Refs.gc['floors']), Refs.gc.get_lowest_floor()) + 1
         self.pages = {
             'main':                ['general', 'dungeon_materials', 'ingredients', 'potions_medicines', 'equipment', 'home_supplies'],
             'general':             ['floor_maps'],
