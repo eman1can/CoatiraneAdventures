@@ -399,7 +399,7 @@ class TransactionPanel(RelativeLayout):
         item_id = self._item.get_id()
 
         # Check if we have enough money
-        if not self.selling and self.item.get_max_price() > Refs.gc.get_varenth():
+        if not self.selling and Refs.gc.get_market_buy_price(item_id) > Refs.gc.get_varenth():
             return
 
         # Adjust Inventory
@@ -413,9 +413,9 @@ class TransactionPanel(RelativeLayout):
 
         # Adjust Varenth
         if self.selling:
-            Refs.gc.update_varenth(self._item.get_min_price() * count)
+            Refs.gc.update_varenth(Refs.gc.get_market_sell_price(item_id) * count)
         else:
-            Refs.gc.update_varenth(-self._item.get_max_price() * count)
+            Refs.gc.update_varenth(-Refs.gc.get_market_buy_price(item_id) * count)
 
         # If map, update map data
         if item_id.startswith('full_map') and not Refs.gc.get_inventory().has_item('path_' + item_id[len('full_'):]):
