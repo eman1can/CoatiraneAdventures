@@ -200,6 +200,8 @@ class Shop(HeaderScreen):
 
     def after_transaction(self):
         self.reload(self._page)
+        self.update_time_header()
+        self.update_profile_header()
 
     def reload(self, page):
         self._page = page

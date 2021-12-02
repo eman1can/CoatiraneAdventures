@@ -328,6 +328,7 @@ class GameContent:
         return self._domain
 
     def update_varenth(self, delta):
+        Refs.log(f'Varenth {self._varenth} → {self._varenth + delta}')
         self._varenth += delta
 
         if self._varenth < 20000:

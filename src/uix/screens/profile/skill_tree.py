@@ -106,7 +106,7 @@ class SkillTreeMain(Screen):
         perk = Refs.gc['perks'][perk_id]
         tree = perk.get_tree()
         if tree not in self.perks:
-            self.perks[tree] = []
+            self.perks[tree] = {}
         if perk_id not in self.perks[tree]:
             self.perks[tree][perk_id] = []
         character = Refs.gc.get_char_by_id(char_id)
