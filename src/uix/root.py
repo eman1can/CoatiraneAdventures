@@ -1,10 +1,13 @@
 __all__ = ('Root',)
 
 # Kivy Imports
+import gc
+
 from kivy.cache import Cache
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 # Project Imports
 from lists import SCREEN_LIST, SCREEN_NON_WHITELIST, SCREEN_BLACKLIST
+from refs import Refs
 
 
 class Root(ScreenManager):
@@ -53,7 +56,7 @@ class Root(ScreenManager):
         old_screen = None
         if isinstance(next_screen, str):
             screen = Cache.get('screens', next_screen)
-            if screen is None:
+            if screen is None or next_screen in SCREEN_BLACKLIST:
                 screen = self._create_screen(next_screen, *args, **kwargs)
             else:
                 screen.reload(*args, **kwargs)
@@ -67,11 +70,17 @@ class Root(ScreenManager):
             else:
                 print("No more screens to backtrack.")
                 return
+
+        if old_screen is None:
+            Refs.log(f'Display {next_screen.name}')
+        else:
+            Refs.log(f'{old_screen.name} → {next_screen.name}')
         if next_screen not in self.screens:
             self.add_widget(next_screen)
         self.current = next_screen.name
         if old_screen is not None:
             if old_screen.name == 'dungeon_battle' and old_screen.boss_encounter:
+                Refs.log(f'Battle from boss encounter - Dont delete')
                 return
             self.remove_widget(old_screen)
             if track and old_screen.name not in SCREEN_BLACKLIST:

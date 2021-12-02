@@ -78,3 +78,4 @@ class IntroStart(Screen):
         else:
             gender = 'neither'
         self.manager.display_screen('intro_domain', True, True, self.save_slot, name, gender, symbol)
+        Refs.app._bind_keyboard()

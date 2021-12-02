@@ -48,7 +48,7 @@ class DungeonResult(Screen):
         if self.ids.stat_hud.disabled:
             return
         if self.ids.stat_hud_supports.characters == 0:
-            Refs.gs.display_screen('dungeon_main', True, False)
+            Refs.gs.display_screen('dungeon_main', True, False, level=0)
             return
         anim = Animation(opacity=0, duration=0.2)
         anim.start(self.ids.stat_hud)

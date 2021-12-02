@@ -194,9 +194,9 @@ class DungeonBattle(Screen):
         self._fade_time = 0
         self._fade_update = None
         self._exit_distance = 10000
-        self.boss_encounter = False
 
         super().__init__(**kwargs)
+        self.boss_encounter = False
 
     def on_kv_post(self, base_widget):
         self.setup_data()

@@ -40,9 +40,10 @@ class CoatiraneAdventures(App):
         Window.bind(on_resize=self.on_resize)
         Window.bind(on_request_close=self.close_window)
         Window.bind(on_memorywarning=self.on_memory_warning)
-        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self._on_keyboard_down)
-        self._keyboard.bind(on_key_up=self._on_keyboard_up)
+
+        self._keyboard = None
+        self._keycode = None
+        self._bind_keyboard()
 
         # Builder.load_file('Game.kv')
 
@@ -72,6 +73,12 @@ class CoatiraneAdventures(App):
 
         super().__init__(**kwargs)
         self.initialized = False
+
+    def _bind_keyboard(self):
+        self.log('The keyboard has been bound!')
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        self._keyboard.bind(on_key_up=self._on_keyboard_up)
 
     def _keyboard_closed(self):
         self.log('The keyboard has been closed!')
@@ -116,7 +123,8 @@ class CoatiraneAdventures(App):
         Window.screenshot(f'{path}Coatirane Adventures - {datetime.now().strftime("%d-%m-%Y %H-%M-%S")}.png')
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        Refs.log(f'Key was pressed - {keycode}')
+        if self._keycode != keycode:
+            Refs.log(f'Key was pressed - {keycode}')
         key_name = self.map_key_name(keycode[1])
         if key_name is not None:
             if key_name == 'screenshot':
@@ -126,6 +134,7 @@ class CoatiraneAdventures(App):
                     callback(keyboard, key_name, text, modifiers)
 
     def _on_keyboard_up(self, keyboard, keycode):
+        self._keycode = None
         key_name = self.map_key_name(keycode[1])
         if key_name == 'screenshot' or key_name is None:
             return
