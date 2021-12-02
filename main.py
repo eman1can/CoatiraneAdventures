@@ -124,6 +124,7 @@ class CoatiraneAdventures(App):
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         if self._keycode != keycode:
+            self._keycode = keycode
             Refs.log(f'Key was pressed - {keycode}')
         key_name = self.map_key_name(keycode[1])
         if key_name is not None:
